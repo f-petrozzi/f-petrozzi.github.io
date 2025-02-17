@@ -1,12 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Portfolio</title>
-  </head>
-  <body>
-    <h1>Welcome to My Portfolio!</h1>
-    <p>This is a test page to confirm that GitHub Pages is working.</p>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Portfolio</title>
+  <style>
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+    }
+
+    header {
+      background-color: #f0f0f0;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    nav a {
+      margin: 0 1rem;
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 2rem;
+    }
+
+    h1, h2 {
+      margin-bottom: 1rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #f0f0f0;
+      text-align: center;
+      padding: 1rem;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header and Navigation -->
+  <header>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container">
+    <section id="about">
+      <h1>About Me</h1>
+      <p>
+        Hello! I'm Fabrizio, a passionate learner with experience in
+        Python, SQL, R, and more. I’m currently a student at the University
+        of South Florida, working on projects involving data analysis, AI, 
+        and business analytics.
+      </p>
+    </section>
+
+    <section id="projects">
+      <h2>Projects</h2>
+      <p>
+        Here are some of the projects I’ve been working on:
+      </p>
+      <ul>
+        <li>
+          <strong>Amazon Redshift Data Analysis</strong>: A relational database 
+          design project focusing on product data and customer reviews.
+        </li>
+        <li>
+          <strong>MongoDB Business Use Case</strong>: Implemented a healthcare 
+          scenario database with CRUD operations and aggregation pipelines.
+        </li>
+        <li>
+          <strong>Titanic Survival Prediction</strong>: Machine learning models 
+          (Decision Tree, Naive Bayes) achieving up to 79% accuracy.
+        </li>
+        <li>
+          <strong>Multiple Regression Analysis</strong>: An R-based project 
+          analyzing real estate data, highlighting significant property price 
+          variables.
+        </li>
+      </ul>
+    </section>
+
+    <section id="contact">
+      <h2>Contact</h2>
+      <p>
+        Feel free to reach out to me via email at 
+        <a href="mailto:petrozzi@usf.edu">petrozzi@usf.edu</a>.
+      </p>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Fabrizio Petrozzi. All rights reserved.</p>
+  </footer>
+</body>
 </html>
