@@ -12,12 +12,34 @@ body {
   line-height: 1.6;
   background-color: #fafafa;
   color: #333;
+  /* Responsive font size: minimum 14px, scales with viewport, max 18px */
+  font-size: clamp(14px, 1.5vw, 18px);
+}
+
+/* Text elements */
+h1 {
+  font-size: clamp(24px, 4vw, 36px);
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: clamp(20px, 3vw, 28px);
+  margin-bottom: 1rem;
+}
+
+p {
+  font-size: clamp(14px, 2vw, 18px);
+  margin-bottom: 1rem;
+}
+
+nav a {
+  font-size: clamp(16px, 2.5vw, 20px);
 }
 
 /* ==========================================================================
    2. Header & Navigation
    ========================================================================== */
-/* The header is fixed so that it stays on top; however, its content is now managed with flexbox. */
+/* Header with fixed position and flex layout for vertical centering */
 header {
   position: fixed;
   top: 0;
@@ -25,7 +47,7 @@ header {
   width: 100%;
   z-index: 999;
   background-color: #00573F; /* Dark USF Green */
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   padding: 1rem;
   display: flex;
   align-items: center;
@@ -36,7 +58,7 @@ header {
 header .logo {
   position: absolute;
   left: 1rem;
-  font-size: 1.5rem;
+  font-size: clamp(20px, 3vw, 24px);
   font-weight: bold;
   color: #fff;
   border: 2px solid #fff;  /* White border */
@@ -79,16 +101,8 @@ section {
   margin-bottom: 2rem;
   padding: 1.5rem;
   border-radius: 5px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border-left: 5px solid #FDBB2F; /* Gold accent border */
-}
-
-h1, h2 {
-  margin-bottom: 1rem;
-}
-
-p {
-  margin-bottom: 1rem;
 }
 
 /* ==========================================================================
@@ -96,96 +110,3 @@ p {
    ========================================================================== */
 footer {
   background-color: #00573F;
-  color: #fff;
-  text-align: center;
-  padding: 1rem;
-  margin-top: 2rem; /* Separates footer from the content */
-  box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
-}
-
-/* ==========================================================================
-   5. Image Styling (.profile-pic)
-   ========================================================================== */
-.profile-pic {
-  display: block;              /* Block-level for centering */
-  margin: 0 auto;              /* Centers horizontally */
-  width: 200px;                /* Adjust width as desired */
-  height: 200px;               /* Ensures square shape */
-  object-fit: cover;           /* Crop image to fit square */
-  border-radius: 50%;          /* Makes it circular */
-  border: 4px solid #00573F;   /* Dark green border */
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-.profile-pic:hover {
-  border-color: #FDBB2F;       /* Gold border on hover */
-  box-shadow: 0 0 10px #FDBB2F; /* Glowing effect on hover */
-}
-
-/* ==========================================================================
-   6. Modal (Contact Popup)
-   ========================================================================== */
-/* Modal Overlay */
-.modal {
-  display: none; /* Hidden by default */
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.5); /* Semi-transparent background */
-}
-
-/* Modal Content */
-.modal-content {
-  background-color: #fefefe;
-  margin: 10% auto; /* Centered, 10% from the top */
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-  max-width: 500px;
-  border-radius: 5px;
-}
-
-/* Close Button */
-.modal-content .close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.modal-content .close:hover,
-.modal-content .close:focus {
-  color: black;
-}
-
-/* ==========================================================================
-   7. Form Styling within the Modal
-   ========================================================================== */
-#contactForm input,
-#contactForm textarea {
-  width: 100%;
-  padding: 8px;
-  margin: 0.5rem 0;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  resize: none; /* Prevents resizing outside modal */
-}
-
-#contactForm button {
-  background-color: #00573F; /* Dark green */
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-#contactForm button:hover {
-  background-color: #FDBB2F; /* Accent gold */
-}
