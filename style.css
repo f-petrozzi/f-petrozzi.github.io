@@ -78,3 +78,18 @@ footer {
   width: 100%;
   box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
 }
+
+/*image styling */
+.profile-pic {
+  display: block;              /* Makes the image block-level */
+  margin: 0 auto;              /* Centers the image horizontally */
+  width: 150px;                /* Sets the image width */
+  border-radius: 50%;          /* Makes the image round */
+  border: 4px solid #00573F;   /* Dark green border */
+  transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transition for hover */
+}
+
+.profile-pic:hover {
+  border-color: #FDBB2F;       /* Changes the border to gold on hover */
+  box-shadow: 0 0 10px #FDBB2F; /* Adds a glowing gold effect */
+}
