@@ -81,8 +81,8 @@ footer {
 .profile-pic {
   display: block;              /* Makes the image block-level */
   margin: 0 auto;              /* Centers the image horizontally */
-  width: 150px;                /* Sets the image width */
-  height: 150px;               /* crops image */
+  width: 200px;                /* Sets the image width */
+  height: 200px;               /* crops image */
   object-fit: cover;           /* fits */
   border-radius: 50%;          /* Makes the image round */
   border: 4px solid #00573F;   /* Dark green border */
