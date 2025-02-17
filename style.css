@@ -187,30 +187,32 @@ footer {
    ========================================================================== */
 @media (max-width: 600px) {
   header {
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-between; /* Spread logo and nav apart */
+    align-items: center;
     padding: 0.5rem;
   }
-  
+
   header .logo {
-    position: static;
-    margin-bottom: 0.5rem;
+    position: static; /* Remove absolute positioning for mobile */
+    margin-right: 1rem;
   }
-  
+
   nav {
     display: flex;
-    flex-direction: column;
+    flex-direction: row; /* Keep links side-by-side */
+    gap: 0.5rem; /* Optional: adds space between links */
   }
-  
+
   nav a {
-    margin: 0.5rem 0;
+    margin: 0;
+    padding: 0.5rem; /* Optional: makes links easier to tap */
+    font-size: clamp(14px, 3vw, 18px); /* Adjust font size if needed */
   }
-  
+
   .container {
-    margin-top: 6rem; /* Increase top margin for mobile if needed */
+    margin-top: 4rem; /* Adjust if necessary to clear the fixed header */
     padding: 0.5rem;
   }
-  
-  section {
-    padding: 1rem;
-  }
 }
+
