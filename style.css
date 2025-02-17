@@ -93,3 +93,87 @@ footer {
   border-color: #FDBB2F;       /* Changes the border to gold on hover */
   box-shadow: 0 0 10px #FDBB2F; /* Adds a glowing gold effect */
 }
+
+/* Logo styling */
+header .logo {
+  float: left;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fff;
+  border: 2px solid #fff;  /* White border */
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+}
+
+/* Ensure header contents clear the float */
+header::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+/* Modal Overlay */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5); /* Semi-transparent background */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: 10% auto; /* Centered, 10% from the top */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 5px;
+}
+
+/* Close Button */
+.modal-content .close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.modal-content .close:hover,
+.modal-content .close:focus {
+  color: black;
+}
+
+/* Optional: Form Styling */
+#contactForm input,
+#contactForm textarea {
+  width: 100%;
+  padding: 8px;
+  margin: 0.5rem 0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+#contactForm button {
+  background-color: #00573F; /* Dark green */
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#contactForm button:hover {
+  background-color: #FDBB2F; /* Accent gold */
+}
