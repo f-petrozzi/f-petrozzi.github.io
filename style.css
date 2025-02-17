@@ -5,6 +5,7 @@
   box-sizing: border-box;
 }
 
+/* Base Settings */
 body {
   font-family: 'Open Sans', Arial, sans-serif;
   line-height: 1.6;
@@ -12,8 +13,10 @@ body {
   color: #333;
 }
 
+/* Header */
 header {
-  background-color: #f0f0f0;
+  background-color: #00573F; /* Dark USF Green */
+  color: #fff;
   padding: 1rem;
   text-align: center;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -27,37 +30,47 @@ header {
 nav a {
   margin: 0 1rem;
   text-decoration: none;
-  color: #333;
+  color: #fff;
   font-weight: bold;
+  transition: color 0.3s;
+}
+
+/* Hover effect for navigation */
+nav a:hover {
+  color: #FDBB2F; /* USF Gold Accent */
 }
 
 /* Main Container */
 .container {
   max-width: 960px;
-  margin: 5rem auto 0; /* 5rem top margin to avoid header overlap */
+  margin: 5rem auto 0; /* extra top margin to clear the fixed header */
   padding: 1rem;
 }
 
-/* Sections */
+/* Section Styles */
 section {
-  margin-bottom: 2rem;
   background-color: #fff;
+  margin-bottom: 2rem;
   padding: 1.5rem;
   border-radius: 5px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border-left: 5px solid #FDBB2F; /* Gold accent border */
 }
 
+/* Headings */
 h1, h2 {
   margin-bottom: 1rem;
 }
 
+/* Paragraphs */
 p {
   margin-bottom: 1rem;
 }
 
 /* Footer */
 footer {
-  background-color: #f0f0f0;
+  background-color: #00573F; /* Dark USF Green */
+  color: #fff;
   text-align: center;
   padding: 1rem;
   position: fixed;
