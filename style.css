@@ -110,3 +110,69 @@ section {
    ========================================================================== */
 footer {
   background-color: #00573F;
+  color: #fff;
+  text-align: center;
+  padding: 1rem;
+  margin-top: 2rem; /* Separates footer from the content */
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* ==========================================================================
+   5. Image Styling (.profile-pic)
+   ========================================================================== */
+.profile-pic {
+  display: block;              /* Block-level for centering */
+  margin: 0 auto;              /* Centers horizontally */
+  width: 200px;                /* Adjust width as desired */
+  height: 200px;               /* Ensures square shape */
+  object-fit: cover;           /* Crop image to fit square */
+  border-radius: 50%;          /* Makes it circular */
+  border: 4px solid #00573F;   /* Dark green border */
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.profile-pic:hover {
+  border-color: #FDBB2F;       /* Gold border on hover */
+  box-shadow: 0 0 10px #FDBB2F; /* Glowing effect on hover */
+}
+
+/* ==========================================================================
+   6. Modal (Contact Popup)
+   ========================================================================== */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 10% auto; /* Centered, 10% from the top */
+  padding: 1.5rem;
+  border-left: 5px solid #FDBB2F; /* Gold accent border, matching sections */
+  width: 80%;
+  max-width: 500px;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Close Button */
+.modal-content .close {
+  color: #aaa;
+  float: right;
+  /* Responsive font size for close button */
+  font-size: clamp(24px, 4vw, 28px);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.modal-content .close:hover,
+.modal-content .close:focus {
+  color: black;
+}
