@@ -10,19 +10,21 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <!-- Header and Navigation -->
-    <header>
+  <!-- Header and Navigation -->
+  <header>
     <div class="logo">FP</div>
     <nav>
       <a href="#about">About</a>
+      <a href="#featured">Featured</a>
       <a href="#projects">Projects</a>
-      <!-- Instead of linking to a static contact section, we’ll trigger a modal -->
+      <!-- Trigger the contact modal -->
       <a href="#" id="contactLink">Contact</a>
     </nav>
-</header>
+  </header>
 
   <!-- Main Content -->
   <div class="container">
+    <!-- About Section -->
     <section id="about">
       <h1>About Me</h1>
       <img src="images/headshot.jpeg" alt="My Photo" class="profile-pic">
@@ -34,10 +36,30 @@
       </p>
     </section>
 
+    <!-- Featured Section -->
+    <section id="featured">
+      <h2>Featured Projects</h2>
+      <ul>
+        <li>
+          <strong>Amazon Redshift Data Analysis</strong>: A relational database 
+          design project focusing on product data and customer reviews.
+        </li>
+        <li>
+          <strong>MongoDB Business Use Case</strong>: Implemented a healthcare 
+          scenario database with CRUD operations and aggregation pipelines.
+        </li>
+        <li>
+          <strong>Titanic Survival Prediction</strong>: Machine learning models 
+          (Decision Tree, Naive Bayes) achieving up to 79% accuracy.
+        </li>
+      </ul>
+    </section>
+
+    <!-- Projects Section -->
     <section id="projects">
       <h2>Projects</h2>
       <p>
-        Here are some of the projects I’ve been working on:
+        Here are some of the other projects I’ve been working on:
       </p>
       <ul>
         <li>
@@ -59,71 +81,53 @@
         </li>
       </ul>
     </section>
-
-    <section id="contact">
-      <h2>Contact</h2>
-      <p>
-        Feel free to reach out to me via email at 
-        <a href="mailto:petrozzi@usf.edu">petrozzi@usf.edu</a>.
-      </p>
-    </section>
   </div>
 
   <!-- Footer -->
   <footer>
-  <p>&copy; <span id="year"></span> Fabrizio Petrozzi. All rights reserved.</p>
+    <p>&copy; <span id="year"></span> Fabrizio Petrozzi. All rights reserved.</p>
   </footer>
  
   <script>
-  document.getElementById("year").textContent = new Date().getFullYear();
+    // Auto-update the footer year
+    document.getElementById("year").textContent = new Date().getFullYear();
   </script>
 	
-	<!-- Contact Modal -->
-	<div id="contactModal" class="modal">
-	  <div class="modal-content">
-	    <span class="close">&times;</span>
-	    <h2>Contact Me</h2>
-	    <form id="contactForm">
-	      <label for="name">Name:</label>
-	      <input type="text" id="name" name="name" required>
-	      <br>
-	      <label for="email">Email:</label>
-	      <input type="email" id="email" name="email" required>
-	      <br>
-	      <label for="message">Message:</label>
-	      <textarea id="message" name="message" rows="4" required></textarea>
-	      <br>
-	      <button type="submit">Send</button>
-	    </form>
-	  </div>
-	</div>
+  <!-- Contact Modal -->
+  <div id="contactModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Contact Me</h2>
+      <p>
+        Feel free to reach out to me via email at 
+        <a href="mailto:petrozzi@usf.edu">petrozzi@usf.edu</a>.
+      </p>
+    </div>
+  </div>
 	
-	<script>
-	  // Get modal element
-	  var modal = document.getElementById("contactModal");
-	  // Get the link that opens the modal
-	  var contactLink = document.getElementById("contactLink");
-	  // Get the close button
-	  var closeBtn = document.getElementsByClassName("close")[0];
+  <script>
+    // Modal functionality
+    var modal = document.getElementById("contactModal");
+    var contactLink = document.getElementById("contactLink");
+    var closeBtn = document.getElementsByClassName("close")[0];
 	
-	  // When the user clicks the "Contact" link, open the modal
-	  contactLink.addEventListener("click", function(e) {
-	    e.preventDefault(); // Prevent default link behavior
-	    modal.style.display = "block";
-	  });
+    // Open modal when "Contact" link is clicked
+    contactLink.addEventListener("click", function(e) {
+      e.preventDefault();
+      modal.style.display = "block";
+    });
 	
-	  // When the user clicks on the close button, close the modal
-	  closeBtn.addEventListener("click", function() {
-	    modal.style.display = "none";
-	  });
+    // Close modal when the close button is clicked
+    closeBtn.addEventListener("click", function() {
+      modal.style.display = "none";
+    });
 	
-	  // When the user clicks anywhere outside of the modal content, close the modal
-	  window.addEventListener("click", function(e) {
-	    if (e.target == modal) {
-	      modal.style.display = "none";
-	    }
-	  });
-	</script>
-	
+    // Close modal when clicking outside the modal content
+    window.addEventListener("click", function(e) {
+      if (e.target === modal) {
+        modal.style.display = "none";
+      }
+    });
+  </script>
 </body>
 </html>
