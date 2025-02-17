@@ -84,11 +84,12 @@ nav a {
   text-decoration: none;
   color: #fff;
   font-weight: bold;
-  transition: color 0.3s;
+  transition: color 0.3s, transform 0.3s;
 }
 
 nav a:hover {
   color: #FDBB2F; /* USF Gold Accent */
+  transform: scale(1.05); /* Slightly enlarge the link on hover */
 }
 
 /* ==========================================================================
@@ -179,4 +180,37 @@ footer {
 .modal-content .close:hover,
 .modal-content .close:focus {
   color: black;
+}
+
+/* ==========================================================================
+   7. Media Queries
+   ========================================================================== */
+@media (max-width: 600px) {
+  header {
+    flex-direction: column;
+    padding: 0.5rem;
+  }
+  
+  header .logo {
+    position: static;
+    margin-bottom: 0.5rem;
+  }
+  
+  nav {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  nav a {
+    margin: 0.5rem 0;
+  }
+  
+  .container {
+    margin-top: 6rem; /* Increase top margin for mobile if needed */
+    padding: 0.5rem;
+  }
+  
+  section {
+    padding: 1rem;
+  }
 }
