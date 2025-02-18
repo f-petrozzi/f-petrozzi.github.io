@@ -101,7 +101,7 @@ nav a:hover {
    3. Main Container & Section Styles
    ========================================================================== */
 .container {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 5rem auto 0; /* Top margin to clear the fixed header */
   padding: 1rem;
 }
@@ -159,11 +159,12 @@ section {
    4. Footer
    ========================================================================== */
 footer {
-  max-width: 2000px;
+  width: 100vw; /* Full viewport width */
+  margin-left: calc((100% - 100vw) / 2); /* Centers the footer */
   background-color: #00573F;
   color: #fff;
   padding: 1rem;
-  box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
