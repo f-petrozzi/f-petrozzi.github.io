@@ -258,7 +258,14 @@ footer {
     flex-direction: row; /* Keep links side-by-side */
     gap: 0.5rem; /* Optional: adds space between links */
   }
-
+   .projects-grid {
+       flex-direction: column;
+     }
+     .project-item {
+       flex: 1 1 100%;
+       max-width: 100%;
+     }
+   }
   nav a {
     margin: 0;
     padding: 0.5rem; /* Optional: makes links easier to tap */
@@ -270,4 +277,3 @@ footer {
     padding: 0.5rem;
   }
 }
-
