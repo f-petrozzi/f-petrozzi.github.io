@@ -100,8 +100,8 @@ nav a:hover {
    3. Main Container & Section Styles
    ========================================================================== */
 .container {
-  max-width: 960px;
-  margin: 5rem auto 0; /* Top margin to clear the fixed header */
+  width: 100%;
+  margin: 5rem 0 0; /* Top margin to clear the fixed header */
   padding: 1rem;
 }
 
@@ -134,15 +134,15 @@ section {
   display: block;
 }
 
-/* Style the project images as buttons */
 .project-item img {
   width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
   border-radius: 5px;
   transition: transform 0.3s, box-shadow 0.3s;
   cursor: pointer;
 }
 
-/* Hover effect: raise image slightly */
 .project-item img:hover {
   transform: translateY(-5px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
@@ -157,6 +157,7 @@ section {
    4. Footer
    ========================================================================== */
 footer {
+  width: 100%;
   background-color: #00573F;
   color: #fff;
   text-align: center;
