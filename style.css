@@ -7,6 +7,12 @@
   box-sizing: border-box;
 }
 
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   font-family: 'Open Sans', Arial, sans-serif;
   line-height: 1.6;
@@ -14,6 +20,8 @@ body {
   color: #333;
   /* Responsive font size: minimum 14px, scales with viewport, max 18px */
   font-size: clamp(14px, 1.5vw, 18px);
+  display: flex;
+  flex-direction: column;
 }
 
 /* Text elements */
@@ -101,8 +109,10 @@ nav a:hover {
    3. Main Container & Section Styles
    ========================================================================== */
 .container {
+  flex: 1;  /* This makes the container expand to take available vertical space */
   max-width: 1300px;
-  margin: 5rem auto 0; /* Top margin to clear the fixed header */
+  width: 100%;
+  margin: 5rem auto 0; /* Top margin clears the fixed header */
   padding: 1rem;
 }
 
@@ -159,8 +169,7 @@ section {
    4. Footer
    ========================================================================== */
 footer {
-  width: 100vw; /* Full viewport width */
-  margin-left: calc((100% - 100vw) / 2); /* Centers the footer */
+  width: 100%;
   background-color: #00573F;
   color: #fff;
   padding: 1rem;
