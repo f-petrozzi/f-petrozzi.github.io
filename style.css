@@ -36,6 +36,10 @@ nav a {
   font-size: clamp(16px, 2.5vw, 20px);
 }
 
+.highlight-name {
+  color: #00573F; /* Dark green */
+  font-weight: bold;
+}
 /* ==========================================================================
    2. Header & Navigation
    ========================================================================== */
@@ -109,7 +113,46 @@ section {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border-left: 5px solid #FDBB2F; /* Gold accent border */
 }
+/* Projects Grid Layout */
+.projects-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
 
+.project-item {
+  flex: 1 1 calc(33.33% - 1rem);
+  max-width: calc(33.33% - 1rem);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.project-item a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+/* Style the project images as buttons */
+.project-item img {
+  width: 100%;
+  border-radius: 5px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+}
+
+/* Hover effect: raise image slightly */
+.project-item img:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Project Title Styling */
+.project-item h3 {
+  margin-top: 0.5rem;
+  font-size: clamp(16px, 2vw, 20px);
+}
 /* ==========================================================================
    4. Footer
    ========================================================================== */
