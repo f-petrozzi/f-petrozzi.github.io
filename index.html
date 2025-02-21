@@ -121,48 +121,16 @@
   </script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
+    const projectItems = document.querySelectorAll('.project-item');
+    
+    // Set different rootMargin based on viewport width
     const isMobile = window.innerWidth <= 600;
     const observerOptions = {
       threshold: 0.1,
-      rootMargin: isMobile ? "0px 0px -5% 0px" : "0px 0px -30% 0px"
+      rootMargin: isMobile ? "0px 0px -60% 0px" : "0px 0px -50% 0px"
     };
 
-    // Featured Projects
-    const featuredItems = document.querySelectorAll('#featured .project-item');
-    
-    if (isMobile) {
-      // On mobile: observe each featured item individually.
-      const featuredObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('active');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, observerOptions);
-      featuredItems.forEach(item => {
-        featuredObserver.observe(item);
-      });
-    } else {
-      // On PC: animate all featured items together when any one enters.
-      const featuredObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            featuredItems.forEach(item => {
-              item.classList.add('active');
-              observer.unobserve(item);
-            });
-          }
-        });
-      }, observerOptions);
-      featuredItems.forEach(item => {
-        featuredObserver.observe(item);
-      });
-    }
-
-    // Other Projects: trigger each individually.
-    const otherProjectItems = document.querySelectorAll('#projects .project-item');
-    const otherObserver = new IntersectionObserver((entries, observer) => {
+    const observer = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('active');
@@ -170,10 +138,11 @@
         }
       });
     }, observerOptions);
-    otherProjectItems.forEach(item => {
-      otherObserver.observe(item);
+
+    projectItems.forEach(item => {
+      observer.observe(item);
     });
   });
-</script
+</script>
 </body>
 </html>
