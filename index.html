@@ -121,26 +121,26 @@
   </script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    const projectItems = document.querySelectorAll('.project-item');
+    const projectsGrid = document.querySelector('.projects-grid');
     const isMobile = window.innerWidth <= 600;
     const observerOptions = {
       threshold: 0.1,
-      // For mobile, use a much less negative margin so that the animation triggers earlier.
-      rootMargin: isMobile ? "0px 0px 0% 0px" : "0px 0px -50% 0px"
+      rootMargin: isMobile ? "0px 0px 0% 0px" : "0px 0px -30% 0px"
     };
 
     const observer = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('active');
+          const projectItems = document.querySelectorAll('.project-item');
+          projectItems.forEach(item => {
+            item.classList.add('active');
+          });
           observer.unobserve(entry.target);
         }
       });
     }, observerOptions);
 
-    projectItems.forEach(item => {
-      observer.observe(item);
-    });
+    observer.observe(projectsGrid);
   });
 </script>
 </body>
