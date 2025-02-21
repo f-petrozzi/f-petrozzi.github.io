@@ -122,18 +122,36 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const width = window.innerWidth;
-    const isMobile = width <= 600;
-    const isOneColumn = width <= 800; // Adjust threshold as needed for one-column layout
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: isOneColumn ? "0px 0px -5% 0px" : "0px 0px -30% 0px"
-    };
+    let observerOptions;
+    let featuredBehavior; // 'individual' for one-column, 'grouped' for multi-column
+
+    if (width <= 600) {
+      // Mobile: one column, animate individually.
+      observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -5% 0px"
+      };
+      featuredBehavior = 'individual';
+    } else if (width <= 800) {
+      // Intermediate: one column, but need a lower threshold so items animate on scroll.
+      observerOptions = {
+        threshold: 0.05,
+        rootMargin: "0px 0px -10% 0px"
+      };
+      featuredBehavior = 'individual';
+    } else {
+      // PC with multiple columns: animate all featured items together.
+      observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -30% 0px"
+      };
+      featuredBehavior = 'grouped';
+    }
 
     // Featured Projects
     const featuredItems = document.querySelectorAll('#featured .project-item');
-    
-    if (isOneColumn) {
-      // For one-column layouts (mobile and intermediate sizes), animate each item individually.
+    if (featuredBehavior === 'individual') {
+      // Observe each featured item individually.
       const featuredObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
@@ -146,7 +164,7 @@
         featuredObserver.observe(item);
       });
     } else {
-      // For multi-column layouts, animate all featured items together when any one enters.
+      // On larger screens, animate all featured items together when any one enters.
       const featuredObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
