@@ -123,16 +123,19 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const projectItems = document.querySelectorAll('.project-item');
+    
+    // Set different rootMargin based on viewport width
+    const isMobile = window.innerWidth <= 600;
     const observerOptions = {
       threshold: 0.1,
-      rootMargin: "0px 0px -60% 0px"
+      rootMargin: isMobile ? "0px 0px -60% 0px" : "0px 0px -50% 0px"
     };
 
     const observer = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('active');
-          observer.unobserve(entry.target); // Optional: stop observing once active
+          observer.unobserve(entry.target);
         }
       });
     }, observerOptions);
