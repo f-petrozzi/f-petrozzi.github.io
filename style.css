@@ -43,7 +43,7 @@ p {
 }
 
 nav a {
-  font-size: clamp(16px, 2.5vw, 30px);
+  font-size: clamp(16px, 4vw, 20px);
 }
 
 .highlight-name {
@@ -120,7 +120,7 @@ nav a:hover {
 section {
   background-color: #fff;
   margin-bottom: 16rem;
-  padding: 3rem;
+  padding: 2rem;
   overflow: auto;
   border-radius: 5px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
