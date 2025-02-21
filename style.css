@@ -103,7 +103,7 @@ nav a {
 
 nav a:hover {
   color: #FDBB2F; /* USF Gold Accent */
-  transform: scale(1.5); 
+  transform: scale(1.2); 
 }
 
 /* ==========================================================================
@@ -257,33 +257,37 @@ footer {
     align-items: center;
     padding: 0.5rem;
   }
-
+  
   header .logo {
     position: static; /* Remove absolute positioning for mobile */
     margin-right: 1rem;
   }
-
+  
   nav {
     display: flex;
     flex-direction: row; /* Keep links side-by-side */
     gap: 0.5rem; /* Optional: adds space between links */
   }
-   .projects-grid {
-       flex-direction: column;
-     }
-     .project-item {
-       flex: 1 1 100%;
-       max-width: 100%;
-     }
-   }
+  
   nav a {
     margin: 0;
-    padding: 0.5rem; /* Optional: makes links easier to tap */
+    padding: 0.5rem; /* Makes links easier to tap */
     font-size: clamp(14px, 3vw, 18px); /* Adjust font size if needed */
   }
-section {
+  
+  .projects-grid {
+    flex-direction: column;
+  }
+  
+  .project-item {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+  
+  section {
     margin-bottom: 4rem;
   }
+  
   .container {
     margin-top: 4rem; /* Adjust if necessary to clear the fixed header */
     padding: 0.5rem;
