@@ -154,7 +154,7 @@ nav a:hover {
 
 section {
   opacity: 0;
-  transform: translateX(-50px);
+  transform: translateX(-100px);
   transition: opacity 0.6s ease-out, transform 0.6s ease-out;
   
   display: flow-root;
