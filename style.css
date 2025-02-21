@@ -114,12 +114,12 @@ nav a:hover {
   max-width: 1300px;
   width: 100%;
   margin: 5rem auto 0; /* Top margin clears the fixed header */
-  padding: 1rem;
+  padding: 2rem;
 }
 
 section {
   background-color: #fff;
-  margin-bottom: 8rem;
+  margin-bottom: 16rem;
   padding: 1.5rem;
   border-radius: 5px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -280,7 +280,9 @@ footer {
     padding: 0.5rem; /* Optional: makes links easier to tap */
     font-size: clamp(14px, 3vw, 18px); /* Adjust font size if needed */
   }
-
+section {
+    margin-bottom: 4rem;
+  }
   .container {
     margin-top: 4rem; /* Adjust if necessary to clear the fixed header */
     padding: 0.5rem;
