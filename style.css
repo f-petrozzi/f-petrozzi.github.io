@@ -103,27 +103,28 @@ nav a {
 
 nav a:hover {
   color: #FDBB2F; /* USF Gold Accent */
-  transform: scale(1.05); /* Slightly enlarge the link on hover */
+  transform: scale(1.5); 
 }
 
 /* ==========================================================================
    3. Main Container & Section Styles
    ========================================================================== */
 .container {
-  flex: 1;  /* This makes the container expand to take available vertical space */
+  flex: 1;  
   max-width: 1300px;
   width: 100%;
-  margin: 10rem auto 0; /* Top margin clears the fixed header */
-  padding: 4rem;
+  margin: 10rem auto 0; 
+  padding: 4rem 1rem 1rem;
 }
 
 section {
   background-color: #fff;
   margin-bottom: 4rem;
-  padding: 1.5rem;
+  padding: 2rem;
   border-radius: 5px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border-left: 5px solid #FDBB2F; /* Gold accent border */
+  border-top: 1px solid transparent;
   scroll-margin-top: 80px;
 }
 /* Projects Grid Layout */
