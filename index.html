@@ -127,22 +127,38 @@
       rootMargin: isMobile ? "0px 0px -5% 0px" : "0px 0px -30% 0px"
     };
 
-    // Featured Projects: observe each item individually,
-    // but when any one becomes visible, activate all featured items.
+    // Featured Projects
     const featuredItems = document.querySelectorAll('#featured .project-item');
-    const featuredObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          featuredItems.forEach(item => {
-            item.classList.add('active');
-            observer.unobserve(item);
-          });
-        }
+    
+    if (isMobile) {
+      // On mobile: observe each featured item individually.
+      const featuredObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+      featuredItems.forEach(item => {
+        featuredObserver.observe(item);
       });
-    }, observerOptions);
-    featuredItems.forEach(item => {
-      featuredObserver.observe(item);
-    });
+    } else {
+      // On PC: animate all featured items together when any one enters.
+      const featuredObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            featuredItems.forEach(item => {
+              item.classList.add('active');
+              observer.unobserve(item);
+            });
+          }
+        });
+      }, observerOptions);
+      featuredItems.forEach(item => {
+        featuredObserver.observe(item);
+      });
+    }
 
     // Other Projects: trigger each individually.
     const otherProjectItems = document.querySelectorAll('#projects .project-item');
@@ -158,6 +174,6 @@
       otherObserver.observe(item);
     });
   });
-</script>
+</script
 </body>
 </html>
