@@ -128,7 +128,7 @@
     if (width <= 600) {
       // Mobile: one column, animate individually.
       observerOptions = {
-        threshold: 0.1,
+        threshold: 0.05,
         rootMargin: "0px 0px 0% 0px"
       };
       featuredBehavior = 'individual';
@@ -136,7 +136,7 @@
       // Intermediate: one column, but need a lower threshold so items animate on scroll.
       observerOptions = {
         threshold: 0.05,
-        rootMargin: "0px 0px -5% 0px"
+        rootMargin: "0px 0px 0% 0px"
       };
       featuredBehavior = 'individual';
     } else {
