@@ -149,6 +149,10 @@ nav a:hover {
 }
 
 section {
+  opacity: 0;
+  transform: translateX(-50px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  
   display: flow-root;
   background-color: #fff;
   margin-bottom: 14rem;
@@ -158,6 +162,11 @@ section {
   border-left: 5px solid #FDBB2F; /* Gold accent border */
   scroll-margin-top: 80px;
 }
+section.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
 /* Projects Grid Layout */
 .projects-grid {
   display: flex;
@@ -173,7 +182,7 @@ section {
   margin-bottom: 1rem;
   transform: translateX(100%);
   opacity: 0;
-  transition: transform 0.8s ease-out, opacity 0.8s ease-out;
+  transition: transform 0.8s ease-out 0.2s, opacity 0.8s ease-out 0.2s;
 }
 
 .project-item.active {
