@@ -25,8 +25,134 @@ body {
 }
 
 /* ==========================================================================
-   2. Scroll-based Animations
+   2. Header & Navigation (Restored + Enhanced)
    ========================================================================== */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  background-color: #00573F; /* USF Dark Green */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+header .logo {
+  position: absolute;
+  left: 1rem;
+  font-size: clamp(20px, 3vw, 24px);
+  font-weight: bold;
+  color: #fff;
+  border: 2px solid #fff;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+}
+
+nav {
+  text-align: center;
+}
+
+nav a {
+  margin: 0 1rem;
+  text-decoration: none;
+  color: #fff;
+  font-weight: bold;
+  transition: color 0.3s, transform 0.3s;
+}
+
+nav a:hover {
+  color: #FDBB2F; /* USF Gold Accent */
+  transform: scale(1.05);
+}
+
+/* ==========================================================================
+   3. Section Styling & Dynamic Background
+   ========================================================================== */
+section {
+  background-color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 6rem; /* Increased scroll distance */
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-left: 8px solid #FDBB2F; /* Gold accent */
+  scroll-margin-top: 80px;
+  position: relative;
+}
+
+/* Dynamic Background Effect */
+section::before {
+  content: "";
+  position: absolute;
+  top: -30%;
+  left: -10%;
+  width: 120%;
+  height: 160%;
+  background: radial-gradient(circle, rgba(0, 87, 63, 0.1) 0%, rgba(253, 187, 47, 0.1) 100%);
+  z-index: -1;
+  transform: rotate(5deg);
+}
+
+/* ==========================================================================
+   4. Profile Picture (Restored)
+   ========================================================================== */
+.profile-pic {
+  display: block;
+  margin: 0 auto;
+  width: clamp(150px, 20vw, 250px);
+  height: clamp(150px, 20vw, 250px);
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid #00573F;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.profile-pic:hover {
+  border-color: #FDBB2F;
+  box-shadow: 0 0 10px #FDBB2F;
+}
+
+/* ==========================================================================
+   5. Project Grid Enhancements + Animations
+   ========================================================================== */
+.projects-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.project-item {
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+}
+
+.project-item img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 5px solid #00573F;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.project-item img:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  border-color: #FDBB2F;
+}
+
+/* Scroll-based Animations */
 @keyframes fadeInLeft {
   from {
     opacity: 0;
@@ -49,72 +175,8 @@ body {
   }
 }
 
-.project-item {
-  opacity: 0;
-  transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
-}
-
 /* ==========================================================================
-   3. Section Styling & Dynamic Background
-   ========================================================================== */
-section {
-  background-color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 5rem;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  border-left: 8px solid #FDBB2F;
-  scroll-margin-top: 80px;
-  position: relative;
-}
-
-/* Dynamic Background Effect */
-section::before {
-  content: "";
-  position: absolute;
-  top: -30%;
-  left: -10%;
-  width: 120%;
-  height: 160%;
-  background: radial-gradient(circle, rgba(0, 87, 63, 0.1) 0%, rgba(253, 187, 47, 0.1) 100%);
-  z-index: -1;
-  transform: rotate(5deg);
-}
-
-/* ==========================================================================
-   4. Project Grid Enhancements
-   ========================================================================== */
-.projects-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  justify-content: center;
-}
-
-.project-item {
-  flex: 1 1 calc(33.33% - 2rem);
-  max-width: calc(33.33% - 2rem);
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.project-item img {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  border-radius: 10px;
-  border: 5px solid #00573F;
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-}
-
-.project-item img:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  border-color: #FDBB2F;
-}
-
-/* ==========================================================================
-   5. Footer Fixed to Bottom
+   6. Footer (Fixed Position)
    ========================================================================== */
 footer {
   position: fixed;
@@ -130,9 +192,27 @@ footer {
 }
 
 /* ==========================================================================
-   6. Responsive Adjustments
+   7. Mobile Optimizations (Restored)
    ========================================================================== */
 @media (max-width: 768px) {
+  header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+  }
+
+  header .logo {
+    position: static;
+    margin-right: 1rem;
+  }
+
+  nav {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+
   .projects-grid {
     flex-direction: column;
   }
