@@ -43,7 +43,20 @@ p {
 }
 
 nav a {
-  font-size: clamp(16px, 4vw, 20px);
+  font-size: clamp(16px, 2.5vw, 20px);
+  text-decoration: none;
+  color: #fff;
+  font-weight: bold;
+  /* Remove transform on nav a itself */
+}
+
+nav a span {
+  display: inline-block;
+  transition: transform 0.3s;
+}
+
+nav a:hover span {
+  transform: scale(1.2);
 }
 
 .highlight-name {
