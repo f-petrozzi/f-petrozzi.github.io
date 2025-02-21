@@ -113,13 +113,13 @@ nav a:hover {
   flex: 1;  /* This makes the container expand to take available vertical space */
   max-width: 1300px;
   width: 100%;
-  margin: 5rem auto 0; /* Top margin clears the fixed header */
-  padding: 2rem;
+  margin: 10rem auto 0; /* Top margin clears the fixed header */
+  padding: 4rem;
 }
 
 section {
   background-color: #fff;
-  margin-bottom: 16rem;
+  margin-bottom: 4rem;
   padding: 1.5rem;
   border-radius: 5px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
