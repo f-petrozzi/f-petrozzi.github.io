@@ -118,7 +118,7 @@ nav a:hover {
 
 section {
   background-color: #fff;
-  margin-bottom: 2rem;
+  margin-bottom: 4rem;
   padding: 1.5rem;
   border-radius: 5px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -138,6 +138,14 @@ section {
   max-width: calc(33.33% - 1rem);
   text-align: center;
   margin-bottom: 1rem;
+  transform: translateX(100%);
+  opacity: 0;
+  transition: transform 0.6s ease-out, opacity 0.6s ease-out;
+}
+
+.project-item.active {
+  transform: translateX(0);
+  opacity: 1;
 }
 
 .project-item a {
