@@ -98,6 +98,25 @@
   </div>
 	
   <script>
+    const sectionObserverOptions = {
+  threshold: 0.1,
+  rootMargin: "0px 0px -20% 0px" // Adjust this value to trigger earlier or later
+};
+
+const sections = document.querySelectorAll('section');
+const sectionObserver = new IntersectionObserver((entries, observer) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('active'); // CSS should define the slide-in effect for sections
+      observer.unobserve(entry.target);
+    }
+  });
+}, sectionObserverOptions);
+
+sections.forEach(section => {
+  sectionObserver.observe(section);
+});
+	  
     // Modal functionality
     var modal = document.getElementById("contactModal");
     var contactLink = document.getElementById("contactLink");
