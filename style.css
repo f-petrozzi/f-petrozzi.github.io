@@ -11,6 +11,7 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -18,126 +19,83 @@ body {
   line-height: 1.6;
   background-color: #fafafa;
   color: #333;
-  /* Responsive font size: minimum 14px, scales with viewport, max 18px */
   font-size: clamp(14px, 1.5vw, 18px);
   display: flex;
   flex-direction: column;
 }
 
-/* Text elements */
-h1 {
-  font-size: clamp(24px, 4vw, 36px);
-  margin-bottom: 1rem;
-}
-
-h2 {
-  font-size: clamp(20px, 3vw, 28px);
-  margin-bottom: 1rem;
-}
-
-p {
-  font-size: clamp(14px, 2vw, 18px);
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-nav a {
-  font-size: clamp(16px, 2.5vw, 20px);
-}
-
-.highlight-name {
-  color: #00573F; /* Dark green */
-  font-weight: bold;
-}
 /* ==========================================================================
-   2. Header & Navigation
+   2. Scroll-based Animations
    ========================================================================== */
-/* Header with fixed position and flex layout for vertical centering */
-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 999;
-  background-color: #00573F; /* Dark USF Green */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
-/* Logo positioned on the top left */
-header .logo {
-  position: absolute;
-  left: 1rem;
-  font-size: clamp(20px, 3vw, 24px);
-  font-weight: bold;
-  color: #fff;
-  border: 2px solid #fff;  /* White border */
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 1rem;
-  background: none;        
-  cursor: pointer;         
-  padding: 0;              
-  outline: none;           
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
-/* Navigation is centered in the header */
-nav {
-  text-align: center;
-}
-
-nav a {
-  margin: 0 1rem;
-  text-decoration: none;
-  color: #fff;
-  font-weight: bold;
-  transition: color 0.3s, transform 0.3s;
-}
-
-nav a:hover {
-  color: #FDBB2F; /* USF Gold Accent */
-  transform: scale(1.05); /* Slightly enlarge the link on hover */
+.project-item {
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
 }
 
 /* ==========================================================================
-   3. Main Container & Section Styles
+   3. Section Styling & Dynamic Background
    ========================================================================== */
-.container {
-  flex: 1;  /* This makes the container expand to take available vertical space */
-  max-width: 1300px;
-  width: 100%;
-  margin: 5rem auto 0; /* Top margin clears the fixed header */
-  padding: 1rem;
-}
-
 section {
-  background-color: #fff;
-  margin-bottom: 2rem;
-  padding: 1.5rem;
-  border-radius: 5px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border-left: 5px solid #FDBB2F; /* Gold accent border */
+  background-color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 5rem; /* Increased scroll distance */
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-left: 8px solid #FDBB2F; /* USF Gold accent border */
   scroll-margin-top: 80px;
+  position: relative;
 }
-/* Projects Grid Layout */
+
+/* Dynamic Background Effect */
+section::before {
+  content: "";
+  position: absolute;
+  top: -30%;
+  left: -10%;
+  width: 120%;
+  height: 160%;
+  background: radial-gradient(circle, rgba(0, 87, 63, 0.1) 0%, rgba(253, 187, 47, 0.1) 100%);
+  z-index: -1;
+  transform: rotate(5deg);
+}
+
+/* ==========================================================================
+   4. Project Grid Enhancements
+   ========================================================================== */
 .projects-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 2rem;
   justify-content: center;
 }
 
 .project-item {
-  flex: 1 1 calc(33.33% - 1rem);
-  max-width: calc(33.33% - 1rem);
+  flex: 1 1 calc(33.33% - 2rem);
+  max-width: calc(33.33% - 2rem);
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
 .project-item a {
@@ -150,25 +108,23 @@ section {
   width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
-  border-radius: 5px;
-  transition: transform 0.3s, box-shadow 0.3s;
-  cursor: pointer;
+  border-radius: 10px;
+  border: 5px solid #00573F; /* USF Green border */
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
 .project-item img:hover {
   transform: translateY(-5px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  border-color: #FDBB2F; /* USF Gold on hover */
 }
 
-/* Project Title Styling */
-.project-item h3 {
-  margin-top: 0.5rem;
-  font-size: clamp(16px, 2vw, 20px);
-}
 /* ==========================================================================
-   4. Footer
+   5. Footer Fixed to Bottom
    ========================================================================== */
 footer {
+  position: fixed;
+  bottom: 0;
   width: 100%;
   background-color: #00573F;
   color: #fff;
@@ -178,102 +134,17 @@ footer {
   align-items: center;
   justify-content: center;
 }
-/* ==========================================================================
-   5. Image Styling (.profile-pic)
-   ========================================================================== */
-.profile-pic {
-  display: block;
-  margin: 0 auto;
-  width: clamp(150px, 20vw, 250px);
-  height: clamp(150px, 20vw, 250px);
-  object-fit: cover;
-  border-radius: 50%;
-  border: 4px solid #00573F;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-.profile-pic:hover {
-  border-color: #FDBB2F;
-  box-shadow: 0 0 10px #FDBB2F;
-}
-/* ==========================================================================
-   6. Modal (Contact Popup)
-   ========================================================================== */
-.modal {
-  display: none; /* Hidden by default */
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-}
-
-.modal-content {
-  background-color: #fff;
-  margin: 10% auto; /* Centered, 10% from the top */
-  padding: 1.5rem;
-  border-left: 5px solid #FDBB2F; /* Gold accent border, matching sections */
-  width: 80%;
-  max-width: 500px;
-  border-radius: 5px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-/* Close Button */
-.modal-content .close {
-  color: #aaa;
-  float: right;
-  /* Responsive font size for close button */
-  font-size: clamp(24px, 4vw, 28px);
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.modal-content .close:hover,
-.modal-content .close:focus {
-  color: black;
-}
 
 /* ==========================================================================
-   7. Media Queries
+   6. Responsive Adjustments
    ========================================================================== */
-@media (max-width: 600px) {
-  header {
-    flex-direction: row;
-    justify-content: space-between; /* Spread logo and nav apart */
-    align-items: center;
-    padding: 0.5rem;
+@media (max-width: 768px) {
+  .projects-grid {
+    flex-direction: column;
   }
 
-  header .logo {
-    position: static; /* Remove absolute positioning for mobile */
-    margin-right: 1rem;
-  }
-
-  nav {
-    display: flex;
-    flex-direction: row; /* Keep links side-by-side */
-    gap: 0.5rem; /* Optional: adds space between links */
-  }
-   .projects-grid {
-       flex-direction: column;
-     }
-     .project-item {
-       flex: 1 1 100%;
-       max-width: 100%;
-     }
-   }
-  nav a {
-    margin: 0;
-    padding: 0.5rem; /* Optional: makes links easier to tap */
-    font-size: clamp(14px, 3vw, 18px); /* Adjust font size if needed */
-  }
-
-  .container {
-    margin-top: 4rem; /* Adjust if necessary to clear the fixed header */
-    padding: 0.5rem;
+  .project-item {
+    flex: 1 1 100%;
+    max-width: 100%;
   }
 }
