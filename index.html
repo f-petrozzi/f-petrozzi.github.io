@@ -120,5 +120,26 @@
       }
     });
   </script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const projectItems = document.querySelectorAll('.project-item');
+    const observerOptions = {
+      threshold: 0.1,
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+          observer.unobserve(entry.target); // Optional: stop observing once active
+        }
+      });
+    }, observerOptions);
+
+    projectItems.forEach(item => {
+      observer.observe(item);
+    });
+  });
+</script>
 </body>
 </html>
