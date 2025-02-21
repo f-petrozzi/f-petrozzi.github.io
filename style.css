@@ -59,11 +59,11 @@ body {
    ========================================================================== */
 section {
   background-color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 5rem; /* Increased scroll distance */
+  margin-bottom: 5rem;
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  border-left: 8px solid #FDBB2F; /* USF Gold accent border */
+  border-left: 8px solid #FDBB2F;
   scroll-margin-top: 80px;
   position: relative;
 }
@@ -98,25 +98,19 @@ section::before {
   margin-bottom: 2rem;
 }
 
-.project-item a {
-  text-decoration: none;
-  color: inherit;
-  display: block;
-}
-
 .project-item img {
   width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
   border-radius: 10px;
-  border: 5px solid #00573F; /* USF Green border */
+  border: 5px solid #00573F;
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
 .project-item img:hover {
   transform: translateY(-5px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  border-color: #FDBB2F; /* USF Gold on hover */
+  border-color: #FDBB2F;
 }
 
 /* ==========================================================================
