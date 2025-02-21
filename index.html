@@ -121,26 +121,42 @@
   </script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    const projectsGrid = document.querySelector('.projects-grid');
     const isMobile = window.innerWidth <= 600;
     const observerOptions = {
       threshold: 0.1,
-      rootMargin: isMobile ? "0px 0px 0% 0px" : "0px 0px -50% 0px"
+      rootMargin: isMobile ? "0px 0px -5% 0px" : "0px 0px -30% 0px"
     };
 
-    const observer = new IntersectionObserver((entries, observer) => {
+    // Featured Projects: trigger all items at once.
+    const featuredGrid = document.querySelector('#featured .projects-grid');
+    if (featuredGrid) {
+      const featuredObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // Activate all featured project items simultaneously.
+            featuredGrid.querySelectorAll('.project-item').forEach(item => {
+              item.classList.add('active');
+            });
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+      featuredObserver.observe(featuredGrid);
+    }
+
+    // Other Projects: trigger each individually.
+    const otherProjectItems = document.querySelectorAll('#projects .project-item');
+    const otherObserver = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          const projectItems = document.querySelectorAll('.project-item');
-          projectItems.forEach(item => {
-            item.classList.add('active');
-          });
+          entry.target.classList.add('active');
           observer.unobserve(entry.target);
         }
       });
     }, observerOptions);
-
-    observer.observe(projectsGrid);
+    otherProjectItems.forEach(item => {
+      otherObserver.observe(item);
+    });
   });
 </script>
 </body>
