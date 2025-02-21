@@ -24,9 +24,9 @@ body {
   flex-direction: column;
 
   background: linear-gradient(270deg, 
-  rgba(25, 42, 86, 0.45), 
-  rgba(244, 225, 178, 0.45), 
-  rgba(128, 0, 32, 0.45)
+  rgba(25, 42, 86, 0.3), 
+  rgba(244, 225, 178, 0.3), 
+  rgba(128, 0, 32, 0.3)
 );
   background-size: 600% 600%;
   animation: gradientShift 30s ease infinite;
