@@ -4,11 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fabrizio Petrozzi</title>
+  <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap">
+  <!-- External CSS -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
   <!-- Header and Navigation -->
   <header>
     <button class="logo" onclick="window.location.reload();">FP</button>
@@ -16,85 +17,108 @@
       <a href="#about">About</a>
       <a href="#featured">Featured</a>
       <a href="#projects">Projects</a>
+      <!-- Trigger the contact modal -->
       <a href="#" id="contactLink">Contact</a>
     </nav>
   </header>
 
   <!-- Main Content -->
   <div class="container">
-
     <!-- About Section -->
     <section id="about">
       <h1>About Me</h1>
       <img src="images/headshot.jpeg" alt="My Photo" class="profile-pic">
-      <p>Hey! I'm <span class="highlight-name">Fabrizio Petrozzi</span>. I’m currently a student at the University of South Florida, working on projects involving Artificial Intelligence (AI) and Business Analytics (BA).</p>
+      <p>
+        Hey! I'm <span class ="highlight-name">Fabrizio Petrozzi</span>. 
+	I’m currently a student at the University of South Florida, working
+	on projects involving Artificial Intelligence (AI) and Business Analytics (BA).
+      </p>
     </section>
 
     <!-- Featured Section -->
-    <section id="featured">
-      <h2>Featured Projects</h2>
-      <div class="projects-grid">
-        <div class="project-item">
-          <a href="project1.html">
-            <img src="images/project1.jpg" alt="Amazon Redshift Data Analysis" />
-            <h3>Amazon Redshift Data Analysis</h3>
-          </a>
-        </div>
-        <div class="project-item">
-          <a href="project2.html">
-            <img src="images/project2.jpg" alt="MongoDB Business Use Case" />
-            <h3>MongoDB Business Use Case</h3>
-          </a>
-        </div>
-        <div class="project-item">
-          <a href="project3.html">
-            <img src="images/project3.jpg" alt="Titanic Survival Prediction" />
-            <h3>Titanic Survival Prediction</h3>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Projects Section -->
-    <section id="projects">
-      <h2>Other Projects</h2>
-      <div class="projects-grid">
-        <div class="project-item">
-          <a href="project4.html">
-            <img src="images/project4.jpg" alt="Multiple Regression Analysis" />
-            <h3>Multiple Regression Analysis</h3>
-          </a>
-        </div>
-      </div>
-    </section>
-
+<section id="featured">
+  <h2>Featured Projects</h2>
+  <div class="projects-grid">
+    <div class="project-item">
+      <a href="project1.html">
+        <img src="images/project1.jpg" alt="Amazon Redshift Data Analysis" />
+        <h3>Amazon Redshift Data Analysis</h3>
+      </a>
+    </div>
+    <div class="project-item">
+      <a href="project2.html">
+        <img src="images/project2.jpg" alt="MongoDB Business Use Case" />
+        <h3>MongoDB Business Use Case</h3>
+      </a>
+    </div>
+    <div class="project-item">
+      <a href="project3.html">
+        <img src="images/project3.jpg" alt="Titanic Survival Prediction" />
+        <h3>Titanic Survival Prediction</h3>
+      </a>
+    </div>
   </div>
+</section>
 
+<!-- Projects Section -->
+<section id="projects">
+  <h2>Other Projects</h2>
+  <div class="projects-grid">
+    <div class="project-item">
+      <a href="project4.html">
+        <img src="images/project4.jpg" alt="Multiple Regression Analysis" />
+        <h3>Multiple Regression Analysis</h3>
+      </a>
+    </div>
+    <!-- Add additional project items as needed -->
+  </div>
+</section>
+</div>
   <!-- Footer -->
-  <footer>
-    <p>&copy; <span id="year"></span> Fabrizio Petrozzi. All rights reserved.</p>
-  </footer>
-
-  <!-- Scroll Animation Script -->
+<footer>
+ <p>&copy; <span id="year"></span> Fabrizio Petrozzi. All rights reserved.</p>
+</footer>
+ 
   <script>
+    // Auto-update the footer year
     document.getElementById("year").textContent = new Date().getFullYear();
-
-    function revealProjects() {
-      let projects = document.querySelectorAll('.project-item');
-      let triggerHeight = window.innerHeight * 0.85;
-
-      projects.forEach((project, index) => {
-        let rect = project.getBoundingClientRect();
-        if (rect.top < triggerHeight) {
-          project.style.opacity = "1";
-          project.style.animation = index % 2 === 0 ? "fadeInLeft 1s ease-out" : "fadeInRight 1s ease-out";
-        }
-      });
-    }
-
-    window.addEventListener("scroll", revealProjects);
-    revealProjects();
   </script>
-
+	
+  <!-- Contact Modal -->
+  <div id="contactModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Contact Me</h2>
+      <p>
+        Feel free to reach out to me via email at 
+        <a href="mailto:petrozzi@usf.edu">petrozzi@usf.edu</a>.
+      </p>
+    </div>
+  </div>
+	
+  <script>
+    // Modal functionality
+    var modal = document.getElementById("contactModal");
+    var contactLink = document.getElementById("contactLink");
+    var closeBtn = document.getElementsByClassName("close")[0];
+	
+    // Open modal when "Contact" link is clicked
+    contactLink.addEventListener("click", function(e) {
+      e.preventDefault();
+      modal.style.display = "block";
+    });
+	
+    // Close modal when the close button is clicked
+    closeBtn.addEventListener("click", function() {
+      modal.style.display = "none";
+    });
+	
+    // Close modal when clicking outside the modal content
+    window.addEventListener("click", function(e) {
+      if (e.target === modal) {
+        modal.style.display = "none";
+      }
+    });
+  </script>
 </body>
 </html>
