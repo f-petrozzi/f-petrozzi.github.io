@@ -127,22 +127,22 @@
       rootMargin: isMobile ? "0px 0px -5% 0px" : "0px 0px -30% 0px"
     };
 
-    // Featured Projects: trigger all items at once.
-    const featuredGrid = document.querySelector('#featured .projects-grid');
-    if (featuredGrid) {
-      const featuredObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            // Activate all featured project items simultaneously.
-            featuredGrid.querySelectorAll('.project-item').forEach(item => {
-              item.classList.add('active');
-            });
-            observer.unobserve(entry.target);
-          }
-        });
-      }, observerOptions);
-      featuredObserver.observe(featuredGrid);
-    }
+    // Featured Projects: observe each item individually,
+    // but when any one becomes visible, activate all featured items.
+    const featuredItems = document.querySelectorAll('#featured .project-item');
+    const featuredObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          featuredItems.forEach(item => {
+            item.classList.add('active');
+            observer.unobserve(item);
+          });
+        }
+      });
+    }, observerOptions);
+    featuredItems.forEach(item => {
+      featuredObserver.observe(item);
+    });
 
     // Other Projects: trigger each individually.
     const otherProjectItems = document.querySelectorAll('#projects .project-item');
