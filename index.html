@@ -121,44 +121,36 @@
   </script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    const isMobile = window.innerWidth <= 600;
+    const width = window.innerWidth;
+    let rootMarginValue = "0px 0px -30% 0px"; // default for PC (projects in row of 3)
+    if (width <= 600) {
+      rootMarginValue = "0px 0px 0% 0px"; // mobile
+    } else if (width < 800) {
+      // For intermediate sizes, use a value between mobile and PC
+      rootMarginValue = "0px 0px -15% 0px";
+    }
+
     const observerOptions = {
       threshold: 0.1,
-      rootMargin: isMobile ? "0px 0px -5% 0px" : "0px 0px -30% 0px"
+      rootMargin: rootMarginValue
     };
 
-    // Featured Projects
+    // Featured Projects: observe each item individually,
+    // but when any one becomes visible, activate all featured items.
     const featuredItems = document.querySelectorAll('#featured .project-item');
-    
-    if (isMobile) {
-      // On mobile: observe each featured item individually.
-      const featuredObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('active');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, observerOptions);
-      featuredItems.forEach(item => {
-        featuredObserver.observe(item);
+    const featuredObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          featuredItems.forEach(item => {
+            item.classList.add('active');
+            observer.unobserve(item);
+          });
+        }
       });
-    } else {
-      // On PC: animate all featured items together when any one enters.
-      const featuredObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            featuredItems.forEach(item => {
-              item.classList.add('active');
-              observer.unobserve(item);
-            });
-          }
-        });
-      }, observerOptions);
-      featuredItems.forEach(item => {
-        featuredObserver.observe(item);
-      });
-    }
+    }, observerOptions);
+    featuredItems.forEach(item => {
+      featuredObserver.observe(item);
+    });
 
     // Other Projects: trigger each individually.
     const otherProjectItems = document.querySelectorAll('#projects .project-item');
