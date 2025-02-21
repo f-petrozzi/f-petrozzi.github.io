@@ -1,6 +1,4 @@
-/* ==========================================================================
-   1. Basic Reset & Base Settings
-   ========================================================================== */
+/* Base */
 * {
   margin: 0;
   padding: 0;
@@ -70,7 +68,6 @@ nav a {
   text-decoration: none;
   color: #fff;
   font-weight: bold;
-  /* Remove transform on nav a itself */
 }
 
 nav a span {
@@ -86,17 +83,15 @@ nav a:hover span {
   color: #00573F; /* Dark green */
   font-weight: bold;
 }
-/* ==========================================================================
-   2. Header & Navigation
-   ========================================================================== */
-/* Header with fixed position and flex layout for vertical centering */
+
+/* Header  */
 header {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 999;
-  background-color: #00573F; /* Dark USF Green */
+  background-color: #00573F; 
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   padding: 1rem;
   display: flex;
@@ -111,7 +106,7 @@ header .logo {
   font-size: clamp(20px, 4vw, 24px);
   font-weight: bold;
   color: #fff;
-  border: 2px solid #fff;  /* White border */
+  border: 2px solid #fff; 
   width: 50px;
   height: 50px;
   display: flex;
@@ -138,13 +133,11 @@ nav a {
 }
 
 nav a:hover {
-  color: #FDBB2F; /* USF Gold Accent */
+  color: #FDBB2F; /* Gold Accent */
   transform: scale(1.15); 
 }
 
-/* ==========================================================================
-   3. Main Container & Section Styles
-   ========================================================================== */
+/* Main Container & Section Styles */
 .container {
   flex: 1;  
   max-width: 1300px;
@@ -221,9 +214,7 @@ section.active {
   margin-top: 0.5rem;
   font-size: clamp(16px, 2vw, 20px);
 }
-/* ==========================================================================
-   4. Footer
-   ========================================================================== */
+/* Footer */
 footer {
   width: 100%;
   background-color: #00573F;
@@ -234,9 +225,7 @@ footer {
   align-items: center;
   justify-content: center;
 }
-/* ==========================================================================
-   5. Image Styling (.profile-pic)
-   ========================================================================== */
+/* Image Styling (.profile-pic) */
 .profile-pic {
   display: block;
   margin: 0 auto;
@@ -252,11 +241,9 @@ footer {
   border-color: #FDBB2F;
   box-shadow: 0 0 10px #FDBB2F;
 }
-/* ==========================================================================
-   6. Modal (Contact Popup)
-   ========================================================================== */
+/* Modal */
 .modal {
-  display: none; /* Hidden by default */
+  display: none;
   position: fixed;
   z-index: 1000;
   left: 0;
@@ -264,14 +251,14 @@ footer {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
   background-color: #fff;
-  margin: 10% auto; /* Centered, 10% from the top */
+  margin: 10% auto; 
   padding: 1.5rem;
-  border-left: 5px solid #FDBB2F; /* Gold accent border, matching sections */
+  border-left: 5px solid #FDBB2F; 
   width: 80%;
   max-width: 500px;
   border-radius: 5px;
@@ -282,7 +269,6 @@ footer {
 .modal-content .close {
   color: #aaa;
   float: right;
-  /* Responsive font size for close button */
   font-size: clamp(24px, 4vw, 28px);
   font-weight: bold;
   cursor: pointer;
@@ -293,32 +279,30 @@ footer {
   color: black;
 }
 
-/* ==========================================================================
-   7. Media Queries
-   ========================================================================== */
+/* Media Queries */
 @media (max-width: 600px) {
   header {
     flex-direction: row;
-    justify-content: space-between; /* Spread logo and nav apart */
+    justify-content: space-between;
     align-items: center;
     padding: 0.5rem;
   }
   
   header .logo {
-    position: static; /* Remove absolute positioning for mobile */
+    position: static; 
     margin-right: 1rem;
   }
   
   nav {
     display: flex;
-    flex-direction: row; /* Keep links side-by-side */
-    gap: 0.5rem; /* Optional: adds space between links */
+    flex-direction: row; 
+    gap: 0.5rem; 
   }
   
   nav a {
     margin: 0;
-    padding: 0.5rem; /* Makes links easier to tap */
-    font-size: clamp(14px, 3vw, 18px); /* Adjust font size if needed */
+    padding: 0.5rem; 
+    font-size: clamp(14px, 3vw, 18px); 
   }
   
   .projects-grid {
@@ -335,7 +319,7 @@ footer {
   }
   
   .container {
-    margin-top: 4rem; /* Adjust if necessary to clear the fixed header */
+    margin-top: 4rem; 
     padding: 0.5rem;
   }
 }
