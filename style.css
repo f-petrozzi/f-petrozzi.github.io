@@ -127,18 +127,17 @@ nav a:hover {
   max-width: 1300px;
   width: 100%;
   margin: 10rem auto 0; 
-  padding: 0.5rem;
 }
 
 section {
   background-color: #fff;
-  margin-bottom: 16rem;
+  margin-bottom: 14rem;
   padding: 2rem;
   overflow: auto;
   border-radius: 5px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border-left: 5px solid #FDBB2F; /* Gold accent border */
-  scroll-margin-top: 80px;
+  scroll-margin-top: 60px;
 }
 /* Projects Grid Layout */
 .projects-grid {
