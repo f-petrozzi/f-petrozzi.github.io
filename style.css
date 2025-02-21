@@ -154,8 +154,8 @@ section {
   transition: opacity 0.6s ease-out, transform 0.6s ease-out;
   
   display: flow-root;
-  background-color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 20rem;
+  background-color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 25rem;
   padding: 2rem;
   border-radius: 5px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
