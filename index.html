@@ -123,12 +123,11 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const projectItems = document.querySelectorAll('.project-item');
-    
-    // Set different rootMargin based on viewport width
     const isMobile = window.innerWidth <= 600;
     const observerOptions = {
       threshold: 0.1,
-      rootMargin: isMobile ? "0px 0px -20% 0px" : "0px 0px -50% 0px"
+      // For mobile, use a much less negative margin so that the animation triggers earlier.
+      rootMargin: isMobile ? "0px 0px -5% 0px" : "0px 0px -50% 0px"
     };
 
     const observer = new IntersectionObserver((entries, observer) => {
