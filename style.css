@@ -24,10 +24,10 @@ body {
   flex-direction: column;
 
   background: linear-gradient(270deg, 
-    rgba(0,87,63,0.45), 
-    rgba(253,187,47,0.45), 
-    rgba(0,87,63,0.45)
-  );
+  rgba(0,87,63,0.45), 
+  rgba(244,225,178,0.45), 
+  rgba(253,187,47,0.45)
+);
   background-size: 600% 600%;
   animation: gradientShift 30s ease infinite;
 }
