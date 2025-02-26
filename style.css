@@ -228,7 +228,8 @@ footer {
 /* Image Styling (.profile-pic) */
 .profile-pic {
   display: block;
-  margin: 0 auto 2 rem auto;
+  margin: 0 auto; 
+  margin-bottom: 2rem;
   width: clamp(150px, 15vw, 250px);
   height: clamp(150px, 15vw, 250px);
   object-fit: cover;
