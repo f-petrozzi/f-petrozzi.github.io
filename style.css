@@ -92,17 +92,19 @@ header {
   display: flex;
   align-items: center;
   justify-content: center;
+  max-width: 100%; 
+  overflow: hidden; 
 }
 
 header .logo {
   position: static;
   left: 1rem;
-  font-size: clamp(20px, 4vw, 24px);
+  font-size: clamp(16px, 3vw, 24px);
   font-weight: bold;
   color: #fff;
   border: 2px solid #fff;
-  width: clamp(40px, 6vw, 50px);
-  height: clamp(40px, 6vw, 50px);
+  width: clamp(30px, 5vw, 50px);
+  height: clamp(30px, 5vw, 50px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -113,13 +115,16 @@ header .logo {
 /* Navigation is centered in the header */
 nav {
   text-align: center;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 nav a {
-  margin: 0 1rem;
+  margin: 0 0.5rem;
+  font-size: clamp(12px, 2.5vw, 18px);
   transition: color 0.3s, transform 0.3s;
+  white-space: nowrap;
 }
-
 nav a:hover {
   color: #FDBB2F; /* Gold Accent */
   transform: scale(1.15);
@@ -335,29 +340,23 @@ footer {
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem;
-    width: 100%; /* Ensure the header takes full width */
   }
 
   header .logo {
     position: static;
     margin-right: 1rem;
-    flex: 0 0 auto; /* Prevent the logo from shrinking */
   }
 
   nav {
     display: flex;
     flex-direction: row;
     gap: 0.5rem;
-    flex: 1; /* Allow nav to take available space */
-    overflow-x: auto; /* Allow horizontal scrolling if necessary */
-    white-space: nowrap; /* Prevent wrapping of nav items */
   }
 
   nav a {
     margin: 0;
     padding: 0.5rem;
-    font-size: clamp(14px, 3vw, 18px);
-    flex: 0 0 auto; /* Prevent nav links from shrinking */
+    font-size: clamp(10px, 3vw, 14px);
   }
 
   .main-nav {
