@@ -546,7 +546,7 @@ footer {
   background: none;
   cursor: pointer;
   padding: 0;
-  margin-right: 1rem; /* Space between logo and back button */
+  margin-right: clamp(0.5rem, 2vw, 1rem); /* Space between logo and back button */
 }
 
 /* Back button styling */
