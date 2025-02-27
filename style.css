@@ -561,7 +561,7 @@ footer {
   nav {
     display: flex;
     flex-direction: row;
-    gap: 0.5rem;
+    gap: clamp(0.2rem, 1vw, 0.5rem);
     flex-shrink: 1;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -579,7 +579,7 @@ footer {
   .main-nav {
     display: flex;
     flex-direction: row;
-    gap: 0.5rem;
+    gap: clamp(0.2rem, 1vw, 0.5rem);
     flex-shrink: 1;
     overflow: hidden;
     text-overflow: ellipsis;
