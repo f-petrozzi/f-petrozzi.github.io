@@ -496,7 +496,7 @@ footer {
 .sidebar-filter {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0rem;
   padding: 0rem;
   background-color: #00573F;
 }
