@@ -297,13 +297,13 @@ section.active {
 
 /* Gradient Update */
 .dark-mode-toggle-input:checked + .dark-mode-toggle-label {
-  background: linear-gradient(to right, #0d1b2a, #d35400);
+  background: linear-gradient(to right, #87CEFA, #FF7F50);
 }
 
 /* Slider Move */
 .dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider {
   transform: translateX(calc(100% + var(--toggle-offset)));
-  background-color: #d35400; /* Matches the right gradient color in dark mode */
+  background-color: #FF7F50; /* Matches the right gradient color in dark mode */
 }
 
 /* Position */
