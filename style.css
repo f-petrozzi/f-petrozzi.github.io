@@ -191,6 +191,65 @@ section.active {
   opacity: 1;
   transform: translateX(0);
 }
+/* ==========================================================================
+   4.5. Social Link Buttons
+   ========================================================================== */
+/* Social links container */
+.social-links {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Style each social link as a circle */
+.social-links a {
+  width: clamp(30px, 5vw, 50px);
+  height: clamp(30px, 5vw, 50px);
+  background-color: rgba(0,87,63,0.9); /* Green circle */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  text-decoration: none;
+  transition: transform 0.3s, background-color 0.3s;
+  position: relative; /* For tooltip positioning */
+}
+
+/* Hover effect: glow yellow */
+.social-links a:hover {
+  transform: scale(1.1);
+  background-color: rgba(253,187,47,0.9); /* Yellow glow on hover */
+}
+
+/* Icon styling */
+.social-links i {
+  font-size: clamp(16px, 3vw, 24px);
+}
+
+/* Tooltip styling */
+.social-links a::after {
+  content: attr(aria-label);
+  position: absolute;
+  bottom: -2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.social-links a:hover::after {
+  opacity: 1;
+}
 
 /* ==========================================================================
    5. Projects Grid & Project Items
