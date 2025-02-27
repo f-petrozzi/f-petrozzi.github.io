@@ -535,6 +535,7 @@ footer {
 
 /* Logo styling (refresh button) */
 .project-header .logo {
+  position: static;
   font-size: clamp(20px, 4vw, 24px);
   font-weight: bold;
   color: #fff;
