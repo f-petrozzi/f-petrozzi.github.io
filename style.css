@@ -541,7 +541,12 @@ header nav button#menuToggle {
   background: none;
   cursor: pointer;
 }
-
+.project-container {
+  flex: 1;
+  max-width: 1300px;
+  width: 100%;
+  margin: 5rem auto 0;
+}
 /* Back button styling */
 .project-header a.back {
   display: flex;
