@@ -564,10 +564,10 @@ header nav button#menuToggle {
   font-size: clamp(20px, 4vw, 24px); /* Responsive size for icon */
 }
 .main-nav {
+  flex: 1;
   display: flex;
   gap: 1rem;
-  /* Optional: add some left margin if needed */
-  margin-left: 2rem;
+  justify-content: center;
 }
 
 .main-nav a {
@@ -576,8 +576,7 @@ header nav button#menuToggle {
   font-size: clamp(16px, 2.5vw, 20px);
   font-weight: bold;
 }
-.menu-container {
-  margin-left: auto; /* This pushes the menu container to the far right */
+.menu-container 
 }
 /* Project Navigation in header (if needed) */
 .project-nav {
