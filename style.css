@@ -296,16 +296,14 @@ section.active {
   background: linear-gradient(to right, #0d1b2a, #d35400); /* Dark mode gradient: dark blue to orange/reddish */
 }
 
-/* Slide the toggle slider to the right when active */
-/* Calculation: container width - slider width - (2px left + 2px right) */
 .dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider {
-  transform: translateX(calc(100% - clamp(20px, 4vw, 26px) - 4px));
-  background-color: #d35400; /* Matches the right gradient color in dark mode */
+  transform: translateX(calc(100% - clamp(20px, 4vw, 26px) - 2px));
+  background-color: #d35400;
 }
 
 /* Move the entire toggle container up and to the left */
 .dark-mode-toggle {
-  margin: -1rem 0 0 -1rem; /* Adjust these values as needed */
+  margin: -2rem 0 0 -2rem; /* Adjust these values as needed */
 }
 
 /* ==========================================================================
