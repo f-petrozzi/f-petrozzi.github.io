@@ -95,7 +95,7 @@ header {
 }
 
 header .logo {
-  position: absolute;
+  position: static;
   left: 1rem;
   font-size: clamp(20px, 4vw, 24px);
   font-weight: bold;
@@ -366,8 +366,16 @@ footer {
   section {
     margin-bottom: 4rem;
   }
+  
+  project-section {
+    margin-bottom: 4rem;
+  }
 
   .container {
+    margin-top: 4rem;
+    padding: 0.5rem;
+  }
+  .project-container {
     margin-top: 4rem;
     padding: 0.5rem;
   }
@@ -559,6 +567,7 @@ project-section {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border-left: 5px solid #FDBB2F; /* Gold accent border */
   scroll-margin-top: 80px;
+}
 /* Back button styling */
 .project-header a.back {
   display: flex;
