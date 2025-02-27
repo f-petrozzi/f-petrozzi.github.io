@@ -484,8 +484,8 @@ footer {
 /* Close Sidebar Button */
 #closeSidebar {
   position: absolute;
-  top: 0.1rem;
-  right: 0.1rem;
+  top: 0.4rem;
+  right: 0.4rem;
   background: none;
   border: none;
   color: #fff;
@@ -496,8 +496,8 @@ footer {
 .sidebar-filter {
   display: flex;
   justify-content: center;
-  gap: 0rem;
-  padding: 0rem;
+  gap: 0.01rem;
+  padding: 0.01rem;
   background-color: #00573F;
 }
 
