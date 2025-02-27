@@ -524,12 +524,18 @@ footer {
 
 @media (max-width: 600px) {
   header.common-header {
+    position:relative;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem 1rem;
   }
-  
+  .header-right {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
   .header-left {
     gap: 0.5rem;
   }
