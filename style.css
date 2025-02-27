@@ -152,9 +152,9 @@ nav a:hover {
 
 /* Style each social link as a circle */
 .social-links a {
-  width: 40px;
-  height: 40px;
-  background-color: rgba(0,87,63,0.9); /* Dark green with slight opacity */
+  width: clamp(30px, 5vw, 50px);
+  height: clamp(30px, 5vw, 50px);
+  background-color: rgba(0,87,63,0.9); /* Dark green with some opacity */
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -170,11 +170,10 @@ nav a:hover {
   background-color: rgba(253,187,47,0.9); /* Gold accent on hover */
 }
 
-/* Icon styling */
+/* icon styling */
 .social-links i {
-  font-size: 1.2rem;
+  font-size: clamp(16px, 3vw, 24px);
 }
-
 
 /* Main Container & Section Styles */
 .container {
