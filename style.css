@@ -350,12 +350,20 @@ footer {
     align-items: center;
     padding: 0.5rem;
   }
-
+ .left-side {
+    flex: 1;
+    gap: 0.5rem;
+  }
+  .right-side {
+    flex-shrink: 0; /* Prevent the sidebar container from shrinking too much */
+  }
   header .logo {
     position: static;
     margin-right: 1rem;
   }
-
+  #menuToggle {
+    font-size: clamp(16px, 4vw, 20px);
+  }
   nav {
     display: flex;
     flex-direction: row;
@@ -376,7 +384,7 @@ footer {
     padding: 0.5rem;
     font-size: clamp(14px, 3vw, 18px);
   }
-.left-side, .main-nav {
+ .left-side, .main-nav {
     gap: 0.5rem;
   }
   .projects-grid {
