@@ -494,15 +494,15 @@ footer {
   justify-content: center;
   gap: 0.5rem;
   padding: 0.5rem;
-  background-color: #f4f4f4;
+  background-color: #fff;
 }
 
 .filter-btn {
   background-color: #00573F;
   color: #fff;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
+  padding: 0.2rem 1rem;
+  border-radius: 0px;
   font-size: clamp(14px, 2vw, 16px);
   cursor: pointer;
   transition: background-color 0.3s;
