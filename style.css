@@ -532,13 +532,17 @@ footer {
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem 1rem;
+    /* Reserve space on the right so content doesn't slide underneath the sidebar button */
+    padding-right: 70px;
   }
+  
   .header-right {
     position: absolute;
     right: 1rem;
     top: 55%;
     transform: translateY(-50%);
   }
+  
   .header-left {
     gap: 0.5rem;
   }
@@ -551,6 +555,7 @@ footer {
     font-size: clamp(16px, 4vw, 20px);
   }
   
+  /* Adjust navigation styling so that text doesn't get overlapped */
   nav {
     display: flex;
     flex-direction: row;
@@ -559,6 +564,7 @@ footer {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    margin-right: 70px; /* Reserve space for the sidebar button */
   }
   
   nav a {
@@ -566,6 +572,8 @@ footer {
     padding: 0.5rem;
     font-size: clamp(8px, 3vw, 14px);
   }
+  
+  /* If you use .main-nav in index.html, apply similar rules */
   .main-nav {
     display: flex;
     flex-direction: row;
@@ -574,6 +582,7 @@ footer {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    margin-right: 70px; /* Reserve space for the sidebar button */
   }
   
   .main-nav a {
@@ -594,7 +603,8 @@ footer {
     margin-bottom: 4rem;
   }
   
-  .container, .project-container {
+  .container,
+  .project-container {
     margin-top: 4rem;
     padding: 0.5rem;
   }
