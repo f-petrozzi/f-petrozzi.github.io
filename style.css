@@ -484,7 +484,7 @@ footer {
 /* Close Sidebar Button */
 #closeSidebar {
   position: absolute;
-  top: 1rem;
+  top: 2rem;
   right: 1rem;
   background: none;
   border: none;
@@ -515,5 +515,56 @@ footer {
 .filter-btn:hover,
 .filter-btn.active {
   background-color: #FDBB2F;
+}
+/* Combined Project Header */
+.project-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background-color: #00573F;
+  color: #fff;
+}
+
+/* Container for the logo and back button */
+.project-header .left-side {
+  display: flex;
+  align-items: center;
+}
+
+/* Logo styling (refresh button) */
+.project-header .logo {
+  font-size: clamp(20px, 4vw, 24px);
+  font-weight: bold;
+  color: #fff;
+  border: 2px solid #fff;  /* White border */
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  margin-right: 1rem; /* Space between logo and back button */
+}
+
+/* Back button styling */
+.project-header a.back {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  text-decoration: none;
+  font-size: clamp(16px, 2.5vw, 20px);
+}
+
+/* Back button icon styling */
+.project-header a.back i {
+  font-size: clamp(20px, 4vw, 24px);
+}
+
+/* Project Navigation in header (if needed) */
+.project-nav {
+  /* Your existing styles for nav can remain here */
 }
 
