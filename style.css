@@ -527,7 +527,9 @@ footer {
 
 @media (max-width: 600px) {
   header.common-header {
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
@@ -587,7 +589,7 @@ footer {
   
   .main-nav a {
     padding: 0.5rem;
-    font-size: clamp(14px, 3vw, 18px);
+    font-size: clamp(8px, 3vw, 18px);
   }
   
   .projects-grid {
