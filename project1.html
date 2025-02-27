@@ -101,7 +101,7 @@
     </nav>
   </header>
 
-  <!-- Sliding Sidebar for Project Navigation -->
+ <!-- Sliding Sidebar for Project Navigation -->
 <div id="projectSidebar" class="sidebar">
   <div class="sidebar-header">
     <h2>Projects</h2>
@@ -109,9 +109,14 @@
       <i class="bx bx-x"></i>
     </button>
   </div>
+  <!-- Filter Toolbar -->
+  <div class="sidebar-filter">
+    <button class="filter-btn" data-filter="featured">Featured</button>
+    <button class="filter-btn" data-filter="other">Other</button>
+    <button class="filter-btn" data-filter="all">All</button>
+  </div>
   <div class="sidebar-content">
-    <!-- Featured Projects Section -->
-    <h3 class="sidebar-section-title">Featured</h3>
+    <h3 class="sidebar-section-title featured-title">Featured</h3>
     <ul class="sidebar-list featured-list">
       <li>
         <a href="project1.html">
@@ -131,10 +136,8 @@
           <span>Titanic Survival Prediction</span>
         </a>
       </li>
-      <!-- Add more featured projects as needed -->
     </ul>
-    <!-- Other Projects Section -->
-    <h3 class="sidebar-section-title">Other Projects</h3>
+    <h3 class="sidebar-section-title other-title">Other Projects</h3>
     <ul class="sidebar-list other-list">
       <li>
         <a href="project4.html">
@@ -142,7 +145,7 @@
           <span>Multiple Regression Analysis</span>
         </a>
       </li>
-      <!-- Add additional other projects as needed -->
+      <!-- Add more "other" project items as needed -->
     </ul>
   </div>
 </div>
@@ -205,6 +208,47 @@
         projectSidebar.classList.remove('active');
       }
     });
+  });
+</script>
+<!-- Filter -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const featuredList = document.querySelector('.featured-list');
+    const otherList = document.querySelector('.other-list');
+    const featuredTitle = document.querySelector('.featured-title');
+    const otherTitle = document.querySelector('.other-title');
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Remove active class from all filter buttons
+        filterButtons.forEach(b => b.classList.remove('active'));
+        // Add active class to the clicked button
+        btn.classList.add('active');
+
+        const filter = btn.getAttribute('data-filter');
+
+        if (filter === 'featured') {
+          featuredList.style.display = 'block';
+          featuredTitle.style.display = 'block';
+          otherList.style.display = 'none';
+          otherTitle.style.display = 'none';
+        } else if (filter === 'other') {
+          featuredList.style.display = 'none';
+          featuredTitle.style.display = 'none';
+          otherList.style.display = 'block';
+          otherTitle.style.display = 'block';
+        } else if (filter === 'all') {
+          featuredList.style.display = 'block';
+          featuredTitle.style.display = 'block';
+          otherList.style.display = 'block';
+          otherTitle.style.display = 'block';
+        }
+      });
+    });
+
+    // Optionally, set a default filter button (e.g., "All")
+    document.querySelector('.filter-btn[data-filter="all"]').click();
   });
 </script>
 </body>
