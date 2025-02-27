@@ -385,3 +385,91 @@ footer {
     padding: 0.5rem;
   }
 }
+/* --- Sidebar Container --- */
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -100%; /* Initially hidden */
+  width: 80%;       /* Adjust width as needed */
+  max-width: 400px; /* Maximum width for larger screens */
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.95); /* Slightly transparent white */
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+  transition: right 0.4s ease;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+}
+
+/* When sidebar is active, move it into view */
+.sidebar.active {
+  right: 0;
+}
+
+/* Sidebar Header */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background-color: #00573F; /* Dark green */
+  color: #fff;
+}
+
+/* Sidebar List */
+.sidebar-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+}
+
+.sidebar-list li {
+  border-bottom: 1px solid #eee;
+}
+
+.sidebar-list li a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #333;
+  padding: 1rem;
+  transition: background-color 0.3s;
+}
+
+.sidebar-list li a:hover {
+  background-color: rgba(253,187,47,0.2); /* Light gold hover */
+}
+
+/* Thumbnail styling */
+.sidebar-list li a img {
+  width: clamp(40px, 5vw, 60px);
+  height: clamp(40px, 5vw, 60px);
+  object-fit: cover;
+  border-radius: 5px;
+  margin-right: 1rem;
+}
+
+/* Project title styling */
+.sidebar-list li a span {
+  font-size: clamp(14px, 2vw, 18px);
+}
+
+/* Menu Toggle Button in Header */
+#menuToggle {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: clamp(20px, 4vw, 24px);
+  cursor: pointer;
+  margin-left: 1rem;
+}
+
+/* Close Sidebar Button */
+#closeSidebar {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: clamp(20px, 4vw, 24px);
+  cursor: pointer;
+}
