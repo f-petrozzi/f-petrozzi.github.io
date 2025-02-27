@@ -25,6 +25,9 @@
      <a href="#featured"><span>Featured</span></a>
      <a href="#projects"><span>Projects</span></a>
      <a href="#" id="contactLink"><span>Contact</span></a>
+     <button id="menuToggle" aria-label="Project Menu">
+      <i class="bx bx-menu"></i>
+     </button>
    </nav>
   </header>
 
@@ -94,6 +97,54 @@
   </div>
 </section>
 </div>
+<!-- Sliding Sidebar for Project Navigation -->
+<div id="projectSidebar" class="sidebar">
+  <div class="sidebar-header">
+    <h2>Projects</h2>
+    <button id="closeSidebar" aria-label="Close Menu">
+      <i class="bx bx-x"></i>
+    </button>
+  </div>
+  <!-- Filter Toolbar -->
+  <div class="sidebar-filter">
+    <button class="filter-btn" data-filter="featured">Featured</button>
+    <button class="filter-btn" data-filter="other">Other</button>
+    <button class="filter-btn" data-filter="all">All</button>
+  </div>
+  <div class="sidebar-content">
+    <h3 class="sidebar-section-title featured-title">Featured</h3>
+    <ul class="sidebar-list featured-list">
+      <li>
+        <a href="project1.html">
+          <img src="images/project1-thumb.jpg" alt="Project 1 Thumbnail">
+          <span>Amazon Redshift Data Analysis</span>
+        </a>
+      </li>
+      <li>
+        <a href="project2.html">
+          <img src="images/project2-thumb.jpg" alt="Project 2 Thumbnail">
+          <span>MongoDB Business Use Case</span>
+        </a>
+      </li>
+      <li>
+        <a href="project3.html">
+          <img src="images/project3-thumb.jpg" alt="Project 3 Thumbnail">
+          <span>Titanic Survival Prediction</span>
+        </a>
+      </li>
+    </ul>
+    <h3 class="sidebar-section-title other-title">Other Projects</h3>
+    <ul class="sidebar-list other-list">
+      <li>
+        <a href="project4.html">
+          <img src="images/project4-thumb.jpg" alt="Project 4 Thumbnail">
+          <span>Multiple Regression Analysis</span>
+        </a>
+      </li>
+      <!-- Add more "other" project items as needed -->
+    </ul>
+  </div>
+</div>
   <!-- Footer -->
 <footer>
  <p>&copy; <span id="year"></span> Fabrizio Petrozzi. All rights reserved.</p>
@@ -155,6 +206,30 @@ sections.forEach(section => {
       }
     });
   </script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.getElementById('menuToggle');
+    const closeSidebar = document.getElementById('closeSidebar');
+    const projectSidebar = document.getElementById('projectSidebar');
+
+    // Toggle the sidebar when the menu icon is clicked
+    menuToggle.addEventListener('click', function() {
+      projectSidebar.classList.add('active');
+    });
+
+    // Close the sidebar when the close button is clicked
+    closeSidebar.addEventListener('click', function() {
+      projectSidebar.classList.remove('active');
+    });
+
+    // Optionally, close the sidebar if the user clicks outside of it:
+    document.addEventListener('click', function(e) {
+      if (!projectSidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+        projectSidebar.classList.remove('active');
+      }
+    });
+  });
+</script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const width = window.innerWidth;
@@ -243,6 +318,46 @@ sections.forEach(section => {
         });
       }
     });
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const featuredList = document.querySelector('.featured-list');
+    const otherList = document.querySelector('.other-list');
+    const featuredTitle = document.querySelector('.featured-title');
+    const otherTitle = document.querySelector('.other-title');
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Remove active class from all filter buttons
+        filterButtons.forEach(b => b.classList.remove('active'));
+        // Add active class to the clicked button
+        btn.classList.add('active');
+
+        const filter = btn.getAttribute('data-filter');
+
+        if (filter === 'featured') {
+          featuredList.style.display = 'block';
+          featuredTitle.style.display = 'block';
+          otherList.style.display = 'none';
+          otherTitle.style.display = 'none';
+        } else if (filter === 'other') {
+          featuredList.style.display = 'none';
+          featuredTitle.style.display = 'none';
+          otherList.style.display = 'block';
+          otherTitle.style.display = 'block';
+        } else if (filter === 'all') {
+          featuredList.style.display = 'block';
+          featuredTitle.style.display = 'block';
+          otherList.style.display = 'block';
+          otherTitle.style.display = 'block';
+        }
+      });
+    });
+
+    // Optionally, set a default filter button (e.g., "All")
+    document.querySelector('.filter-btn[data-filter="all"]').click();
   });
 </script>
 </body>
