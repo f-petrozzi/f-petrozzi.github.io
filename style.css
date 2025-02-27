@@ -302,7 +302,7 @@ section.active {
 
 /* Slider Move */
 .dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider {
-  transform: translateX(calc(100% - var(--toggle-offset)));
+  transform: translateX(calc(100% + var(--toggle-offset)));
   background-color: #d35400; /* Matches the right gradient color in dark mode */
 }
 
