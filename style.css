@@ -488,3 +488,28 @@ footer {
   font-size: clamp(20px, 4vw, 24px);
   cursor: pointer;
 }
+/* Filter Toolbar in Sidebar */
+.sidebar-filter {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: #f4f4f4;
+}
+
+.filter-btn {
+  background-color: #00573F;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: clamp(14px, 2vw, 16px);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+  background-color: #FDBB2F;
+}
+
