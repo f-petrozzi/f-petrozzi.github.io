@@ -91,13 +91,13 @@ header {
   padding: 1rem;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   max-width: 100%; 
   overflow: hidden;
   text-align: center;
 }
 
-.header .logo {
+header .logo {
   position: static;
   font-size: clamp(20px, 4vw, 24px);
   font-weight: bold;
