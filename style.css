@@ -162,6 +162,7 @@ nav a:hover {
   color: #fff;
   text-decoration: none;
   transition: transform 0.3s, background-color 0.3s;
+  position: relative; /* Needed for absolute positioning of tooltip */
 }
 
 /* Hover effect */
@@ -170,9 +171,31 @@ nav a:hover {
   background-color: rgba(253,187,47,0.9); /* Gold accent on hover */
 }
 
-/* icon styling */
+/* Icon styling */
 .social-links i {
   font-size: clamp(16px, 3vw, 24px);
+}
+
+/* Tooltip styling */
+.social-links a::after {
+  content: attr(aria-label);
+  position: absolute;
+  bottom: -2.5rem; /* Adjust as needed for vertical placement */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.social-links a:hover::after {
+  opacity: 1;
 }
 
 /* Main Container & Section Styles */
