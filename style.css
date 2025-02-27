@@ -27,11 +27,11 @@ body {
 
   background: linear-gradient(270deg, 
   rgba(0,87,63,0.2),   
-  rgba(253,187,47,0.2), 
+  rgba(253,187,47,0.15), 
   rgba(25,42,86,0.2)    
 );
   background-size: 600% 600%;
-  animation: gradientShift 35s ease infinite;
+  animation: gradientShift 40s ease infinite;
 }
 
 @keyframes gradientShift {
