@@ -96,7 +96,15 @@ header {
   overflow: hidden;
   text-align: center;
 }
-
+.left-side {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1; /* This container takes up all available space */
+}
+.right-side {
+  /* This container will naturally sit at the far right */
+}
 header .logo {
   position: static;
   font-size: clamp(20px, 4vw, 24px);
@@ -111,78 +119,7 @@ header .logo {
   background: none;
   cursor: pointer;
 }
-.site-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 999;
-  background-color: #00573F;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  /* Ensure items are spaced out across the full width */
-  justify-content: space-between;
-}
 
-/* Left Section: Logo */
-.header-left {
-  flex: 0 0 auto;
-}
-
-.header-left .logo {
-  position: static;
-  font-size: clamp(20px, 4vw, 24px);
-  font-weight: bold;
-  color: #fff;
-  border: 2px solid #fff;
-  width: clamp(40px, 6vw, 50px);
-  height: clamp(40px, 6vw, 50px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  cursor: pointer;
-}
-/* Center Section: Navigation */
-.header-center {
-  flex: 1 1 auto;
-  display: flex;
-  justify-content: center;
-}
-
-.main-nav {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-}
-
-.main-nav a {
-  color: #fff;
-  text-decoration: none;
-  font-size: clamp(16px, 2.5vw, 20px);
-  font-weight: bold;
-  white-space: nowrap;
-  transition: color 0.3s, transform 0.3s;
-}
-
-.main-nav a:hover {
-  color: #FDBB2F; /* Gold Accent */
-  transform: scale(1.15);
-}
-/* Right Section: Sidebar Toggle */
-.header-right {
-  flex: 0 0 auto;
-}
-
-#menuToggle {
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: clamp(20px, 4vw, 24px);
-  cursor: pointer;
-}
 /* Navigation is centered in the header */
 nav {
   text-align: center;
@@ -408,13 +345,17 @@ footer {
 /* Media Queries */
 @media (max-width: 600px) {
   header {
-    /* Instead of centering all content, space items out */
-    justify-content: space-between;
-    padding: 0.5rem 1rem;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem;
   }
-  @media (max-width: 600px) {
-  .site-header {
-    padding: 0.5rem 1rem;
+ .left-side {
+    flex: 1;
+    gap: 0.5rem;
+  }
+  .right-side {
+    flex-shrink: 0; /* Prevent the sidebar container from shrinking too much */
   }
   header .logo {
     position: static;
