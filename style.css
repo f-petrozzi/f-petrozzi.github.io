@@ -271,8 +271,7 @@ section.active {
 .dark-mode-toggle-label {
   /* Define responsive variables */
   --slider-width: clamp(16px, 3vw, 22px);
-  --toggle-offset: clamp(16px, 4vw, 22px); /* Offset used for the sliding calculation */
-  
+  --toggle-offset: clamp(16px, 3vw, 22px); /* Offset used for the sliding calculation */
   display: inline-block;
   width: clamp(40px, 7vw, 52px);
   height: clamp(20px, 3.5vw, 26px);
