@@ -1,4 +1,8 @@
-/* Base */
+/* ==========================================================================
+   1. Base & Global Styles
+   ========================================================================== */
+
+/* Reset & Universal Settings */
 * {
   margin: 0;
   padding: 0;
@@ -16,6 +20,7 @@ html, body {
   overflow-x: hidden;
 }
 
+/* Global Body Styling */
 body {
   font-family: 'Open Sans', Arial, sans-serif;
   line-height: 1.6;
@@ -28,6 +33,7 @@ body {
   animation: gradientShift 45s ease infinite;
 }
 
+/* Gradient Animation */
 @keyframes gradientShift {
   0% {
     background-position: 0% 50%;
@@ -40,7 +46,10 @@ body {
   }
 }
 
-/* Text elements */
+/* ==========================================================================
+   2. Typography & Text Elements
+   ========================================================================== */
+
 h1, h2, p {
   margin-bottom: 1rem;
   text-align: center;
@@ -58,28 +67,17 @@ p {
   font-size: clamp(14px, 2vw, 18px);
 }
 
-nav a {
-  font-size: clamp(16px, 2.5vw, 20px);
-  text-decoration: none;
-  color: #fff;
-  font-weight: bold;
-}
-
-nav a span {
-  display: inline-block;
-  transition: transform 0.3s;
-}
-
-nav a:hover span {
-  transform: scale(1.1);
-}
-
 .highlight-name {
   color: #00573F; /* Dark green */
   font-weight: bold;
 }
-/* Combined Header for Index.html */
-.site-header {
+
+/* ==========================================================================
+   3. Unified Header & Navigation
+   ========================================================================== */
+
+/* Base Header Style for Both Pages */
+header.common-header {
   position: fixed;
   top: 0;
   left: 0;
@@ -87,19 +85,33 @@ nav a:hover span {
   z-index: 999;
   background-color: #00573F;
   color: #fff;
+  padding: 1rem;
   display: flex;
   align-items: center;
-  padding: 1rem;
-  /* Ensure items are spaced out across the full width */
   justify-content: space-between;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Left Section: Logo */
+/* Header Structural Elements */
 .header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   flex: 0 0 auto;
 }
 
-.header-left .logo {
+.header-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.header-right {
+  flex: 0 0 auto;
+}
+
+/* Logo (Used in Both Headers) */
+header.common-header .logo {
   font-size: clamp(20px, 4vw, 24px);
   font-weight: bold;
   color: #fff;
@@ -113,11 +125,11 @@ nav a:hover span {
   cursor: pointer;
 }
 
-/* Center Section: Navigation */
-.header-center {
-  flex: 1 1 auto;
-  display: flex;
-  justify-content: center;
+/* Navigation (Index Header Specific) */
+.header-center nav {
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .main-nav {
@@ -127,11 +139,10 @@ nav a:hover span {
 }
 
 .main-nav a {
-  color: #fff;
   text-decoration: none;
+  color: #fff;
   font-size: clamp(16px, 2.5vw, 20px);
   font-weight: bold;
-  white-space: nowrap;
   transition: color 0.3s, transform 0.3s;
 }
 
@@ -140,11 +151,7 @@ nav a:hover span {
   transform: scale(1.15);
 }
 
-/* Right Section: Sidebar Toggle */
-.header-right {
-  flex: 0 0 auto;
-}
-
+/* Shared Menu Toggle Button */
 #menuToggle {
   background: none;
   border: none;
@@ -152,134 +159,19 @@ nav a:hover span {
   font-size: clamp(20px, 4vw, 24px);
   cursor: pointer;
 }
-/* Header */
-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 999;
-  background-color: #00573F;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  padding: 1rem;
+
+/* Back Button (Project Header Specific) */
+header.common-header .back {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  max-width: 100%; 
-  overflow: hidden;
-  text-align: center;
-}
-.left-side {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex: 1; /* This container takes up all available space */
-}
-.right-side {
-  /* This container will naturally sit at the far right */
-}
-header .logo {
-  position: static;
-  font-size: clamp(20px, 4vw, 24px);
-  font-weight: bold;
-  color: #fff;
-  border: 2px solid #fff;
-  width: clamp(40px, 6vw, 50px);  /* Responsive size */
-  height: clamp(40px, 6vw, 50px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  cursor: pointer;
-}
-
-/* Navigation is centered in the header */
-nav {
-  text-align: center;
-  max-width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-nav a {
-  margin: 0 0.5rem;
-  font-size: clamp(10px, 2.5vw, 16px);
-  transition: color 0.3s, transform 0.3s;
-  white-space: nowrap;
-}
-nav a:hover {
-  color: #FDBB2F; /* Gold Accent */
-  transform: scale(1.15);
-}
-
-#about {
-  position: relative;
-}
-
-/* Social links container */
-.social-links {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  display: flex;
-  gap: 0.5rem;
-}
-
-/* Style each social link as a circle */
-.social-links a {
-  width: clamp(30px, 5vw, 50px);
-  height: clamp(30px, 5vw, 50px);
-  background-color: rgba(0,87,63,0.9); /* Dark green with some opacity */
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   color: #fff;
   text-decoration: none;
-  transition: transform 0.3s, background-color 0.3s;
-  position: relative; /* Needed for absolute positioning of tooltip */
+  font-size: clamp(20px, 4vw, 24px);
 }
 
-/* Hover effect */
-.social-links a:hover {
-  transform: scale(1.1);
-  background-color: rgba(253,187,47,0.9); /* Gold accent on hover */
-}
-
-/* Icon styling */
-.social-links i {
-  font-size: clamp(16px, 3vw, 24px);
-}
-
-/* Tooltip styling */
-.social-links a::after {
-  content: attr(aria-label);
-  position: absolute;
-  bottom: -2.5rem; /* Adjust as needed for vertical placement */
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.75);
-  color: #fff;
-  padding: 0.3rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease-in-out;
-}
-
-.social-links a:hover::after {
-  opacity: 1;
-}
-
-/* Main Container & Section Styles */
-.container {
-  flex: 1;
-  max-width: 1300px;
-  width: 100%;
-  margin: 5rem auto 0;
-}
+/* ==========================================================================
+   4. Unified Section Styles
+   ========================================================================== */
 
 section {
   opacity: 0;
@@ -294,12 +186,16 @@ section {
   border-left: 5px solid #FDBB2F; /* Gold accent border */
   scroll-margin-top: 80px;
 }
+
 section.active {
   opacity: 1;
   transform: translateX(0);
 }
 
-/* Projects Grid Layout */
+/* ==========================================================================
+   5. Projects Grid & Project Items
+   ========================================================================== */
+
 .projects-grid {
   display: flex;
   flex-wrap: wrap;
@@ -333,23 +229,26 @@ section.active {
   aspect-ratio: 16 / 9;
   object-fit: cover;
   border-radius: 5px;
-  border: 4px solid #00573F; /* Dark green border */
+  border: 4px solid #00573F;
   transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
   cursor: pointer;
 }
 
 .project-item img:hover {
   transform: translateY(-5px);
-  border-color: #FDBB2F; /* Gold border on hover */
-  box-shadow: 0 0 10px #FDBB2F; /* Glowing effect */
+  border-color: #FDBB2F;
+  box-shadow: 0 0 10px #FDBB2F;
 }
 
-/* Project Title Styling */
 .project-item h3 {
   margin-top: 0.5rem;
   font-size: clamp(16px, 2vw, 20px);
 }
-/* Footer */
+
+/* ==========================================================================
+   6. Footer
+   ========================================================================== */
+
 footer {
   width: 100%;
   background-color: #00573F;
@@ -360,11 +259,14 @@ footer {
   align-items: center;
   justify-content: center;
 }
-/* Image Styling (.profile-pic) */
+
+/* ==========================================================================
+   7. Profile Image Styling
+   ========================================================================== */
+
 .profile-pic {
   display: block;
-  margin: 0 auto;
-  margin-bottom: 2rem;
+  margin: 0 auto 2rem auto;
   width: clamp(150px, 15vw, 250px);
   height: clamp(150px, 15vw, 250px);
   object-fit: cover;
@@ -377,7 +279,11 @@ footer {
   border-color: #FDBB2F;
   box-shadow: 0 0 10px #FDBB2F;
 }
-/* Modal */
+
+/* ==========================================================================
+   8. Modal Window
+   ========================================================================== */
+
 .modal {
   display: none;
   position: fixed;
@@ -401,7 +307,6 @@ footer {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* Close Button */
 .modal-content .close {
   color: #aaa;
   float: right;
@@ -415,86 +320,19 @@ footer {
   color: black;
 }
 
-/* Media Queries */
-@media (max-width: 600px) {
-  header {
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding: 0.5rem 1rem;
-  }
- .left-side {
-    flex: 1;
-    gap: 0.5rem;
-  }
-  .right-side {
-    flex-shrink: 0; /* Prevent the sidebar container from shrinking too much */
-  }
-  header .logo {
-    position: static;
-    margin-right: 1rem;
-  }
-  #menuToggle {
-    font-size: clamp(16px, 4vw, 20px);
-  }
-  nav {
-    display: flex;
-    flex-direction: row;
-    gap: 0.5rem;
-  }
+/* ==========================================================================
+   9. Sidebar & Related Components
+   ========================================================================== */
 
-  nav a {
-    margin: 0;
-    padding: 0.5rem;
-    font-size: clamp(8px, 3vw, 14px);
-  }
-
-  .main-nav {
-    justify-content: center;
-  }
-
-  .main-nav a {
-    padding: 0.5rem;
-    font-size: clamp(14px, 3vw, 18px);
-  }
- .left-side, .main-nav {
-    gap: 0.5rem;
-  }
-  .projects-grid {
-    flex-direction: column;
-  }
-
-  .project-item {
-    flex: 1 1 100%;
-    max-width: 100%;
-  }
-
-  section {
-    margin-bottom: 4rem;
-  }
-  
-  project-section {
-    margin-bottom: 4rem;
-  }
-
-  .container {
-    margin-top: 4rem;
-    padding: 0.5rem;
-  }
-  .project-container {
-    margin-top: 4rem;
-    padding: 0.5rem;
-  }
-}
 /* Sidebar Container */
 .sidebar {
   position: fixed;
   top: 0;
-  right: -100%; /* Initially hidden */
+  right: -100%;
   width: 80%;
   max-width: 400px;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.95); /* Slightly transparent white */
+  background-color: rgba(255, 255, 255, 0.95);
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
   transition: right 0.4s ease;
   z-index: 1001;
@@ -502,39 +340,36 @@ footer {
   flex-direction: column;
 }
 
-/* When sidebar is active, move it into view */
 .sidebar.active {
   right: 0;
 }
 
-/* Sidebar Header */
+/* Sidebar Header & Content */
 .sidebar-header {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
-  background-color: #00573F; /* Dark green */
+  background-color: #00573F;
   color: #fff;
 }
 
-/* Sidebar Content */
 .sidebar-content {
   padding: 1rem;
   overflow-y: auto;
 }
 
-/* Section Titles */
+/* Sidebar Section Titles & List */
 .sidebar-section-title {
   font-size: clamp(16px, 2.5vw, 20px);
   margin-top: 1rem;
   margin-bottom: 0.5rem;
-  color: #00573F; /* Or another color that matches your theme */
-  border-bottom: 1px solid #ddd; /* Optional, for visual separation */
+  color: #00573F;
+  border-bottom: 1px solid #ddd;
   padding-bottom: 0.25rem;
 }
 
-/* Sidebar List (common for both Featured and Other) */
 .sidebar-list {
   list-style: none;
   margin: 0;
@@ -555,10 +390,9 @@ footer {
 }
 
 .sidebar-list li a:hover {
-  background-color: rgba(253,187,47,0.2); /* Light gold hover */
+  background-color: rgba(253,187,47,0.2);
 }
 
-/* Thumbnail styling */
 .sidebar-list li a img {
   width: clamp(40px, 5vw, 60px);
   height: clamp(40px, 5vw, 60px);
@@ -567,39 +401,22 @@ footer {
   margin-right: 1rem;
 }
 
-/* Project title styling within sidebar */
 .sidebar-list li a span {
   font-size: clamp(14px, 2vw, 18px);
 }
 
-header nav {
-  display: flex;
-  align-items: center;
-}
-header nav button#menuToggle {
-  margin-left: auto;
-}
-/* Menu Toggle Button in Header */
-#menuToggle {
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: clamp(20px, 4vw, 24px);
-  cursor: pointer;
+/* ==========================================================================
+   10. Project Navigation (Additional, if Needed)
+   ========================================================================== */
+
+.project-nav {
+  /* Retain or add any project-specific navigation styles here */
 }
 
-/* Close Sidebar Button */
-#closeSidebar {
-  position: absolute;
-  top: 1.5rem;
-  right: 1rem;
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: clamp(20px, 4vw, 24px);
-  cursor: pointer;
-}
-/* Filter Toolbar in Sidebar */
+/* ==========================================================================
+   11. Sidebar Filter Toolbar
+   ========================================================================== */
+
 .sidebar-filter {
   display: flex;
   justify-content: center;
@@ -613,7 +430,7 @@ header nav button#menuToggle {
   color: #fff;
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 0px;
+  border-radius: 0;
   font-size: clamp(14px, 2vw, 16px);
   cursor: pointer;
   transition: background-color 0.3s;
@@ -623,79 +440,67 @@ header nav button#menuToggle {
 .filter-btn.active {
   background-color: #FDBB2F;
 }
-/* Combined Project Header */
-.project-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.5rem 1rem;
-  background-color: #00573F;
-  color: #fff;
-}
 
-/* Container for the logo and back button */
-.project-header .left-side {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
+/* ==========================================================================
+   12. Media Queries (Smaller Displays)
+   ========================================================================== */
 
-/* Logo styling (refresh button) */
-.project-header .logo {
-  position: static;
-  font-size: clamp(20px, 4vw, 24px);
-  font-weight: bold;
-  color: #fff;
-  border: 2px solid #fff;
-  width: clamp(40px, 6vw, 50px);  /* Responsive size */
-  height: clamp(40px, 6vw, 50px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  cursor: pointer;
-}
-.project-container {
-  flex: 1;
-  max-width: 1300px;
-  width: 100%;
-  margin: 5rem auto 0;
-}
-project-section {
-  opacity: 0;
-  transform: translateX(-100px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-  display: flow-root;
-  background-color: rgba(255, 255, 255, 0.65);
-  margin-bottom: 6rem;
-  padding: 4rem;
-  border-radius: 5px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border-left: 5px solid #FDBB2F; /* Gold accent border */
-  scroll-margin-top: 80px;
-}
-/* Back button styling */
-.project-header a.back {
-  display: flex;
-  align-items: center;
-  color: #fff;
-  text-decoration: none;
-  font-size: clamp(20px, 4vw, 24px); /* Responsive size for icon */
-}
-.main-nav {
-  display: flex;
-  gap: 1rem;
-  justify-content: center; /* Center the nav links within this container */
-  flex: 1;
-}
-
-.main-nav a {
-  color: #fff;
-  text-decoration: none;
-  font-size: clamp(16px, 2.5vw, 20px);
-  font-weight: bold;
-}
-/* Project Navigation in header (if needed) */
-.project-nav {
-  /* Your existing styles for nav can remain here */
+@media (max-width: 600px) {
+  header.common-header {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem 1rem;
+  }
+  
+  .header-left {
+    gap: 0.5rem;
+  }
+  
+  header.common-header .logo {
+    margin-right: 1rem;
+  }
+  
+  #menuToggle {
+    font-size: clamp(16px, 4vw, 20px);
+  }
+  
+  nav {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+  
+  nav a {
+    margin: 0;
+    padding: 0.5rem;
+    font-size: clamp(8px, 3vw, 14px);
+  }
+  
+  .main-nav {
+    justify-content: center;
+  }
+  
+  .main-nav a {
+    padding: 0.5rem;
+    font-size: clamp(14px, 3vw, 18px);
+  }
+  
+  .projects-grid {
+    flex-direction: column;
+  }
+  
+  .project-item {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+  
+  section {
+    margin-bottom: 4rem;
+  }
+  
+  .container, .project-container {
+    margin-top: 4rem;
+    padding: 0.5rem;
+  }
 }
