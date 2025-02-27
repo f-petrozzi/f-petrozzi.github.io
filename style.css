@@ -131,7 +131,7 @@ header.common-header .logo {
 /* Navigation (Index Header Specific) */
 .header-center nav {
   text-align: center;
-  overflow: hidden;
+  overflow: visible;
   white-space: nowrap;
 }
 
