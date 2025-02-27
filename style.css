@@ -385,13 +385,13 @@ footer {
     padding: 0.5rem;
   }
 }
-/* --- Sidebar Container --- */
+/* Sidebar Container */
 .sidebar {
   position: fixed;
   top: 0;
   right: -100%; /* Initially hidden */
-  width: 80%;       /* Adjust width as needed */
-  max-width: 400px; /* Maximum width for larger screens */
+  width: 80%;
+  max-width: 400px;
   height: 100%;
   background-color: rgba(255, 255, 255, 0.95); /* Slightly transparent white */
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
@@ -416,12 +416,27 @@ footer {
   color: #fff;
 }
 
-/* Sidebar List */
+/* Sidebar Content */
+.sidebar-content {
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+/* Section Titles */
+.sidebar-section-title {
+  font-size: clamp(16px, 2.5vw, 20px);
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: #00573F; /* Or another color that matches your theme */
+  border-bottom: 1px solid #ddd; /* Optional, for visual separation */
+  padding-bottom: 0.25rem;
+}
+
+/* Sidebar List (common for both Featured and Other) */
 .sidebar-list {
   list-style: none;
   margin: 0;
   padding: 0;
-  overflow-y: auto;
 }
 
 .sidebar-list li {
@@ -433,7 +448,7 @@ footer {
   align-items: center;
   text-decoration: none;
   color: #333;
-  padding: 1rem;
+  padding: 1rem 0;
   transition: background-color 0.3s;
 }
 
@@ -450,7 +465,7 @@ footer {
   margin-right: 1rem;
 }
 
-/* Project title styling */
+/* Project title styling within sidebar */
 .sidebar-list li a span {
   font-size: clamp(14px, 2vw, 18px);
 }
