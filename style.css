@@ -471,6 +471,10 @@ footer {
   font-size: clamp(14px, 2vw, 18px);
 }
 
+header nav {
+  display: flex;
+  align-items: center;
+}
 /* Menu Toggle Button in Header */
 #menuToggle {
   background: none;
@@ -478,7 +482,7 @@ footer {
   color: #fff;
   font-size: clamp(20px, 4vw, 24px);
   cursor: pointer;
-  margin-left: 1rem;
+  margin-left: auto;
 }
 
 /* Close Sidebar Button */
