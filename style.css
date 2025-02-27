@@ -107,7 +107,10 @@ header.common-header {
 }
 
 .header-right {
-  flex: 0 0 auto;
+  position: absolute;
+  right: 1rem;
+  top: 55%; /* Adjust this percentage as needed */
+  transform: translateY(-50%);
 }
 
 /* Logo (Used in Both Headers) */
@@ -552,6 +555,11 @@ footer {
     display: flex;
     flex-direction: row;
     gap: 0.5rem;
+    margin-right: 60px; /* Reserve space for the sidebar button */
+    flex-shrink: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   
   nav a {
