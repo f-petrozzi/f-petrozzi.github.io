@@ -94,13 +94,50 @@
     </a>
     <!-- Simple Project Navigation (Placeholder) -->
     <nav class="project-nav">
-      <a href="project1.html">Project 1</a>
-      <a href="project2.html">Project 2</a>
-      <a href="project3.html">Project 3</a>
+      <button id="menuToggle" aria-label="Project Menu">
+      <i class="bx bx-menu"></i>
+      </button>
       <!-- Add more links here -->
     </nav>
   </header>
 
+  <!-- Sliding Sidebar for Project Navigation -->
+<div id="projectSidebar" class="sidebar">
+  <div class="sidebar-header">
+    <h2>Projects</h2>
+    <button id="closeSidebar" aria-label="Close Menu">
+      <i class="bx bx-x"></i>
+    </button>
+  </div>
+  <ul class="sidebar-list">
+    <li>
+      <a href="project1.html">
+        <img src="images/project1-thumb.jpg" alt="Project 1 Thumbnail">
+        <span>Amazon Redshift Data Analysis</span>
+      </a>
+    </li>
+    <li>
+      <a href="project2.html">
+        <img src="images/project2-thumb.jpg" alt="Project 2 Thumbnail">
+        <span>MongoDB Business Use Case</span>
+      </a>
+    </li>
+    <li>
+      <a href="project3.html">
+        <img src="images/project3-thumb.jpg" alt="Project 3 Thumbnail">
+        <span>Titanic Survival Prediction</span>
+      </a>
+    </li>
+    <li>
+      <a href="project4.html">
+        <img src="images/project4-thumb.jpg" alt="Project 4 Thumbnail">
+        <span>Multiple Regression Analysis</span>
+      </a>
+    </li>
+    <!-- More projects here -->
+  </ul>
+</div>
+  
   <!-- Main Project Content -->
   <div class="project-container">
     <!-- Project Title & Overview -->
@@ -134,7 +171,7 @@
 
   <!-- Minimal Footer (optional) -->
   <footer class="project-footer" style="text-align: center; padding: 1rem; background-color: #00573F; color: #fff;">
-    <p>&copy; <span id="year"></span> Fabrizio Petrozzi</p>
+    <p>&copy; <span id="year"></span> Fabrizio Petrozzi. All rights reserved.</p>
   </footer>
 
   <!-- JavaScript for Section Animation -->
@@ -158,5 +195,29 @@
       document.getElementById("year").textContent = new Date().getFullYear();
     });
   </script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.getElementById('menuToggle');
+    const closeSidebar = document.getElementById('closeSidebar');
+    const projectSidebar = document.getElementById('projectSidebar');
+
+    // When clicking the menu toggle, add the active class
+    menuToggle.addEventListener('click', function() {
+      projectSidebar.classList.add('active');
+    });
+
+    // When clicking the close button, remove the active class
+    closeSidebar.addEventListener('click', function() {
+      projectSidebar.classList.remove('active');
+    });
+
+    // Optionally, close the sidebar if the user clicks outside of it:
+    document.addEventListener('click', function(e) {
+      if (!projectSidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+        projectSidebar.classList.remove('active');
+      }
+    });
+  });
+</script>
 </body>
 </html>
