@@ -251,5 +251,24 @@
     document.querySelector('.filter-btn[data-filter="all"]').click();
   });
 </script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const sections = document.querySelectorAll('.project-section');
+    const sectionObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: "0px 0px -20% 0px"
+    });
+    sections.forEach(section => {
+      sectionObserver.observe(section);
+    });
+  });
+</script>
 </body>
 </html>
