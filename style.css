@@ -484,7 +484,7 @@ footer {
 /* Close Sidebar Button */
 #closeSidebar {
   position: absolute;
-  top: 2rem;
+  top: 1.5rem;
   right: 1rem;
   background: none;
   border: none;
