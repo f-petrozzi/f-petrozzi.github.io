@@ -521,7 +521,7 @@ footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem;
+  padding: 0.5rem 1rem;
   background-color: #00573F;
   color: #fff;
 }
@@ -530,6 +530,7 @@ footer {
 .project-header .left-side {
   display: flex;
   align-items: center;
+  gap: 1rem;
 }
 
 /* Logo styling (refresh button) */
@@ -537,16 +538,14 @@ footer {
   font-size: clamp(20px, 4vw, 24px);
   font-weight: bold;
   color: #fff;
-  border: 2px solid #fff;  /* White border */
-  width: 50px;
-  height: 50px;
+  border: 2px solid #fff;
+  width: clamp(40px, 6vw, 50px);  /* Responsive size */
+  height: clamp(40px, 6vw, 50px);
   display: flex;
   align-items: center;
   justify-content: center;
   background: none;
   cursor: pointer;
-  padding: 0;
-  margin-left: clamp(0.5rem, 2vw, 1rem); /* Space between logo and back button */
 }
 
 /* Back button styling */
@@ -555,13 +554,7 @@ footer {
   align-items: center;
   color: #fff;
   text-decoration: none;
-  font-size: clamp(16px, 2.5vw, 20px);
-  margin-right: clamp(1rem, 2vw, 2rem);
-}
-
-/* Back button icon styling */
-.project-header a.back i {
-  font-size: clamp(20px, 4vw, 24px);
+  font-size: clamp(20px, 4vw, 24px); /* Responsive size for icon */
 }
 
 /* Project Navigation in header (if needed) */
