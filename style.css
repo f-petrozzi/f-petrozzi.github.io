@@ -567,9 +567,15 @@ footer {
     padding: 0.5rem;
     font-size: clamp(8px, 3vw, 14px);
   }
-  
   .main-nav {
-    justify-content: center;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    margin-right: 60px; /* Reserve space for the sidebar button */
+    flex-shrink: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   
   .main-nav a {
