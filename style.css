@@ -96,7 +96,15 @@ header {
   overflow: hidden;
   text-align: center;
 }
-
+.left-side {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1; /* This container takes up all available space */
+}
+.right-side {
+  /* This container will naturally sit at the far right */
+}
 header .logo {
   position: static;
   font-size: clamp(20px, 4vw, 24px);
@@ -365,10 +373,12 @@ footer {
   }
 
   .main-nav a {
-    flex: 1; /* Allow nav links to adjust their width */
-    text-align: center; /* Center-align the text within the links */
+    padding: 0.5rem;
+    font-size: clamp(14px, 3vw, 18px);
   }
-
+.left-side, .main-nav {
+    gap: 0.5rem;
+  }
   .projects-grid {
     flex-direction: column;
   }
@@ -592,10 +602,10 @@ project-section {
   font-size: clamp(20px, 4vw, 24px); /* Responsive size for icon */
 }
 .main-nav {
-  flex: 1;
   display: flex;
   gap: 1rem;
-  justify-content: center;
+  justify-content: center; /* Center the nav links within this container */
+  flex: 1;
 }
 
 .main-nav a {
