@@ -20,16 +20,10 @@ body {
   font-family: 'Open Sans', Arial, sans-serif;
   line-height: 1.6;
   color: #333;
- 
   font-size: clamp(14px, 1.5vw, 18px);
   display: flex;
   flex-direction: column;
-
-  background: linear-gradient(270deg, 
-  rgba(0,87,63,0.2),   
-  rgba(253,187,47,0.15), 
-  rgba(25,42,86,0.25)    
-);
+  background: linear-gradient(270deg, rgba(0,87,63,0.2), rgba(253,187,47,0.15), rgba(25,42,86,0.25));
   background-size: 600% 600%;
   animation: gradientShift 45s ease infinite;
 }
@@ -91,7 +85,7 @@ header {
   left: 0;
   width: 100%;
   z-index: 999;
-  background-color: #00573F; 
+  background-color: #00573F;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   padding: 1rem;
   display: flex;
@@ -106,17 +100,17 @@ header .logo {
   font-size: clamp(20px, 4vw, 24px);
   font-weight: bold;
   color: #fff;
-  border: 2px solid #fff; 
+  border: 2px solid #fff;
   width: clamp(40px, 6vw, 50px);
   height: clamp(40px, 6vw, 50px);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 1rem;
-  background: none;        
-  cursor: pointer;         
-  padding: 0;              
-  outline: none;           
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
 }
 
 /* Navigation is centered in the header */
@@ -134,7 +128,7 @@ nav a {
 
 nav a:hover {
   color: #FDBB2F; /* Gold Accent */
-  transform: scale(1.15); 
+  transform: scale(1.15);
 }
 
 #about {
@@ -200,17 +194,16 @@ nav a:hover {
 
 /* Main Container & Section Styles */
 .container {
-  flex: 1;  
+  flex: 1;
   max-width: 1300px;
   width: 100%;
-  margin: 5rem auto 0; 
+  margin: 5rem auto 0;
 }
 
 section {
   opacity: 0;
   transform: translateX(-100px);
   transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-  
   display: flow-root;
   background-color: rgba(255, 255, 255, 0.65);
   margin-bottom: 6rem;
@@ -289,7 +282,7 @@ footer {
 /* Image Styling (.profile-pic) */
 .profile-pic {
   display: block;
-  margin: 0 auto; 
+  margin: 0 auto;
   margin-bottom: 2rem;
   width: clamp(150px, 15vw, 250px);
   height: clamp(150px, 15vw, 250px);
@@ -318,9 +311,9 @@ footer {
 
 .modal-content {
   background-color: #fff;
-  margin: 10% auto; 
+  margin: 10% auto;
   padding: 1.5rem;
-  border-left: 5px solid #FDBB2F; 
+  border-left: 5px solid #FDBB2F;
   width: 80%;
   max-width: 500px;
   border-radius: 5px;
@@ -349,39 +342,39 @@ footer {
     align-items: center;
     padding: 0.5rem;
   }
-  
+
   header .logo {
-    position: static; 
+    position: static;
     margin-right: 1rem;
   }
-  
+
   nav {
     display: flex;
-    flex-direction: row; 
-    gap: 0.5rem; 
+    flex-direction: row;
+    gap: 0.5rem;
   }
-  
+
   nav a {
     margin: 0;
-    padding: 0.5rem; 
-    font-size: clamp(14px, 3vw, 18px); 
+    padding: 0.5rem;
+    font-size: clamp(14px, 3vw, 18px);
   }
-  
+
   .projects-grid {
     flex-direction: column;
   }
-  
+
   .project-item {
     flex: 1 1 100%;
     max-width: 100%;
   }
-  
+
   section {
     margin-bottom: 4rem;
   }
-  
+
   .container {
-    margin-top: 4rem; 
+    margin-top: 4rem;
     padding: 0.5rem;
   }
 }
@@ -582,4 +575,3 @@ header nav button#menuToggle {
 .project-nav {
   /* Your existing styles for nav can remain here */
 }
-
