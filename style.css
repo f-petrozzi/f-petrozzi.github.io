@@ -335,23 +335,38 @@ footer {
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem;
+    width: 100%; /* Ensure the header takes full width */
   }
 
   header .logo {
     position: static;
     margin-right: 1rem;
+    flex: 0 0 auto; /* Prevent the logo from shrinking */
   }
 
   nav {
     display: flex;
     flex-direction: row;
     gap: 0.5rem;
+    flex: 1; /* Allow nav to take available space */
+    overflow-x: auto; /* Allow horizontal scrolling if necessary */
+    white-space: nowrap; /* Prevent wrapping of nav items */
   }
 
   nav a {
     margin: 0;
     padding: 0.5rem;
     font-size: clamp(14px, 3vw, 18px);
+    flex: 0 0 auto; /* Prevent nav links from shrinking */
+  }
+
+  .main-nav {
+    justify-content: space-between;
+  }
+
+  .main-nav a {
+    flex: 1; /* Allow nav links to adjust their width */
+    text-align: center; /* Center-align the text within the links */
   }
 
   .projects-grid {
