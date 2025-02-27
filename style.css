@@ -463,7 +463,17 @@ footer {
 .sidebar-list li a span {
   font-size: clamp(14px, 2vw, 18px);
 }
-
+/* Close Sidebar Button */
+#closeSidebar {
+  position: absolute;
+  top: 1.5rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: clamp(20px, 4vw, 24px);
+  cursor: pointer;
+}
 /* ==========================================================================
    10. Project Navigation (Additional, if Needed)
    ========================================================================== */
