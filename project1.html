@@ -109,33 +109,42 @@
       <i class="bx bx-x"></i>
     </button>
   </div>
-  <ul class="sidebar-list">
-    <li>
-      <a href="project1.html">
-        <img src="images/project1-thumb.jpg" alt="Project 1 Thumbnail">
-        <span>Amazon Redshift Data Analysis</span>
-      </a>
-    </li>
-    <li>
-      <a href="project2.html">
-        <img src="images/project2-thumb.jpg" alt="Project 2 Thumbnail">
-        <span>MongoDB Business Use Case</span>
-      </a>
-    </li>
-    <li>
-      <a href="project3.html">
-        <img src="images/project3-thumb.jpg" alt="Project 3 Thumbnail">
-        <span>Titanic Survival Prediction</span>
-      </a>
-    </li>
-    <li>
-      <a href="project4.html">
-        <img src="images/project4-thumb.jpg" alt="Project 4 Thumbnail">
-        <span>Multiple Regression Analysis</span>
-      </a>
-    </li>
-    <!-- More projects here -->
-  </ul>
+  <div class="sidebar-content">
+    <!-- Featured Projects Section -->
+    <h3 class="sidebar-section-title">Featured</h3>
+    <ul class="sidebar-list featured-list">
+      <li>
+        <a href="project1.html">
+          <img src="images/project1-thumb.jpg" alt="Project 1 Thumbnail">
+          <span>Amazon Redshift Data Analysis</span>
+        </a>
+      </li>
+      <li>
+        <a href="project2.html">
+          <img src="images/project2-thumb.jpg" alt="Project 2 Thumbnail">
+          <span>MongoDB Business Use Case</span>
+        </a>
+      </li>
+      <li>
+        <a href="project3.html">
+          <img src="images/project3-thumb.jpg" alt="Project 3 Thumbnail">
+          <span>Titanic Survival Prediction</span>
+        </a>
+      </li>
+      <!-- Add more featured projects as needed -->
+    </ul>
+    <!-- Other Projects Section -->
+    <h3 class="sidebar-section-title">Other Projects</h3>
+    <ul class="sidebar-list other-list">
+      <li>
+        <a href="project4.html">
+          <img src="images/project4-thumb.jpg" alt="Project 4 Thumbnail">
+          <span>Multiple Regression Analysis</span>
+        </a>
+      </li>
+      <!-- Add additional other projects as needed -->
+    </ul>
+  </div>
 </div>
   
   <!-- Main Project Content -->
@@ -173,40 +182,19 @@
   <footer class="project-footer" style="text-align: center; padding: 1rem; background-color: #00573F; color: #fff;">
     <p>&copy; <span id="year"></span> Fabrizio Petrozzi. All rights reserved.</p>
   </footer>
-
-  <!-- JavaScript for Section Animation -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const sections = document.querySelectorAll('.project-section');
-      const sectionObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-          if(entry.isIntersecting) {
-            entry.target.classList.add('active');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, {
-        threshold: 0.1,
-        rootMargin: "0px 0px -20% 0px"
-      });
-      sections.forEach(section => {
-        sectionObserver.observe(section);
-      });
-      document.getElementById("year").textContent = new Date().getFullYear();
-    });
-  </script>
-<script>
+ <!-- Section Animation Script -->
+ <script>
   document.addEventListener('DOMContentLoaded', function() {
     const menuToggle = document.getElementById('menuToggle');
     const closeSidebar = document.getElementById('closeSidebar');
     const projectSidebar = document.getElementById('projectSidebar');
 
-    // When clicking the menu toggle, add the active class
+    // Toggle the sidebar when the menu icon is clicked
     menuToggle.addEventListener('click', function() {
       projectSidebar.classList.add('active');
     });
 
-    // When clicking the close button, remove the active class
+    // Close the sidebar when the close button is clicked
     closeSidebar.addEventListener('click', function() {
       projectSidebar.classList.remove('active');
     });
