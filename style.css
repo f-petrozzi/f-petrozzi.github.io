@@ -533,7 +533,7 @@ footer {
     align-items: center;
     padding: 0.5rem 1rem;
     /* Reserve space on the right so content doesn't slide underneath the sidebar button */
-    padding-right: 70px;
+    padding-right: 90px;
   }
   
   .header-right {
@@ -564,7 +564,7 @@ footer {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    margin-right: 70px; /* Reserve space for the sidebar button */
+    margin-right: 90px; /* Reserve space for the sidebar button */
   }
   
   nav a {
@@ -582,7 +582,7 @@ footer {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    margin-right: 70px; /* Reserve space for the sidebar button */
+    margin-right: 90px; /* Reserve space for the sidebar button */
   }
   
   .main-nav a {
@@ -605,7 +605,7 @@ footer {
   
   .container,
   .project-container {
-    margin-top: 4rem;
+    margin-top: 2rem;
     padding: 0.5rem;
   }
 }
