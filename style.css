@@ -97,15 +97,14 @@ header {
   text-align: center;
 }
 
-header .logo {
+.header .logo {
   position: static;
-  left: 1rem;
-  font-size: clamp(16px, 3vw, 24px);
+  font-size: clamp(20px, 4vw, 24px);
   font-weight: bold;
   color: #fff;
   border: 2px solid #fff;
-  width: clamp(30px, 5vw, 50px);
-  height: clamp(30px, 5vw, 50px);
+  width: clamp(40px, 6vw, 50px);  /* Responsive size */
+  height: clamp(40px, 6vw, 50px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -358,11 +357,11 @@ footer {
   nav a {
     margin: 0;
     padding: 0.5rem;
-    font-size: clamp(6px, 3vw, 14px);
+    font-size: clamp(8px, 3vw, 14px);
   }
 
   .main-nav {
-    justify-content: space-between;
+    justify-content: center;
   }
 
   .main-nav a {
