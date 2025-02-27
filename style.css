@@ -269,11 +269,12 @@ section.active {
 
 /* Dark Mode Toggle Base Styles */
 .dark-mode-toggle-label {
+  --slider-width: clamp(16px, 3vw, 22px);
   display: inline-block;
-  width: clamp(50px, 8vw, 60px);
-  height: clamp(25px, 4vw, 30px);
-  border-radius: calc(clamp(25px, 4vw, 30px) / 2);
-  background: linear-gradient(to right, #f1c40f, #87cefa); /* Light mode gradient: yellow to light blue */
+  width: clamp(40px, 7vw, 52px);
+  height: clamp(20px, 3.5vw, 26px);
+  border-radius: calc(clamp(20px, 3.5vw, 26px) / 2);
+  background: linear-gradient(to right, #f1c40f, #87cefa);
   position: relative;
   cursor: pointer;
   transition: background 0.3s ease;
@@ -284,10 +285,10 @@ section.active {
   position: absolute;
   top: 2px;
   left: 2px;
-  width: clamp(20px, 4vw, 26px);
-  height: clamp(20px, 4vw, 26px);
+  width: var(--slider-width);
+  height: var(--slider-width);
   border-radius: 50%;
-  background-color: #f1c40f; /* Matches the left gradient color in light mode */
+  background-color: #f1c40f;
   transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
@@ -297,7 +298,7 @@ section.active {
 }
 
 .dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider {
-  transform: translateX(calc(100% - clamp(20px, 4vw, 26px)));
+  transform: translateX(calc(100% - var(--slider-width) - 4px));
   background-color: #d35400;
 }
 
