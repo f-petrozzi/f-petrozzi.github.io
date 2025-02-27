@@ -408,6 +408,7 @@ footer {
 
 /* Sidebar Header */
 .sidebar-header {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -482,6 +483,9 @@ footer {
 
 /* Close Sidebar Button */
 #closeSidebar {
+  position: absolute;
+  top: 0.2rem;
+  right: 0.2rem;
   background: none;
   border: none;
   color: #fff;
