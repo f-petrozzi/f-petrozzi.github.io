@@ -85,7 +85,7 @@ header.common-header {
   z-index: 999;
   background-color: #00573F;
   color: #fff;
-  padding: 1rem;
+  padding: 0.7rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -527,7 +527,7 @@ footer {
 
 @media (max-width: 600px) {
   header.common-header {
-    position:relative;
+    position: relative;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
@@ -555,7 +555,6 @@ footer {
     display: flex;
     flex-direction: row;
     gap: 0.5rem;
-    margin-right: 60px; /* Reserve space for the sidebar button */
     flex-shrink: 1;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -571,7 +570,6 @@ footer {
     display: flex;
     flex-direction: row;
     gap: 0.5rem;
-    margin-right: 60px; /* Reserve space for the sidebar button */
     flex-shrink: 1;
     overflow: hidden;
     text-overflow: ellipsis;
