@@ -485,7 +485,7 @@ header nav button#menuToggle {
   color: #fff;
   font-size: clamp(20px, 4vw, 24px);
   cursor: pointer;
-  margin-left: auto;
+  margin-left: 1;
 }
 
 /* Close Sidebar Button */
