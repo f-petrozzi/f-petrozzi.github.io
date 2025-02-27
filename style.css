@@ -26,12 +26,12 @@ body {
   flex-direction: column;
 
   background: linear-gradient(270deg, 
-  rgba(0,87,63,0.25),   
-  rgba(253,187,47,0.25), 
-  rgba(25,42,86,0.25)    
+  rgba(0,87,63,0.2),   
+  rgba(253,187,47,0.2), 
+  rgba(25,42,86,0.2)    
 );
   background-size: 600% 600%;
-  animation: gradientShift 30s ease infinite;
+  animation: gradientShift 35s ease infinite;
 }
 
 @keyframes gradientShift {
