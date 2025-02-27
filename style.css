@@ -107,8 +107,8 @@ header .logo {
   font-weight: bold;
   color: #fff;
   border: 2px solid #fff; 
-  width: 50px;
-  height: 50px;
+  width: clamp(40px, 6vw, 50px);
+  height: clamp(40px, 6vw, 50px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -485,7 +485,6 @@ header nav button#menuToggle {
   color: #fff;
   font-size: clamp(20px, 4vw, 24px);
   cursor: pointer;
-  margin-left: 1;
 }
 
 /* Close Sidebar Button */
@@ -564,7 +563,22 @@ header nav button#menuToggle {
   text-decoration: none;
   font-size: clamp(20px, 4vw, 24px); /* Responsive size for icon */
 }
+.main-nav {
+  display: flex;
+  gap: 1rem;
+  /* Optional: add some left margin if needed */
+  margin-left: 2rem;
+}
 
+.main-nav a {
+  color: #fff;
+  text-decoration: none;
+  font-size: clamp(16px, 2.5vw, 20px);
+  font-weight: bold;
+}
+.menu-container {
+  margin-left: auto; /* This pushes the menu container to the far right */
+}
 /* Project Navigation in header (if needed) */
 .project-nav {
   /* Your existing styles for nav can remain here */
