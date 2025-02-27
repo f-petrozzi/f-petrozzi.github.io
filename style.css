@@ -475,6 +475,9 @@ header nav {
   display: flex;
   align-items: center;
 }
+header nav button#menuToggle {
+  margin-left: auto;
+}
 /* Menu Toggle Button in Header */
 #menuToggle {
   background: none;
