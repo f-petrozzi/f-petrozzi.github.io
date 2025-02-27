@@ -291,7 +291,7 @@ section.active {
   height: var(--slider-width);
   border-radius: 50%;
   background-color: #f1c40f; /* Matches the left gradient color in light mode */
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  transition: left 0.3s ease, background-color 0.3s ease;
 }
 
 /* Gradient Update */
@@ -301,7 +301,7 @@ section.active {
 
 /* Slider Move */
 .dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider {
-  transform: translateX(calc(100% - var(--slider-width) - 2px));
+  left: calc(100% - var(--slider-width) - 2px);
   background-color: #FF7F50;
 }
 
@@ -309,7 +309,6 @@ section.active {
 .dark-mode-toggle {
   margin: -3.5rem 0 0 -3.7rem; /* Adjust these values as needed */
 }
-
 /* ==========================================================================
    5. Projects Grid & Project Items
    ========================================================================== */
