@@ -267,20 +267,23 @@ section.active {
   display: none;
 }
 
-/* Dark Mode Toggle Base Styles */
+/* Base */
 .dark-mode-toggle-label {
+  /* Define responsive variables */
   --slider-width: clamp(16px, 3vw, 22px);
+  --toggle-offset: clamp(16px, 4vw, 22px); /* Offset used for the sliding calculation */
+  
   display: inline-block;
   width: clamp(40px, 7vw, 52px);
   height: clamp(20px, 3.5vw, 26px);
   border-radius: calc(clamp(20px, 3.5vw, 26px) / 2);
-  background: linear-gradient(to right, #f1c40f, #87cefa);
+  background: linear-gradient(to right, #f1c40f, #87cefa); /* Light mode gradient: yellow to light blue */
   position: relative;
   cursor: pointer;
   transition: background 0.3s ease;
 }
 
-/* The sliding circle inside the toggle */
+/* Toggle Handle */
 .dark-mode-toggle-label .toggle-slider {
   position: absolute;
   top: 2px;
@@ -288,21 +291,22 @@ section.active {
   width: var(--slider-width);
   height: var(--slider-width);
   border-radius: 50%;
-  background-color: #f1c40f;
+  background-color: #f1c40f; /* Matches the left gradient color in light mode */
   transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
-/* Dark Mode Active: Change gradient */
+/* Gradient Update */
 .dark-mode-toggle-input:checked + .dark-mode-toggle-label {
-  background: linear-gradient(to right, #0d1b2a, #d35400); /* Dark mode gradient: dark blue to orange/reddish */
+  background: linear-gradient(to right, #0d1b2a, #d35400);
 }
 
+/* Slider Move */
 .dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider {
-  transform: translateX(calc(100% + var(--slider-width) - 16px));
-  background-color: #d35400;
+  transform: translateX(calc(100% - var(--toggle-offset)));
+  background-color: #d35400; /* Matches the right gradient color in dark mode */
 }
 
-/* Move the entire toggle container up and to the left */
+/* Position */
 .dark-mode-toggle {
   margin: -3.2rem 0 0 -3.2rem; /* Adjust these values as needed */
 }
