@@ -298,13 +298,13 @@ section.active {
 }
 
 .dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider {
-  transform: translateX(calc(100% - var(--slider-width) - 4px));
+  transform: translateX(calc(100% + var(--slider-width) - 4px));
   background-color: #d35400;
 }
 
 /* Move the entire toggle container up and to the left */
 .dark-mode-toggle {
-  margin: -3.5rem 0 0 -3.5rem; /* Adjust these values as needed */
+  margin: -3.2rem 0 0 -3.2rem; /* Adjust these values as needed */
 }
 
 /* ==========================================================================
