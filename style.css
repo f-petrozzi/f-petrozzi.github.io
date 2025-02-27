@@ -337,7 +337,7 @@ footer {
 @media (max-width: 600px) {
   header {
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding: 0.5rem;
   }
@@ -356,7 +356,7 @@ footer {
   nav a {
     margin: 0;
     padding: 0.5rem;
-    font-size: clamp(10px, 3vw, 14px);
+    font-size: clamp(6px, 3vw, 14px);
   }
 
   .main-nav {
