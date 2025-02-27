@@ -204,7 +204,7 @@ section.active {
   padding: clamp(0.5rem, 5vw, 1rem);  
 }
 /* ==========================================================================
-   4.5. Social Link Buttons
+   4.5. Social Links & Buttons
    ========================================================================== */
 /* Social links container */
 .social-links {
@@ -261,6 +261,40 @@ section.active {
 
 .social-links a:hover::after {
   opacity: 1;
+}
+/* Dark Mode Toggle Base Styles */
+.dark-mode-toggle-label {
+  display: inline-block;
+  width: 60px;               /* Adjust as needed */
+  height: 30px;              /* Adjust as needed */
+  border-radius: 15px;       /* Creates the oval shape */
+  background: linear-gradient(to right, #f1c40f, #87cefa); /* Light mode gradient: yellow to light blue */
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+/* The sliding circle inside the toggle */
+.dark-mode-toggle-label .toggle-slider {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 26px;               /* Slightly less than the height for proper spacing */
+  height: 26px;
+  border-radius: 50%;
+  background-color: #f1c40f; /* Same yellow as the left of the light mode gradient */
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+/* Dark Mode Active: when the checkbox is checked */
+.dark-mode-toggle-input:checked + .dark-mode-toggle-label {
+  background: linear-gradient(to right, #0d1b2a, #d35400); /* Dark mode gradient: dark blue to orange/reddish */
+}
+
+/* Slide the toggle and change its color for dark mode */
+.dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider {
+  transform: translateX(28px); /* Move the slider to the right; adjust based on container width */
+  background-color: #d35400;    /* Matches the right gradient color in dark mode */
 }
 
 /* ==========================================================================
