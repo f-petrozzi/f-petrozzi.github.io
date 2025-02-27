@@ -137,7 +137,7 @@ header.common-header .logo {
 
 .main-nav {
   display: flex;
-  gap: 1rem;
+   gap: clamp(0.8rem, 2vw, 1.5rem);
   align-items: center;
 }
 
