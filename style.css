@@ -298,7 +298,8 @@ section.active {
 
 .dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider {
   transform: translateX(30px); 
-  background-color: #d35400;    
+  background-color: #d35400;
+}
 
 /* Move the entire toggle container up and to the left */
 .dark-mode-toggle {
