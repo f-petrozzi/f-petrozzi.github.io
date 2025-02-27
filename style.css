@@ -303,7 +303,7 @@ section.active {
 
 /* Move the entire toggle container up and to the left */
 .dark-mode-toggle {
-  margin: -4rem 0 0 -4rem; /* Adjust these values as needed */
+  margin: -3rem 0 0 -3rem; /* Adjust these values as needed */
 }
 
 /* ==========================================================================
