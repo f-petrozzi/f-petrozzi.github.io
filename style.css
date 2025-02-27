@@ -497,7 +497,7 @@ footer {
   display: flex;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.5rem;
+  padding: 0rem;
   background-color: #00573F;
 }
 
@@ -505,7 +505,7 @@ footer {
   background-color: #00573F;
   color: #fff;
   border: none;
-  padding: 2.5rem 1rem;
+  padding: 0.5rem 1rem;
   border-radius: 0px;
   font-size: clamp(14px, 2vw, 16px);
   cursor: pointer;
