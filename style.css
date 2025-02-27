@@ -301,7 +301,7 @@ section.active {
 
 /* Slider Move */
 .dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider {
-  transform: translateX(calc(-100% - var(--slider-width) - 2px));
+  transform: translateX(calc(100% + var(--slider-width) - 2px));
   background-color: #FF7F50;
 }
 
