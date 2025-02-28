@@ -288,7 +288,7 @@ section.active {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to right, #0d1b2a, #fff3b0); /* Dark mode gradient */
+  background: linear-gradient(to right, #0d1b2a, #162447, #fff3b0); /* Dark mode gradient */
   opacity: 0;
   transition: opacity 1s ease;
   pointer-events: none;
