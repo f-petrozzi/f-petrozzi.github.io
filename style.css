@@ -276,7 +276,7 @@ section.active {
   background: linear-gradient(to right, #f1c40f, #87cefa); /* Light mode gradient */
   position: relative;
   cursor: pointer;
-  transition: background 2s ease;
+  transition: background 3s ease;
   overflow: hidden; /* for pseudo-element */
 }
 
@@ -328,7 +328,7 @@ section.active {
   font-size: calc(var(--slider-width) * 1);
   line-height: 1;
   text-align: center;
-  transition: opacity 0.7s ease, color 1s ease, transform 0.3s ease;
+  transition: opacity 0.5s ease, color 1s ease, transform 0.3s ease;
 }
 
 /* Icon States: Light Mode */
