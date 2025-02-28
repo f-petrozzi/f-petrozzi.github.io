@@ -296,7 +296,7 @@ section.active {
   #fff3b0 100%
   );
   opacity: 0;
-  transition: opacity 2.5s ease;
+  transition: opacity 2.25s ease;
   pointer-events: none;
   z-index: 0;
 }
@@ -313,7 +313,7 @@ section.active {
   height: var(--slider-width);
   border-radius: 50%;
   background-color: #f1c40f; /* Base circle color in light mode */
-  transition: left 1s ease, background-color 1s ease;
+  transition: left 0.8s ease, background-color 1s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -328,7 +328,7 @@ section.active {
   font-size: calc(var(--slider-width));
   line-height: 1;
   text-align: center;
-  transition: opacity 0.3s ease, color 1s ease, transform 0.3s ease;
+  transition: opacity 0.3s ease, color 1s ease, transform 0.1s ease;
 }
 
 /* Icon States: Light Mode */
