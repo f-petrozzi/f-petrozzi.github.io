@@ -265,20 +265,39 @@ section.active {
 .dark-mode-toggle-input {
   display: none;
 }
+
 /* Base */
 .dark-mode-toggle-label {
-  /* Define responsive variables */
   --slider-width: clamp(16px, 3vw, 22px);
-  --toggle-offset: clamp(16px, 3vw, 22px); /* Offset used for the sliding calculation */
   display: inline-block;
   width: clamp(40px, 7vw, 52px);
   height: clamp(20px, 3.5vw, 26px);
   border-radius: calc(clamp(20px, 3.5vw, 26px) / 2);
-  background: linear-gradient(to right, #f1c40f, #87cefa); /* Light mode gradient: yellow to light blue */
+  background: linear-gradient(to right, #f1c40f, #87cefa); /* Light mode gradient */
   position: relative;
   cursor: pointer;
   transition: background 0.5s ease;
+  overflow: hidden; /* for pseudo-element */
 }
+
+/* Pseudo-element for smooth gradient transition */
+.dark-mode-toggle-label::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, #0d0d0d, #f0f0f0); /* Dark mode gradient */
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+.dark-mode-toggle-input:checked + .dark-mode-toggle-label::after {
+  opacity: 1;
+}
+
 /* Toggle Handle */
 .dark-mode-toggle-label .toggle-slider {
   position: absolute;
@@ -287,50 +306,60 @@ section.active {
   width: var(--slider-width);
   height: var(--slider-width);
   border-radius: 50%;
-  background-color: #f1c40f; /* Make the circle transparent */
-  transition: left 0.5s ease;
-  display: flex;                /* Enable flex to center icons */
+  background-color: #f1c40f; /* Base circle color in light mode */
+  transition: left 0.5s ease, background-color 0.5s ease;
+  display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1; /* ensures slider is above pseudo-element */
 }
+
 /* Layered Icons inside Toggle Slider */
 .dark-mode-toggle-label .toggle-slider .icon {
-  /* Remove absolute positioning so flex centering applies */
   position: relative;
   width: 100%;
   height: 100%;
-  font-size: calc(var(--slider-width)*1.1); /* Adjust icon size as needed */
+  font-size: calc(var(--slider-width) * 1.1);
   line-height: 1;
   text-align: center;
-  transition: opacity 0.5s ease, color 0.5s ease;
+  transition: opacity 0.5s ease, color 0.5s ease, transform 0.5s ease;
 }
+
 /* Icon States: Light Mode */
-.dark-mode-toggle-input:not(:checked) + .dark-mode-toggle-label .toggle-slider .sun-icon {
+.dark-mode-toggle-input:not(:checked)
+  + .dark-mode-toggle-label .toggle-slider .sun-icon {
   opacity: 1;
-  color: transparent; /* Yellow */
+  color: #f1c40f; /* Use sun color (yellow) */
+  transform: translateX(0);
 }
-.dark-mode-toggle-input:not(:checked) + .dark-mode-toggle-label .toggle-slider .moon-icon {
+.dark-mode-toggle-input:not(:checked)
+  + .dark-mode-toggle-label .toggle-slider .moon-icon {
   opacity: 0;
   color: #f1c40f;
+  transform: translateX(0);
 }
+
 /* Icon States: Dark Mode */
-.dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider .sun-icon {
+.dark-mode-toggle-input:checked
+  + .dark-mode-toggle-label .toggle-slider .sun-icon {
   opacity: 0;
-  color: transparent; /* White */
+  color: #ffffff;
+  transform: translateX(0);
 }
-.dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider .moon-icon {
+.dark-mode-toggle-input:checked
+  + .dark-mode-toggle-label .toggle-slider .moon-icon {
   opacity: 1;
-  color: #ffffff; /* White */
+  color: #ffffff;
+  transform: translateX(-2px); /* Shift moon icon slightly left */
 }
-/* Gradient Update for Dark Mode */
-.dark-mode-toggle-input:checked + .dark-mode-toggle-label {
-  background: linear-gradient(to right, #0d0d0d, #f0f0f0);
+
+/* Slider Move: Adjusted to fully reach the right edge */
+.dark-mode-toggle-input:checked
+  + .dark-mode-toggle-label .toggle-slider {
+  left: calc(100% - var(--slider-width) - 2px);
+  background-color: #f0f0f0;
 }
-/* Slider Move */
-.dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider {
-  left: calc(100% - var(--slider-width) - 10px);
-  background-color: transparent;
-}
+
 /* Position */
 .dark-mode-toggle {
   margin: -3.5rem 0 0 -3.7rem; /* Adjust these values as needed */
