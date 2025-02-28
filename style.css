@@ -290,10 +290,9 @@ section.active {
   height: 100%;
   background: linear-gradient(
   to right,
-  #162447 0%,
-  #162447 35%,
-  #1c3150 45%,    /* a blend between dark blue and sunset orange */
-  #f2994a 55%,    /* a very subtle touch of sunset */
+  #162447 20%,
+  #1c3150 40%,    /* a blend between dark blue and sunset orange */
+  #f2994a 75%,    /* a very subtle touch of sunset */
   #fff3b0 100%
   );
   opacity: 0;
