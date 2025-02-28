@@ -265,11 +265,11 @@ section.active {
 .dark-mode-toggle-input {
   display: none;
 }
-
 /* Base */
 .dark-mode-toggle-label {
   /* Define responsive variables */
   --slider-width: clamp(16px, 3vw, 22px);
+  --toggle-offset: clamp(16px, 3vw, 22px); /* Offset used for the sliding calculation */
   display: inline-block;
   width: clamp(40px, 7vw, 52px);
   height: clamp(20px, 3.5vw, 26px);
@@ -279,8 +279,7 @@ section.active {
   cursor: pointer;
   transition: background 0.3s ease;
 }
-
-/* Toggle Handle: now with a white (non-transparent) background */
+/* Toggle Handle */
 .dark-mode-toggle-label .toggle-slider {
   position: absolute;
   top: 2px;
@@ -288,13 +287,12 @@ section.active {
   width: var(--slider-width);
   height: var(--slider-width);
   border-radius: 50%;
-  background-color: #ffffff; /* Solid background for the circle */
-  transition: left 0.3s ease, background-color 0.3s ease;
-  display: flex;
+  background-color: transparent; /* Make the circle transparent */
+  transition: left 0.3s ease;
+  display: flex;                /* Enable flex to center icons */
   align-items: center;
   justify-content: center;
 }
-
 /* Layered Icons inside Toggle Slider */
 .dark-mode-toggle-label .toggle-slider .icon {
   /* Remove absolute positioning so flex centering applies */
@@ -306,48 +304,33 @@ section.active {
   text-align: center;
   transition: opacity 0.3s ease, color 0.3s ease;
 }
-
 /* Icon States: Light Mode */
-.dark-mode-toggle-input:not(:checked) 
-  + .dark-mode-toggle-label 
-  .toggle-slider .sun-icon {
+.dark-mode-toggle-input:not(:checked) + .dark-mode-toggle-label .toggle-slider .sun-icon {
   opacity: 1;
-  color: #FFA500; /* Vibrant orange for the sun */
+  color: #f1c40f; /* Yellow */
 }
-.dark-mode-toggle-input:not(:checked) 
-  + .dark-mode-toggle-label 
-  .toggle-slider .moon-icon {
+.dark-mode-toggle-input:not(:checked) + .dark-mode-toggle-label .toggle-slider .moon-icon {
   opacity: 0;
-  color: #1E90FF; /* Bright blue for the moon (hidden in light mode) */
+  color: #f1c40f;
 }
-
 /* Icon States: Dark Mode */
-.dark-mode-toggle-input:checked 
-  + .dark-mode-toggle-label 
-  .toggle-slider .sun-icon {
+.dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider .sun-icon {
   opacity: 0;
-  color: #FFA500; /* Remains the same, but hidden */
+  color: #ffffff; /* White */
 }
-.dark-mode-toggle-input:checked 
-  + .dark-mode-toggle-label 
-  .toggle-slider .moon-icon {
+.dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider .moon-icon {
   opacity: 1;
-  color: #1E90FF; /* Bright blue for the moon */
+  color: #ffffff; /* White */
 }
-
 /* Gradient Update for Dark Mode */
 .dark-mode-toggle-input:checked + .dark-mode-toggle-label {
   background: linear-gradient(to right, #0d0d0d, #f0f0f0);
 }
-
-/* Slider Move: Adjusted so the handle is perfectly centered on activation */
-.dark-mode-toggle-input:checked 
-  + .dark-mode-toggle-label 
-  .toggle-slider {
-  left: calc(100% - var(--slider-width) - 4px); /* Adjust the subtraction constant as needed */
-  background-color: #ffffff; /* Keep the circle background consistent */
+/* Slider Move */
+.dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider {
+  left: calc(100% - var(--slider-width) - 2px);
+  background-color: #f0f0f0;
 }
-
 /* Position */
 .dark-mode-toggle {
   margin: -3.5rem 0 0 -3.7rem; /* Adjust these values as needed */
