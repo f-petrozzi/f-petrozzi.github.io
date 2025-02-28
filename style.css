@@ -299,7 +299,7 @@ section.active {
   position: relative;
   width: 100%;
   height: 100%;
-  font-size: calc(var(--slider-width) * 0.8); /* Adjust icon size as needed */
+  font-size: calc(var(--slider-width)); /* Adjust icon size as needed */
   line-height: 1;
   text-align: center;
   transition: opacity 0.3s ease, color 0.3s ease;
