@@ -355,7 +355,7 @@ section.active {
 /* Slider Move: Adjusted to fully reach the right edge */
 .dark-mode-toggle-input:checked
   + .dark-mode-toggle-label .toggle-slider {
-  left: calc(100% - var(--slider-width) - 2px);
+  left: calc(100% - var(--slider-width));
   background-color: transparent;
 }
 
