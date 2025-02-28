@@ -42,14 +42,18 @@
     <section id="about">
 	<!-- Dark mode toggle -->
 	<div class="dark-mode-toggle">
-	  <input type="checkbox" id="darkModeToggle" class="dark-mode-toggle-input">
-	  <label for="darkModeToggle" class="dark-mode-toggle-label">
-	    <span class="toggle-slider">
-	      <span class="icon sun-icon">&#9728;</span>
-	      <span class="icon moon-icon">&#9790;</span>
-	    </span>
-	  </label>
-	</div>
+  <input type="checkbox" id="darkModeToggle" class="dark-mode-toggle-input">
+  <label for="darkModeToggle" class="dark-mode-toggle-label">
+    <span class="toggle-slider">
+      <span class="icon sun-icon">
+        <ion-icon name="sunny"></ion-icon>
+      </span>
+      <span class="icon moon-icon">
+        <ion-icon name="moon"></ion-icon>
+      </span>
+    </span>
+  </label>
+</div>
 	<div class="social-links">
 	    <a href="https://www.linkedin.com/in/fabriziopetrozzi/" target="_blank" aria-label="LinkedIn">
 	      <i class="bx bxl-linkedin"></i>
@@ -375,5 +379,7 @@ sections.forEach(section => {
     document.querySelector('.filter-btn[data-filter="all"]').click();
   });
 </script>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
 </html>
