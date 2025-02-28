@@ -258,7 +258,6 @@ section.active {
   pointer-events: none;
   transition: opacity 0.2s ease-in-out;
 }
-
 .social-links a:hover::after {
   opacity: 1;
 }
@@ -266,7 +265,6 @@ section.active {
 .dark-mode-toggle-input {
   display: none;
 }
-
 /* Base */
 .dark-mode-toggle-label {
   /* Define responsive variables */
@@ -281,7 +279,6 @@ section.active {
   cursor: pointer;
   transition: background 0.3s ease;
 }
-
 /* Toggle Handle */
 .dark-mode-toggle-label .toggle-slider {
   position: absolute;
@@ -293,18 +290,42 @@ section.active {
   background-color: #f1c40f; /* Matches the left gradient color in light mode */
   transition: left 0.3s ease, background-color 0.3s ease;
 }
-
-/* Gradient Update */
-.dark-mode-toggle-input:checked + .dark-mode-toggle-label {
-  background: linear-gradient(to right, #87CEFA, #FF7F50);
+/* Layered Icons inside Toggle Slider */
+.dark-mode-toggle-label .toggle-slider .icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.3s ease, color 0.3s ease;
 }
-
+/* Icon States: Light Mode */
+.dark-mode-toggle-input:not(:checked) + .dark-mode-toggle-label .toggle-slider .sun-icon {
+  opacity: 1;
+  color: #f1c40f; /* Yellow */
+}
+.dark-mode-toggle-input:not(:checked) + .dark-mode-toggle-label .toggle-slider .moon-icon {
+  opacity: 0;
+  color: #f1c40f;
+}
+/* Icon States: Dark Mode */
+.dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider .sun-icon {
+  opacity: 0;
+  color: #ffffff; /* White */
+}
+.dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider .moon-icon {
+  opacity: 1;
+  color: #ffffff; /* White */
+}
+/* Gradient Update for Dark Mode */
+.dark-mode-toggle-input:checked + .dark-mode-toggle-label {
+  background: linear-gradient(to right, #0d0d0d, #f0f0f0);
+}
 /* Slider Move */
 .dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider {
   left: calc(100% - var(--slider-width) - 2px);
-  background-color: #FF7F50;
+  background-color: #f0f0f0;
 }
-
 /* Position */
 .dark-mode-toggle {
   margin: -3.5rem 0 0 -3.7rem; /* Adjust these values as needed */
