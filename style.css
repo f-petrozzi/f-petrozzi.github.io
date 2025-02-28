@@ -336,7 +336,7 @@ section.active {
   + .dark-mode-toggle-label .toggle-slider .moon-icon {
   opacity: 0;
   color: #f1c40f;
-  transform: translateX(0);
+  transform: scaleX(-1);
 }
 
 /* Icon States: Dark Mode */
@@ -350,6 +350,7 @@ section.active {
   + .dark-mode-toggle-label .toggle-slider .moon-icon {
   opacity: 1;
   color: #fff3b0;
+  transform: scaleX(-1);
 }
 
 /* Slider Move: Adjusted to fully reach the right edge */
