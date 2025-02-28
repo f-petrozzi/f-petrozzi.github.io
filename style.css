@@ -276,7 +276,7 @@ section.active {
   background: linear-gradient(to right, #f1c40f, #87cefa); /* Light mode gradient */
   position: relative;
   cursor: pointer;
-  transition: background 1s ease;
+  transition: background 10s ease;
   overflow: hidden; /* for pseudo-element */
 }
 
