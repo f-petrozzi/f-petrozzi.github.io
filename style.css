@@ -288,7 +288,14 @@ section.active {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at center, #162447, #f2994a, #fff3b0);
+  background: linear-gradient(
+  to right,
+  #162447 0%,
+  #162447 35%,
+  #1c3150 45%,    /* a blend between dark blue and sunset orange */
+  #f2994a 55%,    /* a very subtle touch of sunset */
+  #fff3b0 100%
+  );
   opacity: 0;
   transition: opacity 1s ease;
   pointer-events: none;
