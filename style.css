@@ -302,7 +302,7 @@ section.active {
   font-size: calc(var(--slider-width)); /* Adjust icon size as needed */
   line-height: 1;
   text-align: center;
-  transition: opacity 0.3s ease, color 0.3s ease;
+  transition: opacity 0.1s ease, color 0.1s ease;
 }
 /* Icon States: Light Mode */
 .dark-mode-toggle-input:not(:checked) + .dark-mode-toggle-label .toggle-slider .sun-icon {
@@ -328,7 +328,7 @@ section.active {
 }
 /* Slider Move */
 .dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider {
-  left: calc(100% - var(--slider-width) - 2px);
+  left: calc(100% - var(--slider-width) - 8px);
   background-color: transparent;
 }
 /* Position */
