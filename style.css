@@ -290,7 +290,7 @@ section.active {
   height: 100%;
   background: linear-gradient(to right, #0d0d0d, #f0f0f0); /* Dark mode gradient */
   opacity: 0;
-  transition: opacity 0.5s ease;
+  transition: opacity 1s ease;
   pointer-events: none;
   z-index: 0;
 }
@@ -301,13 +301,13 @@ section.active {
 /* Toggle Handle */
 .dark-mode-toggle-label .toggle-slider {
   position: absolute;
-  top: 2px;
-  left: 2px;
+  top: 0px;
+  left: 0px;
   width: var(--slider-width);
   height: var(--slider-width);
   border-radius: 50%;
   background-color: #f1c40f; /* Base circle color in light mode */
-  transition: left 0.5s ease, background-color 0.5s ease;
+  transition: left 1s ease, background-color 1s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -350,7 +350,6 @@ section.active {
   + .dark-mode-toggle-label .toggle-slider .moon-icon {
   opacity: 1;
   color: #ffffff;
-  transform: translateX(-2px); /* Shift moon icon slightly left */
 }
 
 /* Slider Move: Adjusted to fully reach the right edge */
