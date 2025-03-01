@@ -795,8 +795,8 @@ footer {
   --social-hover-bg: #9B59B6;
   
   /* Project Image */
-  --project-image-border: #a8b2d1;
-  --project-image-hover-border: #9B59B6;
+  --project-item-border: #a8b2d1;
+  --project-item-hover-border: #9B59B6;
 
   /* Sidebar Subheading Text */
   --sidebar-subheading-color: #a8b2d1;
@@ -865,10 +865,10 @@ footer {
 }
 
 /* Project Image Borders */
-.project-image {
+.project-item {
   border: 4px solid var(--project-image-border);
 }
-.project-image:hover {
+.project-item:hover {
   border-color: var(--project-image-hover-border);
   box-shadow: 0 0 10px var(--project-image-hover-border);
 }
