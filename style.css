@@ -798,17 +798,18 @@ footer {
   --nav-link-hover-color: #a8b2d1;  
   
   /* Sections / Containers */
-  --section-bg: #1c1c1c;
+  --section-bg: #262626;
   --section-border-left: #a8b2d1;       /* Glowing gray/blue */
   --section-box-shadow: 0 0 10px #a8b2d1; /* Bluee glow */
   /*#9B59B6; Violet */
   /* #a29bfe; soft violet */
+  /* #1c1c1c; charcoal ish */
   /* Footer */
   --footer-bg: #383851;
   --footer-text-color: #fff;
   
   /* Profile Image */
-  --profile-pic-border: #a8b2d1;         /* Soft Gray/blue */
+  --profile-pic-border: #383851;         /* Soft Gray/blue */
   --profile-pic-hover-border: #a8b2d1;     /* Violet */
      
   /* Sidebar */
@@ -838,7 +839,7 @@ footer {
   --sidebar-link-hover-bg: #a8b2d1;
 
   /* Highlight name */
-  --highlight-name: #a8b2d1;
+  --highlight-name: #383851;
 }
 
 /* Using Variables */
