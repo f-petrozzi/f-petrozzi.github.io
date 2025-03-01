@@ -363,7 +363,7 @@ section.active {
 /* Slider Move: Adjusted to fully reach the right edge */
 .dark-mode-toggle-input:checked
   + .dark-mode-toggle-label .toggle-slider {
-  left: calc(100% - var(--slider-width));
+  left: calc(100% - var(--slider-width) - 2px);
   background-color: transparent;
 }
 
@@ -955,7 +955,8 @@ footer {
   border-color: var(--project-item-hover-border);
   box-shadow: 0 0 10px var(--project-item-hover-border);
 }
-
-.highlight-name {
+   
+.highlight-name{
    color: var(--highlight-name);
 }
+
