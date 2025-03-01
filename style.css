@@ -790,7 +790,7 @@ footer {
   --body-bg: linear-gradient(270deg, #0d0d0d, #1a1a2e, #0d0d0d);
   
   /* Header */
-  --header-bg: #1f1f1f;         /* A cool, dark gray */
+  --header-bg: #383851;         /* A cool, dark gray */
   --header-text-color: #fff;
   
   /* Navigation */
@@ -804,7 +804,7 @@ footer {
   /*#9B59B6; Violet */
   /* #a29bfe; soft violet */
   /* Footer */
-  --footer-bg: #1f1f1f;
+  --footer-bg: #383851;
   --footer-text-color: #fff;
   
   /* Profile Image */
