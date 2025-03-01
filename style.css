@@ -847,8 +847,8 @@ footer {
   /* Global */
   --body-text-color: #333;
   --body-bg: linear-gradient(270deg, rgba(0,87,63,0.2), rgba(253,187,47,0.15), rgba(25,42,86,0.25));
-  --body-bg-size: background-size: 600% 600%; 
-  --body-anim: animation: gradientShift 45s ease infinite;
+  --body-bg-size: 600% 600%; 
+  --body-anim: gradientShift 45s ease infinite;
   
   /* Header */
   --header-bg: #00573F;
@@ -910,8 +910,8 @@ footer {
   /* Global */
   --body-text-color: #ddd;
   --body-bg: linear-gradient(270deg, #0d0d0d, #1a1a2e, #0d0d0d);
-  --body-bg-size: background-size: auto;
-  --body-anim: animation: none;
+  --body-bg-size: auto;
+  --body-anim: none;
   
   /* Header */
   --header-bg: #383851;         /* A cool, dark gray */
