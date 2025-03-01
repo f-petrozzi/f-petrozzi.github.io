@@ -950,7 +950,8 @@ footer {
 .social-links a:hover {
   box-shadow: var(--social-hover-glow);
   transition: box-shadow 0.3s ease;
-
+}
+   
 /* Project Image Borders */
 .project-item img {
   border: 4px solid var(--project-item-border);
