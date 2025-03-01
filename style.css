@@ -68,7 +68,6 @@ p {
 }
 
 .highlight-name {
-  color: #00573F; /* Dark green */
   font-weight: bold;
 }
 
@@ -309,7 +308,7 @@ section.active {
 /* Toggle Handle */
 .dark-mode-toggle-label .toggle-slider {
   position: absolute;
-  top: 2px;
+  top: 0px;
   left: 2px;
   width: var(--slider-width);
   height: var(--slider-width);
