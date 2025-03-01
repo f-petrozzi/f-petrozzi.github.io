@@ -801,6 +801,9 @@ footer {
   /* Sidebar Subheading Text */
   --sidebar-subheading-color: #a8b2d1;
   --sidebar-subheading-hover-color: #9B59B6;
+
+  /* Highlight name */
+  --highlight-name: #a8b2d1;
 }
 
 /* Using Variables */
@@ -871,4 +874,8 @@ footer {
 .project-item:hover {
   border-color: var(--project-image-hover-border);
   box-shadow: 0 0 10px var(--project-image-hover-border);
+}
+
+.highlight-name {
+   color: var(--highlight-name);
 }
