@@ -757,6 +757,17 @@ footer {
   /* Social Links */
   --social-bg: rgba(0,87,63,0.9);
   --social-hover-bg: rgba(253,187,47,0.9);
+  
+   /* Project Image */
+  --project-item-border: #00573F;
+  --project-item-hover-border: #FDBB2F;
+
+  /* Sidebar Subheading Text */
+  --sidebar-subheading-color: #00573F;
+  --sidebar-subheading-hover-color: #FDBB2F;
+
+  /* Highlight name */
+  --highlight-name: #00573F;
 }
 
 /* Dark Mode Overrides – Sleek dark theme with dark blue/violet accents */
@@ -869,7 +880,7 @@ footer {
 
 /* Project Image Borders */
 .project-item img {
-  border: 4px solid var(--project-image-border);
+  border: 4px solid var(--project-item-border);
 }
 .project-item img:hover {
   border-color: var(--project-item-hover-border);
