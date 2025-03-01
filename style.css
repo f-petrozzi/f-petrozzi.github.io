@@ -274,6 +274,8 @@ section.active {
   height: clamp(20px, 3.5vw, 26px);
   border-radius: calc(clamp(20px, 3.5vw, 26px) / 2);
   background: linear-gradient(to right, #f1c40f, #87cefa); /* Light mode gradient */
+  border: 1px solid #fff;  /* Thin white border */
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3); /* Inner shadow for indented look */
   position: relative;
   cursor: pointer;
   transition: background 1s ease;
@@ -314,7 +316,7 @@ section.active {
   border-radius: 50%;
   background-color: #f1c40f; /* Base circle color in light mode */
   border: 1px solid #fff;  /* Thin white border */
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3); /* Inner shadow for indented look */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Inner shadow for indented look */
   transition: left 0.8s ease, background-color 1s ease;
   display: flex;
   align-items: center;
@@ -328,6 +330,8 @@ section.active {
   width: 100%;
   height: 100%;
   font-size: calc(var(--slider-width));
+  border: 0px solid #fff;  /* Thin white border */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Inner shadow for indented look */
   line-height: 1;
   text-align: center;
   transition: opacity 0.3s ease, color 1s ease, transform 0.1s ease;
