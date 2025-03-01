@@ -966,6 +966,7 @@ footer {
 body {
   color: var(--body-text-color);
   background: var(--body-bg);
+  animation: gradientShift 45s ease infinite;
 }
 
 header.common-header {
