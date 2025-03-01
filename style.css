@@ -966,6 +966,7 @@ footer {
 body {
   color: var(--body-text-color);
   background: var(--body-bg);
+  background-size: 600% 600%; /* Added to enable the gradient animation */
   animation: gradientShift 45s ease infinite;
 }
 
