@@ -787,8 +787,8 @@ footer {
   /* Sections / Containers */
   --section-bg: #1c1c1c;
   --section-border-left: #a8b2d1;       /* Glowing gray/blue */
-  --section-box-shadow: 0 0 10px #9B59B6; /* Violet glow */
-  
+  --section-box-shadow: 0 0 10px #a8b2d1; /* Violet glow */
+  /*#9B59B6; Violet */
   /* Footer */
   --footer-bg: #1f1f1f;
   --footer-text-color: #fff;
