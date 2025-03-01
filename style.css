@@ -794,7 +794,7 @@ footer {
   --footer-text-color: #fff;
   
   /* Profile Image */
-  --profile-pic-border: #a8b2d1;         /* Soft Gray/blue */
+  --profile-pic-border: #a29bfe;         /* Soft Gray/blue */
   --profile-pic-hover-border: #9B59B6;     /* Violet */
      
   /* Sidebar */
@@ -802,19 +802,19 @@ footer {
   --sidebar-text-color: #fff;
   
   /* Social Buttons */
-  --social-bg: #a8b2d1;
+  --social-bg: #a29bfe;
   --social-hover-bg: #9B59B6;
   
   /* Project Image */
-  --project-item-border: #a8b2d1;
+  --project-item-border: #a29bfe;
   --project-item-hover-border: #9B59B6;
 
   /* Sidebar Subheading Text */
-  --sidebar-subheading-color: #a8b2d1;
+  --sidebar-subheading-color: #a29bfe;
   --sidebar-subheading-hover-color: #9B59B6;
 
   /* Highlight name */
-  --highlight-name: #a8b2d1;
+  --highlight-name: #a29bfe;
 }
 
 /* Using Variables */
