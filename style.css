@@ -722,7 +722,11 @@ footer {
 /* ==========================================================================
    13. Color Variables & Dark Mode Overrides
    ========================================================================== */
-
+/*Later edits made easier */
+.dark-mode .social-links a:hover {
+  box-shadow: 0 0 10px #a8b2d1;
+  transition: box-shadow 0.3s ease;
+}
 /* Light Mode (Default) – (unchanged) */
 :root {
   /* Global */
@@ -789,12 +793,12 @@ footer {
   
   /* Navigation */
   --nav-link-color: #fff;
-  --nav-link-hover-color: #383851;  /* Soft violet on hover */
+  --nav-link-hover-color: #a8b2d1;  
   
   /* Sections / Containers */
   --section-bg: #1c1c1c;
   --section-border-left: #a8b2d1;       /* Glowing gray/blue */
-  --section-box-shadow: 0 0 10px #a8b2d1; /* Violet glow */
+  --section-box-shadow: 0 0 10px #a8b2d1; /* Bluee glow */
   /*#9B59B6; Violet */
   /* #a29bfe; soft violet */
   /* Footer */
@@ -802,7 +806,7 @@ footer {
   --footer-text-color: #fff;
   
   /* Profile Image */
-  --profile-pic-border: #383851;         /* Soft Gray/blue */
+  --profile-pic-border: #a8b2d1;         /* Soft Gray/blue */
   --profile-pic-hover-border: #a8b2d1;     /* Violet */
      
   /* Sidebar */
@@ -810,7 +814,7 @@ footer {
   --sidebar-text-color: #fff;
   
   /* Social Buttons */
-  --social-bg: #383851;
+  --social-bg: #a8b2d1;
   --social-hover-bg: #a8b2d1;
   
   /* Project Image */
@@ -829,7 +833,7 @@ footer {
   --filter-btn-hover-bg: #a8b2d1;
 
   /* Highlight name */
-  --highlight-name: #383851;
+  --highlight-name: #a8b2d1;
 }
 
 /* Using Variables */
