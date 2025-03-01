@@ -722,11 +722,6 @@ footer {
 /* ==========================================================================
    13. Color Variables & Dark Mode Overrides
    ========================================================================== */
-/*Later edits made easier */
-.dark-mode .social-links a:hover {
-  box-shadow: 0 0 10px #a8b2d1;
-  transition: box-shadow 0.3s ease;
-}
 /* Light Mode (Default) – (unchanged) */
 :root {
   /* Global */
@@ -776,6 +771,8 @@ footer {
   --sidebar-header-text: #fff;
   --filter-btn-bg: #00573F;
   --filter-btn-hover-bg: #FDBB2F;
+  --sidebar-link-color: #333;
+  --sidebar-link-hover-bg: rgba(253,187,47,0.2);
 
   /* Highlight name */
   --highlight-name: #00573F;
@@ -831,6 +828,8 @@ footer {
   --sidebar-subheading-color: #fff;  
   --filter-btn-bg: #383851;           
   --filter-btn-hover-bg: #a8b2d1;
+  --sidebar-link-color: #fff;
+  --sidebar-link-hover-bg: #a8b2d1;
 
   /* Highlight name */
   --highlight-name: #a8b2d1;
@@ -907,6 +906,19 @@ footer {
 /* Filter Toolbar & Buttons */
 .sidebar-filter {
   background-color: var(--sidebar-header-bg); /* Same as header background */
+}
+
+.sidebar-list li a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--sidebar-link-color);
+  padding: 1rem 0;
+  transition: background-color 0.3s;
+}
+
+.sidebar-list li a:hover {
+  background-color: var(--sidebar-link-hover-bg);
 }
 
 .filter-btn {
