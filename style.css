@@ -145,12 +145,11 @@ header.common-header .logo {
   color: #fff;
   font-size: clamp(16px, 2.5vw, 20px);
   font-weight: bold;
-  transition: color 0.3s, transform 0.3s;
+  transition: color 0.3s
 }
 
 .main-nav a:hover {
   color: #FDBB2F; /* Gold Accent */
-  transform: scale(1.15);
 }
 
 /* Shared Menu Toggle Button */
@@ -768,7 +767,6 @@ footer {
 
   /* Sidebar Subheading Text */
   --sidebar-subheading-color: #00573F;
-  --sidebar-subheading-hover-color: #FDBB2F;
 
   --sidebar-bg: rgba(255,255,255,0.95);
   --sidebar-text-color: #333;       /* For links & non-header text */
@@ -821,8 +819,6 @@ footer {
   --project-item-border: #383851;
   --project-item-hover-border: #a8b2d1;
 
-  /* Sidebar Subheading Text */
-  --sidebar-subheading-hover-color: #a8b2d1;
 
   --sidebar-bg: #1a1a2e;                
   --sidebar-text-color: #fff;        
@@ -887,9 +883,6 @@ footer {
 /* Sidebar Subheading Text */
 .sidebar-section-title {
   color: var(--sidebar-subheading-color);
-}
-.sidebar-section-title:hover {
-  color: var(--sidebar-subheading-hover-color);
 }
 
 .sidebar {
