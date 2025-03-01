@@ -547,6 +547,7 @@ footer {
   color: #00573F;
   border-bottom: 1px solid #ddd;
   padding-bottom: 0.25rem;
+  z-index: 1003;
 }
 
 .sidebar-list {
@@ -566,6 +567,7 @@ footer {
   color: #333;
   padding: 1rem 0;
   transition: background-color 0.3s;
+  z-index: 1002;
 }
 
 .sidebar-list li a:hover {
