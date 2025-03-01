@@ -603,7 +603,7 @@ footer {
 
 .modal-content .close {
   position: absolute;
-  top: 0.5rem;
+  top: 0rem;
   right: 0.5rem;
   color: #aaa;
   font-size: clamp(24px, 4vw, 28px);
