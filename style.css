@@ -782,7 +782,7 @@ footer {
   
   /* Navigation */
   --nav-link-color: #fff;
-  --nav-link-hover-color: #27273f;  /* Soft violet on hover */
+  --nav-link-hover-color: #33334a;  /* Soft violet on hover */
   
   /* Sections / Containers */
   --section-bg: #1c1c1c;
@@ -795,7 +795,7 @@ footer {
   --footer-text-color: #fff;
   
   /* Profile Image */
-  --profile-pic-border: #27273f;         /* Soft Gray/blue */
+  --profile-pic-border: #33334a;         /* Soft Gray/blue */
   --profile-pic-hover-border: #a8b2d1;     /* Violet */
      
   /* Sidebar */
@@ -803,19 +803,19 @@ footer {
   --sidebar-text-color: #fff;
   
   /* Social Buttons */
-  --social-bg: #27273f;
+  --social-bg: #33334a;
   --social-hover-bg: #a8b2d1;
   
   /* Project Image */
-  --project-item-border: #1a1a2e;
+  --project-item-border: #33334a;
   --project-item-hover-border: #a8b2d1;
 
   /* Sidebar Subheading Text */
-  --sidebar-subheading-color: #27273f;
+  --sidebar-subheading-color: #33334a;
   --sidebar-subheading-hover-color: #a8b2d1;
 
   /* Highlight name */
-  --highlight-name: #27273f;
+  --highlight-name: #33334a;
 }
 
 /* Using Variables */
