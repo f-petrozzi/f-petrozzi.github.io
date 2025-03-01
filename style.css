@@ -900,6 +900,7 @@ footer {
   /*Modal Contact me */
   --modal-bg: #fff;
   --modal-border-left: #FDBB2F;
+  --modal-content a: #333; 
 }
 
 /* Dark Mode Overrides – Sleek dark theme with dark blue/violet accents */
@@ -957,6 +958,7 @@ footer {
   /*Modal Contact me Dark*/
   --modal-bg: #1a1a2e;
   --modal-border-left: #a8b2d1;
+  --modal-content a: #fff;
 }
 
 /* Using Variables */
@@ -1083,4 +1085,8 @@ footer {
 .modal-content {
    background-color: var(--modal-bg);
    border-left: 5px solid var(--modal-border-left);
+}
+
+.modal-content a {
+   color: #fff;
 }
