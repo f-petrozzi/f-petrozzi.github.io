@@ -719,9 +719,11 @@ footer {
     padding: 0.5rem;
   }
 }
-/* Color Variables */
+/* ==========================================================================
+   13. Color Variables & Dark Mode Overrides
+   ========================================================================== */
 
-/* Light Mode (Default) – Colors remain unchanged */
+/* Light Mode (Default) – (unchanged) */
 :root {
   /* Global */
   --body-text-color: #333;
@@ -751,42 +753,49 @@ footer {
   /* Sidebar */
   --sidebar-bg: rgba(255,255,255,0.95);
   --sidebar-text-color: #333;
+  
+  /* Social Links */
+  --social-bg: rgba(0,87,63,0.9);
+  --social-hover-bg: rgba(253,187,47,0.9);
 }
 
-/* Dark Mode Overrides – Apply a sleek, modern dark theme */
+/* Dark Mode Overrides – Sleek dark theme with dark blue/violet accents */
 .dark-mode, [data-theme="dark"] {
   /* Global */
   --body-text-color: #ddd;
-  /* (Optionally adjust the body background if desired) */
-  /* --body-bg: linear-gradient(...); */
+  --body-bg: linear-gradient(270deg, #0d0d0d, #1a1a2e, #0d0d0d);
   
   /* Header */
-  --header-bg: #111;
+  --header-bg: #1f1f1f;         /* A cool, dark gray */
   --header-text-color: #fff;
   
   /* Navigation */
   --nav-link-color: #fff;
-  --nav-link-hover-color: #FDBB2F;
+  --nav-link-hover-color: #a29bfe;  /* Soft violet on hover */
   
   /* Sections / Containers */
   --section-bg: #1c1c1c;
-  --section-border-left: #9B59B6;        /* Glowing violet */
-  --section-box-shadow: 0 0 10px #9B59B6;  /* Violet glow */
+  --section-border-left: #9B59B6;       /* Glowing violet */
+  --section-box-shadow: 0 0 10px #9B59B6; /* Violet glow */
   
   /* Footer */
-  --footer-bg: #111;
+  --footer-bg: #1f1f1f;
   --footer-text-color: #fff;
   
   /* Profile Image */
-  --profile-pic-border: #111;
-  --profile-pic-hover-border: #9B59B6;
+  --profile-pic-border: #000;         /* Black border */
+  --profile-pic-hover-border: #000;     /* Black glow on hover */
   
   /* Sidebar */
   --sidebar-bg: #222;
   --sidebar-text-color: #fff;
+  
+  /* Social Links */
+  --social-bg: rgba(30,30,30,0.9);      /* Very dark background */
+  --social-hover-bg: #2d2d50;           /* Dark violet/blue on hover */
 }
 
-/* Override Color */
+/* Using Variables */
 
 body {
   color: var(--body-text-color);
@@ -821,9 +830,20 @@ footer {
 }
 .profile-pic:hover {
   border-color: var(--profile-pic-hover-border);
+  box-shadow: 0 0 10px var(--profile-pic-hover-border);
 }
 
 .sidebar {
   background-color: var(--sidebar-bg);
   color: var(--sidebar-text-color);
+}
+.sidebar-list li a {
+  color: var(--sidebar-text-color);
+}
+
+.social-links a {
+  background-color: var(--social-bg);
+}
+.social-links a:hover {
+  background-color: var(--social-hover-bg);
 }
