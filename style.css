@@ -309,7 +309,7 @@ section.active {
 .dark-mode-toggle-label .toggle-slider {
   position: absolute;
   top: 0px;
-  left: 0px;
+  left: 1px;
   width: var(--slider-width);
   height: var(--slider-width);
   border-radius: 50%;
