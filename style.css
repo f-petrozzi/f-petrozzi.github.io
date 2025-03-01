@@ -766,6 +766,13 @@ footer {
   --sidebar-subheading-color: #00573F;
   --sidebar-subheading-hover-color: #FDBB2F;
 
+  --sidebar-bg: rgba(255,255,255,0.95);
+  --sidebar-text-color: #333;       /* For links & non-header text */
+  --sidebar-header-bg: #00573F;
+  --sidebar-header-text: #fff;
+  --filter-btn-bg: #00573F;
+  --filter-btn-hover-bg: #FDBB2F;
+
   /* Highlight name */
   --highlight-name: #00573F;
 }
@@ -811,8 +818,15 @@ footer {
   --project-item-hover-border: #a8b2d1;
 
   /* Sidebar Subheading Text */
-  --sidebar-subheading-color: #383851;
   --sidebar-subheading-hover-color: #a8b2d1;
+
+  --sidebar-bg: #222;                
+  --sidebar-text-color: #fff;        
+  --sidebar-header-bg: #383851;       
+  --sidebar-header-text: #fff;
+  --sidebar-subheading-color: #fff;  
+  --filter-btn-bg: #383851;           
+  --filter-btn-hover-bg: #a8b2d1;
 
   /* Highlight name */
   --highlight-name: #383851;
@@ -870,6 +884,36 @@ footer {
 }
 .sidebar-section-title:hover {
   color: var(--sidebar-subheading-hover-color);
+}
+
+.sidebar {
+  background-color: var(--sidebar-bg);
+  color: var(--sidebar-text-color);
+}
+
+.sidebar-header {
+  background-color: var(--sidebar-header-bg);
+  color: var(--sidebar-header-text);
+}
+
+.sidebar-content {
+  /* (No change needed here; it inherits text color) */
+}
+
+/* Filter Toolbar & Buttons */
+.sidebar-filter {
+  background-color: var(--sidebar-header-bg); /* Same as header background */
+}
+
+.filter-btn {
+  background-color: var(--filter-btn-bg);
+  color: var(--sidebar-header-text);  /* Always white */
+  transition: background-color 0.3s;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+  background-color: var(--filter-btn-hover-bg);
 }
 
 .social-links a {
