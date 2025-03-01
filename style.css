@@ -310,8 +310,8 @@ section.active {
   position: absolute;
   top: 0px;
   left: 1px;
-  width: var(--slider-width);
-  height: var(--slider-width);
+  width: (var(--slider-width) * 0.9);
+  height: (var(--slider-width) * 0.9);
   border-radius: 50%;
   background-color: #f1c40f; /* Base circle color in light mode */
   transition: left 0.8s ease, background-color 1s ease;
@@ -567,11 +567,12 @@ footer {
   color: #333;
   padding: 1rem 0;
   transition: background-color 0.3s;
-  z-index: 1002;
+  z-index: 1003;
 }
 
 .sidebar-list li a:hover {
   background-color: rgba(253,187,47,0.2);
+  z-index: 1002;
 }
 
 .sidebar-list li a img {
@@ -925,6 +926,7 @@ footer {
 .sidebar-list li a:hover {
   background-color: var(--sidebar-link-hover-bg);
   opacity: 0.6;
+  z-index: 1002;
 }
 
 .filter-btn {
