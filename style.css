@@ -1088,5 +1088,5 @@ footer {
 }
 
 .modal-content a {
-   color: (--modal-content a);
+   color: var(--modal-content a);
 }
