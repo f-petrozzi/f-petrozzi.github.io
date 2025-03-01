@@ -756,6 +756,7 @@ footer {
   /* Social Links */
   --social-bg: rgba(0,87,63,0.9);
   --social-hover-bg: rgba(253,187,47,0.9);
+  --social-hover-glow: 0 0 10px rgba(253,187,47,0.9);
   
    /* Project Image */
   --project-item-border: #00573F;
@@ -813,6 +814,7 @@ footer {
   /* Social Buttons */
   --social-bg: #a8b2d1;
   --social-hover-bg: #a8b2d1;
+  --social-hover-glow: 0 0 10px #a8b2d1;
   
   /* Project Image */
   --project-item-border: #383851;
@@ -939,6 +941,10 @@ footer {
 .social-links a:hover {
   background-color: var(--social-hover-bg);
 }
+
+.social-links a:hover {
+  box-shadow: var(--social-hover-glow);
+  transition: box-shadow 0.3s ease;
 
 /* Project Image Borders */
 .project-item img {
