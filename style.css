@@ -838,8 +838,9 @@ footer {
     margin-top: 4rem;
     padding: 0.5rem;
   }
-.dark-mode-toggle-label .toggle-slider {
-    top: 50%;
+   
+  .dark-mode-toggle-label .toggle-slider {
+    top: 49%;
     transform: translateY(-50%);
   }
 }
