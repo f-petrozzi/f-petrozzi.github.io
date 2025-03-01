@@ -25,7 +25,6 @@ body {
   font-family: 'Open Sans', Arial, sans-serif;
   line-height: 1.6;
   color: #333;
-  font-size: clamp(14px, 1.5vw, 18px);
   display: flex;
   flex-direction: column;
   background: linear-gradient(270deg, rgba(0,87,63,0.2), rgba(253,187,47,0.15), rgba(25,42,86,0.25));
@@ -55,16 +54,136 @@ h1, h2, p {
   text-align: center;
 }
 
+/* === Text Sizing Replacements (Mobile-First) === */
+
+/* Base (Mobile) */
+body {
+  font-size: 14px;
+}
 h1 {
-  font-size: clamp(24px, 4vw, 36px);
+  font-size: 24px;
 }
-
 h2 {
-  font-size: clamp(20px, 3vw, 28px);
+  font-size: 20px;
+}
+p {
+  font-size: 14px;
+}
+header.common-header .logo {
+  font-size: 20px;
+}
+.main-nav a {
+  font-size: 16px;
+}
+#menuToggle,
+header.common-header .back {
+  font-size: 20px;
+}
+.social-links i {
+  font-size: 16px;
+}
+.modal-content .close {
+  font-size: 24px;
+}
+.sidebar-section-title {
+  font-size: 16px;
+}
+.sidebar-list li a span {
+  font-size: 14px;
+}
+#closeSidebar {
+  font-size: 20px;
+}
+.filter-btn {
+  font-size: 14px;
 }
 
-p {
-  font-size: clamp(14px, 2vw, 18px);
+/* Tablet */
+@media (min-width: 601px) and (max-width: 1024px) {
+  body {
+    font-size: 16px;
+  }
+  h1 {
+    font-size: 30px;
+  }
+  h2 {
+    font-size: 24px;
+  }
+  p {
+    font-size: 16px;
+  }
+  header.common-header .logo {
+    font-size: 22px;
+  }
+  .main-nav a {
+    font-size: 18px;
+  }
+  #menuToggle,
+  header.common-header .back {
+    font-size: 22px;
+  }
+  .social-links i {
+    font-size: 20px;
+  }
+  .modal-content .close {
+    font-size: 26px;
+  }
+  .sidebar-section-title {
+    font-size: 18px;
+  }
+  .sidebar-list li a span {
+    font-size: 16px;
+  }
+  #closeSidebar {
+    font-size: 22px;
+  }
+  .filter-btn {
+    font-size: 15px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+  body {
+    font-size: 18px;
+  }
+  h1 {
+    font-size: 36px;
+  }
+  h2 {
+    font-size: 28px;
+  }
+  p {
+    font-size: 18px;
+  }
+  header.common-header .logo {
+    font-size: 24px;
+  }
+  .main-nav a {
+    font-size: 20px;
+  }
+  #menuToggle,
+  header.common-header .back {
+    font-size: 24px;
+  }
+  .social-links i {
+    font-size: 24px;
+  }
+  .modal-content .close {
+    font-size: 28px;
+  }
+  .sidebar-section-title {
+    font-size: 20px;
+  }
+  .sidebar-list li a span {
+    font-size: 18px;
+  }
+  #closeSidebar {
+    font-size: 24px;
+  }
+  .filter-btn {
+    font-size: 16px;
+  }
 }
 
 .highlight-name {
@@ -114,7 +233,6 @@ header.common-header {
 
 /* Logo (Used in Both Headers) */
 header.common-header .logo {
-  font-size: clamp(20px, 4vw, 24px);
   font-weight: bold;
   color: #fff;
   border: 2px solid #fff;
@@ -143,7 +261,6 @@ header.common-header .logo {
 .main-nav a {
   text-decoration: none;
   color: #fff;
-  font-size: clamp(16px, 2.5vw, 20px);
   font-weight: bold;
   transition: color 0.3s
 }
@@ -157,7 +274,6 @@ header.common-header .logo {
   background: none;
   border: none;
   color: #fff;
-  font-size: clamp(20px, 4vw, 24px);
   cursor: pointer;
 }
 
@@ -167,7 +283,6 @@ header.common-header .back {
   align-items: center;
   color: #fff;
   text-decoration: none;
-  font-size: clamp(20px, 4vw, 24px);
 }
 
 /* ==========================================================================
@@ -593,7 +708,6 @@ footer {
   background: none;
   border: none;
   color: #fff;
-  font-size: clamp(20px, 4vw, 24px);
   cursor: pointer;
 }
 /* ==========================================================================
