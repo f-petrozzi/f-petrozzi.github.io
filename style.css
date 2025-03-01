@@ -46,7 +46,7 @@ body {
 }
 
 /* ==========================================================================
-   2. Typography & Text Elements
+   2. Typography, Text Elements, & Breakpoints
    ========================================================================== */
 
 h1, h2, p {
@@ -893,6 +893,10 @@ footer {
 
   /* Highlight name */
   --highlight-name: #00573F;
+
+  /*Modal Contact me */
+  --modal-bg: #fff;
+  --modal-border-left: #FDBB2F;
 }
 
 /* Dark Mode Overrides – Sleek dark theme with dark blue/violet accents */
@@ -946,6 +950,10 @@ footer {
 
   /* Highlight name */
   --highlight-name: #a8b2d1;
+
+  /*Modal Contact me Dark*/
+  --modal-bg: #1a1a2e;
+  --modal-border-left: #a8b2d1;
 }
 
 /* Using Variables */
@@ -1067,4 +1075,9 @@ footer {
    
 .highlight-name{
    color: var(--highlight-name);
+}
+
+.modal-content {
+   background-color: var(--modal-bg);
+   border-left: 5px solid var(--modal-border-left);
 }
