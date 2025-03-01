@@ -868,12 +868,12 @@ footer {
 }
 
 /* Project Image Borders */
-.project-item {
+.project-item img {
   border: 4px solid var(--project-image-border);
 }
-.project-item:hover {
-  border-color: var(--project-image-hover-border);
-  box-shadow: 0 0 10px var(--project-image-hover-border);
+.project-item img:hover {
+  border-color: var(--project-item-hover-border);
+  box-shadow: 0 0 10px var(--project-item-hover-border);
 }
 
 .highlight-name {
