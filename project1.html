@@ -3,195 +3,224 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Project Title - Fabrizio Petrozzi</title>
+  <title>My Journey with HTML & CSS - Fabrizio Petrozzi</title>
   <!-- Icons -->
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <!-- Consistent Style -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<header class="common-header">
-  <div class="header-left">
-    <a class="back" href="index.html">
-      <i class='bx bx-arrow-back'></i>
-    </a>
-    <button class="logo" onclick="window.location.reload();">FP</button>
+
+  <!-- Header -->
+  <header class="common-header">
+    <div class="header-left">
+      <a class="back" href="index.html">
+        <i class='bx bx-arrow-back'></i>
+      </a>
+      <button class="logo" onclick="window.location.reload();">FP</button>
+    </div>
+    <div class="header-right">
+      <button id="menuToggle" aria-label="Project Menu">
+        <i class="bx bx-menu"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Sliding Sidebar for Project Navigation -->
+  <div id="projectSidebar" class="sidebar">
+    <div class="sidebar-header">
+      <h2>Projects</h2>
+      <button id="closeSidebar" aria-label="Close Menu">
+        <i class="bx bx-x"></i>
+      </button>
+    </div>
+    <!-- Filter Toolbar -->
+    <div class="sidebar-filter">
+      <button class="filter-btn" data-filter="featured">Featured</button>
+      <button class="filter-btn" data-filter="other">Other</button>
+      <button class="filter-btn" data-filter="all">All</button>
+    </div>
+    <div class="sidebar-content">
+      <h3 class="sidebar-section-title featured-title">Featured</h3>
+      <ul class="sidebar-list featured-list">
+        <li>
+          <a href="project1.html">
+            <img src="images/project1-thumb.jpg" alt="Project 1 Thumbnail">
+            <span>Amazon Redshift Data Analysis</span>
+          </a>
+        </li>
+        <li>
+          <a href="project2.html">
+            <img src="images/project2-thumb.jpg" alt="Project 2 Thumbnail">
+            <span>MongoDB Business Use Case</span>
+          </a>
+        </li>
+        <li>
+          <a href="project3.html">
+            <img src="images/project3-thumb.jpg" alt="Project 3 Thumbnail">
+            <span>Titanic Survival Prediction</span>
+          </a>
+        </li>
+      </ul>
+      <h3 class="sidebar-section-title other-title">Other Projects</h3>
+      <ul class="sidebar-list other-list">
+        <li>
+          <a href="project4.html">
+            <img src="images/project4-thumb.jpg" alt="Project 4 Thumbnail">
+            <span>Multiple Regression Analysis</span>
+          </a>
+        </li>
+        <!-- Additional project items as needed -->
+      </ul>
+    </div>
   </div>
-  <div class="header-right">
-    <button id="menuToggle" aria-label="Project Menu">
-      <i class="bx bx-menu"></i>
-    </button>
-  </div>
-</header>
- <!-- Sliding Sidebar for Project Navigation -->
-<div id="projectSidebar" class="sidebar">
-  <div class="sidebar-header">
-    <h2>Projects</h2>
-    <button id="closeSidebar" aria-label="Close Menu">
-      <i class="bx bx-x"></i>
-    </button>
-  </div>
-  <!-- Filter Toolbar -->
-  <div class="sidebar-filter">
-    <button class="filter-btn" data-filter="featured">Featured</button>
-    <button class="filter-btn" data-filter="other">Other</button>
-    <button class="filter-btn" data-filter="all">All</button>
-  </div>
-  <div class="sidebar-content">
-    <h3 class="sidebar-section-title featured-title">Featured</h3>
-    <ul class="sidebar-list featured-list">
-      <li>
-        <a href="project1.html">
-          <img src="images/project1-thumb.jpg" alt="Project 1 Thumbnail">
-          <span>Amazon Redshift Data Analysis</span>
-        </a>
-      </li>
-      <li>
-        <a href="project2.html">
-          <img src="images/project2-thumb.jpg" alt="Project 2 Thumbnail">
-          <span>MongoDB Business Use Case</span>
-        </a>
-      </li>
-      <li>
-        <a href="project3.html">
-          <img src="images/project3-thumb.jpg" alt="Project 3 Thumbnail">
-          <span>Titanic Survival Prediction</span>
-        </a>
-      </li>
-    </ul>
-    <h3 class="sidebar-section-title other-title">Other Projects</h3>
-    <ul class="sidebar-list other-list">
-      <li>
-        <a href="project4.html">
-          <img src="images/project4-thumb.jpg" alt="Project 4 Thumbnail">
-          <span>Multiple Regression Analysis</span>
-        </a>
-      </li>
-      <!-- Add more "other" project items as needed -->
-    </ul>
-  </div>
-</div>
-  
+
   <!-- Main Project Content -->
   <div class="container">
-    <!-- Project Title & Overview -->
-    <section class="project-section" id="project-overview">
-      <h1>Project Title</h1>
-      <p>This project showcases a data analysis on [subject]. It involved data cleaning, visualization, and predictive modeling using Python, SQL, and R.</p>
+
+    <!-- 1. Introduction -->
+    <section class="project-section" id="introduction">
+      <h1>My Journey with HTML & CSS</h1>
+      <p>This project marks my first deep dive into web design. With no background in HTML or CSS, I challenged myself to learn and create a responsive, visually appealing website. Every step was a lesson in design, code organization, and creative problem-solving.</p>
     </section>
 
-    <!-- Project Description -->
-    <section class="project-section" id="project-description">
-      <h2>Description</h2>
-      <p>A detailed description of the project goes here. Discuss your methodology, the tools used, and what the project entails.</p>
-      <!-- Optionally include images or interactive demos -->
+    <!-- 2. Early Challenges: Getting Started -->
+    <section class="project-section" id="early-challenges">
+      <h2>Early Challenges: Getting Started</h2>
+      <p>My initial attempts involved writing styling directly in the HTML. Quickly, I realized that mixing content with presentation was unsustainable. This phase was full of trial and error as I struggled with inline styling and debugging unexpected results.</p>
       <div class="project-media">
-        <img src="images/project-sample.jpg" alt="Project Sample">
+        <!-- Placeholder for a looped GIF showing code struggles (e.g., inline styling issues) -->
+        <img src="images/gif-inline-styling-challenge.gif" alt="Struggle with inline styling" />
       </div>
     </section>
 
-    <!-- Project Challenges -->
-    <section class="project-section" id="project-challenges">
-      <h2>Challenges</h2>
-      <p>Describe any obstacles or challenges you faced during the project and how you overcame them.</p>
+    <!-- 3. Refactoring & Reorganizing -->
+    <section class="project-section" id="refactoring">
+      <h2>Refactoring & Reorganizing</h2>
+      <p>Realizing the need for clean code, I moved all styling to a dedicated CSS file. My CSS was initially chaotic—with redundancies and scattered declarations. Refactoring the stylesheet into clear, organized sections was challenging but essential for maintainability and further development.</p>
+      <div class="project-media">
+        <!-- Placeholder for a looped GIF showing the refactoring process -->
+        <img src="images/gif-css-refactoring.gif" alt="Refactoring CSS code" />
+      </div>
     </section>
 
-    <!-- Project Outcomes -->
-    <section class="project-section" id="project-outcomes">
-      <h2>Outcomes</h2>
-      <p>Discuss the results, insights gained, and any impact this project has had. Include metrics or data visualization snapshots if available.</p>
+    <!-- 4. Enhancements & Iterative Improvements -->
+    <section class="project-section" id="enhancements">
+      <h2>Enhancements & Iterative Improvements</h2>
+      <p>With a more organized codebase, I began integrating subtle visual enhancements—such as animations and parallax effects—to enrich the user experience. I also ensured the design was responsive and inherited dark mode settings from the main site. (Note: A scroll progress marker with interactive circles is planned for a future update.)</p>
+      <div class="project-media">
+        <!-- Placeholder for a looped GIF showing visual improvements -->
+        <img src="images/gif-enhancements.gif" alt="Enhancements and visual improvements" />
+      </div>
     </section>
+
+    <!-- 5. Final Product & Reflections -->
+    <section class="project-section" id="final-product">
+      <h2>Final Product & Reflections</h2>
+      <p>The final product is a responsive, visually appealing website that not only showcases my technical growth but also my ability to learn and adapt. This journey taught me the importance of clear code, thoughtful design, and continuous improvement. I’m proud of the progress made and excited for what comes next.</p>
+      <div class="project-media">
+        <!-- Placeholder for a looped GIF or final screenshot -->
+        <img src="images/gif-final-product.gif" alt="Final product showcase" />
+      </div>
+    </section>
+
   </div>
 
-  <!-- Minimal Footer (optional) -->
+  <!-- Minimal Footer -->
   <footer class="project-footer">
     <p>&copy; <span id="year"></span> Fabrizio Petrozzi. All rights reserved.</p>
   </footer>
- <!-- Section Animation Script -->
- <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const menuToggle = document.getElementById('menuToggle');
-    const closeSidebar = document.getElementById('closeSidebar');
-    const projectSidebar = document.getElementById('projectSidebar');
 
-    // Toggle the sidebar when the menu icon is clicked
-    menuToggle.addEventListener('click', function() {
-      projectSidebar.classList.add('active');
-    });
+  <!-- Scripts for Sidebar, Filter, and Section Animations -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const menuToggle = document.getElementById('menuToggle');
+      const closeSidebar = document.getElementById('closeSidebar');
+      const projectSidebar = document.getElementById('projectSidebar');
 
-    // Close the sidebar when the close button is clicked
-    closeSidebar.addEventListener('click', function() {
-      projectSidebar.classList.remove('active');
-    });
+      // Toggle the sidebar when the menu icon is clicked
+      menuToggle.addEventListener('click', function() {
+        projectSidebar.classList.add('active');
+      });
 
-    // Optionally, close the sidebar if the user clicks outside of it:
-    document.addEventListener('click', function(e) {
-      if (!projectSidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+      // Close the sidebar when the close button is clicked
+      closeSidebar.addEventListener('click', function() {
         projectSidebar.classList.remove('active');
-      }
-    });
-  });
-</script>
-<!-- Filter -->
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const featuredList = document.querySelector('.featured-list');
-    const otherList = document.querySelector('.other-list');
-    const featuredTitle = document.querySelector('.featured-title');
-    const otherTitle = document.querySelector('.other-title');
+      });
 
-    filterButtons.forEach(btn => {
-      btn.addEventListener('click', function() {
-        // Remove active class from all filter buttons
-        filterButtons.forEach(b => b.classList.remove('active'));
-        // Add active class to the clicked button
-        btn.classList.add('active');
-
-        const filter = btn.getAttribute('data-filter');
-
-        if (filter === 'featured') {
-          featuredList.style.display = 'block';
-          featuredTitle.style.display = 'block';
-          otherList.style.display = 'none';
-          otherTitle.style.display = 'none';
-        } else if (filter === 'other') {
-          featuredList.style.display = 'none';
-          featuredTitle.style.display = 'none';
-          otherList.style.display = 'block';
-          otherTitle.style.display = 'block';
-        } else if (filter === 'all') {
-          featuredList.style.display = 'block';
-          featuredTitle.style.display = 'block';
-          otherList.style.display = 'block';
-          otherTitle.style.display = 'block';
+      // Optionally, close the sidebar if the user clicks outside of it:
+      document.addEventListener('click', function(e) {
+        if (!projectSidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+          projectSidebar.classList.remove('active');
         }
       });
     });
+  </script>
 
-    // Optionally, set a default filter button (e.g., "All")
-    document.querySelector('.filter-btn[data-filter="all"]').click();
-  });
-</script>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const sections = document.querySelectorAll('.project-section');
-    const sectionObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('active');
-          observer.unobserve(entry.target);
-        }
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const filterButtons = document.querySelectorAll('.filter-btn');
+      const featuredList = document.querySelector('.featured-list');
+      const otherList = document.querySelector('.other-list');
+      const featuredTitle = document.querySelector('.featured-title');
+      const otherTitle = document.querySelector('.other-title');
+
+      filterButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+          // Remove active class from all filter buttons
+          filterButtons.forEach(b => b.classList.remove('active'));
+          // Add active class to the clicked button
+          btn.classList.add('active');
+
+          const filter = btn.getAttribute('data-filter');
+          if (filter === 'featured') {
+            featuredList.style.display = 'block';
+            featuredTitle.style.display = 'block';
+            otherList.style.display = 'none';
+            otherTitle.style.display = 'none';
+          } else if (filter === 'other') {
+            featuredList.style.display = 'none';
+            featuredTitle.style.display = 'none';
+            otherList.style.display = 'block';
+            otherTitle.style.display = 'block';
+          } else if (filter === 'all') {
+            featuredList.style.display = 'block';
+            featuredTitle.style.display = 'block';
+            otherList.style.display = 'block';
+            otherTitle.style.display = 'block';
+          }
+        });
       });
-    }, {
-      threshold: 0.1,
-      rootMargin: "0px 0px -20% 0px"
+
+      // Optionally, set a default filter button (e.g., "All")
+      document.querySelector('.filter-btn[data-filter="all"]').click();
     });
-    sections.forEach(section => {
-      sectionObserver.observe(section);
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const sections = document.querySelectorAll('.project-section');
+      const sectionObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.1,
+        rootMargin: "0px 0px -20% 0px"
+      });
+      sections.forEach(section => {
+        sectionObserver.observe(section);
+      });
     });
-  });
-</script>
-<script src="darkmode.js"></script>
+  </script>
+
+  <script src="darkmode.js"></script>
+  <script>
+    // Update footer year automatically
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
