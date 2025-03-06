@@ -916,14 +916,8 @@ footer {
     top: 49%;
     transform: translateY(-50%);
   }
-  
-  @media (min-width: 768px) {
-    .text-block {
-      font-size: 1.1rem;
-    }
-    
-    .highlight-block {
-      font-size: 1.75rem;
-    }
+
+  .highlight-block img {
+     max-width: 80%;
   }
 }
