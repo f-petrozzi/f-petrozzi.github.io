@@ -200,7 +200,7 @@ body {
 /* Base Typography */
 h1, h2 {
   margin-bottom: var(--spacing-sm);
-  text-align: left;
+  text-align: center;
 }
 
 p {
