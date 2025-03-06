@@ -904,7 +904,7 @@ footer {
   .container,
   .project-container {
     margin-top: var(--spacing-xl);
-    padding: var(--spacing-lg);
+    padding: var(--spacing-lg) 0;
   }
    
   .dark-mode-toggle-label .toggle-slider {
