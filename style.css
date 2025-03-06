@@ -687,9 +687,9 @@ footer {
   z-index: 1003;
 }
 
-.sidebar-list li a:hover {
-  background-color: rgba(253,187,47,0.2);
-  z-index: 1002;
+.sidebar-list li a img:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
 }
 
 .sidebar-list li a img {
@@ -899,7 +899,7 @@ footer {
   --filter-btn-bg: #00573F;
   --filter-btn-hover-bg: #FDBB2F;
   --sidebar-link-color: #333;
-  --sidebar-link-hover-bg: rgba(253,187,47,0.2);
+
 
   /* Highlight name */
   --highlight-name: #00573F;
@@ -959,7 +959,6 @@ footer {
   --filter-btn-bg: #383851;           
   --filter-btn-hover-bg: #a8b2d1;
   --sidebar-link-color: #fff;
-  --sidebar-link-hover-bg: #a8b2d1;
 
   /* Highlight name */
   --highlight-name: #a8b2d1;
@@ -1049,12 +1048,6 @@ footer {
   color: var(--sidebar-link-color);
   padding: 1rem 0;
   transition: background-color 0.3s;
-}
-
-.sidebar-list li a:hover {
-  background-color: var(--sidebar-link-hover-bg);
-  opacity: 0.6;
-  z-index: 1002;
 }
 
 .filter-btn {
