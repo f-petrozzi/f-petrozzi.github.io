@@ -1,105 +1,152 @@
 /* ==========================================================================
-   CSS REFACTORING
-   
-   1. Consolidate CSS variables in :root
-   2. Improve selector specificity and reduce nesting
-   3. Group related media queries
-   4. Remove redundant properties
-   5. Use modern CSS features more effectively
-   6. Better organize dark mode overrides
+   CSS Variables - Light & Dark Mode
    ========================================================================== */
 
-/* ==========================================================================
-   1. CSS Variables & Theming
-   ========================================================================== */
 :root {
-  /* Color Palette */
+  /* Colors */
   --color-green: #00573F;
   --color-gold: #FDBB2F;
-  --color-navy: #192A56;
-  --color-white: #fff;
+  --color-blue: #192A56;
   --color-dark: #333;
+  --color-light: #fff;
   
-  /* Light Theme Variables */
+  /* Global */
   --body-text-color: var(--color-dark);
   --body-bg: linear-gradient(270deg, rgba(0,87,63,0.2), rgba(253,187,47,0.15), rgba(25,42,86,0.25));
+  --body-bg-size: 600% 600%; 
+  --body-anim: gradientShift 45s ease infinite;
+  
+  /* Header */
   --header-bg: var(--color-green);
-  --header-text: var(--color-white);
+  --header-text-color: var(--color-light);
+  
+  /* Navigation */
+  --nav-link-color: var(--color-light);
+  --nav-link-hover-color: var(--color-gold);
+  
+  /* Sections / Containers */
   --section-bg: rgba(255,255,255,0.65);
-  --section-border: var(--color-gold);
-  --section-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  --profile-border: var(--color-green);
-  --profile-hover: var(--color-gold);
-  --project-border: var(--color-green);
-  --project-hover: var(--color-gold);
-  --sidebar-bg: rgba(255,255,255,0.95);
-  --sidebar-text: var(--color-dark);
-  --sidebar-heading-bg: var(--color-green);
-  --sidebar-heading-text: var(--color-white);
-  --sidebar-section: var(--color-green);
-  --filter-btn-bg: var(--color-green);
-  --filter-hover-bg: var(--color-gold);
-  --social-bg: rgba(0,87,63,0.9);
-  --social-hover: rgba(253,187,47,0.9);
+  --section-border-left: var(--color-gold);
+  --section-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  
+  /* Footer */
   --footer-bg: var(--color-green);
-  --footer-text: var(--color-white);
-  --highlight-text: var(--color-green);
-  --modal-bg: var(--color-white);
-  --modal-border: var(--color-gold);
-  --modal-link: var(--color-dark);
+  --footer-text-color: var(--color-light);
   
-  /* Animation Variables */
-  --transition-fast: 0.3s ease;
-  --transition-medium: 0.6s ease-out;
-  --transition-slow: 0.8s ease-out;
+  /* Profile Image */
+  --profile-pic-border: var(--color-green);
+  --profile-pic-hover-border: var(--color-gold);
+  --profile-pic-hover-shadow: 0 0 10px var(--color-gold);
   
-  /* Spacing & Sizing */
-  --space-xs: 0.25rem;
-  --space-sm: 0.5rem;
-  --space-md: 1rem;
-  --space-lg: 2rem;
-  --space-xl: 4rem;
+  /* Social Links */
+  --social-bg: rgba(0,87,63,0.9);
+  --social-hover-bg: rgba(253,187,47,0.9);
+  --social-hover-glow: 0 0 10px rgba(253,187,47,0.9);
+  
+  /* Project Item */
+  --project-item-border: var(--color-green);
+  --project-item-hover-border: var(--color-gold);
+  --project-item-hover-shadow: 0 0 10px var(--color-gold);
+
+  /* Sidebar */
+  --sidebar-bg: rgba(255,255,255,0.95);
+  --sidebar-text-color: var(--color-dark);
+  --sidebar-header-bg: var(--color-green);
+  --sidebar-header-text: var(--color-light);
+  --sidebar-subheading-color: var(--color-green);
+  --filter-btn-bg: var(--color-green);
+  --filter-btn-hover-bg: var(--color-gold);
+  --sidebar-link-color: var(--color-dark);
+
+  /* Modal */
+  --modal-bg: var(--color-light);
+  --modal-border-left: var(--color-gold);
+  --modal-content-a: var(--color-dark);
+  
+  /* Highlight name */
+  --highlight-name: var(--color-green);
+  
+  /* Common sizes */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 4rem;
+  
+  /* Transitions */
+  --transition-fast: 0.3s;
+  --transition-medium: 0.6s;
+  --transition-slow: 0.8s;
+  
+  /* Borders */
   --border-radius-sm: 4px;
   --border-radius-md: 5px;
-  --border-radius-lg: 8px;
   --border-radius-round: 50%;
 }
 
-/* Dark Theme Variables */
+/* Dark Mode Overrides */
 .dark-mode, [data-theme="dark"] {
-  --color-dark-blue: #1a1a2e;
-  --color-medium-blue: #383851;
-  --color-light-blue: #a8b2d1;
+  /* Colors */
+  --color-dark-bg-1: #0d0d0d;
+  --color-dark-bg-2: #1a1a2e;
+  --color-dark-accent: #383851;
+  --color-light-accent: #a8b2d1;
   
+  /* Global */
   --body-text-color: #ddd;
-  --body-bg: linear-gradient(270deg, #0d0d0d, var(--color-dark-blue), #0d0d0d);
-  --header-bg: var(--color-medium-blue);
-  --section-bg: var(--color-dark-blue);
-  --section-border: var(--color-light-blue);
-  --section-shadow: 0 0 10px var(--color-light-blue);
-  --profile-border: var(--color-medium-blue);
-  --profile-hover: var(--color-light-blue);
-  --project-border: var(--color-medium-blue);
-  --project-hover: var(--color-light-blue);
-  --sidebar-bg: var(--color-dark-blue);
-  --sidebar-text: var(--color-white);
-  --sidebar-heading-bg: var(--color-medium-blue);
-  --sidebar-heading-text: var(--color-white);
-  --sidebar-section: var(--color-white);
-  --filter-btn-bg: var(--color-medium-blue);
-  --filter-hover-bg: var(--color-light-blue);
-  --social-bg: var(--color-medium-blue);
-  --social-hover: var(--color-light-blue);
-  --footer-bg: var(--color-medium-blue);
-  --highlight-text: var(--color-light-blue);
-  --modal-bg: var(--color-dark-blue);
-  --modal-border: var(--color-light-blue);
-  --modal-link: var(--color-white);
+  --body-bg: linear-gradient(270deg, var(--color-dark-bg-1), var(--color-dark-bg-2), var(--color-dark-bg-1));
+  --body-bg-size: auto;
+  --body-anim: none;
+  
+  /* Header & Footer */
+  --header-bg: var(--color-dark-accent);
+  --footer-bg: var(--color-dark-accent);
+  
+  /* Navigation */
+  --nav-link-hover-color: var(--color-light-accent);
+  
+  /* Sections / Containers */
+  --section-bg: var(--color-dark-bg-2);
+  --section-border-left: var(--color-light-accent);
+  --section-box-shadow: 0 0 10px var(--color-light-accent);
+  
+  /* Profile Image */
+  --profile-pic-border: var(--color-dark-accent);
+  --profile-pic-hover-border: var(--color-light-accent);
+  --profile-pic-hover-shadow: 0 0 10px var(--color-light-accent);
+  
+  /* Social Buttons */
+  --social-bg: var(--color-dark-accent);
+  --social-hover-bg: var(--color-light-accent);
+  --social-hover-glow: 0 0 10px var(--color-light-accent);
+  
+  /* Project Item */
+  --project-item-border: var(--color-dark-accent);
+  --project-item-hover-border: var(--color-light-accent);
+  --project-item-hover-shadow: 0 0 10px var(--color-light-accent);
+
+  /* Sidebar */
+  --sidebar-bg: var(--color-dark-bg-2);
+  --sidebar-text-color: var(--color-light);
+  --sidebar-header-bg: var(--color-dark-accent);
+  --sidebar-subheading-color: var(--color-light);
+  --filter-btn-bg: var(--color-dark-accent);
+  --filter-btn-hover-bg: var(--color-light-accent);
+  --sidebar-link-color: var(--color-light);
+
+  /* Modal */
+  --modal-bg: var(--color-dark-bg-2);
+  --modal-border-left: var(--color-light-accent);
+  --modal-content-a: var(--color-light);
+  
+  /* Highlight name */
+  --highlight-name: var(--color-light-accent);
 }
 
 /* ==========================================================================
-   2. Base & Global Styles
+   1. Base & Global Styles
    ========================================================================== */
+
 /* Reset & Universal Settings */
 * {
   margin: 0;
@@ -109,53 +156,66 @@
 
 html {
   scroll-behavior: smooth;
-  height: 100%;
 }
 
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Global Body Styling */
 body {
   font-family: 'Open Sans', Arial, sans-serif;
   line-height: 1.6;
   color: var(--body-text-color);
-  background: var(--body-bg);
-  background-size: 600% 600%;
-  animation: gradientShift 45s ease infinite;
-  min-height: 100%;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
+  background: var(--body-bg);
+  background-size: var(--body-bg-size);
+  animation: var(--body-anim);
 }
 
 /* Gradient Animation */
 @keyframes gradientShift {
-  0%, 100% { background-position: 0% 50%; }
+  0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Container Styling */
+.container {
+  flex: 1;                     
+  width: 100%;
+  max-width: 1300px;
+  margin: 5rem auto 0;
+  padding: var(--spacing-sm);  
 }
 
 /* ==========================================================================
-   3. Typography & Text Scaling
+   2. Typography & Text Elements
    ========================================================================== */
+
+/* Base Typography */
 h1, h2, p {
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--spacing-sm);
   text-align: center;
 }
 
 .highlight-name {
   font-weight: bold;
-  color: var(--highlight-text);
+  color: var(--highlight-name);
 }
 
-/* Mobile-First Text Sizing */
+/* Mobile First Typography */
 body { font-size: 14px; }
 h1 { font-size: 24px; }
 h2 { font-size: 20px; }
 p { font-size: 14px; }
-
-/* Header Elements */
-.common-header .logo { font-size: 20px; }
+header.common-header .logo { font-size: 20px; }
 .main-nav a { font-size: 16px; }
-#menuToggle, .common-header .back { font-size: 20px; }
-
-/* UI Elements */
+#menuToggle, header.common-header .back { font-size: 20px; }
 .social-links i { font-size: 16px; }
 .modal-content .close { font-size: 24px; }
 .sidebar-section-title { font-size: 16px; }
@@ -163,16 +223,15 @@ p { font-size: 14px; }
 #closeSidebar { font-size: 20px; }
 .filter-btn { font-size: 14px; }
 
-/* Tablet Breakpoint */
+/* Tablet Typography */
 @media (min-width: 601px) and (max-width: 1024px) {
   body { font-size: 16px; }
   h1 { font-size: 30px; }
   h2 { font-size: 24px; }
   p { font-size: 16px; }
-  
-  .common-header .logo { font-size: 22px; }
+  header.common-header .logo { font-size: 22px; }
   .main-nav a { font-size: 18px; }
-  #menuToggle, .common-header .back { font-size: 22px; }
+  #menuToggle, header.common-header .back { font-size: 22px; }
   .social-links i { font-size: 20px; }
   .modal-content .close { font-size: 26px; }
   .sidebar-section-title { font-size: 18px; }
@@ -181,16 +240,15 @@ p { font-size: 14px; }
   .filter-btn { font-size: 15px; }
 }
 
-/* Desktop Breakpoint */
+/* Desktop Typography */
 @media (min-width: 1025px) {
   body { font-size: 18px; }
   h1 { font-size: 36px; }
   h2 { font-size: 28px; }
   p { font-size: 18px; }
-  
-  .common-header .logo { font-size: 24px; }
+  header.common-header .logo { font-size: 24px; }
   .main-nav a { font-size: 20px; }
-  #menuToggle, .common-header .back { font-size: 24px; }
+  #menuToggle, header.common-header .back { font-size: 24px; }
   .social-links i { font-size: 24px; }
   .modal-content .close { font-size: 28px; }
   .sidebar-section-title { font-size: 20px; }
@@ -200,46 +258,18 @@ p { font-size: 14px; }
 }
 
 /* ==========================================================================
-   4. Layout & Containers
+   3. Header & Navigation
    ========================================================================== */
-.container {
-  flex: 1;
-  width: 100%;
-  max-width: 1300px;
-  margin: 5rem auto 0;
-  padding: var(--space-md);
-}
 
-section {
-  opacity: 0;
-  transform: translateX(-100px);
-  transition: opacity var(--transition-medium), transform var(--transition-medium);
-  display: flow-root;
-  background-color: var(--section-bg);
-  margin-bottom: 6rem;
-  padding: var(--space-xl);
-  border-radius: var(--border-radius-md);
-  box-shadow: var(--section-shadow);
-  border-left: 5px solid var(--section-border);
-  scroll-margin-top: 80px;
-}
-
-section.active {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-/* ==========================================================================
-   5. Header & Navigation
-   ========================================================================== */
-.common-header {
+/* Base Header Style */
+header.common-header {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 999;
   background-color: var(--header-bg);
-  color: var(--header-text);
+  color: var(--header-text-color);
   padding: 0.7rem;
   display: flex;
   align-items: center;
@@ -247,10 +277,11 @@ section.active {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+/* Header Structural Elements */
 .header-left {
   display: flex;
   align-items: center;
-  gap: var(--space-md);
+  gap: var(--spacing-sm);
   flex: 0 0 auto;
 }
 
@@ -262,15 +293,16 @@ section.active {
 
 .header-right {
   position: absolute;
-  right: var(--space-md);
+  right: var(--spacing-sm);
   top: 55%;
   transform: translateY(-50%);
 }
 
-.common-header .logo {
+/* Logo */
+header.common-header .logo {
   font-weight: bold;
-  color: var(--color-white);
-  border: 2px solid var(--color-white);
+  color: var(--header-text-color);
+  border: 2px solid var(--header-text-color);
   width: clamp(40px, 6vw, 50px);
   height: clamp(40px, 6vw, 50px);
   display: flex;
@@ -278,6 +310,13 @@ section.active {
   justify-content: center;
   background: none;
   cursor: pointer;
+}
+
+/* Navigation */
+.header-center nav {
+  text-align: center;
+  overflow: visible;
+  white-space: nowrap;
 }
 
 .main-nav {
@@ -288,36 +327,111 @@ section.active {
 
 .main-nav a {
   text-decoration: none;
-  color: var(--header-text);
+  color: var(--nav-link-color);
   font-weight: bold;
   transition: color var(--transition-fast);
 }
 
 .main-nav a:hover {
-  color: var(--color-gold);
+  color: var(--nav-link-hover-color);
 }
 
+/* Menu Toggle Button */
 #menuToggle {
   background: none;
   border: none;
-  color: var(--color-white);
+  color: var(--header-text-color);
   cursor: pointer;
 }
 
-.common-header .back {
+/* Back Button */
+header.common-header .back {
   display: flex;
   align-items: center;
-  color: var(--color-white);
+  color: var(--header-text-color);
   text-decoration: none;
 }
 
 /* ==========================================================================
-   6. Dark Mode Toggle
+   4. Section Styles
    ========================================================================== */
-.dark-mode-toggle {
-  margin: -3.5rem 0 0 -3.7rem;
+
+section {
+  opacity: 0;
+  transform: translateX(-100px);
+  transition: opacity var(--transition-medium) ease-out, transform var(--transition-medium) ease-out;
+  display: flow-root;
+  background-color: var(--section-bg);
+  margin-bottom: 6rem;
+  padding: var(--spacing-xl);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--section-box-shadow);
+  border-left: 5px solid var(--section-border-left);
+  scroll-margin-top: 80px;
 }
 
+section.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ==========================================================================
+   5. Social Links & Dark Mode Toggle
+   ========================================================================== */
+
+/* Social links container */
+.social-links {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Social link styling */
+.social-links a {
+  width: clamp(30px, 5vw, 50px);
+  height: clamp(30px, 5vw, 50px);
+  background-color: var(--social-bg);
+  border-radius: var(--border-radius-round);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--header-text-color);
+  text-decoration: none;
+  transition: transform var(--transition-fast), background-color var(--transition-fast);
+  position: relative;
+}
+
+.social-links a:hover {
+  transform: scale(1.1);
+  background-color: var(--social-hover-bg);
+  box-shadow: var(--social-hover-glow);
+}
+
+/* Tooltip styling */
+.social-links a::after {
+  content: attr(aria-label);
+  position: absolute;
+  bottom: -2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.75);
+  color: var(--color-light);
+  padding: 0.3rem 0.5rem;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.8rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.social-links a:hover::after {
+  opacity: 1;
+}
+
+/* Dark Mode Toggle */
 .dark-mode-toggle-input {
   display: none;
 }
@@ -329,7 +443,7 @@ section.active {
   height: clamp(20px, 3.5vw, 26px);
   border-radius: calc(clamp(20px, 3.5vw, 26px) / 2);
   background: linear-gradient(to right, #f1c40f, #87cefa);
-  border: clamp(1px, 0.3vw, 2px) solid var(--color-white);
+  border: clamp(1px, 0.3vw, 2px) solid var(--color-light);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
   position: relative;
   cursor: pointer;
@@ -361,7 +475,7 @@ section.active {
   left: 0px;
   width: var(--slider-width);
   height: var(--slider-width);
-  border-radius: 50%;
+  border-radius: var(--border-radius-round);
   background-color: #f1c40f;
   transition: left 0.8s ease, background-color 1s ease;
   display: flex;
@@ -409,65 +523,18 @@ section.active {
   background-color: transparent;
 }
 
-/* ==========================================================================
-   7. Social Links
-   ========================================================================== */
-.social-links {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  display: flex;
-  gap: 0.5rem;
-}
-
-.social-links a {
-  width: clamp(30px, 5vw, 50px);
-  height: clamp(30px, 5vw, 50px);
-  background-color: var(--social-bg);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-white);
-  text-decoration: none;
-  transition: transform var(--transition-fast), background-color var(--transition-fast);
-  position: relative;
-}
-
-.social-links a:hover {
-  transform: scale(1.1);
-  background-color: var(--social-hover);
-  box-shadow: 0 0 10px var(--social-hover);
-}
-
-.social-links a::after {
-  content: attr(aria-label);
-  position: absolute;
-  bottom: -2.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.75);
-  color: var(--color-white);
-  padding: 0.3rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease-in-out;
-}
-
-.social-links a:hover::after {
-  opacity: 1;
+.dark-mode-toggle {
+  margin: -3.5rem 0 0 -3.7rem;
 }
 
 /* ==========================================================================
-   8. Projects Grid
+   6. Projects Grid
    ========================================================================== */
+
 .projects-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-md);
+  gap: var(--spacing-sm);
   justify-content: center;
 }
 
@@ -475,10 +542,10 @@ section.active {
   flex: 1 1 calc(33.33% - 1rem);
   max-width: calc(33.33% - 1rem);
   text-align: center;
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--spacing-sm);
   transform: translateX(100%);
   opacity: 0;
-  transition: transform var(--transition-slow) 0.2s, opacity var(--transition-slow) 0.2s;
+  transition: transform var(--transition-slow) ease-out 0.2s, opacity var(--transition-slow) ease-out 0.2s;
 }
 
 .project-item.active {
@@ -497,15 +564,15 @@ section.active {
   aspect-ratio: 16 / 9;
   object-fit: cover;
   border-radius: var(--border-radius-md);
-  border: 4px solid var(--project-border);
+  border: 4px solid var(--project-item-border);
   transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
   cursor: pointer;
 }
 
 .project-item img:hover {
   transform: translateY(-5px);
-  border-color: var(--project-hover);
-  box-shadow: 0 0 10px var(--project-hover);
+  border-color: var(--project-item-hover-border);
+  box-shadow: var(--project-item-hover-shadow);
 }
 
 .project-item h3 {
@@ -514,27 +581,86 @@ section.active {
 }
 
 /* ==========================================================================
-   9. Profile Image
+   7. Footer
    ========================================================================== */
+
+footer {
+  width: 100%;
+  background-color: var(--footer-bg);
+  color: var(--footer-text-color);
+  padding: var(--spacing-sm);
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ==========================================================================
+   8. Profile Image
+   ========================================================================== */
+
 .profile-pic {
   display: block;
   margin: 0 auto 2rem auto;
   width: clamp(150px, 15vw, 250px);
   height: clamp(150px, 15vw, 250px);
   object-fit: cover;
-  border-radius: 50%;
-  border: 4px solid var(--profile-border);
+  border-radius: var(--border-radius-round);
+  border: 4px solid var(--profile-pic-border);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .profile-pic:hover {
-  border-color: var(--profile-hover);
-  box-shadow: 0 0 10px var(--profile-hover);
+  border-color: var(--profile-pic-hover-border);
+  box-shadow: var(--profile-pic-hover-shadow);
+}
+
+/* ==========================================================================
+   9. Modal Window
+   ========================================================================== */
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  position: relative;
+  background-color: var(--modal-bg);
+  margin: 10% auto;
+  padding: var(--spacing-md);
+  border-left: 5px solid var(--modal-border-left);
+  width: 80%;
+  max-width: 500px;
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--section-box-shadow);
+}
+
+.modal-content .close {
+  position: absolute;
+  top: 0;
+  right: 0.5rem;
+  color: #aaa;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.modal-content .close:hover,
+.modal-content .close:focus {
+  color: black;
 }
 
 /* ==========================================================================
    10. Sidebar
    ========================================================================== */
+
 .sidebar {
   position: fixed;
   top: 0;
@@ -559,20 +685,20 @@ section.active {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-md);
-  background-color: var(--sidebar-heading-bg);
-  color: var(--sidebar-heading-text);
+  padding: var(--spacing-sm);
+  background-color: var(--sidebar-header-bg);
+  color: var(--sidebar-header-text);
 }
 
 .sidebar-content {
-  padding: var(--space-md);
+  padding: var(--spacing-sm);
   overflow-y: auto;
 }
 
 .sidebar-section-title {
-  margin-top: var(--space-md);
+  margin-top: var(--spacing-sm);
   margin-bottom: 0.5rem;
-  color: var(--sidebar-section);
+  color: var(--sidebar-subheading-color);
   border-bottom: 1px solid #ddd;
   padding-bottom: 0.25rem;
   z-index: 1003;
@@ -592,8 +718,8 @@ section.active {
   display: flex;
   align-items: center;
   text-decoration: none;
-  color: var(--sidebar-text);
-  padding: var(--space-md) 0;
+  color: var(--sidebar-link-color);
+  padding: var(--spacing-sm) 0;
   transition: background-color var(--transition-fast);
   z-index: 1003;
 }
@@ -603,8 +729,8 @@ section.active {
   height: clamp(40px, 5vw, 60px);
   object-fit: cover;
   border-radius: var(--border-radius-md);
-  margin-right: var(--space-md);
-  transition: transform var(--transition-fast);
+  margin-right: var(--spacing-sm);
+  transition: transform var(--transition-fast) ease;
 }
 
 .sidebar-list li a img:hover {
@@ -614,10 +740,10 @@ section.active {
 #closeSidebar {
   position: absolute;
   top: 1.5rem;
-  right: var(--space-md);
+  right: var(--spacing-sm);
   background: none;
   border: none;
-  color: var(--color-white);
+  color: var(--sidebar-header-text);
   cursor: pointer;
 }
 
@@ -627,12 +753,12 @@ section.active {
   justify-content: center;
   gap: 0.1rem;
   padding: 0.1rem;
-  background-color: var(--sidebar-heading-bg);
+  background-color: var(--sidebar-header-bg);
 }
 
 .filter-btn {
   background-color: var(--filter-btn-bg);
-  color: var(--color-white);
+  color: var(--sidebar-header-text);
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 0;
@@ -642,63 +768,19 @@ section.active {
 
 .filter-btn:hover,
 .filter-btn.active {
-  background-color: var(--filter-hover-bg);
+  background-color: var(--filter-btn-hover-bg);
 }
 
 /* ==========================================================================
-   11. Modal Window
+   11. Content Blocks
    ========================================================================== */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.5);
-}
 
-.modal-content {
-  position: relative;
-  background-color: var(--modal-bg);
-  margin: 10% auto;
-  padding: 1.5rem;
-  border-left: 5px solid var(--modal-border);
-  width: 80%;
-  max-width: 500px;
-  border-radius: var(--border-radius-md);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.modal-content .close {
-  position: absolute;
-  top: 0rem;
-  right: 0.5rem;
-  color: #aaa;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.modal-content .close:hover,
-.modal-content .close:focus {
-  color: black;
-}
-
-.modal-content a {
-  color: var(--modal-link);
-}
-
-/* ==========================================================================
-   12. Content Blocks (Project Pages)
-   ========================================================================== */
 .content-block {
   opacity: 0;
   transform: translateY(20px);
-  transition: opacity var(--transition-slow), transform var(--transition-slow);
-  padding: 2rem 1rem;
-  margin: 2rem 0;
+  transition: opacity var(--transition-slow) ease-out, transform var(--transition-slow) ease-out;
+  padding: var(--spacing-lg) var(--spacing-sm);
+  margin: var(--spacing-lg) 0;
 }
 
 .content-block.active {
@@ -710,9 +792,9 @@ section.active {
   font-family: 'Open Sans', Arial, sans-serif;
   line-height: 1.6;
   color: var(--body-text-color);
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-md);
   text-align: left;
-  padding: var(--space-md);
+  padding: var(--spacing-sm);
 }
 
 .highlight-block {
@@ -720,17 +802,17 @@ section.active {
   font-family: 'Open Sans', Arial, sans-serif;
   font-size: 1.5rem;
   font-weight: bold;
-  color: var(--highlight-text);
-  padding: var(--space-md);
-  margin-bottom: 1.5rem;
+  color: var(--highlight-name);
+  padding: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
 }
 
 .highlight-block img {
   display: block;
   max-width: 80%;
-  margin: 1rem auto 0;
+  margin: var(--spacing-sm) auto 0;
   border-radius: var(--border-radius-md);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  transition: transform var(--transition-fast) ease, box-shadow var(--transition-fast) ease;
 }
 
 .highlight-block img:hover {
@@ -739,33 +821,10 @@ section.active {
 }
 
 /* ==========================================================================
-   13. Footer
+   12. Media Queries
    ========================================================================== */
-footer {
-  width: 100%;
-  background-color: var(--footer-bg);
-  color: var(--footer-text);
-  padding: var(--space-md);
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
-/* ==========================================================================
-   14. Responsive Adjustments
-   ========================================================================== */
 @media (max-width: 600px) {
-  section {
-    padding: var(--space-lg);
-    margin-bottom: var(--space-xl);
-  }
-  
-  .container {
-    margin-top: var(--space-xl);
-    padding: var(--space-lg);
-  }
-  
   header.common-header {
     position: fixed;
     top: 0;
@@ -777,12 +836,23 @@ footer {
     padding-right: 90px;
   }
   
+  .header-right {
+    position: absolute;
+    right: var(--spacing-sm);
+    top: 55%;
+    transform: translateY(-50%);
+  }
+  
   .header-left {
     gap: 0.5rem;
   }
   
   header.common-header .logo {
-    margin-right: var(--space-md);
+    margin-right: var(--spacing-sm);
+  }
+  
+  #menuToggle {
+    font-size: clamp(16px, 4vw, 20px);
   }
   
   nav, .main-nav {
@@ -797,8 +867,16 @@ footer {
   }
   
   nav a, .main-nav a {
+    margin: 0;
     padding: 0.5rem;
+  }
+  
+  nav a {
     font-size: clamp(8px, 3vw, 14px);
+  }
+  
+  .main-nav a {
+    font-size: clamp(8px, 3vw, 18px);
   }
   
   .projects-grid {
@@ -809,32 +887,34 @@ footer {
     flex: 1 1 100%;
     max-width: 100%;
   }
-  
+   
   .project-item img {
     aspect-ratio: auto;
     object-fit: contain;
   }
+   
+  section {
+    margin-bottom: var(--spacing-xl);
+  }
   
+  .container,
+  .project-container {
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-lg);
+  }
+   
   .dark-mode-toggle-label .toggle-slider {
     top: 49%;
     transform: translateY(-50%);
   }
   
-  .text-block {
-    font-size: 1rem;
-  }
-  
-  .highlight-block {
-    font-size: 1.5rem;
-  }
-}
-
-@media (min-width: 768px) {
-  .text-block {
-    font-size: 1.1rem;
-  }
-  
-  .highlight-block {
-    font-size: 1.75rem;
+  @media (min-width: 768px) {
+    .text-block {
+      font-size: 1.1rem;
+    }
+    
+    .highlight-block {
+      font-size: 1.75rem;
+    }
   }
 }
