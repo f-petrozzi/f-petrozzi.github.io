@@ -828,7 +828,12 @@ footer {
     flex: 1 1 100%;
     max-width: 100%;
   }
-  
+   
+   .project-item img {
+    aspect-ratio: auto;       
+    object-fit: contain;      
+  }
+   
   section {
     margin-bottom: 4rem;
   }
@@ -836,7 +841,7 @@ footer {
   .container,
   .project-container {
     margin-top: 4rem;
-    padding: 1rem;
+    padding: 2rem;
   }
    
   .dark-mode-toggle-label .toggle-slider {
