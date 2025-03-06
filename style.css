@@ -314,7 +314,7 @@ section.active {
   width: 100%;
   max-width: 1300px;
   margin: 5rem auto 0;         /* Top margin of 5rem, auto horizontal centering, no bottom margin */
-  padding: clamp(0.5rem, 5vw, 1rem);  
+  padding: 1rem;  
 }
 /* ==========================================================================
    4.5. Social Links & Buttons
