@@ -1,7 +1,105 @@
 /* ==========================================================================
-   1. Base & Global Styles
+   CSS REFACTORING
+   
+   1. Consolidate CSS variables in :root
+   2. Improve selector specificity and reduce nesting
+   3. Group related media queries
+   4. Remove redundant properties
+   5. Use modern CSS features more effectively
+   6. Better organize dark mode overrides
    ========================================================================== */
 
+/* ==========================================================================
+   1. CSS Variables & Theming
+   ========================================================================== */
+:root {
+  /* Color Palette */
+  --color-green: #00573F;
+  --color-gold: #FDBB2F;
+  --color-navy: #192A56;
+  --color-white: #fff;
+  --color-dark: #333;
+  
+  /* Light Theme Variables */
+  --body-text-color: var(--color-dark);
+  --body-bg: linear-gradient(270deg, rgba(0,87,63,0.2), rgba(253,187,47,0.15), rgba(25,42,86,0.25));
+  --header-bg: var(--color-green);
+  --header-text: var(--color-white);
+  --section-bg: rgba(255,255,255,0.65);
+  --section-border: var(--color-gold);
+  --section-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  --profile-border: var(--color-green);
+  --profile-hover: var(--color-gold);
+  --project-border: var(--color-green);
+  --project-hover: var(--color-gold);
+  --sidebar-bg: rgba(255,255,255,0.95);
+  --sidebar-text: var(--color-dark);
+  --sidebar-heading-bg: var(--color-green);
+  --sidebar-heading-text: var(--color-white);
+  --sidebar-section: var(--color-green);
+  --filter-btn-bg: var(--color-green);
+  --filter-hover-bg: var(--color-gold);
+  --social-bg: rgba(0,87,63,0.9);
+  --social-hover: rgba(253,187,47,0.9);
+  --footer-bg: var(--color-green);
+  --footer-text: var(--color-white);
+  --highlight-text: var(--color-green);
+  --modal-bg: var(--color-white);
+  --modal-border: var(--color-gold);
+  --modal-link: var(--color-dark);
+  
+  /* Animation Variables */
+  --transition-fast: 0.3s ease;
+  --transition-medium: 0.6s ease-out;
+  --transition-slow: 0.8s ease-out;
+  
+  /* Spacing & Sizing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 2rem;
+  --space-xl: 4rem;
+  --border-radius-sm: 4px;
+  --border-radius-md: 5px;
+  --border-radius-lg: 8px;
+  --border-radius-round: 50%;
+}
+
+/* Dark Theme Variables */
+.dark-mode, [data-theme="dark"] {
+  --color-dark-blue: #1a1a2e;
+  --color-medium-blue: #383851;
+  --color-light-blue: #a8b2d1;
+  
+  --body-text-color: #ddd;
+  --body-bg: linear-gradient(270deg, #0d0d0d, var(--color-dark-blue), #0d0d0d);
+  --header-bg: var(--color-medium-blue);
+  --section-bg: var(--color-dark-blue);
+  --section-border: var(--color-light-blue);
+  --section-shadow: 0 0 10px var(--color-light-blue);
+  --profile-border: var(--color-medium-blue);
+  --profile-hover: var(--color-light-blue);
+  --project-border: var(--color-medium-blue);
+  --project-hover: var(--color-light-blue);
+  --sidebar-bg: var(--color-dark-blue);
+  --sidebar-text: var(--color-white);
+  --sidebar-heading-bg: var(--color-medium-blue);
+  --sidebar-heading-text: var(--color-white);
+  --sidebar-section: var(--color-white);
+  --filter-btn-bg: var(--color-medium-blue);
+  --filter-hover-bg: var(--color-light-blue);
+  --social-bg: var(--color-medium-blue);
+  --social-hover: var(--color-light-blue);
+  --footer-bg: var(--color-medium-blue);
+  --highlight-text: var(--color-light-blue);
+  --modal-bg: var(--color-dark-blue);
+  --modal-border: var(--color-light-blue);
+  --modal-link: var(--color-white);
+}
+
+/* ==========================================================================
+   2. Base & Global Styles
+   ========================================================================== */
 /* Reset & Universal Settings */
 * {
   margin: 0;
@@ -11,198 +109,137 @@
 
 html {
   scroll-behavior: smooth;
-}
-
-html, body {
   height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
 }
 
-/* Global Body Styling */
 body {
   font-family: 'Open Sans', Arial, sans-serif;
   line-height: 1.6;
-  color: #333;
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(270deg, rgba(0,87,63,0.2), rgba(253,187,47,0.15), rgba(25,42,86,0.25));
+  color: var(--body-text-color);
+  background: var(--body-bg);
   background-size: 600% 600%;
   animation: gradientShift 45s ease infinite;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
 }
 
 /* Gradient Animation */
 @keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 /* ==========================================================================
-   2. Typography, Text Elements, & Breakpoints
+   3. Typography & Text Scaling
    ========================================================================== */
-
 h1, h2, p {
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-md);
   text-align: center;
-}
-
-/* === Text Sizing Replacements (Mobile-First) === */
-
-/* Base (Mobile) */
-body {
-  font-size: 14px;
-}
-h1 {
-  font-size: 24px;
-}
-h2 {
-  font-size: 20px;
-}
-p {
-  font-size: 14px;
-}
-header.common-header .logo {
-  font-size: 20px;
-}
-.main-nav a {
-  font-size: 16px;
-}
-#menuToggle,
-header.common-header .back {
-  font-size: 20px;
-}
-.social-links i {
-  font-size: 16px;
-}
-.modal-content .close {
-  font-size: 24px;
-}
-.sidebar-section-title {
-  font-size: 16px;
-}
-.sidebar-list li a span {
-  font-size: 14px;
-}
-#closeSidebar {
-  font-size: 20px;
-}
-.filter-btn {
-  font-size: 14px;
-}
-
-/* Tablet */
-@media (min-width: 601px) and (max-width: 1024px) {
-  body {
-    font-size: 16px;
-  }
-  h1 {
-    font-size: 30px;
-  }
-  h2 {
-    font-size: 24px;
-  }
-  p {
-    font-size: 16px;
-  }
-  header.common-header .logo {
-    font-size: 22px;
-  }
-  .main-nav a {
-    font-size: 18px;
-  }
-  #menuToggle,
-  header.common-header .back {
-    font-size: 22px;
-  }
-  .social-links i {
-    font-size: 20px;
-  }
-  .modal-content .close {
-    font-size: 26px;
-  }
-  .sidebar-section-title {
-    font-size: 18px;
-  }
-  .sidebar-list li a span {
-    font-size: 16px;
-  }
-  #closeSidebar {
-    font-size: 22px;
-  }
-  .filter-btn {
-    font-size: 15px;
-  }
-}
-
-/* Desktop */
-@media (min-width: 1025px) {
-  body {
-    font-size: 18px;
-  }
-  h1 {
-    font-size: 36px;
-  }
-  h2 {
-    font-size: 28px;
-  }
-  p {
-    font-size: 18px;
-  }
-  header.common-header .logo {
-    font-size: 24px;
-  }
-  .main-nav a {
-    font-size: 20px;
-  }
-  #menuToggle,
-  header.common-header .back {
-    font-size: 24px;
-  }
-  .social-links i {
-    font-size: 24px;
-  }
-  .modal-content .close {
-    font-size: 28px;
-  }
-  .sidebar-section-title {
-    font-size: 20px;
-  }
-  .sidebar-list li a span {
-    font-size: 18px;
-  }
-  #closeSidebar {
-    font-size: 24px;
-  }
-  .filter-btn {
-    font-size: 16px;
-  }
 }
 
 .highlight-name {
   font-weight: bold;
+  color: var(--highlight-text);
+}
+
+/* Mobile-First Text Sizing */
+body { font-size: 14px; }
+h1 { font-size: 24px; }
+h2 { font-size: 20px; }
+p { font-size: 14px; }
+
+/* Header Elements */
+.common-header .logo { font-size: 20px; }
+.main-nav a { font-size: 16px; }
+#menuToggle, .common-header .back { font-size: 20px; }
+
+/* UI Elements */
+.social-links i { font-size: 16px; }
+.modal-content .close { font-size: 24px; }
+.sidebar-section-title { font-size: 16px; }
+.sidebar-list li a span { font-size: 14px; }
+#closeSidebar { font-size: 20px; }
+.filter-btn { font-size: 14px; }
+
+/* Tablet Breakpoint */
+@media (min-width: 601px) and (max-width: 1024px) {
+  body { font-size: 16px; }
+  h1 { font-size: 30px; }
+  h2 { font-size: 24px; }
+  p { font-size: 16px; }
+  
+  .common-header .logo { font-size: 22px; }
+  .main-nav a { font-size: 18px; }
+  #menuToggle, .common-header .back { font-size: 22px; }
+  .social-links i { font-size: 20px; }
+  .modal-content .close { font-size: 26px; }
+  .sidebar-section-title { font-size: 18px; }
+  .sidebar-list li a span { font-size: 16px; }
+  #closeSidebar { font-size: 22px; }
+  .filter-btn { font-size: 15px; }
+}
+
+/* Desktop Breakpoint */
+@media (min-width: 1025px) {
+  body { font-size: 18px; }
+  h1 { font-size: 36px; }
+  h2 { font-size: 28px; }
+  p { font-size: 18px; }
+  
+  .common-header .logo { font-size: 24px; }
+  .main-nav a { font-size: 20px; }
+  #menuToggle, .common-header .back { font-size: 24px; }
+  .social-links i { font-size: 24px; }
+  .modal-content .close { font-size: 28px; }
+  .sidebar-section-title { font-size: 20px; }
+  .sidebar-list li a span { font-size: 18px; }
+  #closeSidebar { font-size: 24px; }
+  .filter-btn { font-size: 16px; }
 }
 
 /* ==========================================================================
-   3. Unified Header & Navigation
+   4. Layout & Containers
    ========================================================================== */
+.container {
+  flex: 1;
+  width: 100%;
+  max-width: 1300px;
+  margin: 5rem auto 0;
+  padding: var(--space-md);
+}
 
-/* Base Header Style for Both Pages */
-header.common-header {
+section {
+  opacity: 0;
+  transform: translateX(-100px);
+  transition: opacity var(--transition-medium), transform var(--transition-medium);
+  display: flow-root;
+  background-color: var(--section-bg);
+  margin-bottom: 6rem;
+  padding: var(--space-xl);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--section-shadow);
+  border-left: 5px solid var(--section-border);
+  scroll-margin-top: 80px;
+}
+
+section.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ==========================================================================
+   5. Header & Navigation
+   ========================================================================== */
+.common-header {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 999;
-  background-color: #00573F;
-  color: #fff;
+  background-color: var(--header-bg);
+  color: var(--header-text);
   padding: 0.7rem;
   display: flex;
   align-items: center;
@@ -210,11 +247,10 @@ header.common-header {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Header Structural Elements */
 .header-left {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: var(--space-md);
   flex: 0 0 auto;
 }
 
@@ -226,16 +262,15 @@ header.common-header {
 
 .header-right {
   position: absolute;
-  right: 1rem;
-  top: 55%; /* Adjust this percentage as needed */
+  right: var(--space-md);
+  top: 55%;
   transform: translateY(-50%);
 }
 
-/* Logo (Used in Both Headers) */
-header.common-header .logo {
+.common-header .logo {
   font-weight: bold;
-  color: #fff;
-  border: 2px solid #fff;
+  color: var(--color-white);
+  border: 2px solid var(--color-white);
   width: clamp(40px, 6vw, 50px);
   height: clamp(40px, 6vw, 50px);
   display: flex;
@@ -245,157 +280,63 @@ header.common-header .logo {
   cursor: pointer;
 }
 
-/* Navigation (Index Header Specific) */
-.header-center nav {
-  text-align: center;
-  overflow: visible;
-  white-space: nowrap;
-}
-
 .main-nav {
   display: flex;
-   gap: clamp(0.8rem, 2vw, 1.5rem);
+  gap: clamp(0.8rem, 2vw, 1.5rem);
   align-items: center;
 }
 
 .main-nav a {
   text-decoration: none;
-  color: #fff;
+  color: var(--header-text);
   font-weight: bold;
-  transition: color 0.3s
+  transition: color var(--transition-fast);
 }
 
 .main-nav a:hover {
-  color: #FDBB2F; /* Gold Accent */
+  color: var(--color-gold);
 }
 
-/* Shared Menu Toggle Button */
 #menuToggle {
   background: none;
   border: none;
-  color: #fff;
+  color: var(--color-white);
   cursor: pointer;
 }
 
-/* Back Button (Project Header Specific) */
-header.common-header .back {
+.common-header .back {
   display: flex;
   align-items: center;
-  color: #fff;
+  color: var(--color-white);
   text-decoration: none;
 }
 
 /* ==========================================================================
-   4. Unified Section Styles
+   6. Dark Mode Toggle
    ========================================================================== */
-
-section {
-  opacity: 0;
-  transform: translateX(-100px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-  display: flow-root;
-  background-color: rgba(255, 255, 255, 0.65);
-  margin-bottom: 6rem;
-  padding: 4rem;
-  border-radius: 5px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border-left: 5px solid #FDBB2F; /* Gold accent border */
-  scroll-margin-top: 80px;
+.dark-mode-toggle {
+  margin: -3.5rem 0 0 -3.7rem;
 }
 
-section.active {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-/* Container Styling */
-.container {
-  flex: 1;                     
-  width: 100%;
-  max-width: 1300px;
-  margin: 5rem auto 0;         /* Top margin of 5rem, auto horizontal centering, no bottom margin */
-  padding: 1rem;  
-}
-/* ==========================================================================
-   4.5. Social Links & Buttons
-   ========================================================================== */
-/* Social links container */
-.social-links {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  display: flex;
-  gap: 0.5rem;
-}
-
-/* Style each social link as a circle */
-.social-links a {
-  width: clamp(30px, 5vw, 50px);
-  height: clamp(30px, 5vw, 50px);
-  background-color: rgba(0,87,63,0.9); /* Green circle */
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  text-decoration: none;
-  transition: transform 0.3s, background-color 0.3s;
-  position: relative; /* For tooltip positioning */
-}
-
-/* Hover effect: glow yellow */
-.social-links a:hover {
-  transform: scale(1.1);
-  background-color: rgba(253,187,47,0.9); /* Yellow glow on hover */
-}
-
-/* Icon styling */
-.social-links i {
-  font-size: clamp(16px, 3vw, 24px);
-}
-
-/* Tooltip styling */
-.social-links a::after {
-  content: attr(aria-label);
-  position: absolute;
-  bottom: -2.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.75);
-  color: #fff;
-  padding: 0.3rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease-in-out;
-}
-.social-links a:hover::after {
-  opacity: 1;
-}
-/* Hide the default checkbox */
 .dark-mode-toggle-input {
   display: none;
 }
 
-/* Base */
 .dark-mode-toggle-label {
   --slider-width: clamp(16px, 3vw, 22px);
   display: inline-block;
   width: clamp(40px, 7vw, 52px);
   height: clamp(20px, 3.5vw, 26px);
   border-radius: calc(clamp(20px, 3.5vw, 26px) / 2);
-  background: linear-gradient(to right, #f1c40f, #87cefa); /* Light mode gradient */
-  border: clamp(1px, 0.3vw, 2px) solid #fff; /* Thin white border */
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3); /* Inner shadow for indented look */
+  background: linear-gradient(to right, #f1c40f, #87cefa);
+  border: clamp(1px, 0.3vw, 2px) solid var(--color-white);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
   position: relative;
   cursor: pointer;
   transition: background 1s ease;
-  overflow: hidden; /* for pseudo-element */
+  overflow: hidden;
 }
 
-/* Pseudo-element for smooth gradient transition */
 .dark-mode-toggle-label::after {
   content: "";
   position: absolute;
@@ -403,23 +344,17 @@ section.active {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-  to right,
-  #162447 10%,
-  /*#1c3150 25%,    /* a blend between dark blue and sunset orange */
-  /*#f2994a 55%,    /* a very subtle touch of sunset */
-  #fff3b0 100%
-  );
+  background: linear-gradient(to right, #162447 10%, #fff3b0 100%);
   opacity: 0;
   transition: opacity 2.25s ease;
   pointer-events: none;
   z-index: 0;
 }
+
 .dark-mode-toggle-input:checked + .dark-mode-toggle-label::after {
   opacity: 1;
 }
 
-/* Toggle Handle */
 .dark-mode-toggle-label .toggle-slider {
   position: absolute;
   top: 0px;
@@ -427,15 +362,14 @@ section.active {
   width: var(--slider-width);
   height: var(--slider-width);
   border-radius: 50%;
-  background-color: #f1c40f; /* Base circle color in light mode */
+  background-color: #f1c40f;
   transition: left 0.8s ease, background-color 1s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1; /* ensures slider is above pseudo-element */
+  z-index: 1;
 }
 
-/* Layered Icons inside Toggle Slider */
 .dark-mode-toggle-label .toggle-slider .icon {
   position: absolute;
   width: 100%;
@@ -446,53 +380,94 @@ section.active {
   transition: opacity 0.3s ease, color 1s ease, transform 0.1s ease;
 }
 
-/* Icon States: Light Mode */
-.dark-mode-toggle-input:not(:checked)
-  + .dark-mode-toggle-label .toggle-slider .sun-icon {
+.dark-mode-toggle-input:not(:checked) + .dark-mode-toggle-label .toggle-slider .sun-icon {
   opacity: 1;
-  color: transparent; /* Use sun color (yellow) */
+  color: transparent;
   transform: translateX(0);
 }
-.dark-mode-toggle-input:not(:checked)
-  + .dark-mode-toggle-label .toggle-slider .moon-icon {
+
+.dark-mode-toggle-input:not(:checked) + .dark-mode-toggle-label .toggle-slider .moon-icon {
   opacity: 0;
   color: #f1c40f;
   transform: scaleX(-1);
 }
 
-/* Icon States: Dark Mode */
-.dark-mode-toggle-input:checked
-  + .dark-mode-toggle-label .toggle-slider .sun-icon {
+.dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider .sun-icon {
   opacity: 0;
   color: transparent;
   transform: translateX(0);
 }
-.dark-mode-toggle-input:checked
-  + .dark-mode-toggle-label .toggle-slider .moon-icon {
+
+.dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider .moon-icon {
   opacity: 1;
   color: #fff3b0;
   transform: scaleX(-1);
 }
 
-/* Slider Move: Adjusted to fully reach the right edge */
-.dark-mode-toggle-input:checked
-  + .dark-mode-toggle-label .toggle-slider {
+.dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider {
   left: calc(100% - var(--slider-width) - 2px);
   background-color: transparent;
 }
 
-/* Position */
-.dark-mode-toggle {
-  margin: -3.5rem 0 0 -3.7rem; /* Adjust these values as needed */
-}
 /* ==========================================================================
-   5. Projects Grid & Project Items
+   7. Social Links
    ========================================================================== */
+.social-links {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
 
+.social-links a {
+  width: clamp(30px, 5vw, 50px);
+  height: clamp(30px, 5vw, 50px);
+  background-color: var(--social-bg);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-white);
+  text-decoration: none;
+  transition: transform var(--transition-fast), background-color var(--transition-fast);
+  position: relative;
+}
+
+.social-links a:hover {
+  transform: scale(1.1);
+  background-color: var(--social-hover);
+  box-shadow: 0 0 10px var(--social-hover);
+}
+
+.social-links a::after {
+  content: attr(aria-label);
+  position: absolute;
+  bottom: -2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.75);
+  color: var(--color-white);
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.social-links a:hover::after {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   8. Projects Grid
+   ========================================================================== */
 .projects-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: var(--space-md);
   justify-content: center;
 }
 
@@ -500,10 +475,10 @@ section.active {
   flex: 1 1 calc(33.33% - 1rem);
   max-width: calc(33.33% - 1rem);
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-md);
   transform: translateX(100%);
   opacity: 0;
-  transition: transform 0.8s ease-out 0.2s, opacity 0.8s ease-out 0.2s;
+  transition: transform var(--transition-slow) 0.2s, opacity var(--transition-slow) 0.2s;
 }
 
 .project-item.active {
@@ -521,16 +496,16 @@ section.active {
   width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
-  border-radius: 5px;
-  border: 4px solid #00573F;
-  transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+  border-radius: var(--border-radius-md);
+  border: 4px solid var(--project-border);
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
   cursor: pointer;
 }
 
 .project-item img:hover {
   transform: translateY(-5px);
-  border-color: #FDBB2F;
-  box-shadow: 0 0 10px #FDBB2F;
+  border-color: var(--project-hover);
+  box-shadow: 0 0 10px var(--project-hover);
 }
 
 .project-item h3 {
@@ -539,24 +514,8 @@ section.active {
 }
 
 /* ==========================================================================
-   6. Footer
+   9. Profile Image
    ========================================================================== */
-
-footer {
-  width: 100%;
-  background-color: #00573F;
-  color: #fff;
-  padding: 1rem;
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* ==========================================================================
-   7. Profile Image Styling
-   ========================================================================== */
-
 .profile-pic {
   display: block;
   margin: 0 auto 2rem auto;
@@ -564,63 +523,18 @@ footer {
   height: clamp(150px, 15vw, 250px);
   object-fit: cover;
   border-radius: 50%;
-  border: 4px solid #00573F;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  border: 4px solid var(--profile-border);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .profile-pic:hover {
-  border-color: #FDBB2F;
-  box-shadow: 0 0 10px #FDBB2F;
+  border-color: var(--profile-hover);
+  box-shadow: 0 0 10px var(--profile-hover);
 }
 
 /* ==========================================================================
-   8. Modal Window
+   10. Sidebar
    ========================================================================== */
-
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-.modal-content {
-  position: relative;
-  background-color: #fff;
-  margin: 10% auto;
-  padding: 1.5rem;
-  border-left: 5px solid #FDBB2F;
-  width: 80%;
-  max-width: 500px;
-  border-radius: 5px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.modal-content .close {
-  position: absolute;
-  top: 0rem;
-  right: 0.5rem;
-  color: #aaa;
-  font-size: clamp(24px, 4vw, 28px);
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.modal-content .close:hover,
-.modal-content .close:focus {
-  color: black;
-}
-
-/* ==========================================================================
-   9. Sidebar & Related Components
-   ========================================================================== */
-
-/* Sidebar Container */
 .sidebar {
   position: fixed;
   top: 0;
@@ -628,7 +542,7 @@ footer {
   width: 80%;
   max-width: 400px;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: var(--sidebar-bg);
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
   transition: right 0.4s ease;
   z-index: 1001;
@@ -640,28 +554,25 @@ footer {
   right: 0;
 }
 
-/* Sidebar Header & Content */
 .sidebar-header {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem;
-  background-color: #00573F;
-  color: #fff;
+  padding: var(--space-md);
+  background-color: var(--sidebar-heading-bg);
+  color: var(--sidebar-heading-text);
 }
 
 .sidebar-content {
-  padding: 1rem;
+  padding: var(--space-md);
   overflow-y: auto;
 }
 
-/* Sidebar Section Titles & List */
 .sidebar-section-title {
-  font-size: clamp(16px, 2.5vw, 20px);
-  margin-top: 1rem;
+  margin-top: var(--space-md);
   margin-bottom: 0.5rem;
-  color: #00573F;
+  color: var(--sidebar-section);
   border-bottom: 1px solid #ddd;
   padding-bottom: 0.25rem;
   z-index: 1003;
@@ -681,79 +592,180 @@ footer {
   display: flex;
   align-items: center;
   text-decoration: none;
-  color: #333;
-  padding: 1rem 0;
-  transition: background-color 0.3s;
+  color: var(--sidebar-text);
+  padding: var(--space-md) 0;
+  transition: background-color var(--transition-fast);
   z-index: 1003;
-}
-
-.sidebar-list li a img:hover {
-  transform: scale(1.05);
-  transition: transform 0.3s ease;
 }
 
 .sidebar-list li a img {
   width: clamp(40px, 5vw, 60px);
   height: clamp(40px, 5vw, 60px);
   object-fit: cover;
-  border-radius: 5px;
-  margin-right: 1rem;
+  border-radius: var(--border-radius-md);
+  margin-right: var(--space-md);
+  transition: transform var(--transition-fast);
 }
 
-.sidebar-list li a span {
-  font-size: clamp(14px, 2vw, 18px);
+.sidebar-list li a img:hover {
+  transform: scale(1.05);
 }
-/* Close Sidebar Button */
+
 #closeSidebar {
   position: absolute;
   top: 1.5rem;
-  right: 1rem;
+  right: var(--space-md);
   background: none;
   border: none;
-  color: #fff;
+  color: var(--color-white);
   cursor: pointer;
 }
-/* ==========================================================================
-   10. Project Navigation (Additional, if Needed)
-   ========================================================================== */
 
-.project-nav {
-  /* Retain or add any project-specific navigation styles here */
-}
-
-/* ==========================================================================
-   11. Sidebar Filter Toolbar
-   ========================================================================== */
-
+/* Sidebar Filter Toolbar */
 .sidebar-filter {
   display: flex;
   justify-content: center;
   gap: 0.1rem;
   padding: 0.1rem;
-  background-color: #00573F;
+  background-color: var(--sidebar-heading-bg);
 }
 
 .filter-btn {
-  background-color: #00573F;
-  color: #fff;
+  background-color: var(--filter-btn-bg);
+  color: var(--color-white);
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 0;
-  font-size: clamp(14px, 2vw, 16px);
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color var(--transition-fast);
 }
 
 .filter-btn:hover,
 .filter-btn.active {
-  background-color: #FDBB2F;
+  background-color: var(--filter-hover-bg);
 }
 
 /* ==========================================================================
-   12. Media Queries (Smaller Displays)
+   11. Modal Window
    ========================================================================== */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+}
 
+.modal-content {
+  position: relative;
+  background-color: var(--modal-bg);
+  margin: 10% auto;
+  padding: 1.5rem;
+  border-left: 5px solid var(--modal-border);
+  width: 80%;
+  max-width: 500px;
+  border-radius: var(--border-radius-md);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content .close {
+  position: absolute;
+  top: 0rem;
+  right: 0.5rem;
+  color: #aaa;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.modal-content .close:hover,
+.modal-content .close:focus {
+  color: black;
+}
+
+.modal-content a {
+  color: var(--modal-link);
+}
+
+/* ==========================================================================
+   12. Content Blocks (Project Pages)
+   ========================================================================== */
+.content-block {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity var(--transition-slow), transform var(--transition-slow);
+  padding: 2rem 1rem;
+  margin: 2rem 0;
+}
+
+.content-block.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.text-block {
+  font-family: 'Open Sans', Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--body-text-color);
+  margin-bottom: 1.5rem;
+  text-align: left;
+  padding: var(--space-md);
+}
+
+.highlight-block {
+  text-align: center;
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--highlight-text);
+  padding: var(--space-md);
+  margin-bottom: 1.5rem;
+}
+
+.highlight-block img {
+  display: block;
+  max-width: 80%;
+  margin: 1rem auto 0;
+  border-radius: var(--border-radius-md);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.highlight-block img:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ==========================================================================
+   13. Footer
+   ========================================================================== */
+footer {
+  width: 100%;
+  background-color: var(--footer-bg);
+  color: var(--footer-text);
+  padding: var(--space-md);
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ==========================================================================
+   14. Responsive Adjustments
+   ========================================================================== */
 @media (max-width: 600px) {
+  section {
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+  }
+  
+  .container {
+    margin-top: var(--space-xl);
+    padding: var(--space-lg);
+  }
+  
   header.common-header {
     position: fixed;
     top: 0;
@@ -762,15 +774,7 @@ footer {
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem 1rem;
-    /* Reserve space on the right so content doesn't slide underneath the sidebar button */
     padding-right: 90px;
-  }
-  
-  .header-right {
-    position: absolute;
-    right: 1rem;
-    top: 55%;
-    transform: translateY(-50%);
   }
   
   .header-left {
@@ -778,15 +782,10 @@ footer {
   }
   
   header.common-header .logo {
-    margin-right: 1rem;
+    margin-right: var(--space-md);
   }
   
-  #menuToggle {
-    font-size: clamp(16px, 4vw, 20px);
-  }
-  
-  /* Adjust navigation styling so that text doesn't get overlapped */
-  nav {
+  nav, .main-nav {
     display: flex;
     flex-direction: row;
     gap: clamp(0.2rem, 1vw, 0.5rem);
@@ -794,30 +793,12 @@ footer {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    margin-right: 90px; /* Reserve space for the sidebar button */
+    margin-right: 90px;
   }
   
-  nav a {
-    margin: 0;
+  nav a, .main-nav a {
     padding: 0.5rem;
     font-size: clamp(8px, 3vw, 14px);
-  }
-  
-  /* If you use .main-nav in index.html, apply similar rules */
-  .main-nav {
-    display: flex;
-    flex-direction: row;
-    gap: clamp(0.2rem, 1vw, 0.5rem);
-    flex-shrink: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    margin-right: 90px; /* Reserve space for the sidebar button */
-  }
-  
-  .main-nav a {
-    padding: 0.5rem;
-    font-size: clamp(8px, 3vw, 18px);
   }
   
   .projects-grid {
@@ -828,335 +809,31 @@ footer {
     flex: 1 1 100%;
     max-width: 100%;
   }
-   
-   .project-item img {
-    aspect-ratio: auto;       
-    object-fit: contain;      
-  }
-   
-  section {
-    margin-bottom: 4rem;
+  
+  .project-item img {
+    aspect-ratio: auto;
+    object-fit: contain;
   }
   
-  .container,
-  .project-container {
-    margin-top: 4rem;
-    padding: 2rem;
-  }
-   
   .dark-mode-toggle-label .toggle-slider {
     top: 49%;
     transform: translateY(-50%);
   }
-}
-/* ==========================================================================
-   13. Color Variables & Dark Mode Overrides
-   ========================================================================== */
-/* Light Mode (Default) – (unchanged) */
-:root {
-  /* Global */
-  --body-text-color: #333;
-  --body-bg: linear-gradient(270deg, rgba(0,87,63,0.2), rgba(253,187,47,0.15), rgba(25,42,86,0.25));
-  --body-bg-size: 600% 600%; 
-  --body-anim: gradientShift 45s ease infinite;
   
-  /* Header */
-  --header-bg: #00573F;
-  --header-text-color: #fff;
+  .text-block {
+    font-size: 1rem;
+  }
   
-  /* Navigation */
-  --nav-link-color: #fff;
-  --nav-link-hover-color: #FDBB2F;
-  
-  /* Sections / Containers */
-  --section-bg: rgba(255,255,255,0.65);
-  --section-border-left: #FDBB2F;
-  --section-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  
-  /* Footer */
-  --footer-bg: #00573F;
-  --footer-text-color: #fff;
-  
-  /* Profile Image */
-  --profile-pic-border: #00573F;
-  --profile-pic-hover-border: #FDBB2F;
-  
-  /* Sidebar */
-  --sidebar-bg: rgba(255,255,255,0.95);
-  --sidebar-text-color: #333;
-  
-  /* Social Links */
-  --social-bg: rgba(0,87,63,0.9);
-  --social-hover-bg: rgba(253,187,47,0.9);
-  --social-hover-glow: 0 0 10px rgba(253,187,47,0.9);
-  
-   /* Project Image */
-  --project-item-border: #00573F;
-  --project-item-hover-border: #FDBB2F;
-
-  /* Sidebar Subheading Text */
-  --sidebar-subheading-color: #00573F;
-
-  --sidebar-bg: rgba(255,255,255,0.95);
-  --sidebar-text-color: #333;       /* For links & non-header text */
-  --sidebar-header-bg: #00573F;
-  --sidebar-header-text: #fff;
-  --filter-btn-bg: #00573F;
-  --filter-btn-hover-bg: #FDBB2F;
-  --sidebar-link-color: #333;
-
-
-  /* Highlight name */
-  --highlight-name: #00573F;
-
-  /*Modal Contact me */
-  --modal-bg: #fff;
-  --modal-border-left: #FDBB2F;
-  --modal-content-a: #333;
+  .highlight-block {
+    font-size: 1.5rem;
+  }
 }
 
-/* Dark Mode Overrides – Sleek dark theme with dark blue/violet accents */
-.dark-mode, [data-theme="dark"] {
-  /* Global */
-  --body-text-color: #ddd;
-  --body-bg: linear-gradient(270deg, #0d0d0d, #1a1a2e, #0d0d0d);
-  --body-bg-size: auto;
-  --body-anim: none;
-  
-  /* Header */
-  --header-bg: #383851;         /* A cool, dark gray */
-  --header-text-color: #fff;
-  
-  /* Navigation */
-  --nav-link-color: #fff;
-  --nav-link-hover-color: #a8b2d1;  
-  
-  /* Sections / Containers */
-  --section-bg: #1a1a2e;
-  --section-border-left: #a8b2d1;       /* Glowing gray/blue */
-  --section-box-shadow: 0 0 10px #a8b2d1; /* Bluee glow */
-  /*#9B59B6; Violet */
-  /* #a29bfe; soft violet */
-  /* #1c1c1c; charcoal ish */
-  /* Footer */
-  --footer-bg: #383851;
-  --footer-text-color: #fff;
-  
-  /* Profile Image */
-  --profile-pic-border: #383851;         /* Soft Gray/blue */
-  --profile-pic-hover-border: #a8b2d1;     /* Violet */
-  
-  /* Social Buttons */
-  --social-bg: #383851;
-  --social-hover-bg: #a8b2d1;
-  --social-hover-glow: 0 0 10px #a8b2d1;
-  
-  /* Project Image */
-  --project-item-border: #383851;
-  --project-item-hover-border: #a8b2d1;
-
-
-  --sidebar-bg: #1a1a2e;                
-  --sidebar-text-color: #fff;        
-  --sidebar-header-bg: #383851;       
-  --sidebar-header-text: #fff;
-  --sidebar-subheading-color: #fff;  
-  --filter-btn-bg: #383851;           
-  --filter-btn-hover-bg: #a8b2d1;
-  --sidebar-link-color: #fff;
-
-  /* Highlight name */
-  --highlight-name: #a8b2d1;
-
-  /*Modal Contact me Dark*/
-  --modal-bg: #1a1a2e;
-  --modal-border-left: #a8b2d1;
-  --modal-content-a: #fff;
-}
-
-/* Using Variables */
-
-body {
-  color: var(--body-text-color);
-  background: var(--body-bg);
-  background-size: var(--body-bg-size); /* Added to enable the gradient animation */
-  animation: var(--body-anim);
-}
-
-header.common-header {
-  background-color: var(--header-bg);
-  color: var(--header-text-color);
-}
-
-.header-center nav a {
-  color: var(--nav-link-color);
-}
-.header-center nav a:hover {
-  color: var(--nav-link-hover-color);
-}
-
-section {
-  background-color: var(--section-bg);
-  border-left: 5px solid var(--section-border-left);
-  box-shadow: var(--section-box-shadow);
-}
-
-footer {
-  background-color: var(--footer-bg);
-  color: var(--footer-text-color);
-}
-
-.profile-pic {
-  border-color: var(--profile-pic-border);
-}
-.profile-pic:hover {
-  border-color: var(--profile-pic-hover-border);
-  box-shadow: 0 0 10px var(--profile-pic-hover-border);
-}
-
-.sidebar {
-  background-color: var(--sidebar-bg);
-  color: var(--sidebar-text-color);
-}
-.sidebar-list li a {
-  color: var(--sidebar-text-color);
-}
-
-/* Sidebar Subheading Text */
-.sidebar-section-title {
-  color: var(--sidebar-subheading-color);
-}
-
-.sidebar {
-  background-color: var(--sidebar-bg);
-  color: var(--sidebar-text-color);
-}
-
-.sidebar-header {
-  background-color: var(--sidebar-header-bg);
-  color: var(--sidebar-header-text);
-}
-
-.sidebar-content {
-  /* (No change needed here; it inherits text color) */
-}
-
-/* Filter Toolbar & Buttons */
-.sidebar-filter {
-  background-color: var(--sidebar-header-bg); /* Same as header background */
-}
-
-.sidebar-list li a {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  color: var(--sidebar-link-color);
-  padding: 1rem 0;
-  transition: background-color 0.3s;
-}
-
-.filter-btn {
-  background-color: var(--filter-btn-bg);
-  color: var(--sidebar-header-text);  /* Always white */
-  transition: background-color 0.3s;
-}
-
-.filter-btn:hover,
-.filter-btn.active {
-  background-color: var(--filter-btn-hover-bg);
-}
-
-.social-links a {
-  background-color: var(--social-bg);
-}
-.social-links a:hover {
-  background-color: var(--social-hover-bg);
-}
-
-.social-links a:hover {
-  box-shadow: var(--social-hover-glow);
-  transition: box-shadow 0.3s ease;
-}
-   
-/* Project Image Borders */
-.project-item img {
-  border: 4px solid var(--project-item-border);
-}
-.project-item img:hover {
-  border-color: var(--project-item-hover-border);
-  box-shadow: 0 0 10px var(--project-item-hover-border);
-}
-   
-.highlight-name{
-   color: var(--highlight-name);
-}
-
-.modal-content {
-   background-color: var(--modal-bg);
-   border-left: 5px solid var(--modal-border-left);
-}
-
-.modal-content a {
-   color: var(--modal-content-a);
-}
-
-/* ==========================================================================
-   14. Project Elements
-   ========================================================================== */
-/* === Content Blocks & Storytelling Styles === */
-.content-block {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-  padding: 2rem 1rem;
-  margin: 2rem 0;
-}
-
-/* When a content-block becomes active (e.g., via scroll-triggered JS adding .active) */
-.content-block.active {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.text-block {
-  font-family: 'Open Sans', Arial, sans-serif;
-  font-size: 1rem;
-  line-height: 1.6;
-  color: var(--body-text-color);
-  margin-bottom: 1.5rem;
-  text-align: left;
-  padding: 1rem;
-}
-
-.highlight-block {
-  text-align: center;
-  font-family: 'Open Sans', Arial, sans-serif;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--highlight-name);
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-/* Style the image inside the highlight block */
-.highlight-block img {
-  display: block;
-  max-width: 80%;
-  margin: 1rem auto 0;
-  border-radius: 5px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.highlight-block img:hover {
-  transform: scale(1.03);
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
-}
-
-/* Responsive adjustments for larger screens */
 @media (min-width: 768px) {
   .text-block {
     font-size: 1.1rem;
   }
+  
   .highlight-block {
     font-size: 1.75rem;
   }
