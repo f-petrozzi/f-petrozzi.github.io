@@ -836,7 +836,7 @@ footer {
   .container,
   .project-container {
     margin-top: 4rem;
-    padding: 0.5rem;
+    padding: 1rem;
   }
    
   .dark-mode-toggle-label .toggle-slider {
@@ -1136,7 +1136,7 @@ footer {
 /* Style the image inside the highlight block */
 .highlight-block img {
   display: block;
-  max-width: 100%;
+  max-width: 80%;
   margin: 1rem auto 0;
   border-radius: 5px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
