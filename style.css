@@ -200,7 +200,7 @@ body {
 /* Base Typography */
 h1, h2, p {
   margin-bottom: var(--spacing-sm);
-  text-align: center;
+  text-align: left;
 }
 
 .highlight-name {
@@ -541,7 +541,7 @@ section.active {
 .project-item {
   flex: 1 1 calc(33.33% - 1rem);
   max-width: calc(33.33% - 1rem);
-  text-align: center;
+  text-align: left;
   margin-bottom: var(--spacing-sm);
   transform: translateX(100%);
   opacity: 0;
@@ -798,7 +798,7 @@ footer {
 }
 
 .highlight-block {
-  text-align: center;
+  text-align: left;
   font-family: 'Open Sans', Arial, sans-serif;
   font-size: 1.5rem;
   font-weight: bold;
@@ -847,7 +847,11 @@ footer {
     gap: 0.5rem;
   }
   
-  header.common-header .logo {
+   p, .text-block {
+    line-height: 1.8; 
+  }
+  
+   header.common-header .logo {
     margin-right: var(--spacing-sm);
   }
   
@@ -900,7 +904,7 @@ footer {
   .container,
   .project-container {
     margin-top: var(--spacing-xl);
-    padding: var(--spacing-lg);
+    padding: var(--spacing-xl);
   }
    
   .dark-mode-toggle-label .toggle-slider {
