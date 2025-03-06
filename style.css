@@ -1094,3 +1094,65 @@ footer {
 .modal-content a {
    color: var(--modal-content-a);
 }
+
+/* ==========================================================================
+   14. Project Elements
+   ========================================================================== */
+/* === Content Blocks & Storytelling Styles === */
+.content-block {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  padding: 2rem 1rem;
+  margin: 2rem 0;
+}
+
+/* When a content-block becomes active (e.g., via scroll-triggered JS adding .active) */
+.content-block.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.text-block {
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--body-text-color);
+  margin-bottom: 1.5rem;
+  text-align: left;
+  padding: 1rem;
+}
+
+.highlight-block {
+  text-align: center;
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--highlight-name);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Style the image inside the highlight block */
+.highlight-block img {
+  display: block;
+  max-width: 100%;
+  margin: 1rem auto 0;
+  border-radius: 5px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.highlight-block img:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive adjustments for larger screens */
+@media (min-width: 768px) {
+  .text-block {
+    font-size: 1.1rem;
+  }
+  .highlight-block {
+    font-size: 1.75rem;
+  }
+}
