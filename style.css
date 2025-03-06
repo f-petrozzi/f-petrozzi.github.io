@@ -903,6 +903,7 @@ footer {
    
   section {
     margin-bottom: var(--spacing-xl);
+    padding: var(--spacing-sm);
   }
   
   .container,
