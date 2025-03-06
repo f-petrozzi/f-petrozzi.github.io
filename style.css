@@ -198,9 +198,13 @@ body {
    ========================================================================== */
 
 /* Base Typography */
-h1, h2, p {
+h1, h2 {
   margin-bottom: var(--spacing-sm);
   text-align: left;
+}
+
+p {
+   text-align: left;
 }
 
 .highlight-name {
@@ -363,7 +367,7 @@ section {
   display: flow-root;
   background-color: var(--section-bg);
   margin-bottom: 6rem;
-  padding: var(--spacing-xl);
+  padding: var(--spacing-lg);
   border-radius: var(--border-radius-md);
   box-shadow: var(--section-box-shadow);
   border-left: 5px solid var(--section-border-left);
@@ -904,7 +908,7 @@ footer {
   .container,
   .project-container {
     margin-top: var(--spacing-xl);
-    padding: var(--spacing-lg) 0;
+    padding: var(--spacing-sm);
   }
    
   .dark-mode-toggle-label .toggle-slider {
