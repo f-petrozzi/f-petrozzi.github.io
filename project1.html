@@ -303,7 +303,25 @@
       });
     });
   </script>
-
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const contentBlocks = document.querySelectorAll('.content-block');
+    const blockObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: "0px 0px -20% 0px"
+    });
+    contentBlocks.forEach(block => {
+      blockObserver.observe(block);
+    });
+  });
+</script>
   <script src="darkmode.js"></script>
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
