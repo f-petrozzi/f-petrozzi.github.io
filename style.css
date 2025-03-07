@@ -881,6 +881,7 @@ footer {
   
   .projects-grid {
     flex-direction: column;
+    align-items: center;
   }
   
   .project-item {
@@ -895,13 +896,13 @@ footer {
    
   section {
     margin-bottom: var(--spacing-xl);
-    padding: var(--spacing-sm);
+    padding: var(--spacing-lg);
   }
   
   .container,
   .project-container {
     margin-top: var(--spacing-xl);
-    padding: var(--spacing-sm);
+    padding: var(--spacing-md);
   }
 
   .highlight-block img {
