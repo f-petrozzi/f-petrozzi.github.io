@@ -207,6 +207,13 @@ p {
    text-align: left;
 }
 
+.project-section h1,
+.project-section h2,
+.project-section h3,
+.project-section p {
+  text-align: left;
+}
+
 .highlight-name {
   font-weight: bold;
   color: var(--highlight-name);
@@ -780,15 +787,13 @@ footer {
 
 .content-block {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity var(--transition-slow) ease-out, transform var(--transition-slow) ease-out;
+  transition: opacity var(--transition-slow) ease-out;
   padding: var(--spacing-lg) var(--spacing-sm);
   margin: var(--spacing-lg) 0;
 }
 
 .content-block.active {
   opacity: 1;
-  transform: translateY(0);
 }
 
 .text-block {
