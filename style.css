@@ -180,6 +180,10 @@ body {
   background: var(--body-bg);
   background-size: var(--body-bg-size);
   animation: var(--body-anim);
+  padding-top: env(safe-area-inset-top);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
 }
 
 /* Gradient Animation */
