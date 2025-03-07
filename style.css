@@ -175,6 +175,10 @@ body {
   background: var(--body-bg);
   background-size: var(--body-bg-size);
   animation: var(--body-anim);
+  padding-top: env(safe-area-inset-top);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
 }
 
 /* Gradient Animation */
@@ -835,9 +839,10 @@ footer {
 
 @media (max-width: 900px) {
   header.common-header {
-    position: fixed;
+    position: sticky;
     top: 0;
     left: 0;
+    right: 0;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
