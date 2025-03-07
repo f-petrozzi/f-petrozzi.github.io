@@ -889,8 +889,8 @@ footer {
   }
    
   .project-item img {
-    aspect-ratio: auto;
-    object-fit: contain;
+    object-fit: cover;
+    max-height: 300px;
   }
    
   section {
