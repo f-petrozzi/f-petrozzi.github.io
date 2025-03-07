@@ -800,9 +800,9 @@ footer {
   font-family: 'Open Sans', Arial, sans-serif;
   line-height: 1.6;
   color: var(--body-text-color);
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-xs);
   text-align: left;
-  padding: var(--spacing-sm);
+  padding: 2rem 0 0 var(--spacing-sm);
 }
 
 .highlight-block {
@@ -813,18 +813,19 @@ footer {
   color: var(--highlight-name);
   padding: var(--spacing-sm);
   margin-bottom: var(--spacing-md);
+  margin: 0rem;
 }
 
 .highlight-block img {
   display: block;
   max-width: 80%;
-  margin: var(--spacing-sm) auto 0;
+  margin: var(--spacing-xs) auto 0;
   border-radius: var(--border-radius-md);
   transition: transform var(--transition-fast) ease, box-shadow var(--transition-fast) ease;
 }
 
 .highlight-block img:hover {
-  transform: scale(1.03);
+  transform: scale(1.01);
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
 }
 
