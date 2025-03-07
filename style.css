@@ -604,6 +604,7 @@ footer {
   align-items: center;
   justify-content: center;
   position: sticky;
+  bottom: 0;
 }
 
 /* ==========================================================================
