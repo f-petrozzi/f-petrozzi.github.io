@@ -538,15 +538,14 @@ section.active {
 .projects-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-md);
   justify-content: center;
 }
 
 .project-item {
   flex: 1 1 calc(33.33% - 1rem);
   max-width: calc(33.33% - 1rem);
-  text-align: left;
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
   transform: translateX(100%);
   opacity: 0;
   transition: transform var(--transition-slow) ease-out 0.2s, opacity var(--transition-slow) ease-out 0.2s;
@@ -606,8 +605,8 @@ footer {
 .profile-pic {
   display: block;
   margin: 0 auto 2rem auto;
-  width: clamp(150px, 15vw, 250px);
-  height: clamp(150px, 15vw, 250px);
+  width: clamp(150px, 20vw, 250px);
+  height: clamp(150px, 20vw, 250px);
   object-fit: cover;
   border-radius: var(--border-radius-round);
   border: 4px solid var(--profile-pic-border);
@@ -828,7 +827,7 @@ footer {
    12. Media Queries
    ========================================================================== */
 
-@media (max-width: 600px) {
+@media (max-width: 900px) {
   header.common-header {
     position: fixed;
     top: 0;
@@ -907,5 +906,8 @@ footer {
 
   .highlight-block img {
      max-width: 100%;
+  }
+  .text-block {
+     padding: 0rem
   }
 }
