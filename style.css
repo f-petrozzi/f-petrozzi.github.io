@@ -156,12 +156,6 @@
 
 html {
   scroll-behavior: smooth;
-  min-height: 100vh;
-  padding-top: env(safe-area-inset-top);
-  padding-right: env(safe-area-inset-right);
-  padding-bottom: env(safe-area-inset-bottom);
-  padding-left: env(safe-area-inset-left);
-  background: var(--body-bg);
 }
 
 html, body {
@@ -169,11 +163,6 @@ html, body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-  padding-top: env(safe-area-inset-top);
-  padding-right: env(safe-area-inset-right);
-  padding-bottom: env(safe-area-inset-bottom);
-  padding-left: env(safe-area-inset-left);
-  background: var(--body-bg);
 }
 
 /* Global Body Styling */
@@ -186,11 +175,6 @@ body {
   background: var(--body-bg);
   background-size: var(--body-bg-size);
   animation: var(--body-anim);
-  min-height: calc(100vh + env(safe-area-inset-top) + env(safe-area-inset-bottom));
-  padding-top: env(safe-area-inset-top);
-  padding-right: env(safe-area-inset-right);
-  padding-bottom: env(safe-area-inset-bottom);
-  padding-left: env(safe-area-inset-left);
 }
 
 /* Gradient Animation */
@@ -851,10 +835,9 @@ footer {
 
 @media (max-width: 900px) {
   header.common-header {
-    position: sticky;
+    position: fixed;
     top: 0;
     left: 0;
-    right: 0;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
