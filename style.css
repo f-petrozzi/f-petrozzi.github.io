@@ -802,7 +802,7 @@ footer {
   color: var(--body-text-color);
   margin-bottom: var(--spacing-xs);
   text-align: left;
-  padding: 2rem 0 0 var(--spacing-sm);
+  padding: 1rem 0 0 var(--spacing-sm);
 }
 
 .highlight-block {
