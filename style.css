@@ -198,7 +198,7 @@ body {
    ========================================================================== */
 
 /* Base Typography */
-h1, h2 {
+h1, h2, h3 {
   margin-bottom: var(--spacing-sm);
   text-align: center;
 }
@@ -837,14 +837,11 @@ footer {
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem 1rem;
-    padding-right: 90px;
   }
   
   .header-right {
     position: absolute;
     right: var(--spacing-sm);
-    top: 55%;
-    transform: translateY(-50%);
   }
   
   .header-left {
@@ -853,10 +850,6 @@ footer {
   
    p, .text-block {
     line-height: 1.8; 
-  }
-  
-   header.common-header .logo {
-    margin-right: var(--spacing-sm);
   }
   
   #menuToggle {
@@ -871,7 +864,6 @@ footer {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    margin-right: 90px;
   }
   
   nav a, .main-nav a {
@@ -910,11 +902,6 @@ footer {
   .project-container {
     margin-top: var(--spacing-xl);
     padding: var(--spacing-sm);
-  }
-   
-  .dark-mode-toggle-label .toggle-slider {
-    top: 49%;
-    transform: translateY(-50%);
   }
 
   .highlight-block img {
