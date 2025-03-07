@@ -274,10 +274,10 @@ header.common-header .logo { font-size: 20px; }
 
 /* Base Header Style */
 header.common-header {
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
-  width: 100%;
+  right: 0;
   z-index: 999;
   background-color: var(--header-bg);
   color: var(--header-text-color);
