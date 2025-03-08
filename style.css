@@ -189,7 +189,7 @@ body {
   flex: 1;                     
   width: 100%;
   max-width: 1300px;
-  margin: 5rem auto 0;
+  margin: 0rem auto 0;
   padding: var(--spacing-sm);  
 }
 
@@ -285,7 +285,7 @@ header.common-header {
   z-index: 999;
   background-color: var(--header-bg);
   color: var(--header-text-color);
-  padding: 0.7rem;
+  padding: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -296,7 +296,7 @@ header.common-header {
 .header-left {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-xs);
   flex: 0 0 auto;
 }
 
@@ -308,7 +308,7 @@ header.common-header {
 
 .header-right {
   position: absolute;
-  right: var(--spacing-sm);
+  right: var(--spacing-xs);
   top: 55%;
   transform: translateY(-50%);
 }
@@ -845,24 +845,11 @@ footer {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 1rem;
-  }
-  
-  .header-right {
-    position: absolute;
-    right: var(--spacing-sm);
-  }
-  
-  .header-left {
-    gap: 0.5rem;
+    padding: 0.3rem 0.3rem;
   }
   
    p, .text-block {
     line-height: 1.8; 
-  }
-  
-  #menuToggle {
-    font-size: clamp(16px, 4vw, 20px);
   }
   
   nav, .main-nav {
@@ -876,12 +863,7 @@ footer {
   }
   
   nav a, .main-nav a {
-    margin: 0;
     padding: 0.5rem;
-  }
-  
-  nav a {
-    font-size: clamp(8px, 3vw, 14px);
   }
   
   .main-nav a {
