@@ -837,7 +837,7 @@ footer {
 
 @media (max-width: 900px) {
   header.common-header {
-    position: fixed;
+    position: sticky;
     top: 0;
     left: 0;
     flex-direction: row;
