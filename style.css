@@ -840,6 +840,7 @@ footer {
 
 @media (max-width: 900px) {
   header.common-header {
+    position: fixed;
     padding: 0.3rem;
   }
    
