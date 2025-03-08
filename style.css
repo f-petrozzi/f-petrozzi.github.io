@@ -292,23 +292,15 @@ header.common-header {
 
 /* Header Structural Elements */
 .header-left {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  flex: 0 0 auto;
+  position: sticky;
 }
 
 .header-center {
-  flex: 1;
-  display: flex;
-  justify-content: center;
+  position: sticky;
 }
 
 .header-right {
-  position: absolute;
-  right: var(--spacing-xs);
-  top: 55%;
-  transform: translateY(-50%);
+  position: sticky;
 }
 
 /* Logo */
@@ -352,6 +344,7 @@ header.common-header .logo {
 /* Menu Toggle Button */
 #menuToggle {
   background: none;
+  display: flex;
   border: none;
   color: var(--header-text-color);
   cursor: pointer;
@@ -849,7 +842,8 @@ footer {
   }
    
    section {
-    margin-bottom: 4rem;
+     margin-top: 3rem;
+     margin-bottom: 3rem;
   }
    
   nav, .main-nav {
