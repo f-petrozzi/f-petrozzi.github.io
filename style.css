@@ -188,7 +188,7 @@ body {
   flex: 1;                     
   width: 100%;
   max-width: 1300px;
-  margin: 1rem auto 0;
+  margin: 0.5rem auto 0;
   padding: var(--spacing-sm);  
 }
 
@@ -854,7 +854,7 @@ footer {
    
    .container {                   
   padding: var(--spacing-md);
-  margin: 1.2rem auto 0;
+  margin: 1rem auto 0;
 }
 
   nav, .main-nav {
