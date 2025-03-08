@@ -293,14 +293,18 @@ header.common-header {
 /* Header Structural Elements */
 .header-left {
   position: sticky;
+  display: flex;
+  gap: 0.3rem;
 }
 
 .header-center {
   position: sticky;
+  display: flex;
 }
 
 .header-right {
   position: sticky;
+  display: flex;
 }
 
 /* Logo */
@@ -322,6 +326,7 @@ header.common-header .logo {
   text-align: center;
   overflow: visible;
   white-space: nowrap;
+  display: flex;
 }
 
 .main-nav {
@@ -334,7 +339,8 @@ header.common-header .logo {
   text-decoration: none;
   color: var(--nav-link-color);
   font-weight: bold;
-  transition: color var(--transition-fast);
+  transition: color var(--transition-fast); 
+  display: flex;
 }
 
 .main-nav a:hover {
@@ -846,6 +852,10 @@ footer {
      margin-bottom: 3rem;
   }
    
+   .container {                   
+  padding: var(--spacing-md);  
+}
+
   nav, .main-nav {
     display: flex;
     flex-direction: row;
