@@ -655,6 +655,10 @@ footer {
   box-shadow: var(--section-box-shadow);
 }
 
+.modal-content, a {
+  color: var(--modal-content-a);
+}
+
 .modal-content .close {
   position: absolute;
   top: 0;
@@ -842,7 +846,11 @@ footer {
    p, .text-block {
     line-height: 1.8; 
   }
-  
+   
+   section {
+    margin-bottom: 5rem;
+  }
+   
   nav, .main-nav {
     display: flex;
     flex-direction: row;
