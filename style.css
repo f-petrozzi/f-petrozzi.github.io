@@ -374,7 +374,7 @@ section {
   transition: opacity var(--transition-medium) ease-out, transform var(--transition-medium) ease-out;
   display: flow-root;
   background-color: var(--section-bg);
-  margin-bottom: 7rem;
+  margin-bottom: 7.5rem;
   padding: var(--spacing-lg);
   border-radius: var(--border-radius-md);
   box-shadow: var(--section-box-shadow);
