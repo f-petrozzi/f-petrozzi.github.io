@@ -312,7 +312,7 @@
       // Section observer options - Activate earlier for mobile users
       const sectionObserverOptions = width <= 900 ? 
         { threshold: 0.01, rootMargin: "0px 0px -10% 0px" } : // Mobile settings - earlier activation
-        { threshold: 0.05, rootMargin: "0px 0px -20% 0px" };   // Desktop settings
+        { threshold: 0.05, rootMargin: "0px 0px -10% 0px" };   // Desktop settings
       
       // Apply observer to project sections
       const sections = document.querySelectorAll('.project-section');
@@ -334,7 +334,7 @@
         { threshold: 0.01, rootMargin: "0px 0px -10% 0px" } : // Mobile settings
         (width <= 900 ? 
           { threshold: 0.05, rootMargin: "0px 0px 0% 0px" } : // Tablet settings
-          { threshold: 0.12, rootMargin: "0px 0px -30% 0px" } // Desktop settings
+          { threshold: 0.12, rootMargin: "0px 0px -10% 0px" } // Desktop settings
         );
       
       // Apply observer to content blocks
