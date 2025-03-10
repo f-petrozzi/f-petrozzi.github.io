@@ -434,7 +434,28 @@
       });
     });
 
-console.log("Scroll event fired", currentScroll, prevScroll);
+document.addEventListener("DOMContentLoaded", function() {
+  let prevScroll = window.pageYOffset;
+  const header = document.querySelector("header.common-header");
+  
+  if (!header) {
+    console.error("Header element not found!");
+    return;
+  }
+  
+  window.addEventListener("scroll", function() {
+    let currentScroll = window.pageYOffset;  // Declare currentScroll here
+    console.log("prevScroll:", prevScroll, "currentScroll:", currentScroll);
+    
+    if (prevScroll > currentScroll) {
+      header.style.transform = "translateY(0)";
+    } else {
+      header.style.transform = "translateY(-100%)";
+    }
+    
+    prevScroll = currentScroll;
+  });
+});
 
   </script>
 </body>
