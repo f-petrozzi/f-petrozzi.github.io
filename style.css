@@ -208,7 +208,7 @@ html {
 }
 
 html, body {
-  height: 100%;
+  min-height: 100%;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
@@ -360,7 +360,9 @@ header.common-header {
 .header-hidden {
   transform: translateY(-100%);
 }
-
+header.common-header.header-hidden {
+  transform: translateY(-100%);
+}
 /* Header Structural Elements */
 .header-left {
   display: flex;
