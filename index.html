@@ -212,6 +212,7 @@
   <!-- Main Page Scripts -->
   <script>
          // Header scroll behavior
+      document.addEventListener("DOMContentLoaded", function() {
       let lastScrollTop = 0;
       const header = document.querySelector('header.common-header');
       const scrollThreshold = 10; // Minimum scroll amount to trigger header visibility change
@@ -233,7 +234,7 @@
         
         lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // For mobile or negative scrolling
       }, { passive: true });
-    
+    });
     // Auto-update the footer year
     document.getElementById("year").textContent = new Date().getFullYear();
     
@@ -433,14 +434,7 @@
       });
     });
 
-
-    
-    window.addEventListener('scroll', function() {
-  let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-  console.log("currentScroll:", currentScroll, "lastScrollTop:", lastScrollTop);
-  // Existing logic...
-});
-
+console.log("Scroll event fired", currentScroll, prevScroll);
 
   </script>
 </body>
