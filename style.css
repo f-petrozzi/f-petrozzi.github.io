@@ -1064,7 +1064,7 @@ footer::before {
 
 .content-block {
   opacity: 0;
-  transition: opacity var(--transition-slow) ease-out, transform var(--transition-bounce);
+  transition: opacity var(--transition-extra-slow), transform var(--transition-extra-slow);
   padding: var(--space-xl) var(--space-md);
   margin: var(--space-xl) 0;
   transform: translateY(30px);
