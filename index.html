@@ -435,16 +435,12 @@
 
 
     
-    let prevScroll = window.pageYOffset;
-window.addEventListener("scroll", function() {
-  let currentScroll = window.pageYOffset;
-  if (prevScroll > currentScroll) {
-    document.querySelector("header.common-header").style.transform = "translateY(0)";
-  } else {
-    document.querySelector("header.common-header").style.transform = "translateY(-100%)";
-  }
-  prevScroll = currentScroll;
+    window.addEventListener('scroll', function() {
+  let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+  console.log("currentScroll:", currentScroll, "lastScrollTop:", lastScrollTop);
+  // Existing logic...
 });
+
 
   </script>
 </body>
