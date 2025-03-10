@@ -482,7 +482,7 @@ header.common-header .back:hover {
 section {
   opacity: 0;
   transform: translateX(-80px); /* Increased offset for more noticeable animation */
-  transition: opacity var(--transition-slow) ease-out, transform var(--transition-bounce);
+  transition: opacity var(--transition-extra-slow), transform var(--transition-extra-slow);
   display: flow-root;
   background-color: var(--section-bg);
   margin-bottom: var(--space-xxl);
@@ -680,7 +680,7 @@ section.active {
 }
 
 .dark-mode-toggle {
-  margin: -1.15rem 0 0 -1.5rem;
+  margin: -1.8rem 0 0 -2.5rem;
 }
 
 /* ==========================================================================
@@ -700,7 +700,7 @@ section.active {
   margin-bottom: var(--space-md);
   transform: translateX(80px); /* Increased offset for more noticeable animation */
   opacity: 0;
-  transition: transform var(--transition-bounce), opacity var(--transition-slow) ease-out 0.2s;
+  transition: opacity var(--transition-extra-slow), transform var(--transition-extra-slow);
   overflow: hidden; /* Ensure the magnified image stays contained */
   border-radius: var(--radius-md);
   position: relative;
