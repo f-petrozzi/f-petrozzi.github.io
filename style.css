@@ -335,20 +335,21 @@ header.common-header .logo { font-size: var(--font-size-lg); }
 /* ==========================================================================
    3. Header & Navigation
    ========================================================================== */
-/* Base Header Style with Grid */
+
+/* Base Header Style */
 header.common-header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  height: auto;
-  padding: 0.5rem 0.5rem;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
+  height: var(--header-height);
   z-index: var(--z-header);
   background-color: var(--header-bg);
   color: var(--header-text-color);
+  padding: var(--space-xs) var(--space-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   box-shadow: var(--shadow-md);
   transition: var(--header-transition);
   transform: translateY(0);
@@ -362,27 +363,28 @@ header.common-header {
 header.common-header.header-hidden {
   transform: translateY(-100%);
 }
-/* Header Structural Elements using grid */
+/* Header Structural Elements */
 .header-left {
-  grid-column: 1;
-  justify-self: start;
+  display: flex;
+  gap: var(--space-xs);
+  align-items: center;
 }
 
 .header-center {
-  grid-column: 2;
-  justify-self: center;
+  display: flex;
+  justify-content: center;
 }
 
 .header-right {
-  grid-column: 3;
-  justify-self: end;
+  display: flex;
+  align-items: center;
 }
 
 /* Logo */
 header.common-header .logo {
   font-weight: var(--font-weight-bold);
   color: var(--header-text-color);
-  border: 3px solid var(--header-text-color);
+  border: 2px solid var(--header-text-color);
   width: clamp(40px, 6vw, 50px);
   height: clamp(40px, 6vw, 50px);
   display: flex;
@@ -398,40 +400,45 @@ header.common-header .logo:hover {
   box-shadow: var(--shadow-focus);
 }
 
-/* Main Navigation */
+/* Navigation */
+.header-center nav {
+  text-align: center;
+  overflow: visible;
+  white-space: nowrap;
+  display: flex;
+}
+
 .main-nav {
   display: flex;
-  gap: clamp(0.5rem, 3vw, 3rem);
+  gap: clamp(0.5rem, 2vw, 1.5rem);
   align-items: center;
 }
 
-/* Ensure each nav link is positioned relatively for its pseudo-element */
 .main-nav a {
-  position: relative;  /* Added for proper pseudo-element positioning */
   text-decoration: none;
   color: var(--nav-link-color);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-medium);
   transition: color var(--transition-quick);
   display: flex;
-  padding: 0 0.1rem 0 0.3rem;
+  position: relative;
+  padding: var(--space-xs) var(--space-xs);
   text-transform: uppercase;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.05em;
   font-size: clamp(0.9em, 2vw, 1em);
 }
 
 .main-nav a:hover {
   color: var(--nav-link-hover-color);
-  
 }
 
-/* Underline effect on hover for each nav link */
+/* Underline effect on hover */
 .main-nav a::after {
   content: '';
   position: absolute;
-  bottom: 2px;
+  bottom: 6px;
   left: 0;
   width: 100%;
-  height: 2px;
+  height: 1px;
   background-color: var(--nav-link-hover-color);
   transform: scaleX(0);
   transform-origin: center;
@@ -439,7 +446,7 @@ header.common-header .logo:hover {
 }
 
 .main-nav a:hover::after {
-  transform: scaleX(0.999);
+  transform: scaleX(0.9);
 }
 
 /* Menu Toggle Button */
@@ -450,7 +457,7 @@ header.common-header .logo:hover {
   color: var(--header-text-color);
   cursor: pointer;
   transition: transform var(--transition-bounce);
-  padding: var(--space-xxs)
+  padding: var(--space-xss);
 }
 
 #menuToggle:hover {
@@ -469,6 +476,7 @@ header.common-header .back {
 header.common-header .back:hover {
   transform: translateX(-2px);
 }
+
 /* ==========================================================================
    4. Section Styles
    ========================================================================== */
@@ -1134,12 +1142,16 @@ footer::before {
    ========================================================================== */
 
 @media (max-width: 900px) {
-     p, .text-block {
+  header.common-header {
+    position: fixed;
+    padding: 0.3rem;
+  }
+   
+   p, .text-block {
     line-height: 1.8; 
   }
    
    section {
-     margin-top: 0rem;
      margin-bottom: 3rem;
   }
    
@@ -1147,6 +1159,16 @@ footer::before {
   padding: var(--space-xs);
   margin: 0rem auto 0;
 }
+
+  nav, .main-nav {
+    display: flex;
+    flex-direction: row;
+    gap: clamp(0.2rem, 1vw, 0.5rem);
+    flex-shrink: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   
   .projects-grid {
     flex-direction: column;
@@ -1169,6 +1191,7 @@ footer::before {
   .text-block {
      padding: 0rem
   }
+}
 
 /* Animations */
 @keyframes fadeInUp {
@@ -1180,8 +1203,8 @@ footer::before {
     opacity: 1;
     transform: translateY(0);
   }
- }
-@media (max-width: 550px) {
+}
+  @media (max-width: 550px) {
   .dark-mode-toggle-label .toggle-slider {
   top: 1px;
   left: 0px;
