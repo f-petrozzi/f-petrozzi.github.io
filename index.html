@@ -434,6 +434,10 @@
       });
     });
 
+    window.addEventListener("scroll", function() {
+  console.log("Scroll event triggered");
+  let currentScroll = window.pageYOffset;
+  console.log("prevScroll:", prevScroll, "currentScroll:", currentScroll);
 document.addEventListener("DOMContentLoaded", function() {
   let prevScroll = window.pageYOffset;
   const header = document.querySelector("header.common-header");
@@ -456,7 +460,7 @@ document.addEventListener("DOMContentLoaded", function() {
     prevScroll = currentScroll;
   });
 });
-
+});
   </script>
 </body>
 </html>
