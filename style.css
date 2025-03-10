@@ -408,7 +408,7 @@ header.common-header .logo:hover {
 
 .main-nav {
   display: flex;
-  gap: clamp(0.8rem, 2vw, 1.5rem);
+  gap: clamp(0.5rem, 2vw, 1.5rem);
   align-items: center;
 }
 
@@ -455,7 +455,7 @@ header.common-header .logo:hover {
   color: var(--header-text-color);
   cursor: pointer;
   transition: transform var(--transition-bounce);
-  padding: var(--space-xs);
+  padding: var(--space-xss);
 }
 
 #menuToggle:hover {
