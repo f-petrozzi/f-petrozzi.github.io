@@ -6,8 +6,11 @@
   <title>Fabrizio Petrozzi</title>
   <!-- Icon Classes -->
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-  <!-- Google Font -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap">
+  <!-- Font -->
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap"> -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
   <!-- External CSS -->
   <link rel="stylesheet" href="style.css" />
   <!-- Pre-load projects -->
@@ -86,19 +89,25 @@
         <div class="projects-grid">
           <div class="project-item">
             <a href="project1.html">
+              <div class="project-image-container">
               <img src="images/HTML.jpg" alt="Building My Digital Presence" />
+                </div>
               <h3>Building My Digital Presence</h3>
             </a>
           </div>
           <div class="project-item">
             <a href="project2.html">
+              <div class="project-image-container">
               <img src="images/lorem ipsum.jpg" alt="Lorem ipsum" />
+                </div>
               <h3>Lorem ipsum</h3>
             </a>
           </div>
           <div class="project-item">
             <a href="project3.html">
+              <div class="project-image-container">
               <img src="images/lorem ipsum.jpg" alt="Lorem ipsum" />
+                </div>
               <h3>Lorem ipsum</h3>
             </a>
           </div>
@@ -111,7 +120,9 @@
         <div class="projects-grid">
           <div class="project-item">
             <a href="project4.html">
+              <div class="project-image-container">
               <img src="images/lorem ipsum.jpg" alt="Lorem ipsum" />
+                </div>
               <h3>Lorem ipsum</h3>
             </a>
           </div>
@@ -138,19 +149,25 @@
         <ul class="sidebar-list featured-list">
           <li>
             <a href="project1.html">
+              <div class="sidebar-thumbnail-container">
               <img src="images/HTML-Thumb.jpg" alt="Project 1 Thumbnail">
+                </div>
               <span>Building My Digital Presence</span>
             </a>
           </li>
           <li>
             <a href="project2.html">
+              <div class="sidebar-thumbnail-container">
               <img src="images/project2-thumb.jpg" alt="Project 2 Thumbnail">
+                </div>
               <span>MongoDB Business Use Case</span>
             </a>
           </li>
           <li>
             <a href="project3.html">
+              <div class="sidebar-thumbnail-container">
               <img src="images/project3-thumb.jpg" alt="Project 3 Thumbnail">
+                </div>
               <span>Titanic Survival Prediction</span>
             </a>
           </li>
@@ -159,7 +176,9 @@
         <ul class="sidebar-list other-list">
           <li>
             <a href="project4.html">
+              <div class="sidebar-thumbnail-container">
               <img src="images/project4-thumb.jpg" alt="Project 4 Thumbnail">
+                </div>
               <span>Multiple Regression Analysis</span>
             </a>
           </li>
@@ -390,6 +409,28 @@
         otherObserver.observe(item);
       });
     });
+  // Header scroll behavior
+let lastScrollTop = 0;
+const header = document.querySelector('header.common-header');
+const scrollThreshold = 50; // Minimum scroll amount to trigger header visibility change
+
+window.addEventListener('scroll', function() {
+  let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+  
+  // Skip small scroll amounts to avoid jittery behavior
+  if (Math.abs(lastScrollTop - currentScroll) <= scrollThreshold) return;
+  
+  // Scrolling down
+  if (currentScroll > lastScrollTop && currentScroll > header.offsetHeight) {
+    header.classList.add('header-hidden');
+  } 
+  // Scrolling up
+  else {
+    header.classList.remove('header-hidden');
+  }
+  
+  lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // For mobile or negative scrolling
+}, { passive: true });
   </script>
 </body>
 </html>
