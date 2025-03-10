@@ -519,10 +519,10 @@ section.active {
 /* Social links container */
 .social-links {
   position: absolute;
-  top: var(--space-sm);
-  right: var(--space-sm);
+  top: var(--space-xs);
+  right: var(--space-xs);
   display: flex;
-  gap: var(--space-sm);
+  gap: var(--space-xs);
 }
 
 /* Social link styling */
@@ -1138,23 +1138,23 @@ footer::before {
 
 @media (max-width: 900px) {
   header.common-header {
-    padding: var(--space-xs);
+    position: fixed;
+    padding: 0.3rem;
   }
    
-  p, .text-block {
-    line-height: var(--line-height-relaxed); 
+   p, .text-block {
+    line-height: 1.8; 
   }
    
-  section {
-    margin-top: var(--space-xl);
-    margin-bottom: var(--space-xl);
-    padding: var(--space-lg);
+   section {
+     margin-top: 2rem;
+     margin-bottom: 3rem;
   }
    
-  .container {                   
-    padding: var(--space-md);
-    margin: calc(var(--header-height) + var(--space-xs)) auto 0; /* Less space above container */
-  }
+   .container {                   
+  padding: var(--space-xs);
+  margin: 0rem auto 0;
+}
 
   nav, .main-nav {
     display: flex;
@@ -1167,7 +1167,7 @@ footer::before {
   }
   
   nav a, .main-nav a {
-    padding: var(--space-xs);
+    padding: 0.5rem;
   }
   
   .main-nav a {
@@ -1189,30 +1189,11 @@ footer::before {
     max-height: 300px;
   }
 
-  .highlight-block-image-container {
-    max-width: 100%;
+  .highlight-block img {
+     max-width: 100%;
   }
-  
   .text-block {
-    padding: 0;
-  }
- .social-links {
-    gap: calc(var(--space-sm) * 0.6); /* Smaller gap for mobile */
-  }
-}
-
-@media (max-width: 550px) {
-  .social-links {
-    position: relative; /* Change from absolute to relative */
-    top: 0;
-    right: 0;
-    justify-content: center; /* Center the links */
-    margin-bottom: var(--space-md); /* Add space below the links */
-  }
-  
-  .social-links a {
-    width: clamp(30px, 4vw, 45px); /* Slightly smaller icons */
-    height: clamp(30px, 4vw, 45px);
+     padding: 0rem
   }
 }
 
