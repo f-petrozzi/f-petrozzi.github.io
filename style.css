@@ -246,7 +246,7 @@ body {
 
 .main-content {
   flex: 1;
-  margin-top: var(--header-height);
+  margin-top: var(--space-lg);
 }
 
 /* ==========================================================================
@@ -342,7 +342,6 @@ header.common-header {
   top: 0;
   left: 0;
   right: 0;
-  height: var(--header-height);
   z-index: var(--z-header);
   background-color: var(--header-bg);
   color: var(--header-text-color);
@@ -1142,29 +1141,23 @@ footer::before {
    ========================================================================== */
 
 @media (max-width: 900px) {
-  header.common-header {
-    position: fixed;
-    padding: 0.4rem;
-  }
-   
    p, .text-block {
     line-height: 1.8; 
   }
    
    section {
      margin-bottom: 3rem;
-     padding: 2.2rem 1rem 0rem 1rem;
+     padding: 1rem 1rem 0rem 1rem;
   }
    
    .container {                   
   padding: var(--space-md);
-  margin: 1.5rem auto 0;
 }
 
   nav, .main-nav {
     display: flex;
     flex-direction: row;
-    gap: clamp(0.2rem, 1vw, 0.5rem);
+    gap: clamp(0.1rem, 0.5vw, 0.5rem);
     flex-shrink: 1;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1216,5 +1209,9 @@ footer::before {
  .social-links {
     flex-direction: column;
   }
+  .main-content{
+    margin-top: var(--space-md)
+  }
 }
+
 
