@@ -1144,7 +1144,7 @@ footer::before {
 @media (max-width: 900px) {
   header.common-header {
     position: fixed;
-    padding: 0.3rem;
+    padding: 0.4rem;
   }
    
    p, .text-block {
@@ -1153,11 +1153,12 @@ footer::before {
    
    section {
      margin-bottom: 3rem;
+     padding: 2.2rem 1rem 0rem 1rem;
   }
    
    .container {                   
-  padding: var(--space-xs);
-  margin: 0rem auto 0;
+  padding: var(--space-md);
+  margin: 1.5rem auto 0;
 }
 
   nav, .main-nav {
@@ -1212,4 +1213,8 @@ footer::before {
 .dark-mode-toggle-label .toggle-slider .icon {
   top: -1px;
  }
+ .social-links {
+    flex-direction: column;
+  }
 }
+
