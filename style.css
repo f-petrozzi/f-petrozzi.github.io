@@ -346,7 +346,7 @@ header.common-header {
   z-index: var(--z-header);
   background-color: var(--header-bg);
   color: var(--header-text-color);
-  padding: var(--space-xs) var(--space-sm);
+  padding: var(--space-xxs);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -418,7 +418,7 @@ header.common-header .logo:hover {
   text-decoration: none;
   color: var(--nav-link-color);
   font-weight: var(--font-weight-medium);
-  transition: color var(--transition-quick);
+  transition: color var(--transition-bounce);
   display: flex;
   position: relative;
   padding: var(--space-xs) var(--space-xs);
@@ -435,7 +435,7 @@ header.common-header .logo:hover {
 .main-nav a::after {
   content: '';
   position: absolute;
-  bottom: 6px;
+  bottom: 8px;
   left: 0;
   width: 100%;
   height: 1px;
@@ -774,7 +774,7 @@ footer {
   width: 100%;
   background-color: var(--footer-bg);
   color: var(--footer-text-color);
-  padding: var(--space-md);
+  padding: var(--space-xs);
   display: flex;
   align-items: center;
   justify-content: center;
