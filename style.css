@@ -837,7 +837,7 @@ footer::before {
   position: relative;
   background-color: var(--modal-bg);
   margin: 10% auto;
-  padding: var(--space-xl);
+  padding: var(--space-sm);
   border-left: 5px solid var(--modal-border-left);
   width: 80%;
   max-width: 500px;
@@ -897,7 +897,7 @@ footer::before {
   max-width: 400px;
   background-color: var(--sidebar-bg);
   color: var(--sidebar-text-color);
-  transition: right 0.5s ease; /* Quicker closing */
+  transition: right 1.5s ease; /* Quicker closing */
   z-index: var(--z-sidebar);
   display: flex;
   flex-direction: column;
@@ -906,7 +906,7 @@ footer::before {
 
 .sidebar.active {
   right: 0;
-  transition: right 0.8s ease;
+  transition: right 0.6s ease;
 }
 
 .sidebar-header {
@@ -933,7 +933,7 @@ footer::before {
 }
 
 .sidebar-content {
-  padding: var(--space-md);
+  padding: var(--space-xs);
   overflow-y: auto;
 }
 
@@ -1212,6 +1212,18 @@ footer::before {
   .main-content{
     margin-top: var(--space-md)
   }
+  .sidebar {
+   width: 70%;
+   max-width: 300px;
+   transition: right 0.5s ease;
+}
+
+  .sidebar.active {
+   transition: right 0.5s ease;
+}
+  .sidebar-header {
+   padding: var(--space-xxs);
+ }
 }
 
 
