@@ -73,7 +73,9 @@
           </a>
         </div>
         <h1>About Me</h1>
-        <div id="map" class="map-container" style="width: 528px; height: 192px;"></div>
+        <div id="map" class="map-container" style="width: 528px; height: 192px;">
+        <div class="map-overlay"></div>
+        </div>
         <img src="images/headshot.jpeg" alt="My Photo" class="profile-pic">
         <p>
           Hey! I'm <span class="highlight-name">Fabrizio Petrozzi</span>, 
@@ -444,7 +446,9 @@ document.addEventListener("DOMContentLoaded", function() {
   center: [-82.6384, 27.7671],
   zoom: 8
 });
-const marker = new maplibregl.Marker({ color: "#ff0000" })
+const markerEl = document.createElement('div');
+markerEl.className = 'custom-marker';
+new maplibregl.Marker(markerEl)
   .setLngLat([-82.6384, 27.7671])
   .addTo(map);
 </script>
