@@ -244,37 +244,6 @@ body {
   padding: var(--space-md);
 }
 
-#about {
-  background: none;
-  box-shadow: none;
-  border: none;
-  border-left: none;
-  border-radius: 0;
-  padding: 0;
-  margin-bottom: 20rem; 
-  opacity: 1;        
-  transform: none;   
-  transition: none; 
-}
-
-section#about::before{
-  background: none;
-}
-
-#location {
-  padding: var(--space-md);
-  margin: var(--space-xl) 0;
-  text-align: center;
-}
-
-.map-container {
-  margin: 0 auto;
-  max-width: 528px;
-  border: 2px solid var(--color-medium-gray);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-}
-
 .main-content {
   flex: 1;
   margin-top: var(--space-lg);
@@ -716,6 +685,78 @@ section.active {
 .dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider {
   left: calc(100% - var(--slider-width) - 0.5px);
   background-color: transparent;
+}
+
+/* ==========================================================================
+   5.5. AboutMe
+   ========================================================================== */
+
+#about {
+  background: none;
+  box-shadow: none;
+  border: none;
+  border-left: none;
+  border-radius: 0;
+  padding: 0;
+  margin-bottom: 20rem; 
+  opacity: 1;        
+  transform: none;   
+  transition: none; 
+}
+
+section#about::before{
+  background: none;
+}
+
+#location {
+  padding: var(--space-md);
+  margin: var(--space-xl) 0;
+  text-align: center;
+}
+
+.map-container {
+  margin: 0 auto;
+  max-width: 528px;
+  border: 2px solid var(--color-medium-gray);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.custom-marker {
+  width: 20px;
+  height: 20px;
+  background-color: #007aff; 
+  border: 2px solid #ccc;     
+  border-radius: 50%;
+  position: relative;
+}
+
+.custom-marker::after {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  width: 32px;
+  height: 32px;
+  border: 2px solid rgba(0, 122, 255, 0.5);
+  border-radius: 50%;
+  opacity: 0;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.7;
+  }
+  70% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
 }
 
 /* ==========================================================================
