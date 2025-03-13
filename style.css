@@ -801,10 +801,10 @@ section#about::before{
   position: absolute;
   bottom: 0;
   left: 0;
-  transform: translate(-50%, 50%);
+  transform: translate(0, 50%);
   background-color: var(--profile-card-bg);
   color: var(--profile-card-text);
-  padding: var(--space-sm);
+  padding: var(--space-xs);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
   display: flex;              /* Use flex for horizontal layout */
@@ -817,7 +817,7 @@ section#about::before{
 .profile-card-text {
   display: flex;
   flex-direction: column;  /* Stack the name and location vertically */
-  margin-left: var(--space-sm);  /* Space between image and text */
+  margin-left: var(--space-xs);  /* Space between image and text */
 }
 
 .profile-card-pic {
@@ -825,8 +825,6 @@ section#about::before{
   height: 60px;
   border-radius: var(--radius-circle);
   object-fit: cover;
-  /* Optionally, remove bottom margin as it’s no longer needed */
-  margin-bottom: 0;
 }
 
 .profile-card-name {
