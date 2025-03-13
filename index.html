@@ -73,7 +73,7 @@
           </a>
         </div>
         <h1>About Me</h1>
-        <div id="map" class="map-container" style="width: 528px; height: 192px;">
+        <div id="map" class="map-container" style="width: 528px; height: 192px; position: relative;">
         <div class="map-overlay"></div>
         </div>
         <img src="images/headshot.jpeg" alt="My Photo" class="profile-pic">
@@ -439,25 +439,20 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 });
  //map
-  const map = new maplibregl.Map({
+const map = new maplibregl.Map({
   container: 'map',
-  style: 'https://tiles.basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
-  center: [-82.6384, 27.7671],
+  style: 'https://demotiles.maplibre.org/style.json',  // Popular, detailed style
+  center: [-82.6384, 27.7671],  // [longitude, latitude]
   zoom: 8,
-  attributionControl: false
+  attributionControl: false      // Removes the default MapLibre button
 });
+
+// Create and add our custom marker (Apple-style)
 const markerEl = document.createElement('div');
 markerEl.className = 'custom-marker';
 new maplibregl.Marker(markerEl)
   .setLngLat([-82.6384, 27.7671])
   .addTo(map);
-map.on('load', () => {
-  map.removeLayer("place-city-sm"); 
-});
-
-  map.on('load', () => {
-  console.log("All Layers:", map.getStyle().layers);
-});
 </script>
 </body>
 </html>
