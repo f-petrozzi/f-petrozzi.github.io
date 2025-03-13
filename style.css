@@ -199,7 +199,7 @@
 
   /* About */
   --map-overlay-color-1: var(--color-dark); 
-  --profile-card-bg: var(--color-darl);
+  --profile-card-bg: var(--color-dark);
   --profile-card-text: var(--color-light);
   
 }
@@ -729,7 +729,9 @@ section#about::before{
 .map-wrapper {
   position: relative;
   overflow: visible;
-  display: inline-block; /* Ensures the wrapper is only as wide as the map */
+  display: block;
+  width: 528px;  /* Same as your map's max-width */
+  margin: 0 auto;
 }
 
 .map-container {
@@ -795,7 +797,6 @@ section#about::before{
   }
 }
 
-/* profile card */
 .profile-card {
   position: absolute;
   bottom: 0;
@@ -806,10 +807,17 @@ section#about::before{
   padding: var(--space-sm);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
-  display: flex;
-  flex-direction: column;
+  display: flex;              /* Use flex for horizontal layout */
+  flex-direction: row;        /* Arrange children in a row */
   align-items: center;
   z-index: 4;
+}
+
+/* New container for text content */
+.profile-card-text {
+  display: flex;
+  flex-direction: column;  /* Stack the name and location vertically */
+  margin-left: var(--space-sm);  /* Space between image and text */
 }
 
 .profile-card-pic {
@@ -817,14 +825,15 @@ section#about::before{
   height: 60px;
   border-radius: var(--radius-circle);
   object-fit: cover;
-  margin-bottom: var(--space-xs);
+  /* Optionally, remove bottom margin as it’s no longer needed */
+  margin-bottom: 0;
 }
 
 .profile-card-name {
   margin: 0;
   font-size: var(--font-size-base);
   margin-bottom: var(--space-xxs);
-  text-align: center;
+  text-align: left;
 }
 
 .profile-card-location {
@@ -837,6 +846,7 @@ section#about::before{
 .profile-card-location i {
   font-size: 1.2em;
 }
+
 
 /* ==========================================================================
    6. Projects Grid
