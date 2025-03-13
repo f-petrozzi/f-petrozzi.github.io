@@ -131,6 +131,9 @@
   
   /* Highlight name */
   --highlight-name: var(--color-green);
+
+  /* Map */
+  --map-overlay-color: rgba(255, 255, 255, 0.8);
 }
 
 /* Dark Mode Overrides */
@@ -190,6 +193,9 @@
   
   /* Highlight name */
   --highlight-name: var(--color-light-accent);
+
+  /* Map */
+  --map-overlay-color: rgba(0, 0, 0, 0.8);
 }
 
 /* ==========================================================================
@@ -742,6 +748,22 @@ section#about::before{
   border-radius: 50%;
   opacity: 0;
   animation: pulse 2s infinite;
+}
+
+/* Ensure the map container is positioned relatively */
+#map {
+  position: relative;
+}
+
+/* Overlay that covers the bottom quarter of the map */
+.map-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 25%;
+  background: linear-gradient(to top, var(--map-overlay-color) 0%, transparent 100%);
+  pointer-events: none; /* Allows map interactions through the overlay */
 }
 
 @keyframes pulse {
