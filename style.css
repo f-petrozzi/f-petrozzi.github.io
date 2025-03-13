@@ -764,6 +764,7 @@ section#about::before{
   height: 25%;
   background: linear-gradient(to top, var(--map-overlay-color) 0%, transparent 100%);
   pointer-events: none; /* Allows map interactions through the overlay */
+  z-index: 2;
 }
 
 @keyframes pulse {
