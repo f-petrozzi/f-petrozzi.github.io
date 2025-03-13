@@ -133,7 +133,7 @@
   --highlight-name: var(--color-green);
 
   /* Map */
-  --map-overlay-color: rgba(255, 255, 255);
+  --map-overlay-color-1: rgba(255, 255, 255);
 }
 
 /* Dark Mode Overrides */
@@ -195,7 +195,7 @@
   --highlight-name: var(--color-light-accent);
 
   /* Map */
-  --map-overlay-color: rgba(0, 0, 0);
+  --map-overlay-color-1: rgba(0, 0, 0);
 }
 
 /* ==========================================================================
