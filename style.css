@@ -277,7 +277,6 @@ h1, h2, h3 {
 
 p {
   text-align: left;
-  margin-bottom: var(--space-md);
   line-height: var(--line-height-relaxed);
   letter-spacing: 0.01em;
   /* Removed max-width constraint as requested */
@@ -736,7 +735,6 @@ section#about::before{
 .map-container {
   margin: 0 auto;
   max-width: 528px;
-  border: 2px solid var(--highlight-name);
   border-radius: var(--radius-md);
   overflow: hidden;
 }
@@ -770,7 +768,7 @@ section#about::before{
   position: relative;
 }
 
-/* Overlay that covers the bottom quarter of the map */
+/* Overlay that covers the bottom quarter of the map 
 .map-overlay {
   position: absolute;
   bottom: 0;
@@ -780,6 +778,7 @@ section#about::before{
   z-index: 3;
   background: linear-gradient(to top, var(--map-overlay-color-1) 0%, transparent 100%);
 }
+*/
 
 @keyframes pulse {
   0% {
@@ -804,8 +803,8 @@ section#about::before{
   background-color: var(--profile-card-bg);
   color: var(--profile-card-text);
   padding: var(--space-xs);
+  border: 2px solid var(--highlight-name);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
   display: flex;              /* Use flex for horizontal layout */
   flex-direction: row;        /* Arrange children in a row */
   align-items: center;
@@ -823,13 +822,19 @@ section#about::before{
   width: 60px;
   height: 60px;
   border-radius: var(--radius-circle);
+  border: 2px solid var(--profile-pic-border);
   object-fit: cover;
+  transition: border-color var(--transition-normal), box-shadow var(--transition-normal)
 }
 
-.profile-card-name {
+.profile-card-pic:hover {
+  border-color: var(--profile-pic-hover-border);
+  box-shadow: var(--profile-pic-hover-shadow);
+}
+
+.highlight-name {
   margin: 0;
-  font-size: var(--font-size-base);
-  margin-bottom: var(--space-xxs);
+  font-size: var(--font-size-md);
   text-align: left;
 }
 
@@ -843,6 +848,7 @@ section#about::before{
 .profile-card-location i {
   font-size: 1.2em;
 }
+
 
 
 /* ==========================================================================
@@ -951,28 +957,6 @@ footer::before {
   pointer-events: none;
 }
 
-/* ==========================================================================
-   8. Profile Image
-   ========================================================================== */
-
-.profile-pic {
-  display: block;
-  margin: 0 auto var(--space-xl) auto;
-  width: clamp(150px, 20vw, 250px);
-  height: clamp(150px, 20vw, 250px);
-  object-fit: cover;
-  border-radius: var(--radius-circle);
-  border: 4px solid var(--profile-pic-border);
-  transition: border-color var(--transition-normal), box-shadow var(--transition-normal)
-  position: relative;
-  z-index: 1;
-}
-
-.profile-pic:hover {
-  border-color: var(--profile-pic-hover-border);
-  box-shadow: var(--profile-pic-hover-shadow);
-
-}
 
 /* ==========================================================================
    9. Modal Window
@@ -1383,5 +1367,3 @@ footer::before {
    padding: var(--space-xxs);
  }
 }
-
-
