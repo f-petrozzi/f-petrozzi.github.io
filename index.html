@@ -7,7 +7,6 @@
   <!-- Icon Classes -->
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css" rel="stylesheet" />
-  <script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
   <!-- Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -211,6 +210,7 @@
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
   <script src="darkmode.js"></script>
+  <script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
   
   <!-- Main Page Scripts -->
 <script>
@@ -440,10 +440,13 @@ document.addEventListener("DOMContentLoaded", function() {
  //map
   const map = new maplibregl.Map({
   container: 'map',
-  style: 'https://demotiles.maplibre.org/style.json',
+  style: 'https://tiles.basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
   center: [-82.6384, 27.7671],
-  zoom: 9
+  zoom: 8
 });
+const marker = new maplibregl.Marker({ color: "#ff0000" })
+  .setLngLat([-82.6384, 27.7671])
+  .addTo(map);
 </script>
 </body>
 </html>
