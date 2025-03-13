@@ -133,8 +133,8 @@
   --highlight-name: var(--color-green);
 
   /* About */
-  --map-overlay-color-1: var(--section-bg); 
-  --profile-card-bg: var(--section-bg);
+  --map-overlay-color-1: var(--color-light); 
+  --profile-card-bg: var(--color-light);
   --profile-card-text: var(--color-dark);
    
 }
