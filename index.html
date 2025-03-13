@@ -441,15 +441,18 @@ document.addEventListener("DOMContentLoaded", function() {
  //map
 const map = new maplibregl.Map({
   container: 'map',
-  style: 'https://demotiles.maplibre.org/style.json',
-  center: [-82.6384, 27.7671],
+  style: 'https://tiles.basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json', 
+  center: [-82.6384, 27.7671], 
   zoom: 8,
-  attributionControl: false
+  attributionControl: false 
 });
 
+// Create your custom marker element
 const markerEl = document.createElement('div');
 markerEl.className = 'custom-marker';
-new maplibregl.Marker(markerEl)
+
+// Use the "element" option to ensure no default pin
+new maplibregl.Marker({ element: markerEl })
   .setLngLat([-82.6384, 27.7671])
   .addTo(map);
 </script>
