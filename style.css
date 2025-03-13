@@ -726,6 +726,12 @@ section#about::before{
   text-align: center;
 }
 
+.map-wrapper {
+  position: relative;
+  overflow: visible;
+  display: inline-block; /* Ensures the wrapper is only as wide as the map */
+}
+
 .map-container {
   margin: 0 auto;
   max-width: 528px;
