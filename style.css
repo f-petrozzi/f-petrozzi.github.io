@@ -132,8 +132,11 @@
   /* Highlight name */
   --highlight-name: var(--color-green);
 
-  /* Map */
-  --map-overlay-color-1: rgba(255, 255, 255);
+  /* About */
+  --map-overlay-color-1: var(--color-light); 
+  --profile-card-bg: var(--color-light);
+  --profile-card-text: var(--color-dark);
+   
 }
 
 /* Dark Mode Overrides */
@@ -194,8 +197,11 @@
   /* Highlight name */
   --highlight-name: var(--color-light-accent);
 
-  /* Map */
-  --map-overlay-color-1: rgba(0, 0, 0);
+  /* About */
+  --map-overlay-color-1: var(--color-dark); 
+  --profile-card-bg: var(--color-darl);
+  --profile-card-text: var(--color-light);
+  
 }
 
 /* ==========================================================================
@@ -781,6 +787,49 @@ section#about::before{
     transform: translate(-50%, -50%) scale(0.8);
     opacity: 0;
   }
+}
+
+/* profile card */
+.profile-card {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transform: translate(-50%, 50%);
+  background-color: var(--profile-card-bg);
+  color: var(--profile-card-text);
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 4;
+}
+
+.profile-card-pic {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-circle);
+  object-fit: cover;
+  margin-bottom: var(--space-xs);
+}
+
+.profile-card-name {
+  margin: 0;
+  font-size: var(--font-size-base);
+  margin-bottom: var(--space-xxs);
+  text-align: center;
+}
+
+.profile-card-location {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xxs);
+  font-size: var(--font-size-xs);
+}
+
+.profile-card-location i {
+  font-size: 1.2em;
 }
 
 /* ==========================================================================
