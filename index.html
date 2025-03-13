@@ -227,7 +227,6 @@ document.addEventListener("DOMContentLoaded", function() {
   if (header) {
     window.addEventListener('scroll', function() {
       let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-      console.log("Header Scroll - lastScrollTop:", lastScrollTop, "currentScroll:", currentScroll);
       
       // Skip small scroll amounts to avoid jitter
       if (Math.abs(lastScrollTop - currentScroll) <= scrollThreshold) return;
@@ -453,7 +452,7 @@ new maplibregl.Marker(markerEl)
   .setLngLat([-82.6384, 27.7671])
   .addTo(map);
 map.on('load', () => {
-  map.removeLayer("poi-label"); 
+  map.removeLayer("place-city-sm"); 
 });
 </script>
 </body>
