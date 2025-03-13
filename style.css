@@ -261,6 +261,20 @@ section#about::before{
   background: none;
 }
 
+#location {
+  padding: var(--space-md);
+  margin: var(--space-xl) 0;
+  text-align: center;
+}
+
+.map-container {
+  margin: 0 auto;
+  max-width: 528px;
+  border: 2px solid var(--color-medium-gray);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
 .main-content {
   flex: 1;
   margin-top: var(--space-lg);
