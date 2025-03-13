@@ -454,6 +454,10 @@ new maplibregl.Marker(markerEl)
 map.on('load', () => {
   map.removeLayer("place-city-sm"); 
 });
+
+  map.on('load', () => {
+  console.log("All Layers:", map.getStyle().layers);
+});
 </script>
 </body>
 </html>
