@@ -1356,9 +1356,6 @@ footer::before {
 .dark-mode-toggle-label .toggle-slider .icon {
   top: -1px;
  }
- .social-links {
-    flex-direction: column;
-  }
   .main-content{
     margin-top: var(--space-md)
   }
