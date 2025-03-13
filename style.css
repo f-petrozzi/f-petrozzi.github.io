@@ -729,7 +729,6 @@ section#about::before{
 .map-wrapper {
   position: relative;
   overflow: visible;
-  display: block;
   width: 528px;  /* Same as your map's max-width */
   margin: 0 auto;
 }
