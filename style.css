@@ -244,6 +244,23 @@ body {
   padding: var(--space-md);
 }
 
+#about {
+  background: none;
+  box-shadow: none;
+  border: none;
+  border-left: none;
+  border-radius: 0;
+  padding: 0;
+  margin-bottom: 20rem; 
+  opacity: 1;        
+  transform: none;   
+  transition: none; 
+}
+
+section#about::before{
+  background: none;
+}
+
 .main-content {
   flex: 1;
   margin-top: var(--space-lg);
