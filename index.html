@@ -444,13 +444,17 @@ document.addEventListener("DOMContentLoaded", function() {
   container: 'map',
   style: 'https://tiles.basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
   center: [-82.6384, 27.7671],
-  zoom: 8
+  zoom: 8,
+  attributionControl: false
 });
 const markerEl = document.createElement('div');
 markerEl.className = 'custom-marker';
 new maplibregl.Marker(markerEl)
   .setLngLat([-82.6384, 27.7671])
   .addTo(map);
+map.on('load', () => {
+  map.removeLayer("poi-label"); 
+});
 </script>
 </body>
 </html>
