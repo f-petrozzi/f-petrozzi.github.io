@@ -45,53 +45,56 @@
   <main class="main-content">
     <!-- Main Content -->
     <div class="container">
-      <!-- About Section -->
-      <section id="about">
-        <!-- Dark mode toggle -->
-        <div class="dark-mode-toggle">
-          <input type="checkbox" id="darkModeToggle" class="dark-mode-toggle-input">
-          <label for="darkModeToggle" class="dark-mode-toggle-label">
-            <span class="toggle-slider">
-              <span class="icon sun-icon">
-                <ion-icon name="sunny"></ion-icon>
-              </span>
-              <span class="icon moon-icon">
-                <ion-icon name="moon"></ion-icon>
-              </span>
-            </span>
-          </label>
-        </div>
-        <!-- Social Links -->
-        <div class="social-links">
-          <a href="https://www.linkedin.com/in/fabriziopetrozzi/" target="_blank" aria-label="LinkedIn">
-            <i class="bx bxl-linkedin"></i>
-          </a>
-          <a href="files/Resume.pdf" target="_blank" aria-label="Resume">
-            <i class="bx bx-file"></i>
-          </a>
-          <a href="https://usfbusiness.com/2023/03/29/fabrizio-petrozzi-yanez-business-management/" target="_blank" aria-label="25 Under 25 Award">
-            <i class="bx bx-trophy"></i>
-          </a>
-        </div>
-       
+          <!-- About Section -->
+    <section id="about">
+      <div class="map-wrapper">
         <!-- Map -->
-        <div class="map-wrapper">
-          <div id="map" class="map-container">
-            <div class="map-overlay"></div>
+        <div id="map" class="map-container">
+          <div class="map-overlay"></div>
+        </div>
+        <!-- Dark Mode Toggle (positioned top left of the map) -->
+        <div class="map-toggle">
+          <div class="dark-mode-toggle">
+            <input type="checkbox" id="darkModeToggle" class="dark-mode-toggle-input">
+            <label for="darkModeToggle" class="dark-mode-toggle-label">
+              <span class="toggle-slider">
+                <span class="icon sun-icon">
+                  <ion-icon name="sunny"></ion-icon>
+                </span>
+                <span class="icon moon-icon">
+                  <ion-icon name="moon"></ion-icon>
+                </span>
+              </span>
+            </label>
           </div>
-          <div class="profile-card">
-            <img src="images/headshot2.jpg" alt="My Photo" class="profile-card-pic">
-            <div class="profile-card-text">
-              <p> Hey, I'm <span class="highlight-name">Fabrizio Petrozzi</span></p>
-              <div class="profile-card-location">
-                <i class="bx bx-map"></i>
-                <span>St. Petersburg, FL</span>
-              </div>
+        </div>
+        <!-- Social Links (positioned as a column on the right side of the map) -->
+        <div class="map-social-links">
+          <div class="social-links">
+            <a href="https://www.linkedin.com/in/fabriziopetrozzi/" target="_blank" aria-label="LinkedIn">
+              <i class="bx bxl-linkedin"></i>
+            </a>
+            <a href="files/Resume.pdf" target="_blank" aria-label="Resume">
+              <i class="bx bx-file"></i>
+            </a>
+            <a href="https://usfbusiness.com/2023/03/29/fabriziopetrozzi-yanez-business-management/" target="_blank" aria-label="25 Under 25 Award">
+              <i class="bx bx-trophy"></i>
+            </a>
+          </div>
+        </div>
+        <!-- Profile Card (overlapping bottom left of the map) -->
+        <div class="profile-card">
+          <img src="images/headshot2.jpg" alt="My Photo" class="profile-card-pic">
+          <div class="profile-card-text">
+            <p>Hey, I'm <span class="highlight-name">Fabrizio Petrozzi</span></p>
+            <div class="profile-card-location">
+              <i class="bx bx-map"></i>
+              <span>St. Petersburg, FL</span>
             </div>
           </div>
         </div>
-      </section>
-
+      </div>
+    </section>
       <!-- Featured Section -->
     <div class="fadein-wrapper">
       <section id="featured">
