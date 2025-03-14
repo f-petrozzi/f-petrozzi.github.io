@@ -907,7 +907,7 @@ section#about::before {
 .scroll-nudge {
   opacity: 0;
   transform: translateY(20px);
-  transition: opacity 0.4s, transform 0.4s;
+  transition: opacity 1s, transform 1s;
   text-align: center;
   font-size: 1.5rem;
   margin-top: 1rem;
@@ -915,7 +915,16 @@ section#about::before {
 
 .show-scroll-nudge .scroll-nudge {
   opacity: 1;
-  transform: translateY(0);
+}
+
+@keyframes bounceArrow {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-35px); }
+  60% { transform: translateY(-10px); }
+}
+
+.scroll-nudge i {
+  animation: bounceArrow 1.25s infinite;
 }
 
 /* ==========================================================================
