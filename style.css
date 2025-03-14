@@ -742,7 +742,6 @@ section#about::before {
   position: sticky;
   margin-top: 4rem;
   margin-bottom: 0rem;
-  
 }
 
 /* Custom Marker */
@@ -789,7 +788,7 @@ section#about::before {
   position: relative;
 }
 
-/* Profile Card */
+/* Profile Card: horizontal layout with fluid sizing */
 .profile-card {
   position: absolute;
   bottom: 0;
@@ -831,7 +830,7 @@ section#about::before {
 }
 
 /* Profile Card Text (Name & Location): fluid font sizes */
-.profile-card-text p{
+.profile-card-text p {
   margin: 0;
   font-size: clamp(0.8rem, 2.7vw, 1rem);
   text-align: left;
@@ -848,18 +847,77 @@ section#about::before {
   font-size: clamp(1em, 1.8vw, 1.2em);
 }
 
-.learn-more{
+/* ---------- New Effects for Learn More & Social Sequence ---------- */
+
+/* Learn More Section */
+.learn-more {
   max-width: 550px;
   margin: auto;
   margin-top: 3rem;
 }
 
-.learn-more p{
-  font-size:var(--font-size-sm);
+.learn-more p {
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-light);
-  width: 95%
-
+  width: 95%;
 }
+
+/* Learn More Link Hover Effect */
+.learn-more-trigger {
+  font-weight: var(--font-weight-bold);
+  transition: transform var(--transition-bounce), color var(--transition-bounce);
+  text-decoration: none;
+  color: inherit;
+}
+
+.learn-more-trigger:hover {
+  transform: translateY(-1px);
+  color: var(--highlight-name);
+}
+
+/* Social Sequence Animation for Social Links on Click */
+.social-sequence-active .social-links a:nth-child(1) {
+  animation: linkHighlight 1s forwards;
+  animation-delay: 0s;
+}
+.social-sequence-active .social-links a:nth-child(2) {
+  animation: linkHighlight 1s forwards;
+  animation-delay: 0.6s;
+}
+.social-sequence-active .social-links a:nth-child(3) {
+  animation: linkHighlight 1s forwards;
+  animation-delay: 1.2s;
+}
+
+@keyframes linkHighlight {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.1);
+    box-shadow: 0 0 8px var(--modal-border-left);
+    background-color: var(--modal-border-left);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Scroll Nudge Arrow */
+.scroll-nudge {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s, transform 0.4s;
+  text-align: center;
+  font-size: 1.5rem;
+  margin-top: 1rem;
+}
+
+.show-scroll-nudge .scroll-nudge {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* ==========================================================================
    6. Projects Grid
    ========================================================================== */
