@@ -956,7 +956,7 @@ section#about::before {
   color: var(--highlight-name); /* e.g. your highlight color */
 }
 
-/* Active tab has an underline or highlight */
+/* Active tab underline */
 .exp-tab.active::after {
   content: "";
   position: absolute;
@@ -974,9 +974,15 @@ section#about::before {
   margin: 0 auto;
   max-width: 700px; /* adjust to your layout */
   padding-left: 2rem; /* space for the vertical line */
-  display: none; /* hidden by default, toggled by JS */
+  display: none; /* hidden by default */
+  /* New styling for transparent background with a 2px border */
+  background-color: rgba(255, 255, 255, 0.0);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 6px;
+  padding: 1rem;
 }
 
+/* Display active timeline */
 .experience-timeline.active {
   display: block;
 }
@@ -989,48 +995,48 @@ section#about::before {
   left: 1rem; /* align with the circle center */
   width: 2px;
   height: 100%;
-  background: var(--color-dark); /* or your timeline color */
-  opacity: 0.3; /* slightly lighter line */
+  background: var(--color-dark); /* adjust to your timeline color */
+  opacity: 0.3;
 }
 
-/* Individual item container */
+/* Individual Experience Item */
 .experience-item {
   position: relative;
   margin-bottom: 2rem;
 }
 
-/* The circle for the company/school logo */
+/* Circle for company/school logo */
 .experience-circle {
   position: absolute;
-  left: 0.4rem; /* so circle is centered on the line */
+  left: 0.4rem; /* centers the circle on the vertical line */
   width: 2rem;
   height: 2rem;
-  background: #fff; /* white circle behind the logo */
+  background: #fff; /* white background behind the logo */
   border: 2px solid var(--highlight-name);
   border-radius: 50%;
-  overflow: hidden; /* so the logo fits inside the circle */
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* The logo inside the circle */
+/* Logo inside the circle */
 .experience-circle img {
   width: 80%;
   height: 80%;
   object-fit: contain;
 }
 
-/* The text details next to the circle */
+/* Experience details (text) */
 .experience-details {
-  margin-left: 3rem; /* shift right from the circle */
+  margin-left: 3rem; /* spacing from the circle */
 }
 
-/* For the date, company/school, role/degree */
+/* Date, company/school, role */
 .experience-date {
   font-size: 0.9rem;
   font-weight: 500;
-  color: var(--highlight-name); /* highlight or secondary color */
+  color: var(--highlight-name);
   margin-bottom: 0.25rem;
 }
 
@@ -1043,7 +1049,6 @@ section#about::before {
   font-size: 0.9rem;
   color: #666;
 }
-
 /* ==========================================================================
    6. Projects Grid
    ========================================================================== */
