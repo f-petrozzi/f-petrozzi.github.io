@@ -474,12 +474,12 @@ document.addEventListener("DOMContentLoaded", function() {
       setTimeout(() => {
         document.body.classList.add("show-scroll-nudge");
         console.log("Scroll nudge revealed!");
-      }, 3000);
+      }, 1800);
       setTimeout(() => {
         document.body.classList.remove("social-sequence-active", "show-scroll-nudge");
         isAnimating = false;
         console.log("Cycle complete, ready to trigger again.");
-      }, 3400);
+      }, 3600);
     });
   } else {
     console.error("Learn More trigger not found!");
