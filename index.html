@@ -42,32 +42,34 @@
   </header>
 
   <!-- Main -->
-  <main class="main-content">
-     <!-- Dark Mode Toggle (positioned top left of the map) -->
-        <div class="map-toggle">
-          <div class="dark-mode-toggle">
-            <input type="checkbox" id="darkModeToggle" class="dark-mode-toggle-input">
-            <label for="darkModeToggle" class="dark-mode-toggle-label">
-              <span class="toggle-slider">
-                <span class="icon sun-icon">
-                  <ion-icon name="sunny"></ion-icon>
-                </span>
-                <span class="icon moon-icon">
-                  <ion-icon name="moon"></ion-icon>
-                </span>
-              </span>
-            </label>
-          </div>
-        </div>
-    <!-- Main Content -->
-    <div class="container">
-          <!-- About Section -->
+<main class="main-content">
+  <!-- Dark Mode Toggle (positioned top left of the map) -->
+  <div class="map-toggle">
+    <div class="dark-mode-toggle">
+      <input type="checkbox" id="darkModeToggle" class="dark-mode-toggle-input">
+      <label for="darkModeToggle" class="dark-mode-toggle-label">
+        <span class="toggle-slider">
+          <span class="icon sun-icon">
+            <ion-icon name="sunny"></ion-icon>
+          </span>
+          <span class="icon moon-icon">
+            <ion-icon name="moon"></ion-icon>
+          </span>
+        </span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <!-- About Section -->
     <section id="about">
       <div class="map-wrapper">
         <!-- Map -->
         <div id="map" class="map-container">
           <div class="map-overlay"></div>
         </div>
+
         <!-- Social Links (positioned as a column on the right side of the map) -->
         <div class="map-social-links">
           <div class="social-links">
@@ -77,11 +79,12 @@
             <a href="files/Resume.pdf" target="_blank" aria-label="Resume">
               <i class="bx bx-file"></i>
             </a>
-            <a href="https://usfbusiness.com/2023/03/29/fabriziopetrozzi-yanez-business-management/" target="_blank" aria-label="25 Under 25 Award">
+            <a href="https://usfbusiness.com/2023/03/29/fabrizio-petrozzi-yanez-business-management/" target="_blank" aria-label="25 Under 25 Award">
               <i class="bx bx-trophy"></i>
             </a>
           </div>
         </div>
+
         <!-- Profile Card (overlapping bottom left of the map) -->
         <div class="profile-card">
           <img src="images/headshot2.jpg" alt="My Photo" class="profile-card-pic">
@@ -94,8 +97,18 @@
           </div>
         </div>
       </div>
+
+      <!-- "Learn More..." text turned into a clickable link -->
       <div class="learn-more">
-      <p>Master of Science candidate in Artificial Intelligence and Business Analytics at USF. <span class="highlight-name">Learn More...</span></p>
+        <p>
+          Master of Science candidate in Artificial Intelligence and Business Analytics at USF.
+          <a href="#" class="learn-more-trigger highlight-name">Learn More...</a>
+        </p>
+      </div>
+
+      <!-- Scroll nudge arrow (initially hidden) -->
+      <div class="scroll-nudge">
+        <i class="bx bx-chevron-down"></i>
       </div>
     </section>
       <!-- Featured Section -->
@@ -468,6 +481,26 @@ markerEl.className = 'custom-marker';
 new maplibregl.Marker({ element: markerEl })
   .setLngLat([-82.6384, 27.7671])
   .addTo(map);
+
+  // learn more
+  document.addEventListener("DOMContentLoaded", function() {
+  const learnMoreLink = document.querySelector(".learn-more-trigger");
+  if (learnMoreLink) {
+    learnMoreLink.addEventListener("click", function(e) {
+      e.preventDefault();
+
+      // Add a class to trigger the social link highlights in sequence
+      document.body.classList.add("social-sequence-active");
+      
+      // After the last link highlight is done, show the scroll nudge
+      // (for example, ~1.2s after the 3rd link's animation starts)
+      setTimeout(() => {
+        document.body.classList.add("show-scroll-nudge");
+      }, 1200);
+    });
+  }
+});
+
 </script>
 </body>
 </html>
