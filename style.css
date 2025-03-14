@@ -933,11 +933,32 @@ section#about::before {
    5.6 Experiences
    ========================================================================== */
 /* Experience Tabs */
+#experienceSection{
+  background: none;
+  box-shadow: none;
+  border: none;
+  border-left: none;
+  border-radius: 0;
+  padding: 0rem;
+  margin:0 auto;
+  margin-bottom: 5rem; 
+  opacity: 1;        
+  transform: none;   
+  transition: none;
+  max-width: 700px;
+}
+
+section#experienceSection::before {
+  background: none;
+}
+
 .experience-tabs {
   display: flex;
   justify-content: center;
-  gap: 2rem;
+  gap: 30%;
   margin-bottom: 1.5rem;
+  background-color: var(--header-bg);
+  border-radius: var(--radius-md);
 }
 
 .exp-tab {
@@ -945,26 +966,27 @@ section#about::before {
   border: none;
   outline: none;
   cursor: pointer;
-  font-weight: 600;
-  font-size: 1rem;
-  padding: 0.5rem 1rem;
+  font-weight: var(--font-weight-light);
+  font-size: var(--font-size-md);
+  color: var(--header-text-color);
+  padding: 0.3rem 1rem;
   position: relative;
   transition: color 0.3s ease;
 }
 
 .exp-tab:hover {
-  color: var(--highlight-name); /* e.g. your highlight color */
+  color: var(--social-hover-bg); /* e.g. your highlight color */
 }
 
 /* Active tab underline */
 .exp-tab.active::after {
   content: "";
   position: absolute;
-  bottom: -0.2rem;
+  bottom: -0.08rem;
   left: 0;
   right: 0;
   height: 3px;
-  background: var(--highlight-name);
+  background: var(--header-bg);
   margin: 0 auto;
 }
 
@@ -975,9 +997,7 @@ section#about::before {
   max-width: 700px; /* adjust to your layout */
   padding-left: 2rem; /* space for the vertical line */
   display: none; /* hidden by default */
-  /* New styling for transparent background with a 2px border */
-  background-color: rgba(255, 255, 255, 0.0);
-  border: 2px solid rgba(255, 255, 255, 0.8);
+  border: 2px solid var(--highlight-name);
   border-radius: 6px;
   padding: 1rem;
 }
@@ -992,11 +1012,10 @@ section#about::before {
   content: "";
   position: absolute;
   top: 0;
-  left: 1rem; /* align with the circle center */
+  left: 2.25rem; /* align with the circle center */
   width: 2px;
   height: 100%;
-  background: var(--color-dark); /* adjust to your timeline color */
-  opacity: 0.3;
+  background: var(--highlight-name); /* adjust to your timeline color */
 }
 
 /* Individual Experience Item */
@@ -1008,12 +1027,12 @@ section#about::before {
 /* Circle for company/school logo */
 .experience-circle {
   position: absolute;
-  left: 0.4rem; /* centers the circle on the vertical line */
-  width: 2rem;
-  height: 2rem;
+  left: 0; /* centers the circle on the vertical line */
+  width: 2.5rem;
+  height: 2.5rem;
   background: #fff; /* white background behind the logo */
   border: 2px solid var(--highlight-name);
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -1029,25 +1048,26 @@ section#about::before {
 
 /* Experience details (text) */
 .experience-details {
-  margin-left: 3rem; /* spacing from the circle */
+  margin-left: 4rem; /* spacing from the circle */
 }
 
 /* Date, company/school, role */
 .experience-date {
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-light);
   color: var(--highlight-name);
   margin-bottom: 0.25rem;
 }
 
 .experience-name {
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
 }
 
 .experience-role {
-  font-size: 0.9rem;
-  color: #666;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-normal);
+  color: var(--highlight-name);
 }
 /* ==========================================================================
    6. Projects Grid
