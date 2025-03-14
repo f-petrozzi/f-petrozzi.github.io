@@ -112,101 +112,76 @@
       </div>
     </section>
     
-    <!--experiences-->
-        <section id="experienceSection">
-      <!-- Top bar with two tabs -->
-      <div class="experience-tabs">
-        <!-- Default active is Work -->
-        <button class="tab-button active" data-target="workTab">Work</button>
-        <button class="tab-button" data-target="educationTab">Education</button>
-      </div>
-      
-      <!-- Work timeline -->
-      <div id="workTab" class="experience-content" style="display: block;">
-        <div class="timeline">
-          <!-- Example item 1 -->
-          <div class="timeline-item">
-            <div class="timeline-icon">
-              <!-- Logo image inside the circle -->
-              <img src="images/imagehere.png" alt="Logo" />
-            </div>
-            <div class="timeline-line"></div>
-            <div class="timeline-content">
-              <div class="timeline-date">MM YYYY - MM YYYY</div>
-              <div class="timeline-title">Name</div>
-              <div class="timeline-position">Role</div>
-            </div>
-          </div>
-          
-          <!-- Example item 2 -->
-          <div class="timeline-item">
-            <div class="timeline-icon">
-              <img src="images/imagehere2.png" alt="Logo2" />
-            </div>
-            <div class="timeline-line"></div>
-            <div class="timeline-content">
-              <div class="timeline-date">MM YYYY - MM YYYY</div>
-              <div class="timeline-title">Name</div>
-              <div class="timeline-position">Role</div>
-            </div>
-          </div>
-          
-          <!-- Add more items as needed -->
+          <!--experiences-->
+             <section id="experienceSection">
+        <!-- Experience Tabs -->
+        <div class="experience-tabs">
+          <button class="exp-tab active" data-target="workTimeline">Work</button>
+          <button class="exp-tab" data-target="educationTimeline">Education</button>
         </div>
-      </div>
-      
-      <!-- Education timeline (hidden by default) -->
-      <div id="educationTab" class="experience-content" style="display: none;">
-        <div class="timeline">
-          <!-- Example education item -->
-          <div class="timeline-item">
-            <div class="timeline-icon">
+        
+        <!-- Work Timeline (default active) -->
+        <div id="workTimeline" class="experience-timeline active">
+          <div class="experience-item">
+            <div class="experience-circle">
+              <img src="images/imagehere.png" alt="Company Logo" />
+            </div>
+            <div class="experience-details">
+              <div class="experience-date">MM YYYY - MM YYYY</div>
+              <div class="experience-name">Company Name</div>
+              <div class="experience-role">Role</div>
+            </div>
+          </div>
+          <!-- Add more .experience-item blocks as needed -->
+        </div>
+        
+        <!-- Education Timeline -->
+        <div id="educationTimeline" class="experience-timeline">
+          <div class="experience-item">
+            <div class="experience-circle">
               <img src="images/university-logo.png" alt="University Logo" />
             </div>
-            <div class="timeline-line"></div>
-            <div class="timeline-content">
-              <div class="timeline-date">MM YYYY - MM YYYY</div>
-              <div class="timeline-title">University Name</div>
-              <div class="timeline-position">Bachelor of Science in</div>
+            <div class="experience-details">
+              <div class="experience-date">MM YYYY - MM YYYY</div>
+              <div class="experience-name">University Name</div>
+              <div class="experience-role">Bachelor of Science in</div>
             </div>
           </div>
-          
-          <!-- Add more education items as needed -->
-        </div>
-      </div>
-    </section>
-
-      <!-- Featured Section -->
-    <div class="fadein-wrapper">
-      <section id="featured">
-        <h2>Featured Projects</h2>
-        <div class="projects-grid">
-          <div class="project-item">
-            <a href="project1.html">
-              <div class="project-image-container">
-              <img src="images/HTML.jpg" alt="Building My Digital Presence" />
-                </div>
-              <h3>Building My Digital Presence</h3>
-            </a>
-          </div>
-          <div class="project-item">
-            <a href="project2.html">
-              <div class="project-image-container">
-              <img src="images/lorem ipsum.jpg" alt="Lorem ipsum" />
-                </div>
-              <h3>Lorem ipsum</h3>
-            </a>
-          </div>
-          <div class="project-item">
-            <a href="project3.html">
-              <div class="project-image-container">
-              <img src="images/lorem ipsum.jpg" alt="Lorem ipsum" />
-                </div>
-              <h3>Lorem ipsum</h3>
-            </a>
-          </div>
+          <!-- Add more .experience-item blocks as needed -->
         </div>
       </section>
+      
+            <!-- Featured Section -->
+          <div class="fadein-wrapper">
+            <section id="featured">
+              <h2>Featured Projects</h2>
+              <div class="projects-grid">
+                <div class="project-item">
+                  <a href="project1.html">
+                    <div class="project-image-container">
+                    <img src="images/HTML.jpg" alt="Building My Digital Presence" />
+                      </div>
+                    <h3>Building My Digital Presence</h3>
+                  </a>
+                </div>
+                <div class="project-item">
+                  <a href="project2.html">
+                    <div class="project-image-container">
+                    <img src="images/lorem ipsum.jpg" alt="Lorem ipsum" />
+                      </div>
+                    <h3>Lorem ipsum</h3>
+                  </a>
+                </div>
+                <div class="project-item">
+                  <a href="project3.html">
+                    <div class="project-image-container">
+                    <img src="images/lorem ipsum.jpg" alt="Lorem ipsum" />
+                      </div>
+                    <h3>Lorem ipsum</h3>
+                  </a>
+                </div>
+              </div>
+            </section>
 
       <!-- Projects Section -->
       <section id="projects">
