@@ -27,10 +27,10 @@
   --font-size-sm: 0.875rem;   /* 14px */
   --font-size-base: 1rem;     /* 16px */
   --font-size-md: 1.125rem;   /* 18px */
-  --font-size-lg: 1.25rem;    /* 20px */
-  --font-size-xl: 1.5rem;     /* 24px */
-  --font-size-xxl: 2rem;      /* 32px */
-  --font-size-xxxl: 2.5rem;   /* 40px */
+  --font-size-lg: 1rem;    /* 20px */
+  --font-size-xl: 1.25rem;     /* 24px */
+  --font-size-xxl: 1.75rem;      /* 32px */
+  --font-size-xxxl: 2.25rem;   /* 40px */
   
   --line-height-tight: 1.2;
   --line-height-normal: 1.5;
@@ -251,15 +251,12 @@ body {
 .container {
   flex: 1;                     
   width: 100%;
-  max-width: 1300px;
-  margin: var(--space-md) auto 0;
-  padding: var(--space-md);
-  
+  max-width: 800px;
+  margin: var(--space-xs) auto 0;  
 }
 
 .main-content {
   flex: 1;
-  margin-top: var(--space-lg);
 }
 
 /* ==========================================================================
@@ -271,16 +268,15 @@ h1, h2, h3 {
   margin-bottom: var(--space-md);
   text-align: center;
   line-height: var(--line-height-tight);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-normal);
   font-family: var(--font-family-headings);
-  letter-spacing: -0.02em;
+  letter-spacing: 0.02em;
 }
 
 p {
   text-align: left;
   line-height: var(--line-height-relaxed);
   letter-spacing: 0.01em;
-  /* Removed max-width constraint as requested */
 }
 
 .project-section h1,
@@ -535,17 +531,17 @@ section.active {
 /* Social links container */
 .social-links {
   position: absolute;
-  margin: .5rem .5rem 0 0;
-  top: 0;
-  right: 0;
+  top: 0rem;
+  right: 0rem;
   display: flex;
   gap: var(--space-xs);
+  flex-direction: column;
 }
 
 /* Social link styling */
 .social-links a {
-  width: clamp(35px, 5vw, 50px);
-  height: clamp(35px, 5vw, 50px);
+  width: 50px;
+  height: 50px;
   background-color: var(--social-bg);
   border-radius: var(--radius-circle);
   display: flex;
@@ -607,9 +603,8 @@ section.active {
 /* Dark Mode Toggle */
 .dark-mode-toggle {
   position: absolute;
-  top: 0;
-  left: 0;
-  margin: .5rem 0 0 .5rem;
+  top: 0rem;
+  left: 0rem;
 }
 
 .dark-mode-toggle-input {
@@ -735,18 +730,19 @@ section#about::before {
   position: relative;
   overflow: visible;
   width: 100%;
-  max-width: 528px;
-  margin: 0 auto;
+  max-width: 550px;
+  margin: auto;
 }
 
 .map-container {
-  width: 100%;
-  height: 200px;
+  width: 90%;
+  height: 180px;
   border-radius: var(--radius-md);
   overflow: hidden;
-  position: relative;
+  position: sticky;
   margin-top: 4rem;
-  margin-bottom: 10rem;
+  margin-bottom: 0rem;
+  
 }
 
 /* Custom Marker */
@@ -1293,7 +1289,7 @@ footer::before {
   }
    
    .container {                   
-  padding: var(--space-md);
+    padding: 0rem 1.5rem 0rem 1.5rem;
 }
 
   nav, .main-nav {
@@ -1357,7 +1353,7 @@ footer::before {
   top: -1px;
  }
   .main-content{
-    margin-top: var(--space-md)
+    margin-top: 0rem;
   }
   .sidebar {
    width: 70%;
@@ -1371,4 +1367,7 @@ footer::before {
   .sidebar-header {
    padding: var(--space-xxs);
  }
+  .social-links{
+    right: -1.2rem;
+  }
 }
