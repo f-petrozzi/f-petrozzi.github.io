@@ -491,14 +491,14 @@ header.common-header .back:hover {
 section {
   opacity: 0;
   transform: translateX(-80px);
-  transition: opacity var(--transition-extra-slow), transform var(--transition-extra-slow);
+  transition: opacity var(--transition-slow), transform var(--transition-slow);
   display: flow-root;
+  padding-top: 1.5rem;
   background-color: var(--section-bg);
   margin-bottom: var(--space-xxl);
-  padding: var(--space-xl);
   border-radius: var(--section-border-radius);
   box-shadow: var(--section-box-shadow);
-  border-left: 5px solid var(--section-border-left);
+  border-left: 4px solid var(--section-border-left);
   scroll-margin-top: var(--header-height);
   position: relative;
   overflow: visible;
@@ -616,7 +616,7 @@ section.active {
   display: flex;
   width: clamp(45px, 7vw, 52px);
   height: clamp(23px, 3.5vw, 26px);
-  border-radius: calc(clamp(20px, 3.5vw, 26px) / 2);
+  border-radius: var(--radius-lg);
   background: linear-gradient(to right, #f1c40f, #87cefa);
   border: 2px solid var(--color-light);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
@@ -854,14 +854,13 @@ section#about::before {
 .projects-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-lg);
+  gap: var(--space-sm);
   justify-content: center;
 }
 
 .project-item {
   flex: 1 1 calc(33.33% - var(--space-md));
   max-width: calc(33.33% - var(--space-md));
-  margin-bottom: var(--space-md);
   transform: translateX(80px); /* Increased offset for more noticeable animation */
   opacity: 0;
   transition: opacity var(--transition-extra-slow), transform var(--transition-extra-slow);
@@ -886,7 +885,7 @@ section#about::before {
 .project-image-container {
   overflow: hidden;
   border-radius: var(--radius-md);
-  border: 4px solid var(--project-item-border);
+  border: 2px solid var(--project-item-border);
   transition: border-color var(--transition-bounce), box-shadow var(--transition-bounce);
   position: relative;
   background-color: var(--project-item-border);
@@ -904,7 +903,6 @@ section#about::before {
 /* The hover effect now magnifies the image instead of translating it upward */
 .project-item:hover .project-image-container {
   border-color: var(--project-item-hover-border);
-  box-shadow: var(--project-item-hover-shadow);
 }
 
 
@@ -915,13 +913,13 @@ section#about::before {
 /* Ensuring both the image and text trigger the same animation */
 .project-item h3 {
   margin-top: var(--space-sm);
-  font-size: clamp(16px, 2vw, 20px);
+  font-size: clamp(14px, 4vw, 18px);
   transition: color var(--transition-normal), transform var(--transition-bounce);
   text-align: center;
 }
 
 .project-item:hover h3 {
-  color: var(--highlight-name);
+  color: var(--modal-border-left);
   transform: translateY(-1px);
 }
 
@@ -933,7 +931,7 @@ footer {
   width: 100%;
   background-color: var(--footer-bg);
   color: var(--footer-text-color);
-  padding: var(--space-xs);
+  padding: var(--space-sm);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1375,6 +1373,12 @@ footer::before {
    padding: var(--space-xxs);
  }
   .social-links{
-    right: -1.2rem;
+    right: -0.8rem;
+  }
+}
+
+@media(max-width: 470px){
+  .social-links{
+    right:-1.2rem;
   }
 }
