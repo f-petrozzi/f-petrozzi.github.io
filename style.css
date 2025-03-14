@@ -932,6 +932,11 @@ section#about::before {
 /* ==========================================================================
    5.6 Experiences
    ========================================================================== */
+#experienceSection, 
+#experienceSection * {
+  font-family: 'Montserrat', sans-serif;
+}
+
 /* Experience Tabs */
 #experienceSection{
   background: none;
@@ -966,7 +971,7 @@ section#experienceSection::before {
   border: none;
   outline: none;
   cursor: pointer;
-  font-weight: var(--font-weight-light);
+  font-weight: var(--font-weight-normal);
   font-size: var(--font-size-md);
   color: var(--header-text-color);
   padding: 0.3rem 1rem;
@@ -995,7 +1000,6 @@ section#experienceSection::before {
   position: relative;
   margin: 0 auto;
   max-width: 700px; /* adjust to your layout */
-  padding-left: 2rem; /* space for the vertical line */
   display: none; /* hidden by default */
   border: 2px solid var(--highlight-name);
   border-radius: 6px;
@@ -1007,25 +1011,23 @@ section#experienceSection::before {
   display: block;
 }
 
-/* Vertical line on the left (2px wide) */
-.experience-timeline::before {
+/* #workTimeline (default) */
+
+#workTimeline {
+  padding-left: 1rem; /* space for vertical line on left */
+}
+
+#workTimeline::before {
   content: "";
   position: absolute;
   top: 0;
   left: 2.25rem; /* align with the circle center */
   width: 2px;
   height: 100%;
-  background: var(--highlight-name); /* adjust to your timeline color */
+  background: var(--highlight-name); 
 }
 
-/* Individual Experience Item */
-.experience-item {
-  position: relative;
-  margin-bottom: 2rem;
-}
-
-/* Circle for company/school logo */
-.experience-circle {
+#workTimeline .experience-circle {
   position: absolute;
   left: 0; /* centers the circle on the vertical line */
   width: 2.5rem;
@@ -1039,19 +1041,53 @@ section#experienceSection::before {
   justify-content: center;
 }
 
-/* Logo inside the circle */
-.experience-circle img {
-  width: 80%;
-  height: 80%;
-  object-fit: contain;
-}
-
-/* Experience details (text) */
-.experience-details {
+#workTimeline .experience-details {
   margin-left: 4rem; /* spacing from the circle */
 }
 
-/* Date, company/school, role */
+/* For #educationTimeline */
+
+#educationTimeline {
+  padding-right: 1rem; /* space for vertical line on right */
+}
+
+#educationTimeline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 2.25rem; /* align with circle center */
+  width: 2px;
+  height: 100%;
+  background: var(--highlight-name);
+}
+
+#educationTimeline .experience-circle {
+  position: absolute;
+  right: 0; /* circle on right */
+  width: 2.5rem;
+  height: 2.5rem;
+  background: #fff;
+  border: 2px solid var(--highlight-name);
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#educationTimeline .experience-details {
+  margin-right: 4rem;
+  margin-left: 0;
+  /* Optional: if you want text to appear flush left of the container */
+  text-align: right;
+}
+
+/* Common rules for experience items (applies to both timelines) */
+.experience-item {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
 .experience-date {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-light);
