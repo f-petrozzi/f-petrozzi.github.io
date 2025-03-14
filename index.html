@@ -550,6 +550,28 @@ document.addEventListener("DOMContentLoaded", function() {
     console.error("Learn More trigger not found!");
   }
 });
+/* ==========================================================
+     8. Experience Toggle
+  ========================================================== */
+  const tabs = document.querySelectorAll(".exp-tab");
+  const timelines = document.querySelectorAll(".experience-timeline");
+  
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      // Remove 'active' from all tabs
+      tabs.forEach(t => t.classList.remove("active"));
+      // Add 'active' to the clicked tab
+      tab.classList.add("active");
+      
+      // Hide all timelines
+      timelines.forEach(timeline => timeline.classList.remove("active"));
+      
+      // Show the correct timeline
+      const targetId = tab.dataset.tab; // e.g. "work" or "education"
+      document.querySelector(`.${targetId}-timeline`).classList.add("active");
+    });
+  });
+  
 </script>
 </body>
 </html>
