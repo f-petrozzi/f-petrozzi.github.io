@@ -847,6 +847,19 @@ section#about::before {
 .profile-card-location i {
   font-size: clamp(1em, 1.8vw, 1.2em);
 }
+
+.learn-more{
+  max-width: 550px;
+  margin: auto;
+  margin-top: 3rem;
+}
+
+.learn-more p{
+  font-size:var(--font-size-sm);
+  font-weight: var(--font-weight-light);
+  width: 95%
+
+}
 /* ==========================================================================
    6. Projects Grid
    ========================================================================== */
@@ -1348,6 +1361,9 @@ footer::before {
   .map-wrapper{
     top: 1.7rem;
   }
+  .learn-more{
+  margin-top: 4.5rem;
+}
 }
 
 @media (max-width: 550px) {
