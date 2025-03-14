@@ -531,8 +531,8 @@ section.active {
 /* Social links container */
 .social-links {
   position: absolute;
-  top: 0rem;
-  right: 0rem;
+  top: 0.4rem;
+  right: -0.3rem;
   display: flex;
   gap: var(--space-xs);
   flex-direction: column;
@@ -1344,11 +1344,11 @@ footer::before {
 }
   .dark-mode-toggle {
   position: absolute;
-  top: 3rem;
+  top: 3.9rem;
   left: 0.2rem;
 }
   .map-wrapper{
-    top: 0.2rem;
+    top: 2rem;
   }
 }
 
