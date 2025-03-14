@@ -505,6 +505,10 @@ section {
   border-left: 5px solid var(--section-border-left);
   scroll-margin-top: var(--header-height);
   position: relative;
+  overflow: visible;
+}
+
+.fadein-wrapper {
   overflow: hidden;
 }
 
@@ -789,9 +793,7 @@ section#about::before {
   position: relative;
 }
 
-/* Profile Card: horizontal layout with fluid sizing.
-   The width uses clamp() to ensure a minimum and maximum in pixels,
-   while the preferred value (55vw) grows as the viewport shrinks. */
+/* Profile Card */
 .profile-card {
   position: absolute;
   bottom: 0;
@@ -849,8 +851,6 @@ section#about::before {
 .profile-card-location i {
   font-size: clamp(1em, 1.8vw, 1.2em);
 }
-
-
 /* ==========================================================================
    6. Projects Grid
    ========================================================================== */
@@ -1344,7 +1344,7 @@ footer::before {
 @media(max-width:635px){
 
   .profile-card {
-    transform: translate(0%, 50%);
+    transform: translate(-8%, 50%);
 }
 }
 
