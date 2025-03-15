@@ -753,15 +753,26 @@ function filterProjects() {
   });
 }
 </script>
-<script type="module">
-  // Define the two map style URLs
-  const darkStyle = 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
-  const lightStyle = 'https://tiles.basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
+
+
   
-  // Initialize the map using your default style (adjust if your default is light)
+<script type="module">
+  /* ==========================================================
+     10. Map
+  ========================================================== */
+// Define the two map style URLs (make sure they match the correct theme)
+  const lightStyle = 'https://tiles.basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
+  const darkStyle = 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
+
+  // Check the saved theme; default to 'light' if not set
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  // Use the appropriate map style based on the saved theme
+  const defaultStyle = savedTheme === 'dark' ? darkStyle : lightStyle;
+
+  // Initialize the map with the default style
   const map = new maplibregl.Map({
     container: 'map',
-    style: lightStyle, // or lightStyle, depending on your default
+    style: defaultStyle,
     center: [-82.6384, 27.7671],
     zoom: 8,
     attributionControl: false
@@ -774,12 +785,14 @@ function filterProjects() {
     .setLngLat([-82.6384, 27.7671])
     .addTo(map);
 
-  // When the DOM is ready, attach an event listener to the dark mode toggle to swap the map style
+  // When the DOM is ready, attach an event listener to the dark mode toggle
   document.addEventListener('DOMContentLoaded', function() {
     const toggle = document.getElementById('darkModeToggle');
     if (toggle) {
+      // Set the toggle's checked state based on the saved theme
+      toggle.checked = savedTheme === 'dark';
       toggle.addEventListener('change', function() {
-        // When checked, set dark mode style; when unchecked, set light mode style
+        // When checked, use darkStyle; when unchecked, use lightStyle
         map.setStyle(this.checked ? darkStyle : lightStyle);
       });
     }
