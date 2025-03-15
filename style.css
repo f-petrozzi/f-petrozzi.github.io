@@ -612,10 +612,10 @@ section.active {
 }
 
 .dark-mode-toggle-label {
-  --slider-width: clamp(18px, 3vw, 18px);
+  --slider-width: clamp(18px, 3vw, 20px);
   display: flex;
   width: clamp(45px, 7vw, 45px);
-  height: clamp(21px, 3.5vw, 21px);
+  height: clamp(21px, 3.5vw, 23px);
   border-radius: var(--radius-lg);
   background: linear-gradient(to right, #f1c40f, #87cefa);
   border: 2px solid var(--color-light);
@@ -988,20 +988,23 @@ section#experienceSection::before {
   color: var(--social-hover-bg); /* e.g. your highlight color */
 }
 
+.exp-tab.active{
+  color: var(--social-hover-bg);
+}
+
 /* Active tab underline */
 .exp-tab.active::after {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
-  top: -8%;
-  width: 90%;
-  height: 105%;
+  top: 40%;
+  width: 100%;
+  height: 70%;
   background: var(--header-bg);
   margin: auto;
   border-radius: var(--radius-md);
   z-index: -1;
-  border:2px solid var(--social-hover-bg);
 }
 
 /* Experience Timeline */
