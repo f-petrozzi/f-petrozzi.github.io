@@ -1163,6 +1163,13 @@ section#experienceSection::before {
    5.7 Technology Filter
    ========================================================================== */
 /* Technology Filter Section */
+
+#technologies, 
+#technologies * {
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: -0.05em; 
+}
+
 #technologies {
   background: none;
   box-shadow: none;
@@ -1185,50 +1192,59 @@ section#technologies::before {
   font-size: var(--font-size-xl);
   margin-bottom: var(--space-sm);
   text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: clamp(0.8em, 1vw, 0.9em);
 }
 
 /* Container for the tech buttons */
 .tech-filter-container {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-xs);
-  justify-content: right;
+  gap: var(--space-xxs);
+  justify-content: center;
 }
 
 /* Individual tech button styling */
 .tech-filter-btn {
-  border: 2px solid var(--header-text-color);
-  padding: var(--space-xs) var(--space-md);
+  border: 2px solid;
+  padding: var(--space-xs) var(--space-xs);
   background: transparent;
   cursor: pointer;
   transition: border-color var(--transition-quick), box-shadow var(--transition-normal);
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  color: var(--font-family-headings);
+
 }
 
 .tech-filter-btn i {
-  font-size: var(--font-size-base);
-  color: var(--header-text-color);
+  font-size: var(--font-size-xl);
+  color: var(--font-family-headings);
   transition: color var(--transition-quick);
 }
 
 .tech-filter-btn:hover {
-  border-color: var(--filter-btn-hover-bg);
+  border-color: var(--highlight-name);
 }
 
 .tech-filter-btn:hover i {
-  color: var(--filter-btn-hover-bg);
+  color: var(--highlight-name);
 }
 
 /* Active state */
 .tech-filter-btn.active {
-  border-color: var(--filter-btn-hover-bg);
-  box-shadow: 0 0 5px var(--filter-btn-hover-bg);
+  border-color: var(--highlight-name);
+  box-shadow: 0 0 5px var(--highlight-name);
 }
 
 .tech-filter-btn.active i {
-  color: var(--filter-btn-hover-bg);
+  color: var(--highlight-name);
+}
+
+.tech-filter-btn.active span, .tech-filter-btn:hover span {
+  font-weight: var(--font-weight-bold);
+  color: var(--highlight-name);
 }
 
 /* ==========================================================================
