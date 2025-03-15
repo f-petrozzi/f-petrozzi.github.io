@@ -1057,7 +1057,9 @@ section#experienceSection::before {
 }
 
 #workTimeline .experience-details {
+  margin-top: 2rem;
   margin-left: 4rem; /* spacing from the circle */
+  margin-bottom:2rem;
 }
 
 /* For #educationTimeline */
@@ -1095,6 +1097,8 @@ section#experienceSection::before {
 #educationTimeline .experience-details {
   margin-right: 4rem;
   text-align: right;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 /* Common rules for experience items (applies to both timelines) */
@@ -1105,7 +1109,7 @@ section#experienceSection::before {
 }
 
 #workTimeline .experience-item{
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .experience-date {
@@ -1663,6 +1667,7 @@ footer::before {
 
 #experienceSection .experience-details{
   margin-bottom: 0rem;
+  margin-top: 0rem;
 }
   
 #workTimeline .experience-circle{
