@@ -540,7 +540,7 @@ section.active {
   border: none;
   border-radius: 0;
   padding: 0;
-  margin-bottom: var(--space-xxl);
+  margin-bottom: var(--space-lg);
 }
 
 #featured::before,
@@ -553,6 +553,16 @@ section.active {
   grid-template-columns: repeat(auto-fit, minmax(280px, 300px));
   gap: var(--space-sm);
   justify-content: center;
+}
+
+.fadein-wrapper h2{
+  font-size: var(--font-size-md);
+  color: var(--header-text-color);
+  font-weight: var(--font-weight-normal);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: clamp(0.8em, 1vw, 0.9em);
+  margin-bottom: 1rem;
 }
 
 
@@ -818,7 +828,7 @@ section.active {
   border-left: none;
   border-radius: 0;
   padding: 0rem;
-  margin-bottom: 0.7rem; 
+  margin-bottom: 3rem; 
   opacity: 1;        
   transform: none;   
   transition: none; 
@@ -1022,6 +1032,7 @@ section#about::before {
   transition: opacity 1s, transform 1s;
   text-align: center;
   font-size: 1.5rem;
+  margin-top: 0rem;
 }
 
 .show-scroll-nudge .scroll-nudge {
@@ -1053,7 +1064,7 @@ section#about::before {
   border-left: none;
   border-radius: 0;
   padding: 0rem;
-  margin:0 auto 3rem;
+  margin:0 auto 5rem;
   opacity: 1;        
   transform: none;   
   transition: none;
@@ -1280,7 +1291,7 @@ section#experienceSection::before {
   border-left: none;
   border-radius: 0;
   padding: 0rem;
-  margin:0 auto 1rem;
+  margin:0 auto 2rem;
   opacity: 1;        
   transform: none;   
   transition: none;
