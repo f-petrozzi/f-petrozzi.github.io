@@ -966,11 +966,6 @@ section#experienceSection::before {
   border-radius: var(--radius-md);
 }
 
-#experienceSection .experience-item{
-  margin:0;
-  padding:0;
-}
-
 .exp-tab {
   background: transparent;
   border: none;
@@ -1026,6 +1021,12 @@ section#experienceSection::before {
 /* Display active timeline */
 .experience-timeline.active {
   display: block;
+  align-content: center;
+}
+
+.timeline-items-wrapper {
+  display: flex;
+  flex-direction: column;
 }
 
 /* #workTimeline (default) */
@@ -1038,6 +1039,8 @@ section#experienceSection::before {
   width: 2px;
   height: 100%;
   background: var(--highlight-name);
+    z-index:-1;
+
 }
 
 
@@ -1045,8 +1048,7 @@ section#experienceSection::before {
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin: 1rem 0;
-  padding: 5.23px 0; 
+  margin: 0.5rem 0;
 }
 
 #workTimeline .experience-circle {
@@ -1069,7 +1071,6 @@ section#experienceSection::before {
 
 #workTimeline .experience-details {
   flex: 1;
-  
 }
 
 /* For #educationTimeline */
@@ -1082,13 +1083,14 @@ section#experienceSection::before {
   width: 2px;
   height: 100%;
   background: var(--highlight-name);
+  z-index:-1;
 }
 
 #educationTimeline .experience-item {
   display: flex;
   flex-direction: row-reverse;  /* mirror: text on left, image on right */
   align-items: center;
-  margin: 1rem 0;
+  margin: 0.5rem 0;
 }
 
 #educationTimeline .experience-circle {
@@ -1112,13 +1114,6 @@ section#experienceSection::before {
 #educationTimeline .experience-details {
   flex: 1;
   text-align: right;
-}
-
-/* Common rules for experience items (applies to both timelines) */
-.experience-item {
-  position: relative;
-  margin-bottom: 1rem;
-  margin-top: 1rem;
 }
 
 .experience-date {
@@ -1762,7 +1757,7 @@ footer::before {
 :root{
   --circle-diameter: 3.6rem;
 }
-
+  
 }
 @media (max-width: 550px) {
   .dark-mode-toggle-label .toggle-slider {
@@ -1795,4 +1790,12 @@ footer::before {
   .social-links{
     right:-1.2rem;
   }
+  
+}
+
+@media(max-width: 382px){
+ #experienceSection.active{
+width:112%;
+left: -6%;
+}
 }
