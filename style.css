@@ -709,7 +709,7 @@ section.active {
   border-left: none;
   border-radius: 0;
   padding: 0rem;
-  margin-bottom: 2rem; 
+  margin-bottom: 1rem; 
   opacity: 1;        
   transform: none;   
   transition: none; 
@@ -1039,7 +1039,7 @@ section#experienceSection::before {
 #workTimeline .experience-circle {
   position: absolute;
   left: -1.8%; /* centers the circle on the vertical line */
-  top: 5%;
+  top: -5%;
   width: 4rem;
   height: 4rem;
   border: 2px solid var(--social-hover-bg);
@@ -1131,7 +1131,7 @@ section#experienceSection::before {
   font-weight: var(--font-weight-medium);
   color: var(--highlight-name);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0em;
   font-size: clamp(0.6em, 2vw, 0.6em);
 }
 
@@ -1144,7 +1144,7 @@ section#experienceSection::before {
   font-weight: var(--font-weight-medium);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  font-size: clamp(0.5em, 2vw, 0.5em);
+  font-size: clamp(0.55em, 2vw, 0.5em);
 }
 /* ==========================================================================
    6. Projects Grid
@@ -1656,8 +1656,37 @@ footer::before {
 .experience-tabs {
   gap: 25%;
 }
+#experienceSection .experience-circle{
+  height: 3.5rem;
+  width: 3.5rem;
 }
 
+#experienceSection .experience-details{
+  margin-bottom: 0rem;
+}
+  
+#workTimeline .experience-circle{
+  left: -1rem;
+}
+
+#educationTimeline .experience-circle{
+  right: -1rem;
+}
+  
+#educationTimeline .experience-details {
+  margin-right: 2.7rem;
+}
+#workTimeline .experience-details {
+  margin-left: 2.7rem;
+  margin-right: -2rem;
+}
+#educationTimeline::before {
+  right: 1.7rem; /* align with circle center */
+}
+#workTimeline::before {
+  left: 1.7rem; /* align with circle center */
+}
+}
 @media (max-width: 550px) {
   .dark-mode-toggle-label .toggle-slider {
   left: 0px;
