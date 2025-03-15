@@ -612,10 +612,10 @@ section.active {
 }
 
 .dark-mode-toggle-label {
-  --slider-width: clamp(19px, 3vw, 22px);
+  --slider-width: clamp(18px, 3vw, 18px);
   display: flex;
-  width: clamp(45px, 7vw, 52px);
-  height: clamp(23px, 3.5vw, 26px);
+  width: clamp(45px, 7vw, 45px);
+  height: clamp(21px, 3.5vw, 21px);
   border-radius: var(--radius-lg);
   background: linear-gradient(to right, #f1c40f, #87cefa);
   border: 2px solid var(--color-light);
