@@ -658,39 +658,48 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
   /* Height Equalizer */
+function getNaturalHeight(el) {
+  // Clone the element and make it temporarily visible off-screen
+  const clone = el.cloneNode(true);
+  clone.style.visibility = 'hidden';
+  clone.style.display = 'block';
+  clone.style.position = 'absolute';
+  clone.style.height = 'auto';
+  clone.style.minHeight = '';
+  document.body.appendChild(clone);
+  const height = clone.offsetHeight;
+  document.body.removeChild(clone);
+  return height;
+}
+
 function equalizeTimelineHeights() {
   const workTimeline = document.getElementById('workTimeline');
   const educationTimeline = document.getElementById('educationTimeline');
-
-  // Assume that when one is active, you want both to have the same height.
-  // Get the height of the timeline that is currently visible.
-  let activeTimeline = workTimeline.classList.contains('active') 
-                         ? workTimeline 
-                         : educationTimeline;
-                         
-  // Measure its height
-  const activeHeight = activeTimeline.offsetHeight;
   
-  // Apply this height as a minimum to both timelines.
-  workTimeline.style.minHeight = activeHeight + 'px';
-  educationTimeline.style.minHeight = activeHeight + 'px';
+  // Remove any inline min-height to get natural heights
+  workTimeline.style.minHeight = "";
+  educationTimeline.style.minHeight = "";
+  
+  // Get the natural heights of both timelines
+  const workHeight = getNaturalHeight(workTimeline);
+  const eduHeight = getNaturalHeight(educationTimeline);
+  
+  // Use the maximum of the two heights
+  const maxHeight = Math.max(workHeight, eduHeight);
+  
+  workTimeline.style.minHeight = maxHeight + "px";
+  educationTimeline.style.minHeight = maxHeight + "px";
 }
 
-// Run on window resize
+// Run on window resize, on tab toggle, and on initial load
 window.addEventListener('resize', equalizeTimelineHeights);
-
-// Run when tabs are toggled
 document.querySelectorAll('.exp-tab').forEach(tab => {
   tab.addEventListener('click', () => {
-    // Delay a little if needed to let content update, then equalize heights.
+    // Allow a slight delay to let the content update before equalizing heights
     setTimeout(equalizeTimelineHeights, 100);
   });
 });
-
-// Also run it on initial page load
 equalizeTimelineHeights();
-
-
 /* ==========================================================
      8. Technology Filters
   ========================================================== */
