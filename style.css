@@ -960,7 +960,7 @@ section#experienceSection::before {
 .experience-tabs {
   display: flex;
   justify-content: center;
-  gap: 30%;
+  gap: 39%;
   margin-bottom: 1.5rem;
   background-color: var(--header-bg);
   border-radius: var(--radius-md);
@@ -971,12 +971,17 @@ section#experienceSection::before {
   border: none;
   outline: none;
   cursor: pointer;
-  font-weight: var(--font-weight-normal);
   font-size: var(--font-size-md);
   color: var(--header-text-color);
-  padding: 0.3rem 1rem;
   position: relative;
   transition: color 0.3s ease;
+  font-weight: var(--font-weight-medium);
+  transition: color var(--transition-bounce);
+  display: flex;
+  padding: var(--space-xs) var(--space-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: clamp(0.8em, 1vw, 0.9em);
 }
 
 .exp-tab:hover {
@@ -989,14 +994,17 @@ section#experienceSection::before {
   position: absolute;
   left: 0;
   right: 0;
-  top: -12%;
+  top: -11%;
   width: 90%;
-  height: 40px;
+  height: 110%;
   background: var(--header-bg);
   margin: auto;
   border-radius: var(--radius-md);
   z-index: -1;
+  border:2px solid var(--social-hover-bg);
 }
+
+
 
 /* Experience Timeline */
 .experience-timeline {
@@ -1607,6 +1615,9 @@ footer::before {
   }
   .learn-more{
   margin-top: 4.5rem;
+}
+.exp-tab.active::after {
+  top: -10%;
 }
 }
 
