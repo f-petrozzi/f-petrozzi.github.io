@@ -987,12 +987,15 @@ section#experienceSection::before {
 .exp-tab.active::after {
   content: "";
   position: absolute;
-  bottom: -0.08rem;
   left: 0;
   right: 0;
-  height: 3px;
+  top: -12%;
+  width: 90%;
+  height: 40px;
   background: var(--header-bg);
-  margin: 0 auto;
+  margin: auto;
+  border-radius: var(--radius-md);
+  z-index: -1;
 }
 
 /* Experience Timeline */
@@ -1021,8 +1024,8 @@ section#experienceSection::before {
   content: "";
   position: absolute;
   top: 0;
-  left: 2.25rem; /* align with the circle center */
-  width: 2px;
+  left: 2.25rem; /* align with circle center */
+  width: 1.5px;
   height: 100%;
   background: var(--highlight-name); 
 }
@@ -1046,10 +1049,6 @@ section#experienceSection::before {
 }
 
 /* For #educationTimeline */
-
-#educationTimeline {
-  padding-right: 1rem; /* space for vertical line on right */
-}
 
 #educationTimeline::before {
   content: "";
