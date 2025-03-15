@@ -136,6 +136,7 @@
   --map-overlay-color-1: var(--color-light); 
   --profile-card-bg: var(--color-light);
   --profile-card-text: var(--color-dark);
+  --circle-diameter: 3.9rem;
    
 }
 
@@ -945,8 +946,7 @@ section#about::before {
   border-left: none;
   border-radius: 0;
   padding: 0rem;
-  margin:0 auto;
-  margin-bottom: 5rem; 
+  margin:0 auto 5rem;
   opacity: 1;        
   transform: none;   
   transition: none;
@@ -964,6 +964,11 @@ section#experienceSection::before {
   margin-bottom: 1.5rem;
   background-color: var(--header-bg);
   border-radius: var(--radius-md);
+}
+
+#experienceSection .experience-item{
+  margin:0;
+  padding:0;
 }
 
 .exp-tab {
@@ -998,7 +1003,7 @@ section#experienceSection::before {
   position: absolute;
   left: 0;
   right: 0;
-  top: 40%;
+  top: 37%;
   width: 100%;
   height: 70%;
   background: var(--header-bg);
@@ -1015,7 +1020,7 @@ section#experienceSection::before {
   display: none; /* hidden by default */
   border: 2px solid var(--highlight-name);
   border-radius: 6px;
-  padding: 1rem;
+  padding: 0.5rem;
 }
 
 /* Display active timeline */
@@ -1025,32 +1030,34 @@ section#experienceSection::before {
 
 /* #workTimeline (default) */
 
-#workTimeline {
-  padding-left: 1rem; /* space for vertical line on left */
-}
-
 #workTimeline::before {
   content: "";
   position: absolute;
   top: 0;
-  left: 2.25rem; /* align with circle center */
+  left: calc(0.5rem + var(--circle-diameter) / 2);
   width: 2px;
   height: 100%;
   background: var(--highlight-name);
 }
 
+
+#workTimeline .experience-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 1rem 0;
+}
+
 #workTimeline .experience-circle {
-  position: absolute;
-  left: -1.8%; /* centers the circle on the vertical line */
-  top: -5%;
-  width: 4rem;
-  height: 4rem;
-  border: 2px solid var(--social-hover-bg);
+  width: var(--circle-diameter);
+  height: var(--circle-diameter);
+  border: 2px solid var(--highlight-name);
   border-radius: var(--radius-circle);
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-right: 0.5rem;
 }
 
 #workTimeline .experience-circle img{
@@ -1060,9 +1067,8 @@ section#experienceSection::before {
 }
 
 #workTimeline .experience-details {
-  margin-top: 2rem;
-  margin-left: 4rem; /* spacing from the circle */
-  margin-bottom:2rem;
+  flex: 1;
+  
 }
 
 /* For #educationTimeline */
@@ -1071,24 +1077,29 @@ section#experienceSection::before {
   content: "";
   position: absolute;
   top: 0;
-  right: 2.25rem; /* align with circle center */
+  right: calc(0.5rem + var(--circle-diameter) / 2);
   width: 2px;
   height: 100%;
   background: var(--highlight-name);
 }
 
+#educationTimeline .experience-item {
+  display: flex;
+  flex-direction: row-reverse;  /* mirror: text on left, image on right */
+  align-items: center;
+  margin: 1rem 0;
+}
+
 #educationTimeline .experience-circle {
-  position: absolute;
-  right: -1.8%; /* centers the circle on the vertical line */
-  top: 5%;
-  width: 4rem;
-  height: 4rem;
-  border: 2px solid var(--social-hover-bg);
+  width: var(--circle-diameter);
+  height: var(--circle-diameter);
+  border: 2px solid var(--highlight-name);
   border-radius: var(--radius-circle);
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-left: 0.5rem;
 }
 
 #educationTimeline .experience-circle img{
@@ -1098,10 +1109,8 @@ section#experienceSection::before {
 }
 
 #educationTimeline .experience-details {
-  margin-right: 4rem;
+  flex: 1;
   text-align: right;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
 }
 
 /* Common rules for experience items (applies to both timelines) */
@@ -1109,10 +1118,6 @@ section#experienceSection::before {
   position: relative;
   margin-bottom: 1rem;
   margin-top: 1rem;
-}
-
-#workTimeline .experience-item{
-  margin-bottom: 1rem;
 }
 
 .experience-date {
@@ -1658,43 +1663,16 @@ footer::before {
   margin-top: 4.5rem;
 }
 .exp-tab.active::after {
-  top: -10%;
+  top: 38%;
 }
 .experience-tabs {
-  gap: 25%;
-}
-#experienceSection .experience-circle{
-  height: 3.5rem;
-  width: 3.5rem;
+  gap: 30%;
 }
 
-#experienceSection .experience-details{
-  margin-bottom: 0rem;
-  margin-top: 0rem;
-}
-  
-#workTimeline .experience-circle{
-  left: -1rem;
-  top: -10%;
+:root{
+  --circle-diameter: 3.6rem;
 }
 
-#educationTimeline .experience-circle{
-  right: -1rem;
-}
-  
-#educationTimeline .experience-details {
-  margin-right: 2.7rem;
-}
-#workTimeline .experience-details {
-  margin-left: 2.7rem;
-  margin-right: -2rem;
-}
-#educationTimeline::before {
-  right: 1.7rem; /* align with circle center */
-}
-#workTimeline::before {
-  left: 1.7rem; /* align with circle center */
-}
 }
 @media (max-width: 550px) {
   .dark-mode-toggle-label .toggle-slider {
