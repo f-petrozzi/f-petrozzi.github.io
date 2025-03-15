@@ -946,7 +946,7 @@ section#about::before {
   border-left: none;
   border-radius: 0;
   padding: 0rem;
-  margin:0 auto 5rem;
+  margin:0 auto 4rem;
   opacity: 1;        
   transform: none;   
   transition: none;
@@ -1046,6 +1046,7 @@ section#experienceSection::before {
   flex-direction: row;
   align-items: center;
   margin: 1rem 0;
+  padding: 5.23px 0; 
 }
 
 #workTimeline .experience-circle {
@@ -1177,7 +1178,7 @@ section#experienceSection::before {
   border-left: none;
   border-radius: 0;
   padding: 0rem;
-  margin:0 auto 5rem;
+  margin:0 auto 1rem;
   opacity: 1;        
   transform: none;   
   transition: none;
