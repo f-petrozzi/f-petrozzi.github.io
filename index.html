@@ -594,20 +594,30 @@ document.addEventListener("DOMContentLoaded", function() {
   /* ==========================================================
      7. Map Initialization & Custom Marker
   ========================================================== */
-  const map = new maplibregl.Map({
-    container: 'map',
-    style: 'https://tiles.basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json', 
-    center: [-82.6384, 27.7671], 
-    zoom: 8,
-    attributionControl: false 
-  });
-  
-  const markerEl = document.createElement('div');
-  markerEl.className = 'custom-marker';
-  new maplibregl.Marker({ element: markerEl })
-    .setLngLat([-82.6384, 27.7671])
-    .addTo(map);
-  
+// Define your style URLs
+const darkStyle = 'https://tiles.basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
+const lightStyle = 'https://tiles.basemaps.cartocdn.com/gl/light-matter-gl-style/style.json';
+
+// Assuming you already have a map instance created like this:
+const map = new maplibregl.Map({
+  container: 'map',
+  style: darkStyle, // start with dark mode style
+  center: [-82.6384, 27.7671],
+  zoom: 8,
+  attributionControl: false
+});
+
+// Listen for changes to the dark mode toggle checkbox
+document.getElementById("darkModeToggle").addEventListener("change", function(e) {
+  // Check if dark mode is active (or not)
+  if (e.target.checked) {
+    // Toggle to light mode
+    map.setStyle(lightStyle);
+  } else {
+    // Toggle to dark mode
+    map.setStyle(darkStyle);
+  }
+});
   /* ==========================================================
      8. Learn More Click Activation (Social Sequence & Scroll Nudge)
   ========================================================== */
