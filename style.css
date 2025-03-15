@@ -102,6 +102,8 @@
   --profile-pic-border: var(--color-green);
   --profile-pic-hover-border: var(--color-gold);
   --profile-pic-hover-shadow: 0 0 20px var(--color-gold);
+  --profile-bg: var(--color-light);
+
   
   /* Social Links */
   --social-bg: rgba(0,87,63,0.9);
@@ -170,6 +172,7 @@
   --profile-pic-border: var(--color-dark-accent);
   --profile-pic-hover-border: var(--color-light-accent);
   --profile-pic-hover-shadow: 0 0 20px var(--color-light-accent);
+  --profile-bg: rgba(26, 26, 46);
   
   /* Social Buttons */
   --social-bg: var(--color-dark-accent);
@@ -200,7 +203,7 @@
 
   /* About */
   --map-overlay-color-1: var(--section-bg); 
-  --profile-card-bg: var(--section-bg);
+  --profile-card-bg: var(--profile-bg);
   --profile-card-text: var(--color-light);
   
 }
