@@ -709,7 +709,7 @@ section.active {
   border-left: none;
   border-radius: 0;
   padding: 0rem;
-  margin-bottom: 5rem; 
+  margin-bottom: 2rem; 
   opacity: 1;        
   transform: none;   
   transition: none; 
@@ -1033,17 +1033,17 @@ section#experienceSection::before {
   position: absolute;
   top: 0;
   left: 2.25rem; /* align with circle center */
-  width: 1.5px;
+  width: 2px;
   height: 100%;
   background: var(--highlight-name); 
 }
 
 #workTimeline .experience-circle {
   position: absolute;
-  left: 0; /* centers the circle on the vertical line */
-  width: 2.5rem;
-  height: 2.5rem;
-  background: #fff; /* white background behind the logo */
+  left: -0.3%; /* centers the circle on the vertical line */
+  top: 10%;
+  width: 3rem;
+  height: 3rem;
   border: 2px solid var(--highlight-name);
   border-radius: var(--radius-circle);
   overflow: hidden;
@@ -1070,12 +1070,12 @@ section#experienceSection::before {
 
 #educationTimeline .experience-circle {
   position: absolute;
-  right: 0; /* circle on right */
-  width: 2.5rem;
-  height: 2.5rem;
-  background: #fff;
+  right: -0.6%; /* centers the circle on the vertical line */
+  top: 10%;
+  width: 3rem;
+  height: 3rem;
   border: 2px solid var(--highlight-name);
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -1097,20 +1097,29 @@ section#experienceSection::before {
 
 .experience-date {
   font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-light);
+  font-weight: var(--font-weight-medium);
   color: var(--highlight-name);
   margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: clamp(0.6em, 2vw, 0.6em);
 }
 
 .experience-name {
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: clamp(0.8em, 2vw, 0.8em);
 }
 
 .experience-role {
   font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-normal);
+  font-weight: var(--font-weight-medium);
   color: var(--highlight-name);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: clamp(0.6em, 2vw, 0.6em);
 }
 /* ==========================================================================
    6. Projects Grid
@@ -1618,6 +1627,9 @@ footer::before {
 }
 .exp-tab.active::after {
   top: -10%;
+}
+.experience-tabs {
+  gap: 25%;
 }
 }
 
