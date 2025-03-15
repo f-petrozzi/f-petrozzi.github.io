@@ -1048,7 +1048,7 @@ section#experienceSection::before {
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin: 0.5rem 0;
+  margin: 0.6rem 0;
 }
 
 #workTimeline .experience-circle {
@@ -1090,7 +1090,7 @@ section#experienceSection::before {
   display: flex;
   flex-direction: row-reverse;  /* mirror: text on left, image on right */
   align-items: center;
-  margin: 0.5rem 0;
+  margin: 0.4rem 0;
 }
 
 #educationTimeline .experience-circle {
@@ -1756,6 +1756,14 @@ footer::before {
 
 :root{
   --circle-diameter: 3.6rem;
+}
+
+#educationTimeline .experience-item {
+  margin: 0.55rem 0;
+}
+
+#workTimeline .experience-item {
+  margin: 0.5rem 0;
 }
   
 }
