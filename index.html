@@ -173,6 +173,37 @@
           </div>
         </section>
 
+            <!--Technologies Filter -->
+          <section id="technologies">
+        <h2>Technologies</h2>
+        <div class="tech-filter-container">
+          <button class="tech-filter-btn" data-tech="html">
+            <i class="bx bxl-html5"></i>
+            <span>HTML5</span>
+          </button>
+          <button class="tech-filter-btn" data-tech="css">
+            <i class="bx bxl-css3"></i>
+            <span>CSS3</span>
+          </button>
+          <button class="tech-filter-btn" data-tech="javascript">
+            <i class="bx bxl-javascript"></i>
+            <span>JavaScript</span>
+          </button>
+          <button class="tech-filter-btn" data-tech="python">
+            <i class="bx bxl-python"></i>
+            <span>Python</span>
+          </button>
+          <button class="tech-filter-btn" data-tech="node">
+            <i class="bx bxl-nodejs"></i>
+            <span>Node.js</span>
+          </button>
+          <!-- You can add more technology buttons as needed -->
+          <button class="tech-filter-btn" id="clearFilters">
+            <i class="bx bx-x"></i>
+            <span>Clear Filters</span>
+          </button>
+        </div>
+      </section>
             <!-- Featured Section -->
           <div class="fadein-wrapper">
             <section id="featured">
@@ -184,6 +215,8 @@
                     <img src="images/HTML.jpg" alt="Building My Digital Presence" />
                       </div>
                     <h3>Building My Digital Presence</h3>
+                    <div class="project-item" data-tech="html,css,javascript">
+                    </div>
                   </a>
                 </div>
                 <div class="project-item">
@@ -192,6 +225,8 @@
                     <img src="images/lorem ipsum.jpg" alt="Lorem ipsum" />
                       </div>
                     <h3>Lorem ipsum</h3>
+                    <div class="project-item" data-tech="html,css,javascript">
+                    </div>
                   </a>
                 </div>
                 <div class="project-item">
@@ -200,6 +235,8 @@
                     <img src="images/lorem ipsum.jpg" alt="Lorem ipsum" />
                       </div>
                     <h3>Lorem ipsum</h3>
+                    <div class="project-item" data-tech="html,css,javascript">
+                    </div>
                   </a>
                 </div>
               </div>
@@ -215,6 +252,8 @@
               <img src="images/lorem ipsum.jpg" alt="Lorem ipsum" />
                 </div>
               <h3>Lorem ipsum</h3>
+              <div class="project-item" data-tech="html,css,javascript">
+              </div>
             </a>
           </div>
         </div>
@@ -568,6 +607,61 @@ document.addEventListener("DOMContentLoaded", function() {
       document.getElementById(targetId).classList.add("active");
     });
   });
+
+/* ==========================================================
+     8. Technology Filters
+  ========================================================== */
+  
+// Select the tech filter buttons (excluding the clear button)
+const techButtons = document.querySelectorAll('.tech-filter-btn:not(#clearFilters)');
+let selectedTechs = [];
+
+// Toggle active state on tech buttons
+techButtons.forEach(btn => {
+  btn.addEventListener('click', function() {
+    btn.classList.toggle('active');
+    updateSelectedTechs();
+    filterProjects();
+  });
+});
+
+// Clear Filters button
+document.getElementById('clearFilters').addEventListener('click', function() {
+  techButtons.forEach(btn => btn.classList.remove('active'));
+  selectedTechs = [];
+  filterProjects();
+});
+
+// Update the list of selected technologies
+function updateSelectedTechs() {
+  selectedTechs = Array.from(techButtons)
+    .filter(btn => btn.classList.contains('active'))
+    .map(btn => btn.getAttribute('data-tech').toLowerCase());
+}
+
+// Filter projects based on selected technologies
+function filterProjects() {
+  const allProjects = document.querySelectorAll('.project-item');
+  allProjects.forEach(project => {
+    const techData = project.getAttribute('data-tech');
+    // If no technology is specified on the project, show it by default
+    if (!techData) {
+      project.style.display = '';
+      return;
+    }
+    // Create an array of tech tags for the project
+    const projectTechs = techData.split(',').map(t => t.trim().toLowerCase());
+    
+    if (selectedTechs.length === 0) {
+      // No filters active, show all projects
+      project.style.display = '';
+    } else {
+      // Show project if any selected tech is included in its list
+      const shouldShow = selectedTechs.some(tech => projectTechs.includes(tech));
+      project.style.display = shouldShow ? '' : 'none';
+    }
+  });
+}
 </script>
 </body>
 </html>
