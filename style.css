@@ -1004,8 +1004,6 @@ section#experienceSection::before {
   border:2px solid var(--social-hover-bg);
 }
 
-
-
 /* Experience Timeline */
 .experience-timeline {
   position: relative;
@@ -1035,7 +1033,7 @@ section#experienceSection::before {
   left: 2.25rem; /* align with circle center */
   width: 2px;
   height: 100%;
-  background: var(--highlight-name); 
+  background: var(--highlight-name);
 }
 
 #workTimeline .experience-circle {
@@ -1044,7 +1042,7 @@ section#experienceSection::before {
   top: 5%;
   width: 4rem;
   height: 4rem;
-  border: 2px solid var(--highlight-name);
+  border: 2px solid var(--social-hover-bg);
   border-radius: var(--radius-circle);
   overflow: hidden;
   display: flex;
@@ -1053,8 +1051,8 @@ section#experienceSection::before {
 }
 
 #workTimeline .experience-circle img{
-  width:100%;
-  height:100%;
+  width: 120%;
+  height: 120%;
   object-fit:contain;
 }
 
@@ -1080,7 +1078,7 @@ section#experienceSection::before {
   top: 5%;
   width: 4rem;
   height: 4rem;
-  border: 2px solid var(--highlight-name);
+  border: 2px solid var(--social-hover-bg);
   border-radius: var(--radius-circle);
   overflow: hidden;
   display: flex;
@@ -1089,8 +1087,8 @@ section#experienceSection::before {
 }
 
 #educationTimeline .experience-circle img{
-  width:100%;
-  height:100%;
+  width:120%;
+  height:120%;
   object-fit:contain;
 }
 
@@ -1102,6 +1100,11 @@ section#experienceSection::before {
 /* Common rules for experience items (applies to both timelines) */
 .experience-item {
   position: relative;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
+#workTimeline .experience-item{
   margin-bottom: 2rem;
 }
 
@@ -1130,6 +1133,10 @@ section#experienceSection::before {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-size: clamp(0.6em, 2vw, 0.6em);
+}
+
+#workTimeline .experience-role{
+  color: var(--r);
 }
 
 .experience-GPA {
