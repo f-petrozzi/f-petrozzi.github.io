@@ -1158,6 +1158,79 @@ section#experienceSection::before {
   letter-spacing: 0.05em;
   font-size: clamp(0.55em, 2vw, 0.5em);
 }
+
+/* ==========================================================================
+   5.7 Technology Filter
+   ========================================================================== */
+/* Technology Filter Section */
+#technologies {
+  background: none;
+  box-shadow: none;
+  border: none;
+  border-left: none;
+  border-radius: 0;
+  padding: 0rem;
+  margin:0 auto 5rem;
+  opacity: 1;        
+  transform: none;   
+  transition: none;
+  max-width: 700px;
+}
+
+section#technologies::before {
+  background: none;
+}
+
+#technologies h2 {
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--space-sm);
+  text-transform: uppercase;
+}
+
+/* Container for the tech buttons */
+.tech-filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  justify-content: right;
+}
+
+/* Individual tech button styling */
+.tech-filter-btn {
+  border: 2px solid var(--header-text-color);
+  padding: var(--space-xs) var(--space-md);
+  background: transparent;
+  cursor: pointer;
+  transition: border-color var(--transition-quick), box-shadow var(--transition-normal);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tech-filter-btn i {
+  font-size: var(--font-size-base);
+  color: var(--header-text-color);
+  transition: color var(--transition-quick);
+}
+
+.tech-filter-btn:hover {
+  border-color: var(--filter-btn-hover-bg);
+}
+
+.tech-filter-btn:hover i {
+  color: var(--filter-btn-hover-bg);
+}
+
+/* Active state */
+.tech-filter-btn.active {
+  border-color: var(--filter-btn-hover-bg);
+  box-shadow: 0 0 5px var(--filter-btn-hover-bg);
+}
+
+.tech-filter-btn.active i {
+  color: var(--filter-btn-hover-bg);
+}
+
 /* ==========================================================================
    6. Projects Grid
    ========================================================================== */
