@@ -654,6 +654,40 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   });
 
+  /* Height Equalizer */
+function equalizeTimelineHeights() {
+  const workTimeline = document.getElementById('workTimeline');
+  const educationTimeline = document.getElementById('educationTimeline');
+
+  // Assume that when one is active, you want both to have the same height.
+  // Get the height of the timeline that is currently visible.
+  let activeTimeline = workTimeline.classList.contains('active') 
+                         ? workTimeline 
+                         : educationTimeline;
+                         
+  // Measure its height
+  const activeHeight = activeTimeline.offsetHeight;
+  
+  // Apply this height as a minimum to both timelines.
+  workTimeline.style.minHeight = activeHeight + 'px';
+  educationTimeline.style.minHeight = activeHeight + 'px';
+}
+
+// Run on window resize
+window.addEventListener('resize', equalizeTimelineHeights);
+
+// Run when tabs are toggled
+document.querySelectorAll('.exp-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    // Delay a little if needed to let content update, then equalize heights.
+    setTimeout(equalizeTimelineHeights, 100);
+  });
+});
+
+// Also run it on initial page load
+equalizeTimelineHeights();
+
+
 /* ==========================================================
      8. Technology Filters
   ========================================================== */
