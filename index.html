@@ -592,62 +592,7 @@ document.addEventListener("DOMContentLoaded", function() {
   });
   
   /* ==========================================================
-     7. Map Initialization & Custom Marker
-  ========================================================== */
-  // Define the style URLs for dark and light modes
-  const darkStyle = 'https://tiles.basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
-  const lightStyle = 'https://tiles.basemaps.cartocdn.com/gl/light-matter-gl-style/style.json';
-
-  // Retrieve saved theme from localStorage (default to 'light')
-  const savedTheme = localStorage.getItem('theme') || 'light';
-
-  // Function to set the theme globally
-  function setTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-  }
-
-  // Apply the saved theme immediately
-  setTheme(savedTheme);
-
-  // Initialize the MapLibre map with the correct style based on the saved theme
-  const map = new maplibregl.Map({
-    container: 'map',
-    style: savedTheme === 'dark' ? darkStyle : lightStyle,
-    center: [-82.6384, 27.7671],
-    zoom: 8,
-    attributionControl: false
-  });
-
-  // Add a custom marker to the map
-  const markerEl = document.createElement('div');
-  markerEl.className = 'custom-marker';
-  new maplibregl.Marker({ element: markerEl })
-    .setLngLat([-82.6384, 27.7671])
-    .addTo(map);
-
-  // Function to update the map style when the theme changes
-  function updateMapStyle(theme) {
-    map.setStyle(theme === 'dark' ? darkStyle : lightStyle);
-  }
-
-  // Set up the dark mode toggle event listener once the DOM is loaded
-  document.addEventListener('DOMContentLoaded', function () {
-    const toggle = document.getElementById('darkModeToggle');
-    if (toggle) {
-      // Set the toggle's checked state based on the saved theme
-      toggle.checked = savedTheme === 'dark';
-      // Listen for changes on the toggle
-      toggle.addEventListener('change', function () {
-        const newTheme = this.checked ? 'dark' : 'light';
-        setTheme(newTheme);
-        updateMapStyle(newTheme);
-      });
-    }
-  });
-  
-  /* ==========================================================
-     8. Learn More Click Activation (Social Sequence & Scroll Nudge)
+     7. Learn More Click Activation (Social Sequence & Scroll Nudge)
   ========================================================== */
   const learnMoreLink = document.querySelector(".learn-more-trigger");
   let isAnimating = false;
@@ -739,7 +684,7 @@ document.querySelectorAll('.exp-tab').forEach(tab => {
 });
 equalizeTimelineHeights();
 /* ==========================================================
-     8. Technology Filters
+     9. Technology Filters
   ========================================================== */
   
 // Select the tech filter buttons (excluding the clear button)
@@ -792,6 +737,38 @@ function filterProjects() {
     }
   });
 }
+</script>
+<script type="module">
+  // Define the two map style URLs
+  const darkStyle = 'https://tiles.basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
+  const lightStyle = 'https://tiles.basemaps.cartocdn.com/gl/light-matter-gl-style/style.json';
+
+  // Initialize the map using your default style (adjust if your default is light)
+  const map = new maplibregl.Map({
+    container: 'map',
+    style: darkStyle, // or lightStyle, depending on your default
+    center: [-82.6384, 27.7671],
+    zoom: 8,
+    attributionControl: false
+  });
+
+  // Add your custom marker to the map
+  const markerEl = document.createElement('div');
+  markerEl.className = 'custom-marker';
+  new maplibregl.Marker({ element: markerEl })
+    .setLngLat([-82.6384, 27.7671])
+    .addTo(map);
+
+  // When the DOM is ready, attach an event listener to the dark mode toggle to swap the map style
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.getElementById('darkModeToggle');
+    if (toggle) {
+      toggle.addEventListener('change', function() {
+        // When checked, set dark mode style; when unchecked, set light mode style
+        map.setStyle(this.checked ? darkStyle : lightStyle);
+      });
+    }
+  });
 </script>
 </body>
 </html>
