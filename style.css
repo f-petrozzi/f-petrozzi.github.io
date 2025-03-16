@@ -396,8 +396,8 @@ header.common-header .logo {
   font-weight: var(--font-weight-bold);
   color: var(--header-text-color);
   border: 2px solid var(--header-text-color);
-  width: clamp(37px, 6vw, 50px);
-  height: clamp(37px, 6vw, 50px);
+  width: clamp(37px, 6vw, 46px);
+  height: clamp(37px, 6vw, 46px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -435,7 +435,7 @@ header.common-header .logo:hover {
   padding: var(--space-xs) var(--space-xs);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  font-size: clamp(0.8em, 2vw, 1em);
+  font-size: clamp(0.8em, 2vw, 0.9em);
 }
 
 .main-nav a:hover {
@@ -728,8 +728,8 @@ section.active {
 
 .dark-mode-toggle {
   position: relative;
-  top:-0.8rem;
-  right:-0.1rem;
+  top:-0.7rem;
+  right:0rem;
 }
 
 .dark-mode-toggle-input {
