@@ -498,7 +498,7 @@ section {
 }
 
 .fadein-wrapper {
-  overflow: hidden;
+  overflow: visible;
 }
 
 section::before {
@@ -541,7 +541,9 @@ section.active {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 300px));
   gap: var(--space-sm);
-  justify-content: center;
+  width: max-content;  
+  justify-items: center;
+  margin: 0 auto;
 }
 
 .fadein-wrapper h2{
@@ -574,6 +576,7 @@ section.active {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
   text-align: center;
   transition:
     transform var(--transition-normal),
