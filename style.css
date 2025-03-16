@@ -1709,6 +1709,25 @@ footer::before {
 /* ==========================================================================
    10. Media Queries
    ========================================================================== */
+@media (min-width: 1025px) {
+  .projects-grid {
+    grid-template-columns: repeat(3, 300px);
+  }
+  .project-item {
+    width: 300px;
+    height: 400px; /* Adjust height as needed */
+  }
+}
+
+@media (max-width: 1024px) {
+  .projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .project-item {
+    width: 250px;
+    height: 350px;
+  }
+}
 
 @media (max-width: 900px) {
    p, .text-block {
@@ -1796,6 +1815,12 @@ footer::before {
 .social-links{
     top: -0.5rem;
   }
+
+.project-item {
+    width: 180px;
+    height: 300px;
+  }
+}
 @media (max-width: 550px) {
   
 
