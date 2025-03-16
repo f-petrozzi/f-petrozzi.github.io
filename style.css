@@ -553,6 +553,16 @@ section.active {
   margin-bottom: 1rem;
 }
 
+.project-item {
+  opacity: 0;
+  transform: translateX(-80px);
+  transition: opacity var(--transition-extra-slow), transform var(--transition-extra-slow);
+}
+.project-item.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
 
 /* Project Card (shared by Featured & Other) */
 .project-item {
@@ -1355,6 +1365,16 @@ section#technologies::before {
 .tech-filter-btn.active span, .tech-filter-btn:hover span {
   font-weight: var(--font-weight-bold);
   color: var(--highlight-name);
+}
+
+.tech-pill {
+  display: inline-block;
+  background-color: var(--color-light-gray);
+  color: var(--color-dark);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-pill);
+  margin: 0.125rem;
+  font-size: 0.75rem;
 }
 
 /* ==========================================================================
