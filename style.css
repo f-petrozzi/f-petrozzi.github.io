@@ -251,17 +251,6 @@ body {
   100% { background-position: 0% 50%; }
 }
 
-/* Container Styling */
-.container {
-  flex: 1;                     
-  width: 100%;
-  max-width: 800px;
-  margin: var(--space-xs) auto 0;  
-}
-
-.main-content {
-  flex: 1;
-}
 
 /* ==========================================================================
    2. Typography & Text Elements
@@ -560,7 +549,7 @@ section.active {
   font-weight: var(--font-weight-medium);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  font-size: clamp(0.8em, 1vw, 0.9em);
+  font-size: clamp(1em, 2vw, 1em);
   margin-bottom: 1rem;
 }
 
@@ -1314,7 +1303,7 @@ section#technologies::before {
   font-weight: var(--font-weight-medium);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  font-size: clamp(0.8em, 1vw, 0.9em);
+  font-size: clamp(1em, 2vw, 1em);
 }
 
 /* Container for the tech buttons */
