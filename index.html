@@ -607,7 +607,26 @@ const otherObserver = new IntersectionObserver((entries, observer) => {
 otherProjectItems.forEach(item => {
   otherObserver.observe(item);
 });
-  
+
+
+const sectionObserverOptions = window.innerWidth <= 900 ?
+  { threshold: 0.01, rootMargin: "0px 0px -10% 0px" } :
+  { threshold: 0.09, rootMargin: "0px 0px -23% 0px" };
+
+const sections = document.querySelectorAll('section');
+const sectionObserver = new IntersectionObserver((entries, observer) => {
+  entries.forEach(entry => {
+    console.log('Section:', entry.target, entry.isIntersecting);
+    if (entry.isIntersecting) {
+      entry.target.classList.add('active');
+      observer.unobserve(entry.target);
+    }
+  });
+}, sectionObserverOptions);
+
+sections.forEach(section => {
+  sectionObserver.observe(section);
+});
   /* ==========================================================
      7. Learn More Click Activation (Social Sequence & Scroll Nudge)
   ========================================================== */
