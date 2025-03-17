@@ -539,11 +539,12 @@ section.active {
 
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 300px));
-  gap: var(--space-sm);
-  width: max-content;  
-  justify-items: center;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
+  justify-content: center;
 }
 
 .fadein-wrapper h2{
@@ -565,18 +566,17 @@ section.active {
   transform: translateX(0);
 }
 
-
 /* Project Card (shared by Featured & Other) */
 .project-item {
   background-color: transparent;
-  border: 2px solid var(--project-item-border); /* Matches your theme color */
+  border: 2px solid var(--project-item-border);
   border-radius: var(--radius-md);
-  padding: var(--space-sm);
+  padding: clamp(0.75rem, 2vw, 1rem);
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
   width: 100%;
+  height: 100%;
   text-align: center;
   transition:
     transform var(--transition-normal),
@@ -591,19 +591,21 @@ section.active {
   border-color: var(--project-item-hover-border);
 }
 
-/* Image container stays the same but ensure overflow hidden for zoom effect */
+/* Image container with consistent aspect ratio */
 .project-image-container {
   width: 100%;
   overflow: hidden;
   border-radius: var(--radius-md);
-  margin-bottom: var(--space-sm);
+  margin-bottom: clamp(0.75rem, 2vw, 1rem);
+  aspect-ratio: 16 / 9;
 }
 
-/* Slight zoom on hover (same effect you already have) */
+/* Image uniform styling */
 .project-image-container img {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  height: 100%;
   object-fit: cover;
+  object-position: center;
   transition: transform var(--transition-bounce);
   cursor: pointer;
   display: block;
@@ -615,36 +617,59 @@ section.active {
 
 /* Title, description, technologies, link */
 .project-title {
-  font-size: var(--font-size-md);
-  margin-bottom: var(--space-xs);
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  margin-bottom: clamp(0.5rem, 1.5vw, 0.75rem);
   color: var(--color-dark);
+  font-weight: var(--font-weight-medium);
 }
 
 .project-description {
-  font-size: var(--font-size-sm);
-  margin-bottom: var(--space-xs);
+  font-size: clamp(0.75rem, 2vw, 0.875rem);
+  margin-bottom: clamp(0.5rem, 1.5vw, 0.75rem);
   line-height: var(--line-height-normal);
-  max-width: 90%; /* Or your preferred width */
+  width: 100%;
 }
 
 .project-tech {
-  font-size: var(--font-size-sm);
-  margin-bottom: var(--space-xs);
-  color: var(--color-dark);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem;
+  margin-bottom: clamp(0.75rem, 2vw, 1rem);
 }
 
+/* Tech pill styling */
+.tech-pill {
+  display: inline-block;
+  background-color: var(--color-light-gray);
+  color: var(--color-dark);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-pill);
+  font-size: clamp(0.6rem, 1.5vw, 0.75rem);
+}
+
+/* Project link/button with consistent sizing */
 .project-link {
   font-weight: var(--font-weight-medium);
   color: var(--highlight-name);
   text-decoration: none;
-  transition: color var(--transition-bounce), transform var(--transition-bounce);
+  padding: 0.5em 1em;
+  border: 1px solid var(--highlight-name);
+  border-radius: var(--radius-md);
+  display: inline-block;
+  margin-top: auto;
+  font-size: clamp(0.75rem, 2vw, 0.875rem);
+  align-self: center;
+  min-width: 120px;
+  text-align: center;
+  transition: color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
 }
 
 .project-link:hover {
-  color: var(--color-gold);
+  color: var(--color-light);
+  background-color: var(--highlight-name);
   transform: translateY(-2px);
 }
-
 /* ==========================================================================
    5. Social Links & Dark Mode Toggle
    ========================================================================== */
@@ -1734,37 +1759,37 @@ footer::before {
    ========================================================================== */
 @media (min-width: 1025px) {
   .projects-grid {
-    grid-template-columns: repeat(3, 300px);
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1rem, 2vw, 2rem);
   }
+  
   .project-item {
-    width: 300px;
-    height: 400px; /* Adjust height as needed */
+    min-height: 400px;
   }
 }
 
 @media (max-width: 1024px) {
   .projects-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: clamp(1rem, 2vw, 1.5rem);
   }
+  
   .project-item {
-    width: 250px;
-    height: 350px;
+    min-height: 380px;
   }
-}
-
-@media (max-width: 900px) {
-   p, .text-block {
+  
+  p, .text-block {
     line-height: 1.8; 
   }
    
-   section {
-     margin-bottom: 3rem;
-     padding: 1rem 1rem 0rem 1rem;
+  section {
+    margin-bottom: 3rem;
+    padding: 1rem 1rem 0rem 1rem;
   }
    
-   .container {                   
+  .container {                   
     padding: 0rem 1.5rem 0rem 1.5rem;
-}
+  }
 
   nav, .main-nav {
     display: flex;
@@ -1777,10 +1802,53 @@ footer::before {
   }
 
   .highlight-block img {
-     max-width: 100%;
+    max-width: 100%;
   }
+  
   .text-block {
-     padding: 0rem
+    padding: 0rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(0.8rem, 2vw, 1.5rem);
+  }
+  
+  .project-item {
+    min-height: 350px;
+  }
+  
+  p, .text-block {
+    line-height: 1.8; 
+  }
+   
+  section {
+    margin-bottom: 3rem;
+    padding: 1rem 1rem 0rem 1rem;
+  }
+   
+  .container {                   
+    padding: 0rem 1.5rem 0rem 1.5rem;
+  }
+
+  nav, .main-nav {
+    display: flex;
+    flex-direction: row;
+    gap: clamp(0.1rem, 0.5vw, 0.5rem);
+    flex-shrink: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .highlight-block img {
+    max-width: 100%;
+  }
+  
+  .text-block {
+    padding: 0rem;
   }
 }
 
@@ -1797,98 +1865,208 @@ footer::before {
 }
 
 @media(max-width:660px){
+  /* Maintain 2 project columns */
+  .projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(0.6rem, 1.5vw, 1.2rem);
+  }
+  
+  .project-item {
+    transform: scale(1.05);
+    min-height: 320px;
+  }
 
   .profile-card {
     transform: translate(-8%, 50%);
-}
- /* 
-  .dark-mode-toggle {
-  position: absolute;
-  top: 3.8rem;
-  left: 0.2rem;
-}*/
+  }
   
-.exp-tab.active::after {
-  top: 38%;
-}
-.experience-tabs {
-  gap: 30%;
-}
+  .exp-tab.active::after {
+    top: 38%;
+  }
+  
+  .experience-tabs {
+    gap: 30%;
+  }
 
-:root{
-  --circle-diameter: 3.6rem;
-}
+  :root{
+    --circle-diameter: 3.6rem;
+  }
 
-#educationTimeline .experience-item {
-  margin: 0.55rem 0;
-}
+  #educationTimeline .experience-item {
+    margin: 0.55rem 0;
+  }
 
-#workTimeline .experience-item {
-  margin: 0.5rem 0;
-}
+  #workTimeline .experience-item {
+    margin: 0.5rem 0;
+  }
 
-.dark-mode-toggle-label {
-  border: 1px solid var(--color-light);
-}
+  .dark-mode-toggle-label {
+    border: 1px solid var(--color-light);
+  }
 
-.map-container {
-  height: 150px;
-  margin-top: 4rem;
-}
-.social-links{
+  .map-container {
+    height: 150px;
+    margin-top: 4rem;
+  }
+  
+  .social-links{
     top: -0.5rem;
   }
 
-.project-item {
-    width: 180px;
-    height: 300px;
+  .project-item {
+    width: 100%;
+    height: auto;
   }
 }
+
 @media (max-width: 550px) {
+  /* Still maintain 2 columns */
+  .projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem;
+  }
   
+  .project-item {
+    transform: scale(1.08);
+    padding: clamp(0.6rem, 1.5vw, 0.8rem);
+    min-height: 280px;
+  }
+  
+  /* Optimize for smaller screens */
+  .project-description {
+    -webkit-line-clamp: 3;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .tech-pill {
+    padding: 0.2rem 0.4rem;
+    font-size: clamp(0.55rem, 1.3vw, 0.65rem);
+  }
+  
+  .project-link {
+    min-width: 100px;
+    padding: 0.4em 0.8em;
+  }
 
-.dark-mode-toggle-label .toggle-slider {
-  top: -0.4px;
- }
+  .dark-mode-toggle-label .toggle-slider {
+    top: -0.4px;
+  }
 
-.dark-mode-toggle-label .toggle-slider .icon{
-  top: -1px;
- }
+  .dark-mode-toggle-label .toggle-slider .icon{
+    top: -1px;
+  }
   
   .main-content{
     margin-top: 0rem;
   }
+  
   .sidebar {
-   width: 70%;
-   max-width: 300px;
-   transition: right 0.5s ease;
-}
+    width: 70%;
+    max-width: 300px;
+    transition: right 0.5s ease;
+  }
 
   .sidebar.active {
-   transition: right 0.5s ease;
-}
+    transition: right 0.5s ease;
+  }
+  
   .sidebar-header {
-   padding: var(--space-xxs);
- }
+    padding: var(--space-xxs);
+  }
+  
   .social-links{
     right: -0.8rem;
   }
 }
 
 @media(max-width: 470px){
+  /* Maintain 2 columns even on smaller screens */
+  .projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+  
+  .project-item {
+    transform: scale(1.1);
+    padding: 0.5rem;
+    min-height: 250px;
+  }
+  
+  /* Optimize content for very small screens */
+  .project-title {
+    font-size: clamp(0.8rem, 2.2vw, 1rem);
+    margin-bottom: 0.3rem;
+  }
+  
+  .project-description {
+    font-size: clamp(0.65rem, 1.8vw, 0.75rem);
+    -webkit-line-clamp: 2;
+    margin-bottom: 0.3rem;
+  }
+  
   .social-links{
     right:-1.2rem;
   }
-  
 }
 
 @media(max-width: 382px){
- #experienceSection.active{
-width:112%;
-left: -6%;
-}
+  /* Only switch to single column at the very smallest screens */
+  .projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.4rem;
+  }
+  
+  .project-item {
+    transform: scale(1.15);
+    padding: 0.4rem;
+    min-height: 220px;
+  }
+  
+  /* Extremely minimal content for very small screens */
+  .project-description {
+    -webkit-line-clamp: 1;
+  }
+  
+  .tech-pill {
+    padding: 0.1rem 0.3rem;
+    font-size: 0.5rem;
+  }
+  
+  .project-link {
+    min-width: 80px;
+    padding: 0.3em 0.6em;
+    font-size: 0.7rem;
+  }
+  
+  #experienceSection.active{
+    width:112%;
+    left: -6%;
+  }
 
   .dark-mode-toggle{
     left:-0.1rem;
+  }
+}
+
+/* Add a final breakpoint for extremely small devices */
+@media(max-width: 320px){
+  /* Finally switch to 1 column for extremely small devices */
+  .projects-grid {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+  
+  .project-item {
+    transform: scale(1.1);
+    max-width: 90%;
+    margin: 0 auto;
+    min-height: 250px;
+  }
+  
+  /* Restore some spacing for single column */
+  .project-description {
+    -webkit-line-clamp: 2;
   }
 }
