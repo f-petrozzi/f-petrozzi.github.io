@@ -115,6 +115,8 @@
   --project-item-hover-border: var(--color-gold);
   --project-item-hover-shadow: 0 0 15px var(--color-gold);
   --project-item-transition: var(--transition-normal);
+  --tech-pill-bg: #00573f78;
+  --tech-pill-text: #000000;
 
   /* Sidebar */
   --sidebar-bg: rgba(255,255,255,0.95);
@@ -183,6 +185,9 @@
   --project-item-border: var(--color-dark-accent);
   --project-item-hover-border: var(--color-light-accent);
   --project-item-hover-shadow: 0 0 15px var(--color-light-accent);
+  --tech-pill-bg: #a8b2d17a;
+  --tech-pill-text: #ffffff;
+
 
   /* Sidebar */
   --sidebar-bg: var(--color-dark-bg-2);
@@ -619,8 +624,7 @@ section.active {
 .project-title {
   font-size: clamp(1rem, 2.5vw, 1.25rem);
   margin-bottom: clamp(0.5rem, 1.5vw, 0.75rem);
-  color: var(--color-dark);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-bold);
 }
 
 .project-description {
@@ -641,12 +645,22 @@ section.active {
 /* Tech pill styling */
 .tech-pill {
   display: inline-block;
-  background-color: var(--color-light-gray);
-  color: var(--color-dark);
-  padding: 0.25rem 0.5rem;
-  border-radius: var(--radius-pill);
-  font-size: clamp(0.6rem, 1.5vw, 0.75rem);
+  color: var(--tech-pill-text);
+  border: 1px solid var(--tech-pill-text);
+  padding: 0.1rem 0.5rem;
+  border-radius: var(--radius-sm);
+  margin: 0.12rem;
+  font-size: 0.7rem;
+  font-weight: var(--font-weight-light);
+  transition: color 0.3s ease, background-color 0.3s ease;
 }
+
+.tech-pill:hover {
+  color: var(--color-light);
+  background-color: var(--highlight-name);
+  border-color: var(--highlight-name);
+}
+
 
 /* Project link/button with consistent sizing */
 .project-link {
@@ -655,7 +669,7 @@ section.active {
   text-decoration: none;
   padding: 0.5em 1em;
   border: 1px solid var(--highlight-name);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   display: inline-block;
   margin-top: auto;
   font-size: clamp(0.75rem, 2vw, 0.875rem);
@@ -1393,16 +1407,6 @@ section#technologies::before {
 .tech-filter-btn.active span, .tech-filter-btn:hover span {
   font-weight: var(--font-weight-bold);
   color: var(--highlight-name);
-}
-
-.tech-pill {
-  display: inline-block;
-  background-color: var(--color-light-gray);
-  color: var(--color-dark);
-  padding: 0.25rem 0.5rem;
-  border-radius: var(--radius-pill);
-  margin: 0.125rem;
-  font-size: 0.75rem;
 }
 
 /* ==========================================================================
