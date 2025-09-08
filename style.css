@@ -773,8 +773,6 @@ section.active {
    ========================================================== */
 .dark-mode-toggle {
   position: relative;
-  top: -0.7rem;
-  right: -0.1rem;
 }
 
 /* Hide the native checkbox, keep accessibility and JS hooks */
@@ -786,15 +784,12 @@ section.active {
 
 /* Circular button with subtle ripple feedback */
 .dark-mode-toggle-label {
-  --toggle-size: clamp(32px, 3.5vw, 40px);
+  --toggle-size: clamp(30px, 3.5vw, 35px);
   width: var(--toggle-size);
   height: var(--toggle-size);
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: var(--section-bg);
-  border: 2px solid rgba(255, 255, 255, 0.75);
-  box-shadow: var(--shadow-md);
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -810,7 +805,6 @@ section.active {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: currentColor;
   opacity: 0;
   transform: scale(0.4);
   pointer-events: none;
@@ -848,9 +842,9 @@ section.active {
 }
 .dark-mode-toggle-input:not(:checked) + .dark-mode-toggle-label .toggle-slider .sun-icon {
   opacity: 1;
-  transform: scale(1) rotate(0deg);
+  transform: scale(1.2) rotate(0deg);
   color: #f1c40f;
-  filter: drop-shadow(0 0 4px rgba(241,196,15,0.5));
+  filter: drop-shadow(0 0 3px rgba(241,196,15,0.5));
 }
 .dark-mode-toggle-input:not(:checked) + .dark-mode-toggle-label .toggle-slider .moon-icon {
   opacity: 0;
@@ -861,11 +855,11 @@ section.active {
 
 /* Dark mode (moon visible) */
 .dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider {
-  transform: rotate(360deg) scale(0.98);
+  transform: rotate(360deg) scale(1);
 }
 .dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider .sun-icon {
   opacity: 0;
-  transform: scale(0.6) rotate(45deg);
+  transform: scale(0.7) rotate(45deg);
   color: #f1c40f;
   filter: none;
 }
@@ -1919,10 +1913,6 @@ footer::before {
     margin: 0.5rem 0;
   }
 
-  .dark-mode-toggle-label {
-    border: 1px solid var(--color-light);
-  }
-
   .map-container {
     height: 150px;
     margin-top: 4rem;
@@ -1967,14 +1957,6 @@ footer::before {
   .project-link {
     min-width: 100px;
     padding: 0.4em 0.8em;
-  }
-
-  .dark-mode-toggle-label .toggle-slider {
-    top: -0.4px;
-  }
-
-  .dark-mode-toggle-label .toggle-slider .icon{
-    top: -1px;
   }
   
   .main-content{
@@ -2062,10 +2044,6 @@ footer::before {
   #experienceSection.active{
     width:112%;
     left: -6%;
-  }
-
-  .dark-mode-toggle{
-    left:-0.1rem;
   }
 }
 
