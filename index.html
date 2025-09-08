@@ -193,7 +193,7 @@
         </button>
         
         <!-- Node.js -->
-        <button class="tech-filter-btn" data-tech="nodejs">
+        <button class="tech-filter-btn" data-tech="Node.js">
           <i class="bx bxl-nodejs"></i>
           <span>Node.js</span>
         </button> 
@@ -215,31 +215,61 @@
           <i class="bx bxl-javascript"></i>
           <span>JavaScript</span>
         </button>
-    
-        <!-- Tableau -->
-        <button class="tech-filter-btn" data-tech="tableau">
-          <i class="bx bx-bar-chart-square"></i>
-          <span>Tableau</span>
-        </button>
-        
-        <!-- Power BI 
-        <button class="tech-filter-btn" data-tech="powerbi">
-          <i class="bx bx-bar-chart-alt-2"></i>
-          <span>Power BI</span>
-        </button> -->
-        
+
         <!-- MongoDB -->
         <button class="tech-filter-btn" data-tech="mongodb">
           <i class="bx bx-leaf"></i>
           <span>MongoDB</span>
         </button>
-        
-        <!-- AWS Redshift -->
-        <button class="tech-filter-btn" data-tech="redshift">
-          <i class="bx bx-cloud"></i>
-          <span>AWS Redshift</span>
+
+        <!-- Excel -->
+        <button class="tech-filter-btn" data-tech="excel">
+          <i class="bx bx-spreadsheet"></i>
+          <span>Excel</span>
         </button>
         
+        <!-- Machine Learning -->
+        <button class="tech-filter-btn" data-tech="machine learning">
+          <i class="bx bx-brain"></i>
+          <span>Machine Learning</span>
+        </button>
+        
+        <!-- Deep Learning -->
+        <button class="tech-filter-btn" data-tech="deep learning">
+          <i class="bx bx-chip"></i>
+          <span>Deep Learning</span>
+        </button>
+        
+        <!-- Text Analytics -->
+        <button class="tech-filter-btn" data-tech="text analytics">
+          <i class="bx bx-message-dots"></i>
+          <span>Text Analytics</span>
+        </button>
+        
+        <!-- Data Visualization -->
+        <button class="tech-filter-btn" data-tech="data visualization">
+          <i class="bx bx-line-chart"></i>
+          <span>Data Visualization</span>
+        </button>
+        
+        <!-- Cloud Computing -->
+        <button class="tech-filter-btn" data-tech="cloud computing">
+          <i class="bx bx-cloud"></i>
+          <span>Cloud Computing</span>
+        </button>
+
+        <!-- Systems Architecture -->
+        <button class="tech-filter-btn" data-tech="systems architecture">
+          <i class="bx bx-sitemap"></i>
+          <span>Systems Architecture</span>
+        </button>
+        
+        <!-- UX / UI -->
+        <button class="tech-filter-btn" data-tech="ux / ui">
+          <i class="bx bx-layout"></i>
+          <span>UX / UI</span>
+        </button>
+
         <!-- Clear Filters -->
         <button class="tech-filter-btn" id="clearFilters">
           <i class="bx bx-x"></i>
@@ -308,69 +338,131 @@
           <section id="projects">
             <h2>Other Projects</h2>
             <div class="projects-grid">
-              <!-- Other Project Card 1 -->
+
+              <!-- Other Project Card: Chest X-ray Classification -->
               <div class="project-item">
                 <div class="project-image-container">
-                  <img src="images/lorem ipsum.jpg" alt="Other Project">
+                  <img src="images/xray.jpg" alt="Chest X-ray Disease Classifier">
                 </div>
-                <h3 class="project-title">Multiple Regression Analysis</h3>
+                <h3 class="project-title">Chest X‑Ray Disease Classifier</h3>
                 <p class="project-description">
-                  A brief overview of what this project does or what problem it solves.
+                  Detects multiple conditions in chest X‑rays using two models, with a full notebook, report, and slides.
+                </p>
+                <div class="project-tech">
+                  <span class="tech-pill">Python</span>
+                  <span class="tech-pill">Deep Learning</span>
+                </div>
+                <a href="https://github.com/f-petrozzi/Image_Classification_DL" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub</a>
+              </div>
+              <!-- Other Project Card: Healthcare Data Warehouse -->
+              <div class="project-item">
+                <div class="project-image-container">
+                  <img src="images/healthcare-warehouse.jpg" alt="Hospital Data Warehouse Insights">
+                </div>
+                <h3 class="project-title">Hospital Data Warehouse</h3>
+                <p class="project-description">
+                  SQL analyses with visuals on prescribing patterns, procedure costs vs. stay length, and revenue by state and specialty.
+                </p>
+                <div class="project-tech">
+                  <span class="tech-pill">SQL</span>
+                  <span class="tech-pill">Data Visualization</span>
+                </div>
+                <a href="https://github.com/f-petrozzi/Healthcare_Data_Warehouse" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub</a>
+              </div>
+              <!-- Other Project Card: Applied Business Statistics -->
+              <div class="project-item">
+                <div class="project-image-container">
+                  <img src="images/business-stats.jpg" alt="Applied Business Statistics">
+                </div>
+                <h3 class="project-title">Business Statistics: Regression & Solver</h3>
+                <p class="project-description">
+                  Analyses in R and Excel: regression models and optimization with Solver.
                 </p>
                 <div class="project-tech">
                   <span class="tech-pill">R</span>
-                  <span class="tech-pill">Statsmodels</span>
+                  <span class="tech-pill">Excel</span>
                 </div>
-                <a href="project4.html" class="project-link">View Project</a>
+                <a href="https://github.com/f-petrozzi/Business_Statistics" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub</a>
               </div>
 
-
-              
-              <!-- Other Project Card 2 -->
+              <!-- Other Project Card: Regex Text Analytics -->
               <div class="project-item">
                 <div class="project-image-container">
-                  <img src="images/lorem ipsum.jpg" alt="Other Project 2">
+                  <img src="images/regex.jpg" alt="Book Text Cleaner & Analyzer">
                 </div>
-                <h3 class="project-title">Multiple Regression Analysis</h3>
+                <h3 class="project-title">Text Cleaner & Analyzer</h3>
                 <p class="project-description">
-                  A brief overview of what this project does or what problem it solves.
+                  Cleans a public‑domain book, finds chapters and tokens, runs simple stats, and plots top words and sentence lengths.
                 </p>
                 <div class="project-tech">
-                  <span class="tech-pill">R</span>
-                  <span class="tech-pill">Statsmodels</span>
+                  <span class="tech-pill">Python</span>
+                  <span class="tech-pill">Text Analytics</span>
                 </div>
-                <a href="project5.html" class="project-link">View Project</a>
+                <a href="https://github.com/f-petrozzi/Regex_Text_Analytics" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub</a>
               </div>
               
-              <!-- Other Project Card 3 -->
+              <!-- Other Project Card: Amazon Redshift Reviews DB -->
               <div class="project-item">
                 <div class="project-image-container">
-                  <img src="images/lorem ipsum.jpg" alt="Other Project 3">
+                  <img src="images/redshift.jpg" alt="Amazon Redshift Transactional Database">
                 </div>
-                <h3 class="project-title">Multiple Regression Analysis</h3>
+                <h3 class="project-title">Product Reviews on Amazon Redshift</h3>
                 <p class="project-description">
-                  A brief overview of what this project does or what problem it solves.
+                  Combined tech product listings and app reviews into a Redshift database and ran create, read, update, and delete tests.
                 </p>
                 <div class="project-tech">
-                  <span class="tech-pill">R</span>
-                  <span class="tech-pill">Statsmodels</span>
+                  <span class="tech-pill">Cloud Computing</span>
+                  <span class="tech-pill">SQL</span>
+                  <span class="tech-pill">Python</span>
                 </div>
-                <a href="project6.html" class="project-link">View Project</a>
+                <a href="https://github.com/f-petrozzi/Amazon_Redshift_Transactional_DB" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub</a>
+              </div>
+              
+              <!-- Other Project Card: Titanic Survival Prediction -->
+              <div class="project-item">
+                <div class="project-image-container">
+                  <img src="images/titanic.jpg" alt="Titanic Survival Prediction">
+                </div>
+                <h3 class="project-title">Titanic Survival Predictor</h3>
+                <p class="project-description">
+                  Trains models to predict who survived the Titanic using a clean workflow.
+                </p>
+                <div class="project-tech">
+                  <span class="tech-pill">Python</span>
+                  <span class="tech-pill">Machine Learning</span>
+                </div>
+                <a href="https://github.com/f-petrozzi/Titanic_Survival_Prediction_ML" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub</a>
               </div>
             
+              <!-- Other Project Card: Tixly Mobile Ticketing Design -->
+              <div class="project-item">
+                <div class="project-image-container">
+                  <img src="images/tixly.jpg" alt="Tixly Mobile Ticketing App Design">
+                </div>
+                <h3 class="project-title">Tixly: Mobile Ticketing Design</h3>
+                <p class="project-description">
+                  Blueprint and UI for a mobile ticketing app, including flows, UML, microservices, and low to high-fidelity designs.
+                </p>
+                <div class="project-tech">
+                  <span class="tech-pill">Systems Architecture</span>
+                  <span class="tech-pill">UX / UI</span>
+                </div>
+                <a href="https://github.com/f-petrozzi/Tixly_App_Design" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub</a>
+              </div>
+              
               <!-- Other Project Card: MongoDB Hospital Scheduling & Billing -->
               <div class="project-item">
                 <div class="project-image-container">
                   <img src="images/mongodb.jpg" alt="Hospital Scheduling and Billing">
                 </div>
-                <h3 class="project-title">Hospital Scheduling & Billing</h3>
+                <h3 class="project-title">MongoDB Hospital Scheduling & Billing</h3>
                 <p class="project-description">
-                  A database that tracks appointments, doctors, patients, and billing, with sample data and ready-to-run queries.
+                  A database that tracks appointments, doctors, patients, and billing, with sample data and queries.
                 </p>
                 <div class="project-tech">
                   <span class="tech-pill">MongoDB</span>
                   <span class="tech-pill">JavaScript</span>
-                  <span class="tech-pill">nodejs</span>
+                  <span class="tech-pill">Node.js</span>
                   <span class="tech-pill">Python</span>
                 </div>
                 <a href="https://github.com/f-petrozzi/MongoDB" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub</a>
