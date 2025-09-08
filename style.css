@@ -767,102 +767,117 @@ section.active {
 }
 */
 
+/* ==========================================================
+   5. Dark Mode Toggle (Single-Icon, Shapeshift)
+   Keeps existing input/label structure and IDs for compatibility
+   ========================================================== */
 .dark-mode-toggle {
   position: relative;
-  top:-0.7rem;
-  right:-0.1rem;
+  top: -0.7rem;
+  right: -0.1rem;
 }
 
+/* Hide the native checkbox, keep accessibility and JS hooks */
 .dark-mode-toggle-input {
-  display: none;
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
 }
 
+/* Circular button with subtle ripple feedback */
 .dark-mode-toggle-label {
-  --slider-width: clamp(14px, 2.6vw, 19px);
-  display: flex;
-  width: clamp(30px, 6vw, 47px);
-  height: clamp(15px, 3vw, 22px);
-  border-radius: var(--radius-lg);
-  background: linear-gradient(to right, #f1c40f, #87cefa);
-  border: 2px solid var(--color-light);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
-  position: relative;
+  --toggle-size: clamp(32px, 3.5vw, 40px);
+  width: var(--toggle-size);
+  height: var(--toggle-size);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--section-bg);
+  border: 2px solid rgba(255, 255, 255, 0.75);
+  box-shadow: var(--shadow-md);
   cursor: pointer;
-  transition: background 1s ease;
+  position: relative;
   overflow: hidden;
+  transition: transform 0.25s ease, background 0.45s ease, border-color 0.45s ease;
+}
+.dark-mode-toggle-label:active {
+  transform: scale(0.96);
 }
 
+/* Click ripple */
 .dark-mode-toggle-label::after {
   content: "";
-  position: flex;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to right, #162447 10%, #fff3b0 100%);
-  opacity: 0;
-  transition: opacity 2.25s ease;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.dark-mode-toggle-input:checked + .dark-mode-toggle-label::after {
-  opacity: 1;
-}
-
-.dark-mode-toggle-label .toggle-slider {
   position: absolute;
-  top: 0.7px;
-  left: 0px;
-  width: var(--slider-width);
-  height: var(--slider-width);
-  border-radius: var(--radius-circle);
-  background-color: #f1c40f;
-  transition: left 0.8s ease, background-color 1s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1;
+  inset: 0;
+  border-radius: inherit;
+  background: currentColor;
+  opacity: 0;
+  transform: scale(0.4);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.55s ease;
+}
+.dark-mode-toggle-input:checked + .dark-mode-toggle-label::after {
+  opacity: 0.08;
+  transform: scale(1.6);
 }
 
+/* Icon container (no sliding track anymore) */
+.dark-mode-toggle-label .toggle-slider {
+  width: 70%;
+  height: 70%;
+  display: grid;
+  place-items: center;
+  position: relative;
+  transform-origin: 50% 50%;
+  transition: transform 0.6s var(--transition-bounce);
+}
+
+/* Overlap the two icons; we’ll crossfade to look like a single shapeshift */
 .dark-mode-toggle-label .toggle-slider .icon {
   position: absolute;
-  top: -2px;
-  width: 100%;
-  height: 100%;
-  font-size: calc(var(--slider-width));
-  text-align: center;
-  transition: opacity 0.3s ease, color 1s ease, transform 0.1s ease;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: calc(var(--toggle-size) * 0.7);
+  transition: opacity 0.35s ease, transform 0.6s var(--transition-bounce), filter 0.45s ease;
 }
 
+/* Light mode (sun visible) */
+.dark-mode-toggle-input:not(:checked) + .dark-mode-toggle-label .toggle-slider {
+  transform: rotate(0deg) scale(1);
+}
 .dark-mode-toggle-input:not(:checked) + .dark-mode-toggle-label .toggle-slider .sun-icon {
   opacity: 1;
-  color: transparent;
-  transform: translateX(0);
+  transform: scale(1) rotate(0deg);
+  color: #f1c40f;
+  filter: drop-shadow(0 0 4px rgba(241,196,15,0.5));
 }
-
 .dark-mode-toggle-input:not(:checked) + .dark-mode-toggle-label .toggle-slider .moon-icon {
   opacity: 0;
-  color: #f1c40f;
-  transform: scaleX(-1);
+  transform: scale(0.6) rotate(-45deg);
+  color: #fff3b0;
+  filter: drop-shadow(0 0 4px rgba(255,255,255,0.35));
 }
 
+/* Dark mode (moon visible) */
+.dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider {
+  transform: rotate(360deg) scale(0.98);
+}
 .dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider .sun-icon {
   opacity: 0;
-  color: transparent;
-  transform: translateX(0);
+  transform: scale(0.6) rotate(45deg);
+  color: #f1c40f;
+  filter: none;
 }
-
 .dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider .moon-icon {
   opacity: 1;
+  transform: scale(1) rotate(0deg);
   color: #fff3b0;
-  transform: scaleX(-1);
+  filter: drop-shadow(0 0 4px rgba(255,255,255,0.35));
 }
 
-.dark-mode-toggle-input:checked + .dark-mode-toggle-label .toggle-slider {
-  left: calc(100% - var(--slider-width) - 0.5px);
-  background-color: transparent;
-}
+/* Remove legacy track styles */
+.dark-mode-toggle-label::before { content: none; }
 
 /* ==========================================================================
    5.5. AboutMe
