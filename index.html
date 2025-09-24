@@ -563,63 +563,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }
   
   /* ==========================================================
-     4. Sidebar Functionality & Filter Buttons
-  ========================================================== */
-  const menuToggle = document.getElementById('menuToggle');
-  const closeSidebar = document.getElementById('closeSidebar');
-  const projectSidebar = document.getElementById('projectSidebar');
-  
-  if (menuToggle && closeSidebar && projectSidebar) {
-    menuToggle.addEventListener('click', function() {
-      projectSidebar.classList.add('active');
-    });
-    closeSidebar.addEventListener('click', function() {
-      projectSidebar.classList.remove('active');
-    });
-    document.addEventListener('click', function(e) {
-      if (!projectSidebar.contains(e.target) && !menuToggle.contains(e.target)) {
-        projectSidebar.classList.remove('active');
-      }
-    });
-    
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const featuredList = document.querySelector('.featured-list');
-    const otherList = document.querySelector('.other-list');
-    const featuredTitle = document.querySelector('.featured-title');
-    const otherTitle = document.querySelector('.other-title');
-    
-    filterButtons.forEach(btn => {
-      btn.addEventListener('click', function() {
-        filterButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const filter = btn.getAttribute('data-filter');
-        if (filter === 'featured') {
-          featuredList.style.display = 'block';
-          featuredTitle.style.display = 'block';
-          otherList.style.display = 'none';
-          otherTitle.style.display = 'none';
-        } else if (filter === 'other') {
-          featuredList.style.display = 'none';
-          featuredTitle.style.display = 'none';
-          otherList.style.display = 'block';
-          otherTitle.style.display = 'block';
-        } else if (filter === 'all') {
-          featuredList.style.display = 'block';
-          featuredTitle.style.display = 'block';
-          otherList.style.display = 'block';
-          otherTitle.style.display = 'block';
-        }
-      });
-    });
-    
-    const defaultFilter = document.querySelector('.filter-btn[data-filter="all"]');
-    if (defaultFilter) {
-      defaultFilter.click();
-    }
-  }
-  
-  /* ==========================================================
-     5. Smooth Scrolling for Anchor Links
+     4. Smooth Scrolling for Anchor Links
   ========================================================== */
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener("click", function(e) {
@@ -633,7 +577,7 @@ document.addEventListener("DOMContentLoaded", function() {
   });
   
   /* ==========================================================
-   6. Section & Project Animations (Intersection Observer)
+   5. Section & Project Animations (Intersection Observer)
 ========================================================== */
 const width = window.innerWidth;
 let projectObserverOptions;
@@ -694,7 +638,7 @@ sections.forEach(section => {
   sectionObserver.observe(section);
 });
   /* ==========================================================
-     7. Learn More Click Activation (Social Sequence & Scroll Nudge)
+     6. Learn More Click Activation (Social Sequence & Scroll Nudge)
   ========================================================== */
   const learnMoreLink = document.querySelector(".learn-more-trigger");
   let isAnimating = false;
@@ -721,7 +665,7 @@ sections.forEach(section => {
   }
 });
 /* ==========================================================
-     8. Experience Toggle
+     7. Experience Toggle
   ========================================================== */
   const tabButtons = document.querySelectorAll(".exp-tab");
   const timelines = document.querySelectorAll(".experience-timeline");
@@ -786,7 +730,7 @@ document.querySelectorAll('.exp-tab').forEach(tab => {
 });
 equalizeTimelineHeights();
 /* ==========================================================
-   9. Technology Filters
+   8. Technology Filters
 =========================================================== */
 
 // Select the tech filter buttons (excluding the clear button)
@@ -842,7 +786,7 @@ function filterProjects() {
   
 <script type="module">
   /* ==========================================================
-     10. Map
+     9. Map
   ========================================================== */
 // Define the two map style URLs (make sure they match the correct theme)
   const lightStyle = 'https://tiles.basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
