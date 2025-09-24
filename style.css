@@ -68,6 +68,7 @@
   --z-normal: 0;
   --z-above: 1;
   --z-header: 100;
+  --z-sidebar: 200;
   --z-modal: 300;
   --z-overlay: 400;
   
@@ -103,7 +104,6 @@
   --profile-pic-hover-shadow: 0 0 20px var(--color-gold);
   --profile-bg: var(--color-light);
 
-  
   /* Social Links */
   --social-bg: rgba(0,87,63,0.9);
   --social-hover-bg: rgba(253,187,47,0.9);
@@ -130,7 +130,6 @@
   --profile-card-bg: var(--color-light);
   --profile-card-text: var(--color-dark);
   --circle-diameter: 3.9rem;
-   
 }
 
 /* Dark Mode Overrides */
@@ -189,7 +188,6 @@
   --map-overlay-color-1: var(--section-bg); 
   --profile-card-bg: var(--profile-bg);
   --profile-card-text: var(--color-light);
-  
 }
 
 /* ==========================================================================
@@ -235,7 +233,6 @@ body {
   100% { background-position: 0% 50%; }
 }
 
-
 /* ==========================================================================
    2. Typography & Text Elements
    ========================================================================== */
@@ -256,11 +253,8 @@ p {
   letter-spacing: 0.01em;
 }
 
-.project-section h1,
-.project-section h2,
-.project-section h3,
-.project-section p {
-  text-align: left;
+.project-description {
+  text-align: center;
 }
 
 .highlight-name {
@@ -278,7 +272,6 @@ header.common-header .logo { font-size: var(--font-size-lg); }
 #menuToggle, header.common-header .back { font-size: var(--font-size-lg); }
 .social-links i { font-size: var(--font-size-base); }
 .modal-content .close { font-size: var(--font-size-xl); }
-.filter-btn { font-size: var(--font-size-sm); }
 
 /* Tablet Typography */
 @media (min-width: 601px) and (max-width: 1024px) {
@@ -291,7 +284,6 @@ header.common-header .logo { font-size: var(--font-size-lg); }
   #menuToggle, header.common-header .back { font-size: var(--font-size-xl); }
   .social-links i { font-size: var(--font-size-lg); }
   .modal-content .close { font-size: var(--font-size-xxl); }
-  .filter-btn { font-size: var(--font-size-base); }
 }
 
 /* Desktop Typography */
@@ -305,7 +297,6 @@ header.common-header .logo { font-size: var(--font-size-lg); }
   #menuToggle, header.common-header .back { font-size: var(--font-size-xl); }
   .social-links i { font-size: var(--font-size-xl); }
   .modal-content .close { font-size: var(--font-size-xxl); }
-  .filter-btn { font-size: var(--font-size-base); }
 }
 
 /* ==========================================================================
@@ -338,22 +329,6 @@ header.common-header {
 header.common-header.header-hidden {
   transform: translateY(-100%);
 }
-/* Header Structural Elements */
-.header-left {
-  display: flex;
-  gap: var(--space-xs);
-  align-items: center;
-}
-
-.header-center {
-  display: flex;
-  justify-content: center;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-}
 
 /* Logo */
 header.common-header .logo {
@@ -372,7 +347,7 @@ header.common-header .logo {
 
 header.common-header .logo:hover {
   transform: scale(1.05);
-  box-shadow: var(--shadow-focus);
+  box-shadow: var(--profile-pic-hover-shadow);
 }
 
 /* Navigation */
@@ -439,64 +414,9 @@ header.common-header .logo:hover {
   transform: scale(1.1);
 }
 
-/* Back Button */
-header.common-header .back {
-  display: flex;
-  align-items: center;
-  color: var(--header-text-color);
-  text-decoration: none;
-  transition: transform var(--transition-bounce);
-}
-
-header.common-header .back:hover {
-  transform: translateX(-2px);
-}
-
 /* ==========================================================================
-   4. Section Styles
+   4. Container Style
    ========================================================================== */
-
-section {
-  opacity: 0;
-  transform: translateX(-80px);
-  transition: opacity var(--transition-slow), transform var(--transition-slow);
-  display: flow-root;
-  padding-top: 1.5rem;
-  background-color: var(--section-bg);
-  margin-bottom: var(--space-xxl);
-  border-radius: var(--section-border-radius);
-  box-shadow: var(--section-box-shadow);
-  border-left: 4px solid var(--section-border-left);
-  scroll-margin-top: var(--header-height);
-  position: relative;
-  overflow: visible;
-}
-
-.fadein-wrapper {
-  overflow: visible;
-}
-
-section::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
-  z-index: 0;
-  pointer-events: none;
-}
-
-section.active {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-/* ==========================================================================
-   4.5 Container Style
-   ========================================================================== */
-/* Override background & box-shadow for #featured and #projects */
 #featured,
 #projects {
   background: none;
@@ -631,7 +551,6 @@ section.active {
   border-color: var(--highlight-name);
 }
 
-
 /* Project link/button with consistent sizing */
 .project-link {
   font-weight: var(--font-weight-medium);
@@ -729,17 +648,8 @@ section.active {
   transform: translateX(-50%) translateY(5px);
 }
 
-/* Dark Mode Toggle 
-.dark-mode-toggle {
-  position: absolute;
-  top: 4.25rem;
-  left: 0.45rem;
-}
-*/
-
 /* ==========================================================
-   5. Dark Mode Toggle (Single-Icon, Shapeshift)
-   Keeps existing input/label structure and IDs for compatibility
+   5. Dark Mode Toggle
    ========================================================== */
 .dark-mode-toggle {
   position: relative;
@@ -752,7 +662,6 @@ section.active {
   pointer-events: none;
 }
 
-/* Circular button with subtle ripple feedback */
 .dark-mode-toggle-label {
   --toggle-size: clamp(30px, 3.5vw, 35px);
   width: var(--toggle-size);
@@ -769,7 +678,6 @@ section.active {
   transform: scale(0.96);
 }
 
-/* Click ripple */
 .dark-mode-toggle-label::after {
   content: "";
   position: absolute;
@@ -785,7 +693,7 @@ section.active {
   transform: scale(1.6);
 }
 
-/* Icon container (no sliding track anymore) */
+/* Icon container */
 .dark-mode-toggle-label .toggle-slider {
   width: 70%;
   height: 70%;
@@ -796,7 +704,6 @@ section.active {
   transition: transform 0.6s var(--transition-bounce);
 }
 
-/* Overlap the two icons; we’ll crossfade to look like a single shapeshift */
 .dark-mode-toggle-label .toggle-slider .icon {
   position: absolute;
   inset: 0;
@@ -1187,7 +1094,6 @@ section#experienceSection::before {
 
 }
 
-
 #workTimeline .experience-item {
   display: flex;
   flex-direction: row;
@@ -1321,7 +1227,7 @@ section#experienceSection::before {
   opacity: 1;        
   transform: none;   
   transition: none;
-  max-width: 700px;
+  max-width: 1000px;
 }
 
 section#technologies::before {
@@ -1416,7 +1322,6 @@ footer::before {
   pointer-events: none;
 }
 
-
 /* ==========================================================================
    7. Modal Window
    ========================================================================== */
@@ -1430,8 +1335,7 @@ footer::before {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgb(0 0 0 / 20%);
-  backdrop-filter: blur(2px);
+  background-color: rgb(0 0 0 / 60%);
 }
 
 .modal-content {
@@ -1487,83 +1391,7 @@ footer::before {
 }
 
 /* ==========================================================================
-   8. Content Blocks
-   ========================================================================== */
-
-.content-block {
-  opacity: 0;
-  transition: opacity var(--transition-extra-slow), transform var(--transition-extra-slow);
-  padding: var(--space-xl) var(--space-md);
-  margin: var(--space-xl) 0;
-  transform: translateY(30px);
-}
-
-.content-block.active {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.text-block {
-  font-family: var(--font-family-main);
-  line-height: var(--line-height-relaxed);
-  color: var(--body-text-color);
-  margin-bottom: var(--space-md);
-  text-align: left;
-  padding: var(--space-sm) 0 0 var(--space-md);
-}
-
-.highlight-block {
-  text-align: left;
-  font-family: var(--font-family-headings);
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-bold);
-  color: var(--highlight-name);
-  padding: var(--space-md);
-  margin-bottom: var(--space-lg);
-  margin: 0;
-  letter-spacing: -0.01em;
-}
-
-/* Image container for content blocks to control overflow */
-.highlight-block-image-container {
-  overflow: hidden;
-  border-radius: var(--radius-md);
-  margin: var(--space-md) auto 0;
-  max-width: 80%;
-  position: relative;
-}
-
-.highlight-block-image-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 87, 63, 0.1);
-  opacity: 0;
-  transition: opacity var(--transition-normal);
-  z-index: 1;
-  pointer-events: none;
-}
-
-.highlight-block-image-container:hover::before {
-  opacity: 1;
-}
-
-.highlight-block img {
-  display: block;
-  width: 100%;
-  transition: transform var(--transition-bounce), box-shadow var(--transition-normal);
-}
-
-.highlight-block:hover img {
-  transform: scale(1.05);
-  box-shadow: var(--shadow-md);
-}
-
-/* ==========================================================================
-   9. Media Queries
+   8. Media Queries
    ========================================================================== */
 @media (min-width: 1025px) {
   .projects-grid {
@@ -1675,7 +1503,7 @@ footer::before {
 @media(max-width:660px){
   /* Maintain 2 project columns */
   .projects-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(1, 1fr);
     gap: clamp(0.6rem, 1.5vw, 1.2rem);
   }
   
@@ -1726,7 +1554,7 @@ footer::before {
 @media (max-width: 550px) {
   /* Still maintain 2 columns */
   .projects-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(1, 1fr);
     gap: 0.6rem;
   }
   
@@ -1780,7 +1608,7 @@ footer::before {
 @media(max-width: 470px){
   /* Maintain 2 columns even on smaller screens */
   .projects-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(1, 1fr);
     gap: 0.5rem;
   }
   
@@ -1810,7 +1638,7 @@ footer::before {
 @media(max-width: 382px){
   /* Only switch to single column at the very smallest screens */
   .projects-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(1, 1fr);
     gap: 0.4rem;
   }
   
