@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const toggle = document.getElementById('darkModeToggle');
   if (toggle) {
     // Set the toggle's checked state based on the saved theme
-    toggle.checked = savedTheme === 'dark';
+    toggle.checked = savedTheme === 'light';
     // When the toggle changes, update the theme accordingly
     toggle.addEventListener('change', function () {
       setTheme(this.checked ? 'dark' : 'light');
