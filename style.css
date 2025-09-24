@@ -452,13 +452,7 @@ header.common-header .logo:hover {
 }
 
 .project-item {
-  opacity: 0;
-  transform: translateX(-80px);
-  transition: opacity var(--transition-extra-slow), transform var(--transition-extra-slow);
-}
-.project-item.active {
-  opacity: 1;
-  transform: translateX(0);
+  transition: transform var(--transition-extra-slow);
 }
 
 /* Project Card (shared by Featured & Other) */
@@ -1393,7 +1387,7 @@ footer::before {
 /* ==========================================================================
    8. Media Queries
    ========================================================================== */
-@media (min-width: 1025px) {
+@media (min-width: 1235px) {
   .projects-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: clamp(1rem, 2vw, 2rem);
@@ -1404,7 +1398,7 @@ footer::before {
   }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1215px) {
   .projects-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: clamp(1rem, 2vw, 1.5rem);
@@ -1508,14 +1502,11 @@ footer::before {
   }
   
   .project-item {
-    transform: scale(1.05);
     min-height: 320px;
+    max-width: 70%;
+    margin: 0 auto;
   }
 
-  .profile-card {
-    transform: translate(-8%, 50%);
-  }
-  
   .exp-tab.active::after {
     top: 38%;
   }
@@ -1559,7 +1550,6 @@ footer::before {
   }
   
   .project-item {
-    transform: scale(1.08);
     padding: clamp(0.6rem, 1.5vw, 0.8rem);
     min-height: 280px;
   }
@@ -1586,20 +1576,6 @@ footer::before {
     margin-top: 0rem;
   }
   
-  .sidebar {
-    width: 70%;
-    max-width: 300px;
-    transition: right 0.5s ease;
-  }
-
-  .sidebar.active {
-    transition: right 0.5s ease;
-  }
-  
-  .sidebar-header {
-    padding: var(--space-xxs);
-  }
-  
   .social-links{
     right: -0.8rem;
   }
@@ -1613,7 +1589,6 @@ footer::before {
   }
   
   .project-item {
-    transform: scale(1.1);
     padding: 0.5rem;
     min-height: 250px;
   }
@@ -1643,7 +1618,6 @@ footer::before {
   }
   
   .project-item {
-    transform: scale(1.15);
     padding: 0.4rem;
     min-height: 220px;
   }
@@ -1657,7 +1631,7 @@ footer::before {
     padding: 0.1rem 0.3rem;
     font-size: 0.5rem;
   }
-  
+
   .project-link {
     min-width: 80px;
     padding: 0.3em 0.6em;
@@ -1679,7 +1653,6 @@ footer::before {
   }
   
   .project-item {
-    transform: scale(1.1);
     max-width: 90%;
     margin: 0 auto;
     min-height: 250px;
