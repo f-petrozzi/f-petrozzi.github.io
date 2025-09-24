@@ -11,7 +11,7 @@ function setTheme(theme) {
 // When the document is ready, read the saved theme and attach event listeners if needed
 document.addEventListener('DOMContentLoaded', function () {
   // Read saved theme from localStorage; default to 'light'
-  const savedTheme = localStorage.getItem('theme') || 'light';
+  const savedTheme = localStorage.getItem('theme') || 'dark';
   // Apply the theme globally
   setTheme(savedTheme);
 
