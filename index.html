@@ -285,6 +285,10 @@ future updates:
             <!-- Featured Projects Section -->
             <section id="featured">
               <h2>Featured Projects</h2>
+
+              <div class="projects-carousel">
+                <button class="carousel-btn prev" type="button" aria-label="Previous projects">‹</button>
+              
               <div class="projects-grid">
                 <!-- Featured Project Card: Portfolio Website -->
                 <div class="project-item">
@@ -338,11 +342,18 @@ future updates:
                   <a href="https://github.com/f-petrozzi/Optuna_CNN" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub</a>
                 </div>
               </div>
+
+                <button class="carousel-btn next" type="button" aria-label="Next projects">›</button>
+              </div>
+              
             </section>
           
           <!-- Other Projects Section -->
           <section id="projects">
             <h2>Other Projects</h2>
+            <div class="projects-carousel">
+              <button class="carousel-btn prev" type="button" aria-label="Previous projects">‹</button>
+
             <div class="projects-grid">
 
               <!-- Other Project Card: Chest X-ray Classification -->
@@ -474,6 +485,8 @@ future updates:
               </div>
             
             </div>
+            <button class="carousel-btn next" type="button" aria-label="Next projects">›</button>
+            </div>
           </section>
       </div>
   </main> 
@@ -526,6 +539,129 @@ document.addEventListener("DOMContentLoaded", function() {
   } else {
     console.error("Header element not found!");
   }
+/* ==========================================================
+     1.5 Project Scroll Behavior
+  ========================================================== */
+  (() => {
+  function initCarousel(wrapper) {
+    const grid = wrapper.querySelector('.projects-grid');
+    const prevBtn = wrapper.querySelector('.carousel-btn.prev');
+    const nextBtn = wrapper.querySelector('.carousel-btn.next');
+    let start = 0;
+
+    function eligibleItems() {
+      const items = Array.from(grid.querySelectorAll('.project-item'));
+      return items.filter(el => getComputedStyle(el).display !== 'none');
+    }
+
+    function countTracks(trackList) {
+      if (!trackList || trackList === 'none') return null;
+      let depth = 0, token = '', count = 0;
+      for (const ch of trackList) {
+        if (ch === '(') depth++;
+        if (ch === ')') depth--;
+        if (ch === ' ' && depth === 0) {
+          if (token.trim()) { count++; token = ''; }
+        } else {
+          token += ch;
+        }
+      }
+      if (token.trim()) count++;
+      return count || null;
+    }
+
+    function perViewFromGrid() {
+      const columns = getComputedStyle(grid).gridTemplateColumns;
+      let pv = countTracks(columns);
+      if (!pv) {
+        const vis = eligibleItems();
+        if (vis.length <= 1) return 1;
+        const top = vis[0].offsetTop;
+        let c = 0;
+        for (const el of vis) { if (el.offsetTop === top) c++; else break; }
+        pv = c || 1;
+      }
+      return pv;
+    }
+
+    function render() {
+      const all = Array.from(grid.querySelectorAll('.project-item'));
+      const vis = eligibleItems();
+      const total = vis.length;
+      const perView = perViewFromGrid();
+
+      // center if fewer than the window size
+      if (total <= perView) grid.classList.add('carousel-center');
+      else grid.classList.remove('carousel-center');
+
+      // clamp start and compute max page start
+      const maxStart = Math.max(0, total - perView);
+      start = Math.min(Math.max(0, start), maxStart);
+
+      // hide all, then unhide only the current window
+      all.forEach(el => el.classList.add('is-hidden'));
+      for (let i = 0; i < perView && i + start < total; i++) {
+        vis[i + start].classList.remove('is-hidden');
+      }
+
+      // button visibility
+      if (total <= perView) {
+        prevBtn.classList.add('is-hidden');
+        nextBtn.classList.add('is-hidden');
+      } else {
+        prevBtn.classList.toggle('is-hidden', start === 0);
+        nextBtn.classList.toggle('is-hidden', start === maxStart);
+      }
+    }
+
+    function step(dir) { start += dir; render(); }
+
+    prevBtn.addEventListener('click', () => step(-1));
+    nextBtn.addEventListener('click', () => step(1));
+
+    // recompute on resize without resetting the window unless needed
+    let raf;
+    window.addEventListener('resize', () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(render);
+    });
+
+    // react to filter changes
+    window.addEventListener('projects:filterchanged', () => { start = 0; render(); });
+
+    // fallback: observe display/class changes inside the grid
+    const mo = new MutationObserver(muts => {
+      if (muts.some(m => m.type === 'attributes')) { start = 0; render(); }
+    });
+    mo.observe(grid, { attributes: true, subtree: true, attributeFilter: ['style', 'class'] });
+
+    render();
+    return { render, reset: () => { start = 0; render(); } };
+  }
+
+  // patch existing filterProjects() to notify carousels
+  function patchFilter() {
+    const original = window.filterProjects;
+    if (typeof original === 'function') {
+      window.filterProjects = function(...args) {
+        const out = original.apply(this, args);
+        window.dispatchEvent(new CustomEvent('projects:filterchanged'));
+        return out;
+      };
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    patchFilter();
+    const wrappers = document.querySelectorAll('.projects-carousel');
+    const instances = Array.from(wrappers).map(initCarousel);
+    // optional hook your code can call after changing filters
+    window.refreshCarousels = () => {
+      window.dispatchEvent(new CustomEvent('projects:filterchanged'));
+      instances.forEach(i => i.render());
+    };
+  });
+})();
   
   /* ==========================================================
      2. Auto-update Footer Year
