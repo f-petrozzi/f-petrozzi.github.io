@@ -569,49 +569,23 @@ header.common-header .logo:hover {
 }
 
 /* ==========================================================================
-   4.5 Project Carousel
+   4.5 Project Carousel  — minimal, non-invasive
    ========================================================================== */
 .projects-carousel {
   --btn-size: 40px;
   --btn-gap: 8px;
-  --gutter: calc(var(--btn-size) + var(--btn-gap)); /* space for buttons */
+  --gutter: calc(var(--btn-size) + var(--btn-gap));
   position: relative;
   max-width: 1200px;
   margin: 0 auto var(--space-lg);
-  padding-inline: var(--gutter); /* keeps buttons OUTSIDE cards */
+  padding-inline: var(--gutter); /* room for chevrons outside cards */
 }
 
 .projects-carousel .projects-grid {
-  /* override grid only inside carousel */
-  display: flex;
-  align-items: stretch;
-  gap: clamp(0.75rem, 2vw, 1.5rem);
-  overflow: hidden;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: auto; /* no inertial drift */
+  overflow: hidden; /* prevents accidental half-cards when we hide/show */
 }
 
-/* uniform card size, no inner shrink */
-.projects-carousel .project-item {
-  flex: 0 0 calc((100% - 2 * clamp(0.75rem, 2vw, 1.5rem)) / 3);
-  max-width: none;
-  margin: 0;
-  box-sizing: border-box;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-}
-
-/* responsive: 2 and 1 per view without half-cards */
-@media (max-width: 1215px) {
-  .projects-carousel .project-item {
-    flex-basis: calc((100% - clamp(0.75rem, 2vw, 1.5rem)) / 2);
-  }
-}
-@media (max-width: 600px) {
-  .projects-carousel .project-item { flex-basis: 100%; }
-}
-
-/* buttons sit in reserved gutters; no overlap */
+/* chevrons sit in the reserved gutters and never overlap cards */
 .carousel-btn {
   position: absolute;
   top: 50%;
@@ -634,6 +608,11 @@ header.common-header .logo:hover {
 
 .projects-carousel.at-start .carousel-btn.prev { display: none; }
 .projects-carousel.at-end   .carousel-btn.next { display: none; }
+
+/* carousel windowing: we hide items with a class (never touch your sizing) */
+.projects-grid .project-item.carousel-hidden {
+  display: none !important;
+}
 
 /* ==========================================================================
    5. Social Links & Dark Mode Toggle
