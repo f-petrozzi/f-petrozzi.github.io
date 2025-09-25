@@ -572,31 +572,52 @@ header.common-header .logo:hover {
    4.5 Project Carousel
    ========================================================================== */
 .projects-carousel {
+  --btn-size: 40px;
+  --btn-gap: 8px;
+  --gutter: calc(var(--btn-size) + var(--btn-gap)); /* space for buttons */
   position: relative;
   max-width: 1200px;
   margin: 0 auto var(--space-lg);
+  padding-inline: var(--gutter); /* keeps buttons OUTSIDE cards */
 }
 
 .projects-carousel .projects-grid {
-  /* override grid -> turn into a horizontal track */
+  /* override grid only inside carousel */
   display: flex;
+  align-items: stretch;
   gap: clamp(0.75rem, 2vw, 1.5rem);
   overflow: hidden;
   scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
+  scroll-behavior: auto; /* no inertial drift */
 }
 
+/* uniform card size, no inner shrink */
 .projects-carousel .project-item {
-  /* show exactly 3 at a time on desktop */
   flex: 0 0 calc((100% - 2 * clamp(0.75rem, 2vw, 1.5rem)) / 3);
+  max-width: none;
+  margin: 0;
+  box-sizing: border-box;
   scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 
+/* responsive: 2 and 1 per view without half-cards */
+@media (max-width: 1215px) {
+  .projects-carousel .project-item {
+    flex-basis: calc((100% - clamp(0.75rem, 2vw, 1.5rem)) / 2);
+  }
+}
+@media (max-width: 600px) {
+  .projects-carousel .project-item { flex-basis: 100%; }
+}
+
+/* buttons sit in reserved gutters; no overlap */
 .carousel-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 40px; height: 40px;
+  width: var(--btn-size);
+  height: var(--btn-size);
   border: 0;
   border-radius: var(--radius-circle);
   background: var(--header-bg);
@@ -608,22 +629,11 @@ header.common-header .logo:hover {
   opacity: 0.9;
   z-index: 2;
 }
-.carousel-btn:hover { opacity: 1; }
-.carousel-btn.prev { left: -20px; }
-.carousel-btn.next { right: -20px; }
+.carousel-btn.prev { left: var(--btn-gap); }
+.carousel-btn.next { right: var(--btn-gap); }
 
 .projects-carousel.at-start .carousel-btn.prev { display: none; }
 .projects-carousel.at-end   .carousel-btn.next { display: none; }
-
-/* Optional: better legibility on small screens */
-@media (max-width: 900px) {
-  .projects-carousel .project-item {
-    flex: 0 0 calc((100% - clamp(0.75rem, 2vw, 1.5rem)) / 2);
-  }
-}
-@media (max-width: 600px) {
-  .projects-carousel .project-item { flex: 0 0 100%; }
-}
 
 /* ==========================================================================
    5. Social Links & Dark Mode Toggle
