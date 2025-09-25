@@ -550,80 +550,85 @@ document.addEventListener("DOMContentLoaded", function() {
      1.5 Project Scroll Behavior
   ========================================================== */
 (function () {
-  document.querySelectorAll('.projects-carousel').forEach(setup);
+  const carousels = document.querySelectorAll('.projects-carousel');
+  carousels.forEach(setupCarousel);
 
-  function setup(root) {
+  function setupCarousel(root) {
     const track = root.querySelector('.projects-grid');
     const btnPrev = root.querySelector('.carousel-btn.prev');
     const btnNext = root.querySelector('.carousel-btn.next');
+    const allItems = Array.from(track.querySelectorAll('.project-item'));
 
-    let index = 0;
-    let lock = false;
-    let settleTimer = null;
+    let start = 0; // left-most index in the current window
 
-    function items() {
-      return Array.from(track.children).filter(el => getComputedStyle(el).display !== 'none');
-    }
-    function stepWidth() {
-      const it = items();
-      if (it.length < 2) return it[0]?.offsetWidth || track.clientWidth;
-      return it[1].offsetLeft - it[0].offsetLeft; // width + gap
-    }
+    // How many columns does your CSS grid currently show? Count first-row items.
     function perView() {
-      const w = stepWidth();
-      if (!w) return 1;
-      return Math.max(1, Math.round(track.clientWidth / w));
+      const pool = eligibleItems();
+      if (!pool.length) return 1;
+      const firstTop = pool[0].offsetTop;
+      let count = 0;
+      while (pool[count] && Math.abs(pool[count].offsetTop - firstTop) < 1) count++;
+      return Math.max(1, count);
     }
-    function clampIndex(i) {
-      const max = Math.max(0, items().length - perView());
-      return Math.min(Math.max(i, 0), max);
+
+    // Items not filtered out
+    function eligibleItems() {
+      // Treat items with data-filtered="true" as hidden by filters
+      return allItems.filter(el => el.dataset.filtered !== 'true');
     }
-    function toggleButtons() {
+
+    function clampStart(i) {
+      const total = eligibleItems().length;
       const pv = perView();
-      const total = items().length;
-      root.classList.toggle('at-start', index === 0);
-      root.classList.toggle('at-end', index >= total - pv);
-    }
-    function goTo(i, smooth = true) {
-      const it = items();
-      if (!it.length) return;
-      index = clampIndex(i);
-      const x = it[index].offsetLeft;
-      track.scrollTo({ left: x, behavior: smooth ? 'smooth' : 'auto' });
-      toggleButtons();
+      const maxStart = Math.max(0, total - pv);
+      return Math.min(Math.max(i, 0), maxStart);
     }
 
-    // Clicks
-    btnPrev.addEventListener('click', () => goTo(index - 1));
-    btnNext.addEventListener('click', () => goTo(index + 1));
+    function render() {
+      const pool = eligibleItems();
+      const pv = perView();
+      const total = pool.length;
 
-    // Wheel: down/right => next, up/left => prev; no inertial drift
+      start = clampStart(start);
+
+      // Hide everything, then show only the window [start, start+pv)
+      allItems.forEach(el => el.classList.add('carousel-hidden'));
+      for (let i = start; i < start + pv && i < total; i++) {
+        pool[i].classList.remove('carousel-hidden');
+      }
+
+      // Edge buttons
+      root.classList.toggle('at-start', start === 0);
+      root.classList.toggle('at-end', start >= total - pv);
+
+      // If fewer or equal items than viewport, hide both buttons
+      const showNav = total > pv;
+      btnPrev.style.display = showNav && start > 0 ? '' : 'none';
+      btnNext.style.display = showNav && start < total - pv ? '' : 'none';
+    }
+
+    function next() { start = clampStart(start + 1); render(); }
+    function prev() { start = clampStart(start - 1); render(); }
+
+    btnPrev.addEventListener('click', prev);
+    btnNext.addEventListener('click', next);
+
+    // Wheel over the grid: down/right => next, up/left => prev
     track.addEventListener('wheel', (e) => {
       e.preventDefault();
-      if (lock) return;
-      lock = true;
       const dir = (e.deltaY || e.deltaX) > 0 ? 1 : -1;
-      goTo(index + dir);
-      setTimeout(() => lock = false, 280);
+      if (dir > 0) next(); else prev();
     }, { passive: false });
 
-    // Snap-settle after manual drag/trackpad
-    track.addEventListener('scroll', () => {
-      if (lock) return;
-      clearTimeout(settleTimer);
-      settleTimer = setTimeout(() => {
-        const w = stepWidth();
-        if (!w) return;
-        const nearest = Math.round(track.scrollLeft / w);
-        goTo(nearest);
-      }, 120);
-    }, { passive: true });
+    // Recompute window on resize so 3→2→1 keeps the left-most item fixed
+    window.addEventListener('resize', render);
 
-    // Keep alignment across resizes and content changes
-    const ro = new ResizeObserver(() => goTo(index, false));
-    ro.observe(track);
-    window.addEventListener('load', () => { track.scrollLeft = 0; goTo(0, false); });
-    goTo(0, false);
+    // Re-render when filters change
+    document.addEventListener('projectsFiltered', render);
+
+    // Initial render
+    start = 0;
+    render();
   }
 })();
   
@@ -798,21 +803,21 @@ function updateSelectedTechs() {
 function filterProjects() {
   const allProjects = document.querySelectorAll('.project-item');
   allProjects.forEach(project => {
-    // Grab all tech-pill elements inside the project's tech container
     const techElements = project.querySelectorAll('.project-tech .tech-pill');
-    // Create an array of technology names (lowercase) for this project
-    const projectTechs = Array.from(techElements)
-      .map(el => el.textContent.trim().toLowerCase());
-    
-    // If no filters are active, show all projects
+    const projectTechs = Array.from(techElements).map(el => el.textContent.trim().toLowerCase());
+
     if (selectedTechs.length === 0) {
       project.style.display = '';
+      project.dataset.filtered = 'false';
     } else {
-      // Show project if any active filter matches a tech in the project
       const shouldShow = selectedTechs.some(filter => projectTechs.includes(filter));
       project.style.display = shouldShow ? '' : 'none';
+      project.dataset.filtered = shouldShow ? 'false' : 'true';
     }
   });
+
+  // tell carousels to recompute their windows
+  document.dispatchEvent(new CustomEvent('projectsFiltered'));
 }
 </script>
 <script type="module">
