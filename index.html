@@ -550,67 +550,80 @@ document.addEventListener("DOMContentLoaded", function() {
      1.5 Project Scroll Behavior
   ========================================================== */
 (function () {
-  const carousels = document.querySelectorAll('.projects-carousel');
+  document.querySelectorAll('.projects-carousel').forEach(setup);
 
-  carousels.forEach(setupCarousel);
-
-  function setupCarousel(root) {
+  function setup(root) {
     const track = root.querySelector('.projects-grid');
     const btnPrev = root.querySelector('.carousel-btn.prev');
     const btnNext = root.querySelector('.carousel-btn.next');
-    const perView = Math.max(1, parseInt(root.dataset.items || '3', 10));
 
     let index = 0;
-    let lock = false; // simple wheel debounce
+    let lock = false;
+    let settleTimer = null;
 
-    function visibleItems() {
-      // only items that are not display:none (works with your tech filters)
+    function items() {
       return Array.from(track.children).filter(el => getComputedStyle(el).display !== 'none');
     }
-
     function stepWidth() {
-      const items = visibleItems();
-      if (items.length < 2) return items[0]?.offsetWidth || track.clientWidth;
-      // distance between first two cards includes gap
-      return items[1].offsetLeft - items[0].offsetLeft;
+      const it = items();
+      if (it.length < 2) return it[0]?.offsetWidth || track.clientWidth;
+      return it[1].offsetLeft - it[0].offsetLeft; // width + gap
     }
-
+    function perView() {
+      const w = stepWidth();
+      if (!w) return 1;
+      return Math.max(1, Math.round(track.clientWidth / w));
+    }
     function clampIndex(i) {
-      const items = visibleItems();
-      const max = Math.max(0, items.length - perView);
+      const max = Math.max(0, items().length - perView());
       return Math.min(Math.max(i, 0), max);
     }
-
-    function update() {
-      const items = visibleItems();
-      if (!items.length) return;
-      index = clampIndex(index);
-      track.scrollTo({ left: items[index].offsetLeft, behavior: 'smooth' });
-
-      // show/hide chevrons at edges
+    function toggleButtons() {
+      const pv = perView();
+      const total = items().length;
       root.classList.toggle('at-start', index === 0);
-      root.classList.toggle('at-end',   index >= items.length - perView);
+      root.classList.toggle('at-end', index >= total - pv);
+    }
+    function goTo(i, smooth = true) {
+      const it = items();
+      if (!it.length) return;
+      index = clampIndex(i);
+      const x = it[index].offsetLeft;
+      track.scrollTo({ left: x, behavior: smooth ? 'smooth' : 'auto' });
+      toggleButtons();
     }
 
-    btnPrev.addEventListener('click', () => { index = clampIndex(index - 1); update(); });
-    btnNext.addEventListener('click', () => { index = clampIndex(index + 1); update(); });
+    // Clicks
+    btnPrev.addEventListener('click', () => goTo(index - 1));
+    btnNext.addEventListener('click', () => goTo(index + 1));
 
-    // Wheel: down = next, up = prev, one card at a time
+    // Wheel: down/right => next, up/left => prev; no inertial drift
     track.addEventListener('wheel', (e) => {
       e.preventDefault();
       if (lock) return;
       lock = true;
-      if (e.deltaY > 0) index = clampIndex(index + 1);
-      else              index = clampIndex(index - 1);
-      update();
-      setTimeout(() => lock = false, 300);
+      const dir = (e.deltaY || e.deltaX) > 0 ? 1 : -1;
+      goTo(index + dir);
+      setTimeout(() => lock = false, 280);
     }, { passive: false });
 
-    // Update on resize to keep alignment
-    window.addEventListener('resize', () => update());
+    // Snap-settle after manual drag/trackpad
+    track.addEventListener('scroll', () => {
+      if (lock) return;
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(() => {
+        const w = stepWidth();
+        if (!w) return;
+        const nearest = Math.round(track.scrollLeft / w);
+        goTo(nearest);
+      }, 120);
+    }, { passive: true });
 
-    // Snap to start and set initial chevrons
-    update();
+    // Keep alignment across resizes and content changes
+    const ro = new ResizeObserver(() => goTo(index, false));
+    ro.observe(track);
+    window.addEventListener('load', () => { track.scrollLeft = 0; goTo(0, false); });
+    goTo(0, false);
   }
 })();
   
