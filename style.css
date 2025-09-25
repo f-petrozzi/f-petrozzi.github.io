@@ -415,7 +415,7 @@ header.common-header .logo:hover {
 }
 
 /* ==========================================================================
-   4. Container Style
+   4. Project Style
    ========================================================================== */
 #featured,
 #projects {
@@ -567,6 +567,64 @@ header.common-header .logo:hover {
   background-color: var(--highlight-name);
   transform: translateY(-2px);
 }
+
+/* ==========================================================================
+   4.5 Project Carousel
+   ========================================================================== */
+.projects-carousel {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto var(--space-lg);
+}
+
+.projects-carousel .projects-grid {
+  /* override grid -> turn into a horizontal track */
+  display: flex;
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+  overflow: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+}
+
+.projects-carousel .project-item {
+  /* show exactly 3 at a time on desktop */
+  flex: 0 0 calc((100% - 2 * clamp(0.75rem, 2vw, 1.5rem)) / 3);
+  scroll-snap-align: start;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px; height: 40px;
+  border: 0;
+  border-radius: var(--radius-circle);
+  background: var(--header-bg);
+  color: var(--header-text-color);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  opacity: 0.9;
+  z-index: 2;
+}
+.carousel-btn:hover { opacity: 1; }
+.carousel-btn.prev { left: -20px; }
+.carousel-btn.next { right: -20px; }
+
+.projects-carousel.at-start .carousel-btn.prev { display: none; }
+.projects-carousel.at-end   .carousel-btn.next { display: none; }
+
+/* Optional: better legibility on small screens */
+@media (max-width: 900px) {
+  .projects-carousel .project-item {
+    flex: 0 0 calc((100% - clamp(0.75rem, 2vw, 1.5rem)) / 2);
+  }
+}
+@media (max-width: 600px) {
+  .projects-carousel .project-item { flex: 0 0 100%; }
+}
+
 /* ==========================================================================
    5. Social Links & Dark Mode Toggle
    ========================================================================== */
