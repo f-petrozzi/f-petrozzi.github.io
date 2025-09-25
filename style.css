@@ -582,10 +582,16 @@ header.common-header .logo:hover {
 }
 
 .projects-carousel .projects-grid {
-  overflow: hidden; /* prevents accidental half-cards when we hide/show */
+  padding-left: var(--carousel-pad, 0px);   /* JS sets this only when needed */
+  padding-right: var(--carousel-pad-r, 0px);
 }
 
-/* chevrons sit in the reserved gutters and never overlap cards */
+/* windowing: hide items outside the current window only inside carousel */
+.projects-carousel .projects-grid .project-item.carousel-hidden {
+  display: none !important;
+}
+
+/* chevrons never overlap cards (sit in reserved gutters) */
 .carousel-btn {
   position: absolute;
   top: 50%;
@@ -608,11 +614,6 @@ header.common-header .logo:hover {
 
 .projects-carousel.at-start .carousel-btn.prev { display: none; }
 .projects-carousel.at-end   .carousel-btn.next { display: none; }
-
-/* carousel windowing: we hide items with a class (never touch your sizing) */
-.projects-grid .project-item.carousel-hidden {
-  display: none !important;
-}
 
 /* ==========================================================================
    5. Social Links & Dark Mode Toggle
