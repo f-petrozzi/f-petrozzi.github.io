@@ -550,65 +550,91 @@ document.addEventListener("DOMContentLoaded", function() {
      1.5 Project Scroll Behavior
   ========================================================== */
 (function () {
-  const carousels = document.querySelectorAll('.projects-carousel');
-  carousels.forEach(setupCarousel);
+  document.querySelectorAll('.projects-carousel').forEach(setup);
 
-  function setupCarousel(root) {
-    const track = root.querySelector('.projects-grid');
+  function setup(root) {
+    const track   = root.querySelector('.projects-grid');
     const btnPrev = root.querySelector('.carousel-btn.prev');
     const btnNext = root.querySelector('.carousel-btn.next');
-    const allItems = Array.from(track.querySelectorAll('.project-item'));
+    const all     = Array.from(track.querySelectorAll('.project-item'));
 
-    let start = 0; // left-most index in the current window
+    let start = 0;
 
-    // How many columns does your CSS grid currently show? Count first-row items.
+    function eligible() {
+      // respect your filter logic whether it sets dataset flag or display:none
+      return all.filter(el =>
+        el.dataset.filtered !== 'true' &&
+        getComputedStyle(el).display !== 'none'
+      );
+    }
+
+    // Count grid columns directly from CSS so it mirrors your media section
     function perView() {
-      const pool = eligibleItems();
-      if (!pool.length) return 1;
-      const firstTop = pool[0].offsetTop;
-      let count = 0;
-      while (pool[count] && Math.abs(pool[count].offsetTop - firstTop) < 1) count++;
-      return Math.max(1, count);
+      const cols = getComputedStyle(track).gridTemplateColumns;
+      if (cols && cols !== 'none') {
+        // gridTemplateColumns resolves to e.g. "384px 384px 384px"
+        return Math.max(1, cols.trim().split(/\s+/).length);
+      }
+      // Fallback if not grid (should not happen with your CSS)
+      if (window.matchMedia('(max-width: 600px)').matches) return 1;
+      if (window.matchMedia('(max-width: 1215px)').matches) return 2;
+      return 3;
     }
 
-    // Items not filtered out
-    function eligibleItems() {
-      // Treat items with data-filtered="true" as hidden by filters
-      return allItems.filter(el => el.dataset.filtered !== 'true');
-    }
-
-    function clampStart(i) {
-      const total = eligibleItems().length;
-      const pv = perView();
+    function clampStart(i, pv, total) {
       const maxStart = Math.max(0, total - pv);
       return Math.min(Math.max(i, 0), maxStart);
     }
 
-    function render() {
-      const pool = eligibleItems();
-      const pv = perView();
+    function centerIfNeeded(pv, pool) {
+      // If we have fewer items than the slots, center them by padding
       const total = pool.length;
+      if (total > pv) {
+        track.style.setProperty('--carousel-pad', '0px');
+        track.style.setProperty('--carousel-pad-r', '0px');
+        return;
+      }
+      // measure combined width of the currently visible group
+      const visibles = pool.slice(start, Math.min(start + pv, total));
+      if (!visibles.length) return;
 
-      start = clampStart(start);
+      // Force reflow then measure to be accurate after show/hide
+      requestAnimationFrame(() => {
+        const first = visibles[0].getBoundingClientRect();
+        const last  = visibles[visibles.length - 1].getBoundingClientRect();
+        const contentWidth = last.right - first.left;
+        const containerWidth = track.clientWidth;
+        const pad = Math.max(0, Math.round((containerWidth - contentWidth) / 2));
+        track.style.setProperty('--carousel-pad',  pad + 'px');
+        track.style.setProperty('--carousel-pad-r', pad + 'px');
+      });
+    }
 
-      // Hide everything, then show only the window [start, start+pv)
-      allItems.forEach(el => el.classList.add('carousel-hidden'));
-      for (let i = start; i < start + pv && i < total; i++) {
+    function render() {
+      const pool = eligible();
+      const pv   = perView();
+      start = clampStart(start, pv, pool.length);
+
+      // hide everything first
+      all.forEach(el => el.classList.add('carousel-hidden'));
+      // show only the current window [start, start+pv)
+      for (let i = start; i < Math.min(start + pv, pool.length); i++) {
         pool[i].classList.remove('carousel-hidden');
       }
 
-      // Edge buttons
+      // edge buttons
       root.classList.toggle('at-start', start === 0);
-      root.classList.toggle('at-end', start >= total - pv);
-
-      // If fewer or equal items than viewport, hide both buttons
-      const showNav = total > pv;
+      root.classList.toggle('at-end',   start >= Math.max(0, pool.length - pv));
+      const showNav = pool.length > pv;
       btnPrev.style.display = showNav && start > 0 ? '' : 'none';
-      btnNext.style.display = showNav && start < total - pv ? '' : 'none';
+      btnNext.style.display = showNav && start < pool.length - pv ? '' : 'none';
+
+      // center if fewer items than slots
+      centerIfNeeded(pv, pool);
     }
 
-    function next() { start = clampStart(start + 1); render(); }
-    function prev() { start = clampStart(start - 1); render(); }
+    function next() { start++; render(); }
+    function prev() { start--; render(); }
 
     btnPrev.addEventListener('click', prev);
     btnNext.addEventListener('click', next);
@@ -620,13 +646,11 @@ document.addEventListener("DOMContentLoaded", function() {
       if (dir > 0) next(); else prev();
     }, { passive: false });
 
-    // Recompute window on resize so 3→2→1 keeps the left-most item fixed
+    // Recompute on resize and when filters change
     window.addEventListener('resize', render);
-
-    // Re-render when filters change
     document.addEventListener('projectsFiltered', render);
 
-    // Initial render
+    // Initial state
     start = 0;
     render();
   }
