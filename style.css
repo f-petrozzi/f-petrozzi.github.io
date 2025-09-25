@@ -415,7 +415,7 @@ header.common-header .logo:hover {
 }
 
 /* ==========================================================================
-   4. Project Style
+   4. Container Style
    ========================================================================== */
 #featured,
 #projects {
@@ -567,54 +567,6 @@ header.common-header .logo:hover {
   background-color: var(--highlight-name);
   transform: translateY(-2px);
 }
-
-/* ==========================================================================
-   4.5 Project Carousel  — minimal, non-invasive
-   ========================================================================== */
-.projects-carousel {
-  --btn-size: 40px;
-  --btn-gap: 8px;
-  --gutter: calc(var(--btn-size) + var(--btn-gap));
-  position: relative;
-  max-width: 1200px;
-  margin: 0 auto var(--space-lg);
-  padding-inline: var(--gutter); /* room for chevrons outside cards */
-}
-
-.projects-carousel .projects-grid {
-  padding-left: var(--carousel-pad, 0px);   /* JS sets this only when needed */
-  padding-right: var(--carousel-pad-r, 0px);
-}
-
-/* windowing: hide items outside the current window only inside carousel */
-.projects-carousel .projects-grid .project-item.carousel-hidden {
-  display: none !important;
-}
-
-/* chevrons never overlap cards (sit in reserved gutters) */
-.carousel-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: var(--btn-size);
-  height: var(--btn-size);
-  border: 0;
-  border-radius: var(--radius-circle);
-  background: var(--header-bg);
-  color: var(--header-text-color);
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  box-shadow: var(--shadow-md);
-  opacity: 0.9;
-  z-index: 2;
-}
-.carousel-btn.prev { left: var(--btn-gap); }
-.carousel-btn.next { right: var(--btn-gap); }
-
-.projects-carousel.at-start .carousel-btn.prev { display: none; }
-.projects-carousel.at-end   .carousel-btn.next { display: none; }
-
 /* ==========================================================================
    5. Social Links & Dark Mode Toggle
    ========================================================================== */
