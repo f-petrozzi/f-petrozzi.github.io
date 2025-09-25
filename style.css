@@ -415,7 +415,7 @@ header.common-header .logo:hover {
 }
 
 /* ==========================================================================
-   4. Container Style
+   4. Project Style
    ========================================================================== */
 #featured,
 #projects {
@@ -567,6 +567,47 @@ header.common-header .logo:hover {
   background-color: var(--highlight-name);
   transform: translateY(-2px);
 }
+
+/* ==========================================================================
+   4.5 Carousel Style
+   ========================================================================== */
+.projects-carousel {
+  position: relative;
+  overflow: visible; /* ensure hover growth is never clipped */
+}
+
+/* optional, still within carousel scope */
+.projects-carousel .projects-grid {
+  overflow: visible;
+}
+
+/* Chevrons sit outside the card area */
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--project-item-border);
+  background: var(--color-card);
+  border-radius: var(--radius-circle);
+  box-shadow: var(--shadow-md);
+  display: grid;
+  place-items: center;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.carousel-btn.prev { left: 0; transform: translate(-110%, -50%); }
+.carousel-btn.next { right: 0; transform: translate(110%, -50%); }
+
+/* utility */
+.is-hidden { display: none !important; }
+
+/* used only when items <= perView; centers without changing card size */
+.projects-carousel .projects-grid.carousel-center { justify-content: center; }
+
 /* ==========================================================================
    5. Social Links & Dark Mode Toggle
    ========================================================================== */
