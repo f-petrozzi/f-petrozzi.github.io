@@ -1,4 +1,5 @@
 <!--
+hello
 future updates:
 - add horizontal scrolling to projects instead of vertical scrolling 
 - make filters more intuitive "clear filters" button (?)
@@ -176,6 +177,7 @@ future updates:
       <!--Technologies Filter -->
       <section id="technologies">
       <h2>Technical Skills</h2>
+      <p class="filter-description" id="filterDescription">Click any skill to filter projects below</p>
       <div class="tech-filter-container">
         <!-- Python -->
         <button class="tech-filter-btn" data-tech="python">
@@ -217,6 +219,12 @@ future updates:
         <button class="tech-filter-btn" data-tech="javascript">
           <i class="bx bxl-javascript"></i>
           <span>JavaScript</span>
+        </button>
+
+        <!-- C# -->
+        <button class="tech-filter-btn" data-tech="c#">
+          <i class="bx bx-code-block"></i>
+          <span>C#</span>
         </button>
 
         <!-- MongoDB -->
@@ -266,17 +274,18 @@ future updates:
           <i class="bx bx-sitemap"></i>
           <span>Systems Architecture</span>
         </button>
-        
+
+        <!-- MCP -->
+        <button class="tech-filter-btn" data-tech="mcp">
+          <i class="bx bx-plug"></i>
+          <span>MCP</span>
+        </button>
+
         <!-- UX / UI -->
         <button class="tech-filter-btn" data-tech="ux / ui">
           <i class="bx bx-layout"></i>
           <span>UX / UI</span>
         </button>
-
-        <!-- Clear Filters -->
-        <button class="tech-filter-btn" id="clearFilters">
-          <i class="bx bx-x"></i>
-            </button>
           </div>
         </section>
     
@@ -286,42 +295,30 @@ future updates:
             <section id="featured">
               <h2>Featured Projects</h2>
               <div class="projects-grid">
-                <!-- Featured Project Card: Portfolio Website -->
+                <!-- Featured Project Card: USF Campus Concierge -->
                 <div class="project-item">
                   <div class="project-image-container">
-                    <img src="images/HTML.jpg" alt="Portfolio Website">
+                    <img src="images/CampusConcierge.jpg" alt="USF Campus Concierge">
                   </div>
-                  <h3 class="project-title">Portfolio</h3>
+                  <h3 class="project-title">USF Campus Concierge</h3>
                   <p class="project-description">
-                    A website built to showcase projects.
+                    AI assistant for university admissions with MCP integration for Gmail and Google Calendar automation.
                   </p>
                   <div class="project-tech">
-                    <span class="tech-pill">HTML</span>
-                    <span class="tech-pill">CSS</span>
-                    <span class="tech-pill">JavaScript</span>
-                    <span class="tech-pill">UX / UI</span>
+                    <span class="tech-pill">Python</span>
+                    <span class="tech-pill">Deep Learning</span>
+                    <span class="tech-pill">Text Analytics</span>
+                    <span class="tech-pill">Cloud Computing</span>
+                    <span class="tech-pill">MCP</span>
                   </div>
-                  <a href="https://github.com/f-petrozzi/f-petrozzi.github.io" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub</a>
+                  <div class="project-links">
+                    <a href="https://github.com/f-petrozzi/USFConcierge" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub</a>
+                    <a href="https://usfconcierge.streamlit.app/" target="_blank" rel="noopener noreferrer" class="project-link-icon" aria-label="View Live Demo">
+                      <i class="bx bx-link-external"></i>
+                    </a>
+                  </div>
                 </div>
-                
-                <!-- Featured Project Card: Todoo iOS App -->
-                <div class="project-item">
-                  <div class="project-image-container">
-                    <img src="images/TodooProject.jpg" alt="Todoo App">
-                  </div>
-                  <h3 class="project-title">Todoo App</h3>
-                  <p class="project-description">
-                    Notes and tasks app with alarms and Siri shortcuts.
-                  </p>
-                  <div class="project-tech">
-                    <span class="tech-pill">SQL</span>
-                    <span class="tech-pill">Machine Learning</span>
-                    <span class="tech-pill">Systems Architecture</span>
-                    <span class="tech-pill">UX / UI</span>
-                  </div>
-                  <a href="https://github.com/f-petrozzi/Todoo_App" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub</a>
-                </div>
-                
+
                 <!-- Featured Project Card: Optuna CNN Tuning -->
                 <div class="project-item">
                   <div class="project-image-container">
@@ -333,9 +330,38 @@ future updates:
                   </p>
                   <div class="project-tech">
                     <span class="tech-pill">Python</span>
-                    <span class="tech-pill">Machine Learning</span>
+                    <span class="tech-pill">Deep Learning</span>
                   </div>
-                  <a href="https://github.com/f-petrozzi/Optuna_CNN" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub</a>
+                  <div class="project-links">
+                    <a href="https://github.com/f-petrozzi/Optuna_CNN" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub</a>
+                    <a href="https://www.youtube.com/watch?v=nWm1OeqH004" target="_blank" rel="noopener noreferrer" class="project-link-icon" aria-label="Watch Video Demo">
+                      <i class="bx bxl-youtube"></i>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- Featured Project Card: EduInsight -->
+                <div class="project-item">
+                  <div class="project-image-container">
+                    <img src="images/EduInsight.jpg" alt="EduInsight">
+                  </div>
+                  <h3 class="project-title">EduInsight</h3>
+                  <p class="project-description">
+                    ASP.NET Core MVC web application with CRUD enrollment management, chatbot integration, and API-driven analytics dashboard.
+                  </p>
+                  <div class="project-tech">
+                    <span class="tech-pill">C#</span>
+                    <span class="tech-pill">CSS</span>
+                    <span class="tech-pill">Cloud Computing</span>
+                    <span class="tech-pill">Data Visualization</span>
+                    <span class="tech-pill">Systems Architecture</span>
+                  </div>
+                  <div class="project-links">
+                    <a href="https://github.com/f-petrozzi/AppDevFinal" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub</a>
+                    <a href="https://appdevfinal-a9hzasevacc8b5f9.norwayeast-01.azurewebsites.net/" target="_blank" rel="noopener noreferrer" class="project-link-icon" aria-label="View Live Demo">
+                      <i class="bx bx-link-external"></i>
+                    </a>
+                  </div>
                 </div>
               </div>
             </section>
@@ -344,6 +370,42 @@ future updates:
           <section id="projects">
             <h2>Other Projects</h2>
             <div class="projects-grid">
+
+              <!-- Other Project Card: Todoo iOS App -->
+              <div class="project-item">
+                <div class="project-image-container">
+                  <img src="images/TodooProject.jpg" alt="Todoo App">
+                </div>
+                <h3 class="project-title">Todoo App</h3>
+                <p class="project-description">
+                  Notes and tasks app with alarms and Siri shortcuts.
+                </p>
+                <div class="project-tech">
+                  <span class="tech-pill">SQL</span>
+                  <span class="tech-pill">Machine Learning</span>
+                  <span class="tech-pill">Systems Architecture</span>
+                  <span class="tech-pill">UX / UI</span>
+                </div>
+                <a href="https://github.com/f-petrozzi/Todoo_App" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub</a>
+              </div>
+
+              <!-- Other Project Card: Portfolio Website -->
+              <div class="project-item">
+                <div class="project-image-container">
+                  <img src="images/HTML.jpg" alt="Portfolio Website">
+                </div>
+                <h3 class="project-title">Portfolio</h3>
+                <p class="project-description">
+                  A website built to showcase projects.
+                </p>
+                <div class="project-tech">
+                  <span class="tech-pill">HTML</span>
+                  <span class="tech-pill">CSS</span>
+                  <span class="tech-pill">JavaScript</span>
+                  <span class="tech-pill">UX / UI</span>
+                </div>
+                <a href="https://github.com/f-petrozzi/f-petrozzi.github.io" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub</a>
+              </div>
 
               <!-- Other Project Card: Chest X-ray Classification -->
               <div class="project-item">
@@ -667,8 +729,9 @@ equalizeTimelineHeights();
    7. Technology Filters
 =========================================================== */
 
-// Select the tech filter buttons (excluding the clear button)
-const techButtons = document.querySelectorAll('.tech-filter-btn:not(#clearFilters)');
+// Select the tech filter buttons and filter description
+const techButtons = document.querySelectorAll('.tech-filter-btn');
+const filterDescription = document.getElementById('filterDescription');
 let selectedTechs = [];
 
 // Toggle active state on tech buttons
@@ -677,21 +740,41 @@ techButtons.forEach(btn => {
     btn.classList.toggle('active');
     updateSelectedTechs();
     filterProjects();
+    updateFilterDescription();
   });
 });
 
-// Clear Filters button
-document.getElementById('clearFilters').addEventListener('click', function() {
+// Click handler for filter description (clear filters when active)
+filterDescription.addEventListener('click', function() {
+  if (selectedTechs.length > 0) {
+    clearAllFilters();
+  }
+});
+
+// Clear all filters
+function clearAllFilters() {
   techButtons.forEach(btn => btn.classList.remove('active'));
   selectedTechs = [];
   filterProjects();
-});
+  updateFilterDescription();
+}
 
 // Update the list of selected technologies from the active filter buttons
 function updateSelectedTechs() {
   selectedTechs = Array.from(techButtons)
     .filter(btn => btn.classList.contains('active'))
     .map(btn => btn.getAttribute('data-tech').toLowerCase());
+}
+
+// Update filter description text and styling based on active filters
+function updateFilterDescription() {
+  if (selectedTechs.length > 0) {
+    filterDescription.textContent = 'Click here to clear filters';
+    filterDescription.classList.add('filter-active');
+  } else {
+    filterDescription.textContent = 'Click any skill to filter projects below';
+    filterDescription.classList.remove('filter-active');
+  }
 }
 
 // Filter projects based on the technology names extracted from the project's tech-pill elements
@@ -703,7 +786,7 @@ function filterProjects() {
     // Create an array of technology names (lowercase) for this project
     const projectTechs = Array.from(techElements)
       .map(el => el.textContent.trim().toLowerCase());
-    
+
     // If no filters are active, show all projects
     if (selectedTechs.length === 0) {
       project.style.display = '';
@@ -719,12 +802,12 @@ function filterProjects() {
   /* ==========================================================
      8. Map
   ========================================================== */
-// Define the two map style URLs (make sure they match the correct theme)
+// Define the two map style URLs (inverted for visual contrast: dark map on light theme, light map on dark theme)
   const lightStyle = 'https://tiles.basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
   const darkStyle = 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
 
-  // Check the saved theme; default to 'light' if not set
-  const savedTheme = localStorage.getItem('theme') || 'light';
+  // Check the saved theme; default to 'dark' if not set
+  const savedTheme = localStorage.getItem('theme') || 'dark';
   // Use the appropriate map style based on the saved theme
   const defaultStyle = savedTheme === 'dark' ? darkStyle : lightStyle;
 
