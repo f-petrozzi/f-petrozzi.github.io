@@ -591,8 +591,7 @@ header.common-header .logo:hover {
   align-items: center;
   justify-content: center;
   width: auto;
-  aspect-ratio: 1;
-  padding: 0.46em;
+  padding:  0.75em 0.75em;
   border: 1px solid var(--highlight-name);
   border-radius: var(--radius-sm);
   color: var(--highlight-name);
@@ -1641,11 +1640,6 @@ footer::before {
     font-size: clamp(0.55rem, 1.3vw, 0.65rem);
   }
   
-  .project-link {
-    min-width: 100px;
-    padding: 0.4em 0.8em;
-  }
-  
   .main-content{
     margin-top: 0rem;
   }
@@ -1704,12 +1698,6 @@ footer::before {
   .tech-pill {
     padding: 0.1rem 0.3rem;
     font-size: 0.5rem;
-  }
-
-  .project-link {
-    min-width: 80px;
-    padding: 0.3em 0.6em;
-    font-size: 0.7rem;
   }
   
   #experienceSection.active{
