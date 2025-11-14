@@ -117,6 +117,9 @@
   --tech-pill-bg: #00573f78;
   --tech-pill-text: #000000;
 
+  /* Tech Filter Active State */
+  --tech-filter-active-border: var(--color-gold);
+
   /* Modal */
   --modal-bg: var(--color-light);
   --modal-border-left: var(--color-gold);
@@ -175,6 +178,9 @@
   --project-item-hover-shadow: 0 0 15px var(--color-light-accent);
   --tech-pill-bg: #a8b2d17a;
   --tech-pill-text: #ffffff;
+
+  /* Tech Filter Active State */
+  --tech-filter-active-border: var(--color-light);
 
   /* Modal */
   --modal-bg: var(--color-dark-bg-2);
@@ -524,6 +530,7 @@ header.common-header .logo:hover {
   justify-content: center;
   gap: 0.25rem;
   margin-bottom: clamp(0.75rem, 2vw, 1rem);
+  margin-top: auto;
 }
 
 /* Tech pill styling */
@@ -567,6 +574,41 @@ header.common-header .logo:hover {
   background-color: var(--highlight-name);
   transform: translateY(-2px);
 }
+
+/* Project links container */
+.project-links {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;
+  align-self: center;
+}
+
+/* Square icon button for live demos/videos */
+.project-link-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  aspect-ratio: 1;
+  padding: 0.46em;
+  border: 1px solid var(--highlight-name);
+  border-radius: var(--radius-sm);
+  color: var(--highlight-name);
+  text-decoration: none;
+  font-size: clamp(0.75rem, 2vw, 0.875rem);
+  line-height: 1;
+  transition: color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.project-link-icon:hover {
+  color: var(--color-light);
+  background-color: var(--highlight-name);
+  transform: translateY(-2px);
+}
+
 /* ==========================================================================
    5. Social Links & Dark Mode Toggle
    ========================================================================== */
@@ -1187,10 +1229,6 @@ section#experienceSection::before {
   font-size: clamp(0.6em, 2vw, 0.6em);
 }
 
-#workTimeline .experience-role{
-  color: var(--r);
-}
-
 .experience-GPA {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
@@ -1230,11 +1268,34 @@ section#technologies::before {
 
 #technologies h2 {
   font-size: var(--font-size-xl);
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--space-xs);
   font-weight: var(--font-weight-medium);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-size: clamp(1em, 2vw, 1em);
+}
+
+/* Filter description helper text */
+.filter-description {
+  text-align: center;
+  font-size: var(--font-size-sm);
+  color: var(--highlight-name);
+  margin-bottom: var(--space-sm);
+  font-weight: var(--font-weight-medium);
+  font-style: italic;
+  opacity: 0.9;
+  transition: color var(--transition-normal), cursor var(--transition-quick);
+}
+
+/* Filter description active state (when filters are selected) */
+.filter-description.filter-active {
+  color: #dc3545;
+  cursor: pointer;
+  opacity: 1;
+}
+
+.filter-description.filter-active:hover {
+  text-decoration: underline;
 }
 
 /* Container for the tech buttons */
@@ -1275,17 +1336,30 @@ section#technologies::before {
 
 /* Active state */
 .tech-filter-btn.active {
-  border-color: var(--highlight-name);
-  box-shadow: 0 0 5px var(--highlight-name);
+  border-color: var(--tech-filter-active-border);
+  background-color: var(--highlight-name);
+  box-shadow: 0 0 8px var(--highlight-name);
+  transform: scale(1.02);
 }
 
 .tech-filter-btn.active i {
+  color: var(--color-light);
+}
+
+.tech-filter-btn.active span {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-light);
+}
+
+.tech-filter-btn:hover span {
+  font-weight: var(--font-weight-bold);
   color: var(--highlight-name);
 }
 
-.tech-filter-btn.active span, .tech-filter-btn:hover span {
-  font-weight: var(--font-weight-bold);
-  color: var(--highlight-name);
+/* Prevent text color change on active button hover */
+.tech-filter-btn.active:hover span,
+.tech-filter-btn.active:hover i {
+  color: var(--color-light);
 }
 
 /* ==========================================================================
