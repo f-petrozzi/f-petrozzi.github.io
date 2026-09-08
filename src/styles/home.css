@@ -371,9 +371,16 @@ section {
 .filter-chips {
   display: flex;
   gap: 4px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  overscroll-behavior-x: contain;
 }
 .filter-chips button {
+  flex: 0 0 auto;
+  white-space: nowrap;
   padding: 7px 12px;
   border-radius: 20px;
   font-size: 13px;
@@ -2214,12 +2221,18 @@ html.is-touch-scrolling {
 }
 .active-search-filters {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  overscroll-behavior-x: contain;
   gap: 8px;
   width: 100%;
 }
 .search-filter-pill {
   display: inline-flex;
+  flex: 0 0 auto;
+  white-space: nowrap;
   gap: 8px;
   align-items: center;
   padding: 5px 11px;
@@ -2255,4 +2268,9 @@ html.is-touch-scrolling {
   #panel-experience .career-stop {
     grid-template-columns: minmax(0, 1fr) 12px 27px;
   }
+}
+
+.filter-chips button:focus-visible,
+.search-filter-pill:focus-visible {
+  outline-offset: -2px;
 }
