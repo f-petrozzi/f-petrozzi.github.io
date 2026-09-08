@@ -1317,7 +1317,7 @@ body.is-scroll-dragging {
 }
 .journey {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 500px);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
   gap: 48px;
   max-width: 960px;
   margin-inline: auto;
@@ -1325,7 +1325,7 @@ body.is-scroll-dragging {
 }
 .journey-content {
   width: 100%;
-  max-width: 500px;
+  max-width: 420px;
   min-width: 0;
   justify-self: center;
 }
@@ -1384,7 +1384,7 @@ body.is-scroll-dragging {
   padding: 4px;
   border-radius: 28px;
   margin: 0 auto 22px;
-  width: min(100%, 360px);
+  width: 100%;
 }
 .timeline-tabs button {
   display: flex;
