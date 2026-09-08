@@ -2323,3 +2323,52 @@ html.is-touch-scrolling {
     width: 100%;
   }
 }
+
+/* Give header controls a shared centerline and consistent visual weight. */
+.site-header .brand,
+.site-header nav a,
+.site-header .era-link {
+  min-height: 44px;
+  align-items: center;
+  line-height: 1;
+}
+.site-header nav {
+  align-items: center;
+}
+.site-header .era-link {
+  padding: 0 4px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  color: var(--muted);
+}
+.site-header .era-link span {
+  margin-left: 0;
+  color: inherit;
+}
+.site-header .era-link:hover {
+  color: var(--text);
+}
+.site-header nav a .ui-icon,
+.site-header .era-link .ui-icon {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+@media (max-width: 650px) {
+  .site-header nav {
+    justify-content: flex-end;
+  }
+  .site-header nav a,
+  .site-header .era-link {
+    min-width: 44px;
+    justify-content: center;
+    padding: 0;
+  }
+  .site-header nav a .ui-icon,
+  .site-header .era-link .ui-icon {
+    width: 20px;
+    height: 20px;
+  }
+}
