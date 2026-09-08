@@ -249,9 +249,6 @@ const filterButtons = [
   ...document.querySelectorAll<HTMLButtonElement>("[data-filter]"),
 ];
 const search = document.querySelector<HTMLInputElement>("#project-search")!;
-const categorySelect =
-  document.querySelector<HTMLSelectElement>("#category-filter")!;
-const toolSelect = document.querySelector<HTMLSelectElement>("#tool-filter")!;
 const normalizeSearch = (value: string) =>
   value
     .normalize("NFD")
@@ -270,10 +267,6 @@ function filterProjects() {
     const matches =
       (activeFilter === "all" ||
         row.dataset.facets!.split(" ").includes(activeFilter)) &&
-      (!categorySelect.value ||
-        row.dataset.category === categorySelect.value) &&
-      (!toolSelect.value ||
-        JSON.parse(row.dataset.tools!).includes(toolSelect.value)) &&
       normalizeSearch(row.dataset.search!).includes(term);
     row.hidden = !matches;
     if (matches) total++;
@@ -304,11 +297,88 @@ filterButtons.forEach((button) =>
   }),
 );
 search.addEventListener("input", filterProjects);
-categorySelect.addEventListener("change", filterProjects);
-toolSelect.addEventListener("change", filterProjects);
+// Small, explicit tool completions. Typing still filters projects immediately.
+const suggestions =
+  document.querySelector<HTMLUListElement>("#tool-suggestions")!;
+const tools = [
+  ...new Set(rows.flatMap((row) => JSON.parse(row.dataset.tools!) as string[])),
+].sort((a, b) => a.localeCompare(b));
+let matches: string[] = [];
+let activeSuggestion = -1;
+function closeSuggestions() {
+  suggestions.hidden = true;
+  search.setAttribute("aria-expanded", "false");
+  search.removeAttribute("aria-activedescendant");
+  activeSuggestion = -1;
+}
+function showSuggestions() {
+  const prefix = normalizeSearch(search.value.trim());
+  matches = prefix
+    ? tools.filter(
+        (tool) =>
+          normalizeSearch(tool).startsWith(prefix) &&
+          normalizeSearch(tool) !== prefix,
+      )
+    : [];
+  suggestions.replaceChildren();
+  activeSuggestion = -1;
+  search.removeAttribute("aria-activedescendant");
+  matches.forEach((tool, index) => {
+    const option = document.createElement("li");
+    option.id = `tool-suggestion-${index}`;
+    option.setAttribute("role", "option");
+    option.setAttribute("aria-selected", "false");
+    option.textContent = tool;
+    option.addEventListener("pointerdown", (event) => event.preventDefault());
+    option.addEventListener("click", () => chooseSuggestion(index));
+    suggestions.append(option);
+  });
+  suggestions.hidden = matches.length === 0;
+  search.setAttribute("aria-expanded", String(matches.length > 0));
+}
+function chooseSuggestion(index: number) {
+  search.value = matches[index];
+  closeSuggestions();
+  filterProjects();
+}
+search.addEventListener("input", showSuggestions);
+search.addEventListener("focus", showSuggestions);
+search.addEventListener("blur", closeSuggestions);
+search.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !suggestions.hidden) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeSuggestions();
+  } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+    if (suggestions.hidden) showSuggestions();
+    if (!matches.length) return;
+    event.preventDefault();
+    activeSuggestion =
+      activeSuggestion < 0
+        ? event.key === "ArrowDown"
+          ? 0
+          : matches.length - 1
+        : (activeSuggestion +
+            (event.key === "ArrowDown" ? 1 : -1) +
+            matches.length) %
+          matches.length;
+    [...suggestions.children].forEach((option, index) =>
+      option.setAttribute("aria-selected", String(index === activeSuggestion)),
+    );
+    const option = suggestions.children[activeSuggestion];
+    search.setAttribute("aria-activedescendant", option.id);
+    option.scrollIntoView({ block: "nearest", behavior: "instant" });
+  } else if (
+    event.key === "Enter" &&
+    !suggestions.hidden &&
+    activeSuggestion >= 0
+  ) {
+    event.preventDefault();
+    chooseSuggestion(activeSuggestion);
+  }
+});
 function resetFilters() {
-  categorySelect.value = "";
-  toolSelect.value = "";
+  closeSuggestions();
   search.value = "";
   activeFilter = "all";
   filterButtons.forEach((item) =>
@@ -691,20 +761,3 @@ if (!reducedMotion.matches)
     { y: 14 },
     { y: 0, duration: 0.5, ease: "power3.out", clearProps: "transform" },
   );
-
-const themeButton = document.querySelector<HTMLButtonElement>(".theme-toggle")!;
-const updateThemeLabel = () =>
-  themeButton.setAttribute(
-    "aria-label",
-    `Switch to ${root.dataset.theme === "light" ? "dark" : "light"} theme`,
-  );
-updateThemeLabel();
-themeButton.hidden = false;
-themeButton.addEventListener("click", () => {
-  const theme = root.dataset.theme === "light" ? "dark" : "light";
-  root.dataset.theme = theme;
-  try {
-    localStorage.setItem("portfolio-theme", theme);
-  } catch {}
-  updateThemeLabel();
-});

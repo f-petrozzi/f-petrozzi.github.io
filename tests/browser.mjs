@@ -16,8 +16,6 @@ page.on("pageerror", (e) => errors.push(e.message));
 const requests = [];
 page.on("request", (r) => requests.push(r.url()));
 await page.goto(`${base}/`, { waitUntil: "networkidle" });
-await page.locator(".about-person").scrollIntoViewIfNeeded();
-await page.locator(".about-person img").evaluate((img) => img.decode());
 await page.evaluate(() => scrollTo({ top: 0, behavior: "instant" }));
 await page.screenshot({ path: "/tmp/portfolio-desktop.png", fullPage: true });
 assert.equal(await page.locator(".project-row:visible").count(), projectCount);
@@ -34,14 +32,64 @@ assert.equal(await page.locator(".project-row:visible").count(), 1);
 await page.locator("#project-search").fill("FastAPI");
 assert.equal(await page.locator(".project-row:visible").count(), 3);
 await page.getByRole("button", { name: "Reset filters" }).click();
-await page.locator("#category-filter").selectOption("Earlier work");
-assert.equal(await page.locator(".project-row:visible").count(), 13);
-await page.locator("#tool-filter").selectOption("Python");
+await page.locator("#project-search").fill("p");
+assert.ok(
+  await page.getByRole("option", { name: "Python", exact: true }).isVisible(),
+);
+assert.ok(
+  await page
+    .getByRole("option", { name: "PostgreSQL", exact: true })
+    .isVisible(),
+);
+await page.getByRole("option", { name: "Python", exact: true }).click();
+assert.equal(await page.locator("#project-search").inputValue(), "Python");
+assert.equal(await page.locator("#tool-suggestions").isVisible(), false);
 assert.ok((await page.locator(".project-row:visible").count()) > 0);
+await page.locator("#project-search").fill("py");
+await page.keyboard.press("ArrowDown");
+const selectedTool = await page
+  .getByRole("option", { selected: true })
+  .innerText();
+await page.keyboard.press("Enter");
+assert.equal(await page.locator("#project-search").inputValue(), selectedTool);
+await page.locator("#project-search").fill("p");
+await page.keyboard.press("Escape");
+assert.equal(await page.locator("#tool-suggestions").isVisible(), false);
+assert.equal(await page.locator("#project-search").inputValue(), "p");
+assert.equal(
+  await page
+    .locator("#project-search")
+    .evaluate((el) => getComputedStyle(el).outlineStyle),
+  "none",
+);
 await page.locator("#project-search").fill("nothingmatches");
 assert.ok(await page.locator("#empty-results").isVisible());
 await page.getByRole("button", { name: "Reset filters" }).click();
+const tooltipDark = await page
+  .locator(".scroll-readout")
+  .evaluate((el) => getComputedStyle(el).backgroundColor);
+const iconDark = await page
+  .locator(".theme-rays")
+  .evaluate((el) => getComputedStyle(el).opacity);
 await page.getByRole("button", { name: "Switch to light theme" }).click();
+await page.waitForTimeout(500);
+assert.notEqual(
+  await page
+    .locator(".scroll-readout")
+    .evaluate((el) => getComputedStyle(el).backgroundColor),
+  tooltipDark,
+);
+assert.notEqual(
+  await page
+    .locator(".theme-rays")
+    .evaluate((el) => getComputedStyle(el).opacity),
+  iconDark,
+);
+const handshake = page
+  .locator(".career-card")
+  .filter({ hasText: "Handshake AI" });
+assert.ok((await handshake.innerText()).includes("Jul – Aug 2026"));
+assert.equal(await handshake.locator(".current-label").count(), 0);
 assert.equal(await page.locator("html").getAttribute("data-theme"), "light");
 await page.reload();
 assert.equal(await page.locator("html").getAttribute("data-theme"), "light");

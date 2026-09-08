@@ -14,7 +14,7 @@ npm run dev
 Open http://localhost:4321 for the development server. The shared homelab preview is
 http://petro.ink:4444/ (the existing `portfolio-preview` container). It serves
 `dist/`, so run `npm run build` after source changes and reload that URL.
-The separate Agent Usage preview remains at `/agent-usage/`. The approved PoC design is now integrated at `/`; the separate `/preview/` page has been retired. Main’s biography, featured project metadata, category/technology filters, theme preference, full project pages, and original-site switch are retained.
+The separate Agent Usage preview remains at `/agent-usage/`. The approved PoC design is now integrated at `/`; the separate `/preview/` page has been retired. The homepage retains featured project metadata, theme preference, full project pages, and the original-site switch. A short then-and-now story introduces the original site. Filter chips and search organize the collection; prefix-based tool suggestions support keyboard and pointer selection.
 
 For a standalone production preview:
 
@@ -28,7 +28,7 @@ In a restricted environment, prefix Astro commands with `ASTRO_TELEMETRY_DISABLE
 
 ## Add a project
 
-Copy `templates/project.md` into `src/content/projects/your-project.md`. Fill in the metadata and write the project story below it. The filename becomes the URL. Lower `order` values appear first. `featured: true` adds the project to Selected work, alongside the Homelab feature. Categories and technology filters come from the content automatically. Links are optional: omit them for private work. Use confirmed outcomes, and distinguish an illustration from an actual screenshot.
+Copy `templates/project.md` into `src/content/projects/your-project.md`. Fill in the metadata and write the project story below it. The filename becomes the URL. Lower `order` values appear first. `featured: true` adds the project to Selected work, alongside the Homelab feature. Tool suggestions come from the content automatically. Links are optional: omit them for private work. Use confirmed outcomes, and distinguish an illustration from an actual screenshot.
 
 - `src/pages/index.astro`: homepage and collection filtering
 - `src/pages/projects/[id].astro`: generated project pages
@@ -65,4 +65,4 @@ Set `CHROMIUM_PATH` to reuse an installed Chromium executable and `PREVIEW_URL` 
 
 ## Personal logo (local assets)
 
-`docs/F.png` and `docs/f-background.png` are intentionally ignored. Compact WebP assets in `public/brand/` are versioned so clean builds retain the approved logo. When the originals are present, the prebuild script refreshes those assets without recoloring them. The transparent F appears in the header; the portrait accompanies the biography.
+`docs/F.png` and `docs/f-background.png` are intentionally ignored. Compact WebP assets in `public/brand/` are versioned so clean builds retain the approved logo. When the originals are present, the prebuild script refreshes those assets without recoloring them. The transparent F appears in the header.

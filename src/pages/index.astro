@@ -3,12 +3,11 @@ import { existsSync } from "node:fs";
 import { getCollection } from "astro:content";
 import "../styles/home.css";
 import Icon from "../components/Icon.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
 const raw = (await getCollection("projects")).sort(
   (a, b) => a.data.order - b.data.order,
 );
 const featured = raw.filter((p) => p.data.featured);
-const categories = [...new Set(raw.map((p) => p.data.category))];
-const tools = [...new Set(raw.flatMap((p) => p.data.tools))].sort();
 const capabilities = {
   nest: ["web"],
   nume: ["ai", "web"],
@@ -103,13 +102,12 @@ const experience = [
   },
   {
     year: "2026",
-    when: "Jul 2026 – Present",
+    when: "Jul – Aug 2026",
     org: "Handshake AI",
     role: "AI Evaluation Contractor and Reviewer",
     icon: "brain-circuit",
     description:
-      "Project Vortex. Create evaluation scenarios, review prompts and document model behavior.",
-    current: true,
+      "Project Vortex. Created evaluation scenarios, reviewed prompts and documented model behavior.",
   },
 ];
 const education = [
@@ -220,9 +218,7 @@ const hasMark = existsSync("public/brand/f-mark.webp");
           ><Icon name="briefcase" />Background</a
         ><a href="#contact"><Icon name="mail" />Contact</a>
       </nav>
-      <button class="theme-toggle" aria-label="Switch to light theme" hidden
-        >◐</button
-      >
+      <ThemeToggle />
       <a class="era-link era-switch" href="/classic/" data-era-link
         ><Icon name="monitor-smartphone" />2023 site
       </a>
@@ -310,46 +306,28 @@ const hasMark = existsSync("public/brand/f-mark.webp");
         </div>
       </section>
 
-      <section class="about wrap" id="about">
-        <div class="about-person">
-          <img
-            src="/images/portrait.webp"
-            width="180"
-            height="180"
-            alt="Fabrizio Petrozzi"
-            loading="lazy"
-          /><h2>A little background</h2>
+      <section
+        class="era-story wrap"
+        id="about"
+        aria-labelledby="era-story-title"
+      >
+        <div>
+          <p class="project-kind">Then &amp; now</p><h2 id="era-story-title">
+            The first version is part of the story.
+          </h2>
         </div>
-        <div class="about-copy">
-          <p>
-            I’m based in St. Petersburg, Florida. Before these projects, I
-            studied business management at USF, worked at Raymond James Bank,
-            and returned to USF to study AI and business analytics. I also
-            worked as a teaching assistant for CGS 2100.
-          </p>
-          <p>
-            My projects have become more personal over time. Nest brings
-            household planning, recipes, and groceries into one app. Agent Usage
-            helps me keep track of the AI tools I use. My homelab is where I run
-            applications and learn the operational side of keeping them working.
-          </p>
-          <p>
-            I’ve kept the earlier coursework here too. It’s part of how I got
-            started.
-          </p>
-          <a class="text-link" href="/files/resume.pdf">Read my resume</a>
-        </div>
-      </section>
-      <section class="era-story wrap">
-        <h2>I kept the first version.</h2>
         <div>
           <p>
-            I built my original portfolio while learning HTML, CSS, and
-            JavaScript. It’s a little clunky, and I’m fond of it. You can still
-            use it.
+            In 2023, I was learning HTML, CSS, and JavaScript and building a
+            place to share my coursework. That became my first portfolio.
+          </p>
+          <p>
+            Today, I build apps I use, work with data, and run the server behind
+            my projects. This site reflects that work. The original is still
+            here, as a snapshot of where I started.
           </p>
           <a href="/classic/" data-era-link class="pill-link"
-            >Switch to my original site</a
+            >Step into the 2023 site <Icon name="arrow-up-right" /></a
           >
         </div>
       </section>
@@ -494,32 +472,32 @@ const hasMark = existsSync("public/brand/f-mark.webp");
               ))
             }
           </div>
-          <label class="search-label"
-            ><Icon name="search" /><span class="sr-only"
-              >Search all projects and tools</span
-            ><input
-              id="project-search"
-              type="search"
-              placeholder="Search projects or tools"
-            /></label
-          >
-          <div class="collection-controls">
-            <label
-              >Category<select id="category-filter"
-                ><option value="">All categories</option>{
-                  categories.map((category) => <option>{category}</option>)
-                }</select
-              ></label
+          <div class="search-box">
+            <label class="search-label"
+              ><Icon name="search" /><span class="sr-only"
+                >Search all projects and tools</span
+              >
+              <input
+                id="project-search"
+                type="search"
+                role="combobox"
+                aria-autocomplete="list"
+                aria-expanded="false"
+                aria-controls="tool-suggestions"
+                autocomplete="off"
+                placeholder="Search projects or tools"
+              />
+            </label>
+            <ul
+              id="tool-suggestions"
+              class="tool-suggestions"
+              role="listbox"
+              aria-label="Suggested tools"
+              hidden
             >
-            <label
-              >Technology<select id="tool-filter"
-                ><option value="">All technologies</option>{
-                  tools.map((tool) => <option>{tool}</option>)
-                }</select
-              ></label
-            >
-            <button type="button" id="reset-filters">Reset filters</button>
+            </ul>
           </div>
+          <button type="button" id="reset-filters">Reset filters</button>
           <p id="result-count" role="status" aria-live="polite">
             {raw.length} projects
           </p>

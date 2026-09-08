@@ -42,15 +42,20 @@ test("integrated homepage retains main content and retires the PoC route", () =>
   for (const marker of [
     'id="about"',
     'id="projects"',
-    'id="tool-filter"',
-    'id="category-filter"',
-    'class="theme-toggle"',
-    "I kept the first version.",
+    'id="tool-suggestions"',
+    "theme-toggle",
+    "The first version is part of the story.",
     "/projects/nume/",
     "/projects/nest/",
     "/projects/proterra/",
   ])
     assert.ok(html.includes(marker), marker);
+  for (const removed of [
+    'id="tool-filter"',
+    'id="category-filter"',
+    "A little background",
+  ])
+    assert.ok(!html.includes(removed));
   assert.ok(!html.includes("noindex"));
   assert.ok(!html.includes("/preview/"));
   assert.ok(!existsSync(join(root, "preview/index.html")));
