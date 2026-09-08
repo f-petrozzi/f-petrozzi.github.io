@@ -1,0 +1,94 @@
+@view-transition {
+  navigation: auto;
+}
+:root {
+  --era-x: 86vw;
+  --era-y: 45px;
+  --era-radius: 150vmax;
+}
+/* One moving mask. Neither page is scaled, blurred, or separately faded. */
+::view-transition-group(root) {
+  animation: none;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+html.era-arrival::view-transition-new(root) {
+  animation: era-reveal 560ms cubic-bezier(0.3, 0, 0.2, 1) both;
+}
+@keyframes era-reveal {
+  from {
+    clip-path: circle(0 at var(--era-x) var(--era-y));
+  }
+  to {
+    clip-path: circle(var(--era-radius) at var(--era-x) var(--era-y));
+  }
+}
+.classic-era-switch {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  padding: 14px 20px;
+  border-radius: 7px;
+  background: #f2f5fa;
+  color: #18233b;
+  border: 1px solid #b9c6db;
+  box-shadow: 0 3px 16px #0002;
+  font:
+    14px Arial,
+    sans-serif;
+  text-decoration: none;
+}
+.classic-era-switch strong {
+  font-weight: 500;
+}
+.classic-era-switch:focus-visible {
+  outline: 3px solid #2459bd;
+  outline-offset: 4px;
+}
+.classic-era-switch:hover {
+  background: #fff;
+}
+.era-fallback-cover {
+  position: fixed;
+  left: calc(var(--era-x) - var(--era-radius));
+  top: calc(var(--era-y) - var(--era-radius));
+  width: var(--era-diameter);
+  height: var(--era-diameter);
+  z-index: 100000;
+  pointer-events: none;
+  background: #142850;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: era-cover 220ms ease-in forwards;
+}
+@keyframes era-cover {
+  to {
+    transform: scale(1);
+  }
+}
+html.era-fallback-arrival body {
+  animation: era-fallback-in 180ms ease-out both;
+}
+@keyframes era-fallback-in {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html::view-transition-old(root),
+  html::view-transition-new(root),
+  html::view-transition-group(root),
+  html.era-fallback-arrival body,
+  .era-fallback-cover {
+    animation: none !important;
+  }
+}

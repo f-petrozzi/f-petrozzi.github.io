@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.astro/
+test-results/
+playwright-report/
+_fps.mjs
+
+# Personal logo originals (web assets are included for reproducible builds)
+/docs/F.png
+/docs/f-background.png

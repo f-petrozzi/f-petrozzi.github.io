@@ -14,13 +14,13 @@ future updates:
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Fabrizio Petrozzi</title>
   <!-- Icon Classes -->
-  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-  <link href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css" rel="stylesheet" />
+  <template data-legacy-style><link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'></template>
+  <template data-legacy-style><link href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css" rel="stylesheet" /></template>
   <!-- Font -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap">
+  <template data-legacy-style><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap"></template>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <template data-legacy-style><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet"></template>
   <!-- External CSS -->
   <link rel="stylesheet" href="style.css" />
   <!-- Favicons -->
@@ -30,8 +30,14 @@ future updates:
   <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-title" content="Portfolio">
   <link rel="manifest" href="images/site.webmanifest">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="/era.css">
+<link rel="expect" href="#era-ready" blocking="render">
+<script src="/era.js"></script>
+<script>try { document.documentElement.dataset.theme = localStorage.getItem("theme") || "dark"; } catch { document.documentElement.dataset.theme = "dark"; }</script>
 </head>
 <body>
+<a href="/" data-era-link class="classic-era-switch"><strong>Back to the new design</strong></a>
   <!-- Header and Navigation -->
   <header class="common-header">
     <div class="header-left">
@@ -130,7 +136,7 @@ future updates:
             <div class="timeline-items-wrapper">
             <div class="experience-item">
               <div class="experience-circle">
-                <img src="images/USF-logo.jpg" alt="Company Logo" />
+                <img loading="lazy" decoding="async" src="images/USF-logo.jpg" alt="Company Logo" />
               </div>
               <div class="experience-details">
                 <div class="experience-date">Aug 2024 - May 2025</div>
@@ -141,7 +147,7 @@ future updates:
             <!-- Add more .experience-item blocks as needed -->
             <div class="experience-item">
               <div class="experience-circle">
-                <img src="images/RJ-Logo.png" alt="Company Logo" />
+                <img loading="lazy" decoding="async" src="images/RJ-Logo.png" alt="Company Logo" />
               </div>
               <div class="experience-details">
                 <div class="experience-date">Nov 2023 - Aug 2024</div>
@@ -156,7 +162,7 @@ future updates:
             <div class="timeline-items-wrapper">
             <div class="experience-item">
               <div class="experience-circle">
-                <img src="images/USF-logo.jpg" alt="USF Logo" />
+                <img loading="lazy" decoding="async" src="images/USF-logo.jpg" alt="USF Logo" />
               </div>
               <div class="experience-details">
                 <div class="experience-date">Aug 2024 - May 2026</div>
@@ -168,7 +174,7 @@ future updates:
             <!-- Add more .experience-item blocks as needed -->
             <div class="experience-item">
               <div class="experience-circle">
-                <img src="images/USF-logo.jpg" alt="USF Logo" />
+                <img loading="lazy" decoding="async" src="images/USF-logo.jpg" alt="USF Logo" />
               </div>
               <div class="experience-details">
                 <div class="experience-date">Aug 2019 - Aug 2023</div>
@@ -305,7 +311,7 @@ future updates:
                 <!-- Featured Project Card: USF Campus Concierge -->
                 <div class="project-item">
                   <div class="project-image-container">
-                    <img src="images/CampusConcierge.jpg" alt="USF Campus Concierge">
+                    <img loading="lazy" decoding="async" src="images/CampusConcierge.jpg" alt="USF Campus Concierge">
                   </div>
                   <h3 class="project-title">USF Campus Concierge</h3>
                   <p class="project-description">
@@ -329,7 +335,7 @@ future updates:
                 <!-- Featured Project Card: Optuna CNN Tuning -->
                 <div class="project-item">
                   <div class="project-image-container">
-                    <img src="images/Optuna.png" alt="Optuna CNN Tuning">
+                    <img loading="lazy" decoding="async" src="images/Optuna.png" alt="Optuna CNN Tuning">
                   </div>
                   <h3 class="project-title">Optuna</h3>
                   <p class="project-description">
@@ -350,7 +356,7 @@ future updates:
                 <!-- Featured Project Card: EduInsight -->
                 <div class="project-item">
                   <div class="project-image-container">
-                    <img src="images/EduInsight.jpg" alt="EduInsight">
+                    <img loading="lazy" decoding="async" src="images/EduInsight.jpg" alt="EduInsight">
                   </div>
                   <h3 class="project-title">EduInsight</h3>
                   <p class="project-description">
@@ -381,7 +387,7 @@ future updates:
               <!-- Other Project Card: Todoo iOS App -->
               <div class="project-item">
                 <div class="project-image-container">
-                  <img src="images/TodooProject.jpg" alt="Todoo App">
+                  <img loading="lazy" decoding="async" src="images/TodooProject.jpg" alt="Todoo App">
                 </div>
                 <h3 class="project-title">Todoo App</h3>
                 <p class="project-description">
@@ -399,7 +405,7 @@ future updates:
               <!-- Other Project Card: Portfolio Website -->
               <div class="project-item">
                 <div class="project-image-container">
-                  <img src="images/HTML.jpg" alt="Portfolio Website">
+                  <img loading="lazy" decoding="async" src="images/HTML.jpg" alt="Portfolio Website">
                 </div>
                 <h3 class="project-title">Portfolio</h3>
                 <p class="project-description">
@@ -417,7 +423,7 @@ future updates:
               <!-- Other Project Card: Chest X-ray Classification -->
               <div class="project-item">
                 <div class="project-image-container">
-                  <img src="images/ImageClassifier.jpg" alt="Chest X-ray Disease Classifier">
+                  <img loading="lazy" decoding="async" src="images/ImageClassifier.jpg" alt="Chest X-ray Disease Classifier">
                 </div>
                 <h3 class="project-title">Image Classifier</h3>
                 <p class="project-description">
@@ -432,7 +438,7 @@ future updates:
               <!-- Other Project Card: Healthcare Data Warehouse -->
               <div class="project-item">
                 <div class="project-image-container">
-                  <img src="images/HealthcareDB.jpg" alt="Hospital Data Warehouse Insights">
+                  <img loading="lazy" decoding="async" src="images/HealthcareDB.jpg" alt="Hospital Data Warehouse Insights">
                 </div>
                 <h3 class="project-title">Hospital Data Warehouse</h3>
                 <p class="project-description">
@@ -447,7 +453,7 @@ future updates:
               <!-- Other Project Card: Applied Business Statistics -->
               <div class="project-item">
                 <div class="project-image-container">
-                  <img src="images/businessstats.png" alt="Applied Business Statistics">
+                  <img loading="lazy" decoding="async" src="images/businessstats.png" alt="Applied Business Statistics">
                 </div>
                 <h3 class="project-title">Business Statistics</h3>
                 <p class="project-description">
@@ -463,7 +469,7 @@ future updates:
               <!-- Other Project Card: Regex Text Analytics -->
               <div class="project-item">
                 <div class="project-image-container">
-                  <img src="images/regex.jpg" alt="Book Text Cleaner & Analyzer">
+                  <img loading="lazy" decoding="async" src="images/regex.jpg" alt="Book Text Cleaner & Analyzer">
                 </div>
                 <h3 class="project-title">Text Cleaning & Analyzing</h3>
                 <p class="project-description">
@@ -479,7 +485,7 @@ future updates:
               <!-- Other Project Card: Amazon Redshift Reviews DB -->
               <div class="project-item">
                 <div class="project-image-container">
-                  <img src="images/Redshift.jpg" alt="Amazon Redshift Transactional Database">
+                  <img loading="lazy" decoding="async" src="images/Redshift.jpg" alt="Amazon Redshift Transactional Database">
                 </div>
                 <h3 class="project-title">Product Reviews Analysis</h3>
                 <p class="project-description">
@@ -496,7 +502,7 @@ future updates:
               <!-- Other Project Card: Titanic Survival Prediction -->
               <div class="project-item">
                 <div class="project-image-container">
-                  <img src="images/titanic.jpg" alt="Titanic Survival Prediction">
+                  <img loading="lazy" decoding="async" src="images/titanic.jpg" alt="Titanic Survival Prediction">
                 </div>
                 <h3 class="project-title">Titanic Survival Predictor</h3>
                 <p class="project-description">
@@ -512,7 +518,7 @@ future updates:
               <!-- Other Project Card: Tixly Mobile Ticketing Design -->
               <div class="project-item">
                 <div class="project-image-container">
-                  <img src="images/Tixly.jpg" alt="Tixly Mobile Ticketing App Design">
+                  <img loading="lazy" decoding="async" src="images/Tixly.jpg" alt="Tixly Mobile Ticketing App Design">
                 </div>
                 <h3 class="project-title">Tixly App Design</h3>
                 <p class="project-description">
@@ -528,7 +534,7 @@ future updates:
               <!-- Other Project Card: MongoDB Hospital Scheduling & Billing -->
               <div class="project-item">
                 <div class="project-image-container">
-                  <img src="images/mongodb.jpg" alt="Hospital Scheduling and Billing">
+                  <img loading="lazy" decoding="async" src="images/mongodb.jpg" alt="Hospital Scheduling and Billing">
                 </div>
                 <h3 class="project-title">MongoDB</h3>
                 <p class="project-description">
@@ -566,10 +572,10 @@ future updates:
   </div>
   
   <!-- Scripts -->
-  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  <template data-legacy-script><script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script></template>
+  <template data-legacy-script><script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script></template>
   <script src="darkmode.js"></script>
-  <script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
+  <template data-legacy-script><script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script></template>
   
  <!-- Main Page Scripts -->
 <script>
@@ -805,47 +811,8 @@ function filterProjects() {
   });
 }
 </script>
-<script type="module">
-  /* ==========================================================
-     8. Map
-  ========================================================== */
-// Define the two map style URLs (inverted for visual contrast: dark map on light theme, light map on dark theme)
-  const lightStyle = 'https://tiles.basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
-  const darkStyle = 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
 
-  // Check the saved theme; default to 'dark' if not set
-  const savedTheme = localStorage.getItem('theme') || 'dark';
-  // Use the appropriate map style based on the saved theme
-  const defaultStyle = savedTheme === 'dark' ? darkStyle : lightStyle;
-
-  // Initialize the map with the default style
-  const map = new maplibregl.Map({
-    container: 'map',
-    style: defaultStyle,
-    center: [-82.6384, 27.7671],
-    zoom: 8,
-    attributionControl: false
-  });
-
-  // Add your custom marker to the map
-  const markerEl = document.createElement('div');
-  markerEl.className = 'custom-marker';
-  new maplibregl.Marker({ element: markerEl })
-    .setLngLat([-82.6384, 27.7671])
-    .addTo(map);
-
-  // When the DOM is ready, attach an event listener to the dark mode toggle
-  document.addEventListener('DOMContentLoaded', function() {
-    const toggle = document.getElementById('darkModeToggle');
-    if (toggle) {
-      // Set the toggle's checked state based on the saved theme
-      toggle.checked = savedTheme === 'dark';
-      toggle.addEventListener('change', function() {
-        // When checked, use darkStyle; when unchecked, use lightStyle
-        map.setStyle(this.checked ? darkStyle : lightStyle);
-      });
-    }
-  });
-</script>
+<span id="era-ready" hidden></span>
+<script src="legacy-assets.js" defer></script>
 </body>
 </html>

@@ -1,0 +1,694 @@
+---
+import { existsSync } from "node:fs";
+import { getCollection } from "astro:content";
+import "../styles/home.css";
+import Icon from "../components/Icon.astro";
+const raw = (await getCollection("projects")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const featured = raw.filter((p) => p.data.featured);
+const categories = [...new Set(raw.map((p) => p.data.category))];
+const tools = [...new Set(raw.flatMap((p) => p.data.tools))].sort();
+const capabilities = {
+  nest: ["web"],
+  nume: ["ai", "web"],
+  proterra: ["data", "web"],
+  homelab: ["infra"],
+  "agent-usage": ["desktop"],
+  slice: ["web", "data"],
+  autoclicker: ["desktop"],
+  caremesh: ["web"],
+  "usf-campus-concierge": ["ai"],
+  optuna: ["ai"],
+  eduinsight: ["web"],
+  "todoo-app": ["web"],
+  portfolio: ["web"],
+  "image-classifier": ["ai"],
+  "hospital-data-warehouse": ["data"],
+  "business-statistics": ["data"],
+  "text-cleaning-analyzing": ["data"],
+  "product-reviews-analysis": ["data"],
+  "titanic-survival-predictor": ["ai"],
+  "tixly-app-design": ["design"],
+  mongodb: ["data"],
+};
+const facets = [
+  ["all", "All work"],
+  ["web", "Web apps"],
+  ["ai", "AI"],
+  ["data", "Data"],
+  ["infra", "Infrastructure"],
+  ["desktop", "Desktop"],
+  ["design", "Design"],
+];
+
+const facetIcons = {
+  all: "grid",
+  web: "globe",
+  ai: "brain-circuit",
+  data: "database",
+  infra: "server",
+  desktop: "monitor-smartphone",
+  design: "pen-tool",
+};
+const projectIcons = {
+  nest: "home",
+  nume: "brain-circuit",
+  proterra: "book",
+  slice: "pizza",
+  caremesh: "brain-circuit",
+  autoclicker: "monitor-smartphone",
+  "agent-usage": "monitor-smartphone",
+};
+const experience = [
+  {
+    year: "2023",
+    when: "Nov 2023 – Aug 2024",
+    org: "Raymond James",
+    role: "Managed Customer Accounts Associate",
+    icon: "briefcase",
+    logo: "/assets/org/raymond-james.png",
+    description:
+      "Account operations, transaction review and an Excel workflow for reconciliation.",
+  },
+  {
+    year: "2024",
+    when: "Aug 2024 – May 2025",
+    org: "USF MUMA College of Business",
+    role: "Graduate Teaching Assistant",
+    icon: "graduation-cap",
+    logo: "/assets/org/usf.png",
+    description:
+      "CGS 2100: Computers in Business. Supported students with Excel, Word, Teams and technical questions.",
+  },
+  {
+    year: "2026",
+    when: "Feb – May 2026",
+    org: "University of South Florida",
+    role: "Audio Visual Technician",
+    icon: "audio",
+    logo: "/assets/org/usf.png",
+    description:
+      "Classroom technology support across 12 learning spaces, with incident tracking and IT escalation.",
+  },
+  {
+    year: "2026",
+    when: "Jul 2026 – Present",
+    org: "Slice of the Burg",
+    role: "Freelance Data and Technology Consultant",
+    icon: "pizza",
+    description:
+      "Requirements, a technology roadmap and Toast menu analysis for the restaurant’s owners.",
+    current: true,
+  },
+  {
+    year: "2026",
+    when: "Jul 2026 – Present",
+    org: "Handshake AI",
+    role: "AI Evaluation Contractor and Reviewer",
+    icon: "brain-circuit",
+    description:
+      "Project Vortex. Create evaluation scenarios, review prompts and document model behavior.",
+    current: true,
+  },
+];
+const education = [
+  {
+    year: "2019",
+    when: "Aug 2019 – Aug 2023",
+    org: "University of South Florida",
+    role: "B.S. Business Management",
+    icon: "graduation-cap",
+    logo: "/assets/org/usf.png",
+    description:
+      "Honors College and Dean’s List. Golden Bull Award and MUMA 25 under 25 honoree.",
+    mark: "3.98 GPA",
+  },
+  {
+    year: "2024",
+    when: "Aug 2024 – May 2026",
+    org: "University of South Florida",
+    role: "M.S. Artificial Intelligence & Business Analytics",
+    icon: "graduation-cap",
+    logo: "/assets/org/usf.png",
+    description: "Graduate study in applied AI and business analytics.",
+    mark: "4.0 GPA",
+  },
+];
+
+const hasMark = existsSync("public/brand/f-mark.webp");
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fabrizio Petrozzi | Projects</title>
+    <meta
+      name="description"
+      content="Software, AI, and data projects by Fabrizio Petrozzi in St. Petersburg, Florida."
+    />
+    <link rel="canonical" href={new URL("/", Astro.site)} />
+    <meta property="og:title" content="Fabrizio Petrozzi | Projects" />
+    <meta
+      property="og:description"
+      content="Software, AI, and data projects by Fabrizio Petrozzi in St. Petersburg, Florida."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#0d1422" />
+    <script is:inline>
+      try {
+        document.documentElement.dataset.theme =
+          localStorage.getItem("portfolio-theme") === "light"
+            ? "light"
+            : "dark";
+      } catch {}
+    </script>
+    <link rel="stylesheet" href="/assets/fonts/fonts.css" />
+    <link
+      rel="preload"
+      href="/assets/fonts/instrument-sans.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="icon" href="/images/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/era.css" />
+    <link rel="expect" href="#era-ready" blocking="render" />
+    <script src="/era.js" is:inline></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#page-content">Skip to content</a>
+    <div class="scroll-rail" hidden>
+      <div class="scroll-track" aria-hidden="true"></div>
+      <div
+        class="scroll-thumb"
+        role="scrollbar"
+        tabindex="0"
+        aria-label="Page scroll"
+        aria-controls="page-content"
+        aria-orientation="vertical"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="0"
+        aria-valuetext="Top of page"
+        title="Drag to scroll. Arrow keys, Page Up, Page Down, Home and End also work."
+      >
+        <span class="scroll-fluid" aria-hidden="true"
+          ><span class="scroll-glass"
+            ><span class="drop-core"></span><span class="drop-glint"
+            ></span></span
+          ></span
+        >
+        <span class="scroll-readout" aria-hidden="true">0%</span>
+      </div>
+    </div>
+    <header class="site-header wrap">
+      <a class="brand" href="#top" aria-label="Fabrizio Petrozzi, top of page">
+        {
+          hasMark ? (
+            <img src="/brand/f-mark.webp" width="32" height="32" alt="" />
+          ) : (
+            <span>FP</span>
+          )
+        }
+        <span>Fabrizio Petrozzi</span>
+      </a>
+      <nav aria-label="Main navigation">
+        <a href="#work"><Icon name="grid" />Work</a><a href="#background"
+          ><Icon name="briefcase" />Background</a
+        ><a href="#contact"><Icon name="mail" />Contact</a>
+      </nav>
+      <button class="theme-toggle" aria-label="Switch to light theme" hidden
+        >◐</button
+      >
+      <a class="era-link era-switch" href="/classic/" data-era-link
+        ><Icon name="monitor-smartphone" />2023 site
+      </a>
+    </header>
+    <main id="page-content">
+      <section class="hero wrap" id="top" aria-labelledby="intro-title">
+        <p class="location">St. Petersburg, Florida</p>
+        <h1 id="intro-title">
+          Fabrizio <br />Petrozzi<span class="name-period">.</span>
+        </h1>
+        <div class="intro-bottom">
+          <p>
+            I studied business and AI at USF. I build web apps, work with data,
+            and run my own server.
+          </p>
+          <div class="intro-links">
+            <a href="#work"><Icon name="grid" />Explore my work </a><a
+              href="/files/resume.pdf"
+              ><Icon name="file-text" />Résumé
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="work wrap" id="work" aria-labelledby="work-title">
+        <div class="section-heading">
+          <h2 id="work-title"><Icon name="grid" />Selected work</h2><a
+            href="#projects"
+            ><Icon name="grid" />All {raw.length} projects
+          </a>
+        </div>
+        <article class="feature" id="homelab-feature">
+          <a
+            class="feature-image project-open"
+            href="/projects/homelab/"
+            aria-label="Explore the Homelab project"
+          >
+            <div class="image-caption">
+              <span>Homelab</span><span>Applications &amp; infrastructure</span>
+            </div>
+            <img
+              id="feature-shot"
+              src="/assets/shots/homelab.webp"
+              width="1400"
+              height="851"
+              alt="Homelab dashboard with application services, Minecraft server status and monitoring"
+              fetchpriority="high"
+            />
+            <span class="image-action"
+              ><Icon name="server" />Explore project
+            </span>
+          </a>
+          <div class="feature-info">
+            <div>
+              <p class="project-kind">Infrastructure</p><h3>Homelab</h3>
+            </div>
+            <div>
+              <p>
+                The server behind my apps, home automation and Minecraft world.
+                Built around Docker, with monitoring and backups alongside the
+                services.
+              </p>
+              <a class="text-link project-open" href="/projects/homelab/"
+                ><Icon name="server" />Inside the homelab
+              </a>
+            </div>
+          </div>
+        </article>
+        <div class="selected-pair">
+          {
+            featured.map((p) => (
+              <a class="project-summary" href={`/projects/${p.id}/`}>
+                <span class="project-kind">
+                  <Icon name={projectIcons[p.id] || "grid"} />
+                  {p.data.category}
+                </span>
+                <h3>{p.data.title}</h3>
+                <p>{p.data.summary}</p>
+                <span class="summary-foot">
+                  {p.data.tools.slice(0, 4).join(" / ")}
+                </span>
+              </a>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="about wrap" id="about">
+        <div class="about-person">
+          <img
+            src="/images/portrait.webp"
+            width="180"
+            height="180"
+            alt="Fabrizio Petrozzi"
+            loading="lazy"
+          /><h2>A little background</h2>
+        </div>
+        <div class="about-copy">
+          <p>
+            I’m based in St. Petersburg, Florida. Before these projects, I
+            studied business management at USF, worked at Raymond James Bank,
+            and returned to USF to study AI and business analytics. I also
+            worked as a teaching assistant for CGS 2100.
+          </p>
+          <p>
+            My projects have become more personal over time. Nest brings
+            household planning, recipes, and groceries into one app. Agent Usage
+            helps me keep track of the AI tools I use. My homelab is where I run
+            applications and learn the operational side of keeping them working.
+          </p>
+          <p>
+            I’ve kept the earlier coursework here too. It’s part of how I got
+            started.
+          </p>
+          <a class="text-link" href="/files/resume.pdf">Read my resume</a>
+        </div>
+      </section>
+      <section class="era-story wrap">
+        <h2>I kept the first version.</h2>
+        <div>
+          <p>
+            I built my original portfolio while learning HTML, CSS, and
+            JavaScript. It’s a little clunky, and I’m fond of it. You can still
+            use it.
+          </p>
+          <a href="/classic/" data-era-link class="pill-link"
+            >Switch to my original site</a
+          >
+        </div>
+      </section>
+
+      <section
+        class="background wrap"
+        id="background"
+        aria-labelledby="background-title"
+      >
+        <div class="section-heading">
+          <h2 id="background-title"><Icon name="briefcase" />Background</h2><a
+            href="/files/resume.pdf"><Icon name="file-text" />Résumé</a
+          >
+        </div>
+        <div class="journey">
+          <div class="journey-intro">
+            <p class="project-kind">Business, technology &amp; AI</p><h3>
+              Along the way.
+            </h3><p>
+              From business school and financial operations to classroom IT,
+              consulting and AI evaluation.
+            </p><div class="journey-years" aria-hidden="true">
+              <span id="journey-start">2023</span><span class="year-line"
+              ></span><span>2026</span>
+            </div>
+          </div>
+          <div class="journey-content">
+            <div
+              class="timeline-tabs"
+              role="tablist"
+              aria-label="Background timeline"
+              hidden
+            >
+              <span class="timeline-tab-indicator" aria-hidden="true"></span>
+              <button
+                type="button"
+                role="tab"
+                id="tab-experience"
+                aria-controls="panel-experience"
+                aria-selected="true"
+                data-timeline="experience"
+                ><Icon name="briefcase" />Experience</button
+              >
+              <button
+                type="button"
+                role="tab"
+                id="tab-education"
+                aria-controls="panel-education"
+                aria-selected="false"
+                tabindex="-1"
+                data-timeline="education"
+                ><Icon name="graduation-cap" />Education</button
+              >
+            </div>
+            <div class="timeline-stage">
+              {
+                [
+                  ["experience", experience],
+                  ["education", education],
+                ].map(([kind, items]) => (
+                  <div
+                    class="timeline-panel"
+                    id={`panel-${kind}`}
+                    role="tabpanel"
+                    aria-labelledby={`tab-${kind}`}
+                    tabindex="0"
+                  >
+                    <h3 class="timeline-fallback-heading">
+                      {kind === "experience" ? "Experience" : "Education"}
+                    </h3>
+                    <ol class="career-track">
+                      {items.map((item) => (
+                        <li
+                          class:list={[
+                            "career-stop",
+                            { "is-current": item.current },
+                          ]}
+                        >
+                          <div class="career-date">
+                            <time>{item.year}</time>
+                          </div>
+                          <div class="career-marker" aria-hidden="true">
+                            <span class="career-segment" />
+                            <span class="career-node" />
+                          </div>
+                          <article class="career-card">
+                            <div class="career-card-top">
+                              <span class="org-icon">
+                                {item.logo ? (
+                                  <img
+                                    src={item.logo}
+                                    width="32"
+                                    height="32"
+                                    alt=""
+                                    loading="lazy"
+                                  />
+                                ) : (
+                                  <Icon name={item.icon} />
+                                )}
+                              </span>
+                              <span class="career-org">{item.org}</span>
+                              {item.current && (
+                                <span class="current-label">Current</span>
+                              )}
+                            </div>
+                            <h4>{item.role}</h4>
+                            <p class="career-period">{item.when}</p>
+                            <p>{item.description}</p>
+                            {item.mark && <span class="gpa">{item.mark}</span>}
+                          </article>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="index wrap" id="projects" aria-labelledby="index-title">
+        <div class="section-heading">
+          <h2 id="index-title"><Icon name="grid" />All projects</h2><span
+            class="index-total"
+            >{raw.length} projects, including earlier work</span
+          >
+        </div>
+        <span id="all-projects" aria-hidden="true"></span>
+        <div class="filters" hidden>
+          <div class="filter-chips" role="group" aria-label="Filter projects">
+            {
+              facets.map(([id, label]) => (
+                <button
+                  type="button"
+                  data-filter={id}
+                  aria-pressed={id === "all" ? "true" : "false"}
+                >
+                  <Icon name={facetIcons[id]} />
+                  {label}
+                </button>
+              ))
+            }
+          </div>
+          <label class="search-label"
+            ><Icon name="search" /><span class="sr-only"
+              >Search all projects and tools</span
+            ><input
+              id="project-search"
+              type="search"
+              placeholder="Search projects or tools"
+            /></label
+          >
+          <div class="collection-controls">
+            <label
+              >Category<select id="category-filter"
+                ><option value="">All categories</option>{
+                  categories.map((category) => <option>{category}</option>)
+                }</select
+              ></label
+            >
+            <label
+              >Technology<select id="tool-filter"
+                ><option value="">All technologies</option>{
+                  tools.map((tool) => <option>{tool}</option>)
+                }</select
+              ></label
+            >
+            <button type="button" id="reset-filters">Reset filters</button>
+          </div>
+          <p id="result-count" role="status" aria-live="polite">
+            {raw.length} projects
+          </p>
+        </div>
+        <div class="project-list">
+          {
+            raw.map((p) => (
+              <article
+                class="project-row"
+                data-category={p.data.category}
+                data-tools={JSON.stringify(p.data.tools)}
+                data-facets={(capabilities[p.id] || []).join(" ")}
+                data-search={`${p.data.title} ${p.data.summary} ${p.data.tools.join(" ")}`.toLowerCase()}
+              >
+                <a
+                  class:list={[
+                    "project-row-link",
+                    { "project-open": p.id === "homelab" },
+                  ]}
+                  href={`/projects/${p.id}/`}
+                >
+                  <div
+                    class:list={[
+                      "project-thumb",
+                      `thumb-${(capabilities[p.id] || ["web"])[0]}`,
+                    ]}
+                  >
+                    <span class="project-emblem">
+                      <Icon
+                        name={
+                          projectIcons[p.id] ||
+                          facetIcons[(capabilities[p.id] || ["web"])[0]]
+                        }
+                      />
+                    </span>
+                  </div>
+                  <div class="project-card-copy">
+                    <>
+                      <span class="card-category">
+                        <Icon
+                          name={facetIcons[(capabilities[p.id] || ["web"])[0]]}
+                        />
+                        {p.data.category === "Earlier work"
+                          ? "Earlier work"
+                          : p.data.status}
+                      </span>
+                      <h3>{p.data.title}</h3>
+                      <p>{p.data.summary}</p>
+                      <span class="card-tools">
+                        {p.data.tools.slice(0, 3).join(" / ")}
+                      </span>
+                    </>
+                  </div>
+                </a>
+              </article>
+            ))
+          }
+        </div>
+        <p id="empty-results" hidden>
+          No projects match. <button type="button" id="clear-filters"
+            >Clear filters</button
+          >
+        </p>
+      </section>
+      <section class="contact wrap" id="contact">
+        <p>Contact</p><h2>Let’s talk.</h2><a
+          class="contact-email"
+          href="mailto:petrozzi@usf.edu"
+          ><Icon name="mail" />petrozzi@usf.edu
+        </a>
+        <div class="contact-links">
+          <a href="https://github.com/f-petrozzi"
+            ><Icon name="github" />GitHub</a
+          ><a href="https://www.linkedin.com/in/fabriziopetrozzi/"
+            ><Icon name="linkedin" />LinkedIn</a
+          ><a href="/files/resume.pdf"><Icon name="file-text" />Résumé</a>
+        </div>
+      </section>
+      <footer class="footer wrap">
+        <span>Fabrizio Petrozzi</span><a href="/classic/" data-era-link
+          ><Icon name="monitor-smartphone" />Visit the 2023 site
+        </a><span>© {new Date().getFullYear()}</span>
+      </footer>
+    </main>
+
+    <dialog class="project-dialog" aria-labelledby="detail-title">
+      <div class="dialog-toolbar">
+        <span>Selected work / Homelab</span><button
+          type="button"
+          class="close-project"
+          autofocus><Icon name="close" />Back to portfolio</button
+        >
+      </div>
+      <div class="dialog-body">
+        <div class="detail-heading">
+          <div>
+            <p class="project-kind">Infrastructure</p><h2 id="detail-title">
+              Inside the homelab.
+            </h2>
+          </div><p>
+            A self-hosted environment for applications, home automation and a
+            Minecraft server.
+          </p>
+        </div>
+        <figure class="detail-image">
+          <img
+            id="detail-shot"
+            src="/assets/shots/homelab.webp"
+            width="1400"
+            height="851"
+            alt="Application services and monitoring on the homelab dashboard"
+          /><figcaption>Dashboard capture / September 2026</figcaption>
+        </figure>
+        <div class="case-grid">
+          <h3>What runs here</h3><div>
+            <p>
+              Docker Compose brings the services together. The same environment
+              supports household applications, Home Assistant, monitoring and a
+              Minecraft server.
+            </p><p>
+              Keeping these services in one place also means looking after
+              updates, storage and backups.
+            </p>
+          </div>
+        </div>
+        <div class="case-grid">
+          <h3>How it connects</h3><div>
+            <p>
+              Tailscale provides private access. Selected public applications
+              use Cloudflare Tunnel. Prometheus and Grafana provide monitoring.
+            </p><div
+              class="connection-map"
+              role="img"
+              aria-label="Private access through Tailscale and selected public access through Cloudflare Tunnel reach the homelab services, monitored by Prometheus and Grafana."
+            >
+              <div><span>Private access</span><b>Tailscale</b></div><div>
+                <span>Selected public apps</span><b>Cloudflare Tunnel</b>
+              </div><div class="map-server">
+                <span>Homelab</span><b>Docker Compose services</b>
+              </div><div class="map-monitor">
+                <span>Monitoring</span><b>Prometheus &amp; Grafana</b>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="case-grid">
+          <h3>A useful boundary</h3><div>
+            <p>
+              Application code lives in separate repositories from deployment
+              configuration. That keeps changes to an app separate from the
+              configuration and backups of the server running it.
+            </p><p>
+              Centralizing services makes them easier to manage, but also makes
+              the host a shared dependency. Backups and a practical rollback
+              path matter alongside deployment.
+            </p>
+          </div>
+        </div>
+        <div class="detail-footer">
+          <span>Linux / Docker Compose / Tailscale / Prometheus / Grafana</span
+          ><button type="button" class="close-project"
+            ><Icon name="close" />Back to portfolio</button
+          >
+        </div>
+      </div>
+    </dialog>
+    <span id="era-ready" hidden></span>
+    <script>
+      import "../scripts/home";
+    </script>
+  </body>
+</html>
