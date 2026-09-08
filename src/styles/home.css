@@ -2372,3 +2372,16 @@ html.is-touch-scrolling {
     height: 20px;
   }
 }
+
+.site-header > .theme-toggle {
+  margin-left: 8px;
+}
+@media (max-width: 650px) {
+  .site-header nav {
+    flex: 0 1 auto;
+    margin-left: auto;
+  }
+  .site-header > .theme-toggle {
+    margin-left: 10px;
+  }
+}
