@@ -55,9 +55,10 @@ The link works with no JavaScript. Supported browsers use cross-document View Tr
 npx playwright install chromium
 npm run test:browser
 node tests/home-interactions.mjs
+node tests/mobile-controls.mjs
 ```
 
-Set `CHROMIUM_PATH` to reuse an installed Chromium executable and `PREVIEW_URL` to test another host. `node tests/transitions.mjs` verifies three round trips with a delayed transition script and stalled external assets, and samples frame intervals. These headless samples are diagnostics, not a real-device performance guarantee. Browser checks cover filtering, theme persistence, project navigation, round-trip era switching, mobile overflow, reduced motion, and no-JavaScript rendering. They save screenshots in `/tmp`. External requests on the original site are blocked during this test, so map availability is not assessed. Cross-browser testing on Safari and Firefox remains a manual release check.
+Set `CHROMIUM_PATH` to reuse an installed Chromium executable and `PREVIEW_URL` to test another host. `node tests/transitions.mjs` verifies three round trips with a delayed transition script and stalled external assets, and samples frame intervals. These headless samples are diagnostics, not a real-device performance guarantee. Browser checks cover filtering, theme persistence, project navigation, round-trip era switching, mobile overflow, reduced motion, and no-JavaScript rendering. The mobile-controls suite checks icon navigation, the sliding theme control, expandable career cards, and touch-scroll momentum/cancellation using Chromium touch emulation. Search uses 16px text on mobile to avoid input-focus zoom. They save screenshots in `/tmp`. External requests on the original site are blocked during this test, so map availability is not assessed. Cross-browser testing on Safari and Firefox remains a manual release check.
 
 ## GitHub Pages
 

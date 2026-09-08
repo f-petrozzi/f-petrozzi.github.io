@@ -16,10 +16,54 @@ let drag: {
   scroll: number;
   range: number;
   travel: number;
+  touch: boolean;
+  lastY: number;
+  lastTime: number;
 } | null = null;
 let scrollFrame = 0;
 const range = () => Math.max(0, root.scrollHeight - innerHeight);
 const travel = () => Math.max(1, rail.clientHeight - thumb.offsetHeight);
+// Touch drags have a bounded gain and one frame loop, then gently coast.
+let motionFrame = 0,
+  motionTime = 0,
+  motionTarget = 0,
+  motionPosition = 0,
+  motionVelocity = 0;
+function stopMomentum() {
+  cancelAnimationFrame(motionFrame);
+  motionFrame = 0;
+  motionVelocity = 0;
+}
+function stepMomentum(time: number) {
+  motionFrame = 0;
+  const dt = Math.min(0.04, Math.max(0.001, (time - motionTime) / 1000));
+  motionTime = time;
+  if (!drag) {
+    motionTarget += motionVelocity * dt;
+    motionVelocity *= Math.exp(-dt / 0.22);
+  }
+  const limit = range();
+  motionTarget = Math.max(0, Math.min(limit, motionTarget));
+  if (motionTarget === 0 || motionTarget === limit) motionVelocity = 0;
+  motionPosition +=
+    (motionTarget - motionPosition) * (1 - Math.exp(-dt / 0.045));
+  window.scrollTo({ top: motionPosition, behavior: "instant" });
+  scheduleScroll();
+  if (
+    drag?.touch ||
+    Math.abs(motionVelocity) > 10 ||
+    Math.abs(motionTarget - motionPosition) > 0.5
+  ) {
+    motionFrame = requestAnimationFrame(stepMomentum);
+  } else {
+    window.scrollTo({ top: motionTarget, behavior: "instant" });
+  }
+}
+function wakeMomentum() {
+  if (motionFrame || reducedMotion.matches) return;
+  motionTime = performance.now();
+  motionFrame = requestAnimationFrame(stepMomentum);
+}
 // Cursor proximity deforms the small surface. Scrolling only changes its position.
 const fluid = document.querySelector<HTMLElement>(".scroll-fluid")!;
 let fluidFrame = 0,
@@ -130,11 +174,15 @@ document.documentElement.addEventListener("pointerleave", releaseFluid);
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
     endDrag();
+    stopMomentum();
     stopFluid();
   }
 });
 reducedMotion.addEventListener("change", () => {
-  if (reducedMotion.matches) stopFluid();
+  if (reducedMotion.matches) {
+    stopFluid();
+    stopMomentum();
+  }
 });
 function updateScroll() {
   scrollFrame = 0;
@@ -163,18 +211,24 @@ function updateScroll() {
 function scheduleScroll() {
   if (!scrollFrame) scrollFrame = requestAnimationFrame(updateScroll);
 }
-function endDrag() {
+function endDrag(coast = false) {
   if (!drag) return;
+  const releasedTouch = drag.touch;
+  if (performance.now() - drag.lastTime > 100) motionVelocity = 0;
   const id = drag.id;
   drag = null;
   releaseFluid();
   if (thumb.hasPointerCapture(id)) thumb.releasePointerCapture(id);
   thumb.classList.remove("is-dragging");
   document.body.classList.remove("is-scroll-dragging");
+  if (coast && releasedTouch && !reducedMotion.matches) wakeMomentum();
+  else stopMomentum();
 }
 thumb.addEventListener("pointerdown", (event) => {
   if (!event.isPrimary || event.button !== 0 || !range()) return;
   event.preventDefault();
+  stopMomentum();
+  motionTarget = motionPosition = scrollY;
   thumb.focus({ preventScroll: true });
   drag = {
     id: event.pointerId,
@@ -183,6 +237,9 @@ thumb.addEventListener("pointerdown", (event) => {
     scroll: scrollY,
     range: range(),
     travel: travel(),
+    touch: event.pointerType === "touch",
+    lastY: event.clientY,
+    lastTime: performance.now(),
   };
   thumb.setPointerCapture(event.pointerId);
   thumb.classList.add("is-dragging");
@@ -190,23 +247,59 @@ thumb.addEventListener("pointerdown", (event) => {
 });
 thumb.addEventListener("pointermove", (event) => {
   if (!drag || event.pointerId !== drag.id) return;
-  aimFluid(event.clientX, event.clientY);
-  const top =
-    drag.scroll + ((event.clientY - drag.y) / drag.travel) * drag.range;
-  window.scrollTo({
-    top: Math.min(drag.range, Math.max(0, top)),
-    behavior: "instant",
-  });
-  scheduleScroll();
+  if (drag.touch) {
+    const now = performance.now();
+    const gain = Math.min(4, drag.range / drag.travel);
+    const elapsed = Math.max(8, now - drag.lastTime);
+    const velocity = (((event.clientY - drag.lastY) * gain) / elapsed) * 1000;
+    motionVelocity =
+      motionVelocity * 0.3 + Math.max(-2500, Math.min(2500, velocity)) * 0.7;
+    drag.lastY = event.clientY;
+    drag.lastTime = now;
+    motionTarget = Math.max(
+      0,
+      Math.min(range(), drag.scroll + (event.clientY - drag.y) * gain),
+    );
+    if (reducedMotion.matches)
+      window.scrollTo({ top: motionTarget, behavior: "instant" });
+    else wakeMomentum();
+  } else {
+    aimFluid(event.clientX, event.clientY);
+    const top =
+      drag.scroll + ((event.clientY - drag.y) / drag.travel) * drag.range;
+    window.scrollTo({
+      top: Math.min(drag.range, Math.max(0, top)),
+      behavior: "instant",
+    });
+    scheduleScroll();
+  }
 });
-thumb.addEventListener("pointerup", endDrag);
-thumb.addEventListener("pointercancel", endDrag);
-thumb.addEventListener("lostpointercapture", endDrag);
-window.addEventListener("blur", endDrag);
-window.addEventListener("resize", () => {
+thumb.addEventListener("pointerup", () => endDrag(true));
+thumb.addEventListener("pointercancel", () => endDrag());
+thumb.addEventListener("lostpointercapture", () => endDrag());
+window.addEventListener("blur", () => {
   endDrag();
+  stopMomentum();
+});
+let viewportWidth = innerWidth;
+window.addEventListener("resize", () => {
+  // Mobile browser chrome and the keyboard change height during normal use.
+  if (innerWidth !== viewportWidth) {
+    endDrag();
+    stopMomentum();
+    viewportWidth = innerWidth;
+  }
   scheduleScroll();
 });
+window.addEventListener("wheel", stopMomentum, { passive: true });
+document.addEventListener(
+  "pointerdown",
+  (event) => {
+    if (!thumb.contains(event.target as Node)) stopMomentum();
+  },
+  { passive: true },
+);
+document.addEventListener("keydown", stopMomentum);
 thumb.addEventListener("keydown", (event) => {
   const positions: Record<string, number> = {
     ArrowDown: scrollY + 60,
@@ -394,6 +487,50 @@ document
   .querySelector("#reset-filters")!
   .addEventListener("click", resetFilters);
 filters.hidden = false;
+
+// Native details remain usable without JavaScript; GSAP handles interruptible growth.
+document
+  .querySelectorAll<HTMLDetailsElement>(".career-card")
+  .forEach((card) => {
+    const summary = card.querySelector<HTMLElement>("summary")!;
+    const description = card.querySelector<HTMLElement>(".career-description")!;
+    let expanded = false;
+    function expand(open: boolean) {
+      if (expanded === open) return;
+      expanded = open;
+      gsap.killTweensOf(description);
+      const height = card.open ? description.getBoundingClientRect().height : 0;
+      card.open = true;
+      gsap.fromTo(
+        description,
+        { height, opacity: open ? 0.4 : 1 },
+        {
+          height: open ? description.scrollHeight : 0,
+          opacity: open ? 1 : 0,
+          duration: duration(0.38),
+          ease: "power3.inOut",
+          onComplete: () => {
+            card.open = open;
+            gsap.set(description, { clearProps: "height,opacity" });
+            sizeCareerSegments();
+            scheduleScroll();
+          },
+        },
+      );
+    }
+    summary.addEventListener("click", (event) => {
+      event.preventDefault();
+      expand(!expanded);
+    });
+    card.addEventListener("pointerenter", (event) => {
+      if (event.pointerType === "mouse" && matchMedia("(hover: hover)").matches)
+        expand(true);
+    });
+    card.addEventListener("pointerleave", (event) => {
+      if (event.pointerType === "mouse" && matchMedia("(hover: hover)").matches)
+        expand(false);
+    });
+  });
 
 // The two timelines share an animated selector and a continuous chronological spine.
 const timelineTabs = [

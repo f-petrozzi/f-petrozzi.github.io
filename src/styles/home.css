@@ -1660,9 +1660,6 @@ body.is-scroll-dragging {
   }
 }
 @media (max-width: 400px) {
-  .site-header nav {
-    display: none;
-  }
   .era-link {
     margin-left: auto;
   }
@@ -2034,5 +2031,125 @@ body.is-scroll-dragging {
 @media (max-width: 650px) {
   .search-box {
     width: 100%;
+  }
+}
+
+/* Compact summaries expand without changing the readable heading layout. */
+.career-track {
+  overflow-anchor: none;
+}
+.career-card {
+  padding: 12px 16px;
+}
+.career-summary {
+  list-style: none;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  column-gap: 12px;
+  align-items: center;
+}
+.career-summary::-webkit-details-marker {
+  display: none;
+}
+.career-card-top {
+  display: contents;
+}
+.career-summary .org-icon {
+  grid-column: 1;
+  grid-row: 1 / 4;
+  width: 36px;
+  height: 36px;
+  padding: 4px;
+}
+.career-summary .org-icon img {
+  width: 28px;
+  height: 28px;
+}
+.career-summary .career-org {
+  grid-column: 2;
+  font-size: 11px;
+}
+.career-summary h4 {
+  grid-column: 2;
+  font-size: 15px;
+  margin: 2px 0;
+}
+.career-summary .career-period {
+  grid-column: 2;
+  margin: 0;
+  font-size: 11px;
+}
+.career-summary .current-label {
+  display: none;
+}
+.career-summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 5px;
+  border-radius: 4px;
+}
+.career-description {
+  overflow: hidden;
+}
+.career-description-inner {
+  padding-top: 12px;
+}
+.career-description .gpa {
+  margin-top: 10px;
+}
+@media (max-width: 650px) {
+  .site-header {
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 90px;
+    padding-block: 12px;
+  }
+  .site-header nav {
+    display: flex;
+    order: 4;
+    width: 100%;
+    margin: 0;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .site-header nav a,
+  .site-header nav a:nth-child(2) {
+    display: inline-flex;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .site-header nav a .ui-icon {
+    width: 20px;
+    height: 20px;
+  }
+  .site-header nav a span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  #project-search {
+    font-size: 16px;
+  }
+  .scroll-rail {
+    top: 126px;
+  }
+  .career-card {
+    padding: 10px;
+  }
+  .career-summary {
+    column-gap: 8px;
+    grid-template-columns: 30px minmax(0, 1fr);
+  }
+  .career-summary .org-icon {
+    width: 30px;
+    height: 30px;
+  }
+  .career-summary h4 {
+    font-size: 14px;
   }
 }

@@ -214,9 +214,9 @@ const hasMark = existsSync("public/brand/f-mark.webp");
         <span>Fabrizio Petrozzi</span>
       </a>
       <nav aria-label="Main navigation">
-        <a href="#work"><Icon name="grid" />Work</a><a href="#background"
-          ><Icon name="briefcase" />Background</a
-        ><a href="#contact"><Icon name="mail" />Contact</a>
+        <a href="#work"><Icon name="grid" /><span>Work</span></a><a
+          href="#background"><Icon name="briefcase" /><span>Background</span></a
+        ><a href="#contact"><Icon name="mail" /><span>Contact</span></a>
       </nav>
       <ThemeToggle />
       <a class="era-link era-switch" href="/classic/" data-era-link
@@ -413,31 +413,39 @@ const hasMark = existsSync("public/brand/f-mark.webp");
                             <span class="career-segment" />
                             <span class="career-node" />
                           </div>
-                          <article class="career-card">
-                            <div class="career-card-top">
-                              <span class="org-icon">
-                                {item.logo ? (
-                                  <img
-                                    src={item.logo}
-                                    width="32"
-                                    height="32"
-                                    alt=""
-                                    loading="lazy"
-                                  />
-                                ) : (
-                                  <Icon name={item.icon} />
+                          <details class="career-card">
+                            <summary class="career-summary">
+                              <div class="career-card-top">
+                                <span class="org-icon">
+                                  {item.logo ? (
+                                    <img
+                                      src={item.logo}
+                                      width="32"
+                                      height="32"
+                                      alt=""
+                                      loading="lazy"
+                                    />
+                                  ) : (
+                                    <Icon name={item.icon} />
+                                  )}
+                                </span>
+                                <span class="career-org">{item.org}</span>
+                                {item.current && (
+                                  <span class="current-label">Current</span>
                                 )}
-                              </span>
-                              <span class="career-org">{item.org}</span>
-                              {item.current && (
-                                <span class="current-label">Current</span>
-                              )}
+                              </div>
+                              <h4>{item.role}</h4>
+                              <p class="career-period">{item.when}</p>
+                            </summary>
+                            <div class="career-description">
+                              <div class="career-description-inner">
+                                <p>{item.description}</p>
+                                {item.mark && (
+                                  <span class="gpa">{item.mark}</span>
+                                )}
+                              </div>
                             </div>
-                            <h4>{item.role}</h4>
-                            <p class="career-period">{item.when}</p>
-                            <p>{item.description}</p>
-                            {item.mark && <span class="gpa">{item.mark}</span>}
-                          </article>
+                          </details>
                         </li>
                       ))}
                     </ol>
