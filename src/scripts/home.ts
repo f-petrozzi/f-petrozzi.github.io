@@ -436,12 +436,16 @@ const count = document.querySelector<HTMLElement>("#result-count")!;
 const empty = document.querySelector<HTMLElement>("#empty-results")!;
 const activeSearchFilters: { label: string; tool: boolean }[] = [];
 const pillList = document.querySelector<HTMLElement>("#active-search-filters")!;
+const resetButton =
+  document.querySelector<HTMLButtonElement>("#reset-filters")!;
 let activeFilter = "all";
 let filterAnimation: gsap.core.Timeline | null = null;
 function filterProjects() {
   filterAnimation?.progress(1).kill();
   const state = reducedMotion.matches ? null : Flip.getState(rows);
   const term = normalizeSearch(search.value.trim());
+  resetButton.hidden =
+    activeFilter === "all" && activeSearchFilters.length === 0 && !term;
   let total = 0;
   rows.forEach((row) => {
     const matches =

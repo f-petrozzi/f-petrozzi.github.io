@@ -378,6 +378,7 @@ section {
   overflow-y: hidden;
   touch-action: pan-x pinch-zoom;
   scrollbar-width: thin;
+  padding-bottom: 10px;
   overscroll-behavior-x: contain;
 }
 .filter-chips button {
@@ -1892,10 +1893,16 @@ body.is-scroll-dragging {
   border-radius: 50%;
 }
 #reset-filters {
-  padding: 8px 12px;
+  padding: 7px 0;
   font-size: 13px;
-  border: 1px solid var(--line);
-  border-radius: 20px;
+  color: var(--muted);
+  border: 0;
+  background: none;
+  text-underline-offset: 4px;
+}
+#reset-filters:hover {
+  color: var(--text);
+  text-decoration: underline;
 }
 :root[data-theme="light"] {
   color-scheme: light;
@@ -2229,6 +2236,7 @@ html.is-touch-scrolling {
   overflow-y: hidden;
   touch-action: pan-x pinch-zoom;
   scrollbar-width: thin;
+  padding-bottom: 10px;
   overscroll-behavior-x: contain;
   gap: 8px;
   width: 100%;
@@ -2289,7 +2297,7 @@ html.is-touch-scrolling {
   z-index: 1;
   right: 0;
   top: 0;
-  bottom: 0;
+  bottom: 12px;
   width: 40px;
   display: grid;
   place-items: center;
