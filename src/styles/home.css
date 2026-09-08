@@ -375,6 +375,8 @@ section {
   min-width: 0;
   max-width: 100%;
   overflow-x: auto;
+  overflow-y: hidden;
+  touch-action: pan-x pinch-zoom;
   scrollbar-width: thin;
   overscroll-behavior-x: contain;
 }
@@ -2224,6 +2226,8 @@ html.is-touch-scrolling {
   flex-wrap: nowrap;
   min-width: 0;
   overflow-x: auto;
+  overflow-y: hidden;
+  touch-action: pan-x pinch-zoom;
   scrollbar-width: thin;
   overscroll-behavior-x: contain;
   gap: 8px;
@@ -2273,4 +2277,41 @@ html.is-touch-scrolling {
 .filter-chips button:focus-visible,
 .search-filter-pill:focus-visible {
   outline-offset: -2px;
+}
+
+.filter-scroll-shell {
+  position: relative;
+  min-width: 0;
+  max-width: 100%;
+}
+.filter-scroll-more {
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  display: grid;
+  place-items: center;
+  padding-left: 12px;
+  background: linear-gradient(90deg, transparent, var(--paper) 40%);
+  color: var(--text);
+  font-size: 26px;
+  line-height: 1;
+}
+.filter-scroll-shell.has-more .filter-chips {
+  mask-image: linear-gradient(
+    90deg,
+    #000 calc(100% - 40px),
+    transparent calc(100% - 12px)
+  );
+}
+.filter-chips button:active,
+.search-filter-pill:active {
+  translate: none;
+}
+@media (max-width: 650px) {
+  .filter-scroll-shell {
+    width: 100%;
+  }
 }

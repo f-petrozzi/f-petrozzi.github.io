@@ -646,6 +646,26 @@ document
   .querySelector("#reset-filters")!
   .addEventListener("click", resetFilters);
 filters.hidden = false;
+const chipStrip = document.querySelector<HTMLElement>(".filter-chips")!;
+const chipShell = document.querySelector<HTMLElement>(".filter-scroll-shell")!;
+const moreFilters = document.querySelector<HTMLButtonElement>(
+  ".filter-scroll-more",
+)!;
+function updateFilterOverflow() {
+  const more =
+    chipStrip.scrollWidth - chipStrip.clientWidth - chipStrip.scrollLeft > 2;
+  moreFilters.hidden = !more;
+  chipShell.classList.toggle("has-more", more);
+}
+chipStrip.addEventListener("scroll", updateFilterOverflow, { passive: true });
+new ResizeObserver(updateFilterOverflow).observe(chipStrip);
+moreFilters.addEventListener("click", () =>
+  chipStrip.scrollBy({
+    left: chipStrip.clientWidth * 0.7,
+    behavior: reducedMotion.matches ? "instant" : "smooth",
+  }),
+);
+updateFilterOverflow();
 
 // Native details remain usable without JavaScript; GSAP handles interruptible growth.
 document

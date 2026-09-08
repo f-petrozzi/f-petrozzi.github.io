@@ -470,19 +470,27 @@ const hasMark = existsSync("public/brand/f-mark.webp");
         </div>
         <span id="all-projects" aria-hidden="true"></span>
         <div class="filters" hidden>
-          <div class="filter-chips" role="group" aria-label="Filter projects">
-            {
-              facets.map(([id, label]) => (
-                <button
-                  type="button"
-                  data-filter={id}
-                  aria-pressed={id === "all" ? "true" : "false"}
-                >
-                  <Icon name={facetIcons[id]} />
-                  {label}
-                </button>
-              ))
-            }
+          <div class="filter-scroll-shell">
+            <div class="filter-chips" role="group" aria-label="Filter projects">
+              {
+                facets.map(([id, label]) => (
+                  <button
+                    type="button"
+                    data-filter={id}
+                    aria-pressed={id === "all" ? "true" : "false"}
+                  >
+                    <Icon name={facetIcons[id]} />
+                    {label}
+                  </button>
+                ))
+              }
+            </div>
+            <button
+              type="button"
+              class="filter-scroll-more"
+              aria-label="Show more filters"
+              hidden><span aria-hidden="true">›</span></button
+            >
           </div>
           <div class="search-box">
             <label class="search-label"
