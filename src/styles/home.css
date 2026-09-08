@@ -1317,9 +1317,17 @@ body.is-scroll-dragging {
 }
 .journey {
   display: grid;
-  grid-template-columns: 0.75fr 1.3fr;
-  gap: 70px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 500px);
+  gap: 48px;
+  max-width: 960px;
+  margin-inline: auto;
   padding-top: 22px;
+}
+.journey-content {
+  width: 100%;
+  max-width: 500px;
+  min-width: 0;
+  justify-self: center;
 }
 .journey-intro {
   position: sticky;
@@ -1327,7 +1335,7 @@ body.is-scroll-dragging {
   align-self: start;
 }
 .journey-intro h3 {
-  font-size: 48px;
+  font-size: 42px;
   line-height: 1.12;
   letter-spacing: -0.045em;
   margin-bottom: 22px;
@@ -1375,8 +1383,8 @@ body.is-scroll-dragging {
   background: #101b2c;
   padding: 4px;
   border-radius: 28px;
-  margin-bottom: 30px;
-  width: min(100%, 380px);
+  margin: 0 auto 22px;
+  width: min(100%, 360px);
 }
 .timeline-tabs button {
   display: flex;
