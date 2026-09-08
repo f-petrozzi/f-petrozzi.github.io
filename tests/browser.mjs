@@ -42,7 +42,9 @@ assert.ok(
     .isVisible(),
 );
 await page.getByRole("option", { name: "Python", exact: true }).click();
-assert.equal(await page.locator("#project-search").inputValue(), "Python");
+assert.ok(
+  await page.getByRole("button", { name: "Remove Python filter" }).isVisible(),
+);
 assert.equal(await page.locator("#tool-suggestions").isVisible(), false);
 assert.ok((await page.locator(".project-row:visible").count()) > 0);
 await page.locator("#project-search").fill("py");
@@ -51,7 +53,11 @@ const selectedTool = await page
   .getByRole("option", { selected: true })
   .innerText();
 await page.keyboard.press("Enter");
-assert.equal(await page.locator("#project-search").inputValue(), selectedTool);
+assert.ok(
+  await page
+    .getByRole("button", { name: `Remove ${selectedTool} filter` })
+    .isVisible(),
+);
 await page.locator("#project-search").fill("p");
 await page.keyboard.press("Escape");
 assert.equal(await page.locator("#tool-suggestions").isVisible(), false);

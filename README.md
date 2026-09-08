@@ -14,7 +14,7 @@ npm run dev
 Open http://localhost:4321 for the development server. The shared homelab preview is
 http://petro.ink:4444/ (the existing `portfolio-preview` container). It serves
 `dist/`, so run `npm run build` after source changes and reload that URL.
-The separate Agent Usage preview remains at `/agent-usage/`. The approved PoC design is now integrated at `/`; the separate `/preview/` page has been retired. The homepage retains featured project metadata, theme preference, full project pages, and the original-site switch. A short then-and-now story introduces the original site. Filter chips and search organize the collection; prefix-based tool suggestions support keyboard and pointer selection.
+The separate Agent Usage preview remains at `/agent-usage/`. The approved PoC design is now integrated at `/`; the separate `/preview/` page has been retired. The homepage retains featured project metadata, theme preference, full project pages, and the original-site switch. A short then-and-now story introduces the original site. Filter chips and search organize the collection; prefix-based tool suggestions support keyboard and pointer selection. Selecting a suggestion or pressing Enter adds a removable search pill; stacked pills require every selected tool or term to match. Reset filters clears both pills and category chips.
 
 For a standalone production preview:
 
@@ -58,7 +58,7 @@ node tests/home-interactions.mjs
 node tests/mobile-controls.mjs
 ```
 
-Set `CHROMIUM_PATH` to reuse an installed Chromium executable and `PREVIEW_URL` to test another host. `node tests/transitions.mjs` verifies three round trips with a delayed transition script and stalled external assets, and samples frame intervals. These headless samples are diagnostics, not a real-device performance guarantee. Browser checks cover filtering, theme persistence, project navigation, round-trip era switching, mobile overflow, reduced motion, and no-JavaScript rendering. The mobile-controls suite checks icon navigation, the sliding theme control, expandable career cards, and touch-scroll momentum/cancellation using Chromium touch emulation. Search uses 16px text on mobile to avoid input-focus zoom. They save screenshots in `/tmp`. External requests on the original site are blocked during this test, so map availability is not assessed. Cross-browser testing on Safari and Firefox remains a manual release check.
+Set `CHROMIUM_PATH` to reuse an installed Chromium executable and `PREVIEW_URL` to test another host. `node tests/transitions.mjs` verifies three round trips with a delayed transition script and stalled external assets, and samples frame intervals. These headless samples are diagnostics, not a real-device performance guarantee. Browser checks cover filtering, theme persistence, project navigation, round-trip era switching, mobile overflow, reduced motion, and no-JavaScript rendering. The mobile-controls suite checks icon navigation, the standalone theme control, expandable career cards, persistent filter pills, mirrored mobile timelines, always-visible GPA, and held touch-scroll momentum/cancellation using Chromium touch emulation. Search uses 16px text on mobile to avoid input-focus zoom. They save screenshots in `/tmp`. External requests on the original site are blocked during this test, so map availability is not assessed. Cross-browser testing on Safari and Firefox remains a manual release check.
 
 ## GitHub Pages
 

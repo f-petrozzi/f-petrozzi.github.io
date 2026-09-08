@@ -55,21 +55,20 @@ for (const width of [320, 390]) {
       .evaluate((el) => parseFloat(getComputedStyle(el).fontSize) >= 16),
   );
 }
-const slider = page.locator(".theme-slider");
-const dark = await slider.evaluate(
-  (el) =>
-    el.getBoundingClientRect().x - el.parentElement.getBoundingClientRect().x,
-);
 await page.locator(".theme-toggle").tap();
-await page.waitForTimeout(500);
-const light = await slider.evaluate(
-  (el) =>
-    el.getBoundingClientRect().x - el.parentElement.getBoundingClientRect().x,
+assert.equal(await page.locator("html").getAttribute("data-theme"), "light");
+const headerItems = await page.locator(".site-header > *").evaluateAll((els) =>
+  els
+    .filter((el) => el.getBoundingClientRect().height > 0)
+    .map((el) => {
+      const r = el.getBoundingClientRect();
+      return r.y + r.height / 2;
+    }),
 );
-assert.ok(dark - light >= 25);
-await page
-  .locator(".site-header")
-  .screenshot({ path: "/tmp/portfolio-mobile-header.png" });
+assert.ok(
+  Math.max(...headerItems) - Math.min(...headerItems) < 2,
+  "header stays on one row",
+);
 const mobileCard = page.locator("#panel-experience .career-card").first();
 await mobileCard.locator("summary").tap();
 await page.waitForTimeout(500);
@@ -77,9 +76,65 @@ assert.ok(await mobileCard.evaluate((el) => el.open));
 await mobileCard.locator("summary").tap();
 await page.waitForTimeout(500);
 assert.equal(await mobileCard.evaluate((el) => el.open), false);
+
+// Mirrored mobile tracks and GPA stay readable without expanding cards.
+const side = async (kind) =>
+  page
+    .locator(`#panel-${kind} .career-stop`)
+    .first()
+    .evaluate((el) => ({
+      card: el.querySelector(".career-card").getBoundingClientRect().x,
+      dot: el.querySelector(".career-node").getBoundingClientRect().x,
+    }));
+assert.ok((await side("experience")).card < (await side("experience")).dot);
+await page.getByRole("tab", { name: "Education", exact: true }).tap();
+await page.waitForTimeout(1400);
+assert.ok((await side("education")).card > (await side("education")).dot);
+assert.equal(await page.locator("#panel-education .gpa:visible").count(), 2);
+assert.equal(
+  await page.locator("#panel-education .career-card[open]").count(),
+  0,
+);
+// Mobile selection survives blur and becomes a persistent, stackable pill.
+await page.locator("#project-search").fill("py");
+await page.getByRole("option", { name: "Python", exact: true }).tap();
+assert.ok(
+  await page
+    .getByRole("button", { name: "Remove Python filter", exact: true })
+    .isVisible(),
+);
+await page.locator("#project-search").fill("docker");
+await page.locator("#project-search").press("Enter");
+assert.equal(await page.locator(".search-filter-pill").count(), 2);
+assert.ok(
+  await page.locator(".project-row:visible").evaluateAll(
+    (els) =>
+      els.length > 0 &&
+      els.every((el) => {
+        const tools = JSON.parse(el.dataset.tools);
+        return tools.includes("Python") && tools.includes("Docker");
+      }),
+  ),
+);
 await page
-  .locator(".journey")
-  .screenshot({ path: "/tmp/portfolio-mobile-cards.png" });
+  .getByRole("button", { name: "Remove Python filter", exact: true })
+  .tap();
+assert.equal(await page.locator(".search-filter-pill").count(), 1);
+await page.getByRole("button", { name: "Reset filters", exact: true }).tap();
+assert.equal(await page.locator(".search-filter-pill").count(), 0);
+await page.locator("#project-search").fill("p");
+await page.locator("#project-search").press("ArrowDown");
+const selectedTool = await page
+  .getByRole("option", { selected: true })
+  .innerText();
+await page.locator("#project-search").press("Enter");
+assert.ok(
+  await page
+    .getByRole("button", { name: `Remove ${selectedTool} filter`, exact: true })
+    .isVisible(),
+);
+await page.getByRole("button", { name: "Reset filters", exact: true }).tap();
+await page.locator("#project-search").blur();
 // Real touch input through Chromium exercises pointer capture and release inertia.
 const cdp = await context.newCDPSession(page);
 await page.evaluate(() => scrollTo({ top: 600, behavior: "instant" }));
@@ -91,6 +146,13 @@ await cdp.send("Input.dispatchTouchEvent", {
   type: "touchStart",
   touchPoints: [{ x, y }],
 });
+await page.waitForTimeout(750);
+assert.equal(
+  await page
+    .locator(".scroll-thumb")
+    .evaluate((el) => el === document.activeElement),
+  false,
+);
 await page.evaluate(() => {
   window.samples = [];
   window.sampling = true;
@@ -148,6 +210,6 @@ await page.waitForTimeout(300);
 assert.ok(Math.abs((await page.evaluate(() => scrollY)) - cancelled) < 2);
 assert.deepEqual(errors, []);
 console.log(
-  "PASS: mobile icon navigation, no overflow, 16px search, sliding theme, hover/keyboard/tap cards, monotonic touch inertia and cancellation.",
+  "PASS: mobile icon navigation, no overflow, 16px search, standalone theme, hover/keyboard/tap cards, held touch inertia, cancellation, mirrored timelines, GPA, and stacked tool filters.",
 );
 await browser.close();

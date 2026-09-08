@@ -33,6 +33,7 @@ function stopMomentum() {
   cancelAnimationFrame(motionFrame);
   motionFrame = 0;
   motionVelocity = 0;
+  if (!drag?.touch) root.classList.remove("is-touch-scrolling");
 }
 function stepMomentum(time: number) {
   motionFrame = 0;
@@ -57,6 +58,7 @@ function stepMomentum(time: number) {
     motionFrame = requestAnimationFrame(stepMomentum);
   } else {
     window.scrollTo({ top: motionTarget, behavior: "instant" });
+    root.classList.remove("is-touch-scrolling");
   }
 }
 function wakeMomentum() {
@@ -229,16 +231,21 @@ thumb.addEventListener("pointerdown", (event) => {
   event.preventDefault();
   stopMomentum();
   motionTarget = motionPosition = scrollY;
-  thumb.focus({ preventScroll: true });
+  if (event.pointerType !== "touch") thumb.focus({ preventScroll: true });
+  else {
+    (document.activeElement as HTMLElement)?.blur();
+    root.classList.add("is-touch-scrolling");
+    stopFluid();
+  }
   drag = {
     id: event.pointerId,
-    y: event.clientY,
+    y: event.pointerType === "touch" ? event.screenY : event.clientY,
     x: event.clientX,
     scroll: scrollY,
     range: range(),
     travel: travel(),
     touch: event.pointerType === "touch",
-    lastY: event.clientY,
+    lastY: event.pointerType === "touch" ? event.screenY : event.clientY,
     lastTime: performance.now(),
   };
   thumb.setPointerCapture(event.pointerId);
@@ -251,15 +258,13 @@ thumb.addEventListener("pointermove", (event) => {
     const now = performance.now();
     const gain = Math.min(4, drag.range / drag.travel);
     const elapsed = Math.max(8, now - drag.lastTime);
-    const velocity = (((event.clientY - drag.lastY) * gain) / elapsed) * 1000;
+    const velocity = (((event.screenY - drag.lastY) * gain) / elapsed) * 1000;
     motionVelocity =
       motionVelocity * 0.3 + Math.max(-2500, Math.min(2500, velocity)) * 0.7;
-    drag.lastY = event.clientY;
+    const delta = event.screenY - drag.lastY;
+    drag.lastY = event.screenY;
     drag.lastTime = now;
-    motionTarget = Math.max(
-      0,
-      Math.min(range(), drag.scroll + (event.clientY - drag.y) * gain),
-    );
+    motionTarget = Math.max(0, Math.min(range(), motionTarget + delta * gain));
     if (reducedMotion.matches)
       window.scrollTo({ top: motionTarget, behavior: "instant" });
     else wakeMomentum();
@@ -274,6 +279,18 @@ thumb.addEventListener("pointermove", (event) => {
     scheduleScroll();
   }
 });
+// Prevent Safari's long-press selection/native panning from competing with the drag.
+thumb.addEventListener("touchstart", (event) => event.preventDefault(), {
+  passive: false,
+});
+thumb.addEventListener(
+  "touchmove",
+  (event) => {
+    if (drag?.touch) event.preventDefault();
+  },
+  { passive: false },
+);
+thumb.addEventListener("contextmenu", (event) => event.preventDefault());
 thumb.addEventListener("pointerup", () => endDrag(true));
 thumb.addEventListener("pointercancel", () => endDrag());
 thumb.addEventListener("lostpointercapture", () => endDrag());
@@ -349,6 +366,8 @@ const normalizeSearch = (value: string) =>
     .toLowerCase();
 const count = document.querySelector<HTMLElement>("#result-count")!;
 const empty = document.querySelector<HTMLElement>("#empty-results")!;
+const activeSearchFilters: { label: string; tool: boolean }[] = [];
+const pillList = document.querySelector<HTMLElement>("#active-search-filters")!;
 let activeFilter = "all";
 let filterAnimation: gsap.core.Timeline | null = null;
 function filterProjects() {
@@ -360,7 +379,16 @@ function filterProjects() {
     const matches =
       (activeFilter === "all" ||
         row.dataset.facets!.split(" ").includes(activeFilter)) &&
-      normalizeSearch(row.dataset.search!).includes(term);
+      normalizeSearch(row.dataset.search!).includes(term) &&
+      activeSearchFilters.every((filter) =>
+        filter.tool
+          ? (JSON.parse(row.dataset.tools!) as string[]).some(
+              (tool) => normalizeSearch(tool) === normalizeSearch(filter.label),
+            )
+          : normalizeSearch(row.dataset.search!).includes(
+              normalizeSearch(filter.label),
+            ),
+      );
     row.hidden = !matches;
     if (matches) total++;
   });
@@ -398,6 +426,7 @@ const tools = [
 ].sort((a, b) => a.localeCompare(b));
 let matches: string[] = [];
 let activeSuggestion = -1;
+let choosingSuggestion = false;
 function closeSuggestions() {
   suggestions.hidden = true;
   search.setAttribute("aria-expanded", "false");
@@ -410,7 +439,9 @@ function showSuggestions() {
     ? tools.filter(
         (tool) =>
           normalizeSearch(tool).startsWith(prefix) &&
-          normalizeSearch(tool) !== prefix,
+          !activeSearchFilters.some(
+            (filter) => normalizeSearch(filter.label) === normalizeSearch(tool),
+          ),
       )
     : [];
   suggestions.replaceChildren();
@@ -422,21 +453,81 @@ function showSuggestions() {
     option.setAttribute("role", "option");
     option.setAttribute("aria-selected", "false");
     option.textContent = tool;
-    option.addEventListener("pointerdown", (event) => event.preventDefault());
-    option.addEventListener("click", () => chooseSuggestion(index));
+    let startX = 0,
+      startY = 0;
+    option.addEventListener("pointerdown", (event) => {
+      choosingSuggestion = true;
+      startX = event.clientX;
+      startY = event.clientY;
+      if (event.pointerType !== "touch") event.preventDefault();
+    });
+    option.addEventListener("pointerup", (event) => {
+      if (Math.hypot(event.clientX - startX, event.clientY - startY) >= 10) {
+        choosingSuggestion = false;
+        if (document.activeElement !== search) closeSuggestions();
+      }
+    });
+    option.addEventListener("pointercancel", () => {
+      choosingSuggestion = false;
+      if (document.activeElement !== search) closeSuggestions();
+    });
+    // Keep the option mounted through touchend and blur until the actual click.
+    // Removing it earlier can send the compatibility click to a project below it.
+    option.addEventListener("click", (event) => {
+      event.preventDefault();
+      choosingSuggestion = false;
+      addSearchFilter(tool);
+    });
     suggestions.append(option);
   });
   suggestions.hidden = matches.length === 0;
   search.setAttribute("aria-expanded", String(matches.length > 0));
 }
-function chooseSuggestion(index: number) {
-  search.value = matches[index];
+function renderSearchFilters() {
+  pillList.replaceChildren();
+  pillList.hidden = activeSearchFilters.length === 0;
+  activeSearchFilters.forEach((filter, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "search-filter-pill";
+    button.textContent = `${filter.label} ×`;
+    button.setAttribute("aria-label", `Remove ${filter.label} filter`);
+    button.addEventListener("click", () => {
+      activeSearchFilters.splice(index, 1);
+      renderSearchFilters();
+      filterProjects();
+      search.focus({ preventScroll: true });
+    });
+    pillList.append(button);
+  });
+}
+function addSearchFilter(value: string) {
+  const term = value.trim();
+  if (!term) return;
+  const tool = tools.find(
+    (tool) => normalizeSearch(tool) === normalizeSearch(term),
+  );
+  const label = tool || term;
+  if (
+    !activeSearchFilters.some(
+      (filter) => normalizeSearch(filter.label) === normalizeSearch(label),
+    )
+  ) {
+    activeSearchFilters.push({ label, tool: Boolean(tool) });
+  }
+  search.value = "";
   closeSuggestions();
+  renderSearchFilters();
   filterProjects();
+}
+function chooseSuggestion(index: number) {
+  addSearchFilter(matches[index]);
 }
 search.addEventListener("input", showSuggestions);
 search.addEventListener("focus", showSuggestions);
-search.addEventListener("blur", closeSuggestions);
+search.addEventListener("blur", () => {
+  if (!choosingSuggestion) closeSuggestions();
+});
 search.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && !suggestions.hidden) {
     event.preventDefault();
@@ -461,16 +552,16 @@ search.addEventListener("keydown", (event) => {
     const option = suggestions.children[activeSuggestion];
     search.setAttribute("aria-activedescendant", option.id);
     option.scrollIntoView({ block: "nearest", behavior: "instant" });
-  } else if (
-    event.key === "Enter" &&
-    !suggestions.hidden &&
-    activeSuggestion >= 0
-  ) {
+  } else if (event.key === "Enter" && !event.isComposing) {
     event.preventDefault();
-    chooseSuggestion(activeSuggestion);
+    if (!suggestions.hidden && activeSuggestion >= 0)
+      chooseSuggestion(activeSuggestion);
+    else addSearchFilter(search.value);
   }
 });
 function resetFilters() {
+  activeSearchFilters.length = 0;
+  renderSearchFilters();
   closeSuggestions();
   search.value = "";
   activeFilter = "all";

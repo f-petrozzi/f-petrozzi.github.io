@@ -219,8 +219,12 @@ const hasMark = existsSync("public/brand/f-mark.webp");
         ><a href="#contact"><Icon name="mail" /><span>Contact</span></a>
       </nav>
       <ThemeToggle />
-      <a class="era-link era-switch" href="/classic/" data-era-link
-        ><Icon name="monitor-smartphone" />2023 site
+      <a
+        class="era-link era-switch"
+        aria-label="Visit the 2023 site"
+        href="/classic/"
+        data-era-link
+        ><Icon name="monitor-smartphone" /><span>2023 site</span>
       </a>
     </header>
     <main id="page-content">
@@ -436,13 +440,13 @@ const hasMark = existsSync("public/brand/f-mark.webp");
                               </div>
                               <h4>{item.role}</h4>
                               <p class="career-period">{item.when}</p>
+                              {item.mark && (
+                                <span class="gpa">{item.mark}</span>
+                              )}
                             </summary>
                             <div class="career-description">
                               <div class="career-description-inner">
                                 <p>{item.description}</p>
-                                {item.mark && (
-                                  <span class="gpa">{item.mark}</span>
-                                )}
                               </div>
                             </div>
                           </details>
@@ -506,6 +510,13 @@ const hasMark = existsSync("public/brand/f-mark.webp");
             </ul>
           </div>
           <button type="button" id="reset-filters">Reset filters</button>
+          <div
+            id="active-search-filters"
+            class="active-search-filters"
+            aria-label="Active search filters"
+            hidden
+          >
+          </div>
           <p id="result-count" role="status" aria-live="polite">
             {raw.length} projects
           </p>
