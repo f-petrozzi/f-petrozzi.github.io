@@ -219,6 +219,8 @@ const geometry = await page.locator("#panel-experience").evaluate((panel) => {
     return {
       cardCenter: card.top + card.height / 2,
       dotCenter: dot.top + dot.height / 2,
+      yearLeft: year.left,
+      dotRight: dot.right,
       yearRight: year.right,
       dotLeft: dot.left,
       segmentEnd: segment.getBoundingClientRect().bottom,
@@ -229,7 +231,7 @@ const geometry = await page.locator("#panel-experience").evaluate((panel) => {
 });
 for (const row of geometry) {
   assert.ok(Math.abs(row.cardCenter - row.dotCenter) < 1);
-  assert.ok(row.yearRight < row.dotLeft);
+  assert.ok(row.yearLeft > row.dotRight);
   if (row.nextY !== null) assert.ok(Math.abs(row.segmentEnd - row.nextY) < 2);
   else assert.ok(row.lastHidden);
 }

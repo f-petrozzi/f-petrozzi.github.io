@@ -24,6 +24,19 @@ await card.locator("summary").focus();
 await desktop.keyboard.press("Enter");
 await desktop.waitForTimeout(500);
 assert.ok(await card.evaluate((el) => el.open));
+const desktopSide = await desktop
+  .locator("#panel-experience .career-stop")
+  .first()
+  .evaluate((el) => ({
+    card: el.querySelector(".career-card").getBoundingClientRect().x,
+    dot: el.querySelector(".career-node").getBoundingClientRect().x,
+  }));
+assert.ok(desktopSide.card < desktopSide.dot);
+assert.ok(
+  (
+    await desktop.locator("#panel-experience .career-card").last().innerText()
+  ).includes("Slice of the Burg"),
+);
 const context = await browser.newContext({
   viewport: { width: 390, height: 844 },
   isMobile: true,
@@ -168,7 +181,27 @@ for (let i = 1; i <= 8; i++) {
     touchPoints: [{ x, y: y + i * 12 }],
   });
   await page.waitForTimeout(20);
+  const moved = await page.locator(".scroll-thumb").boundingBox();
+  assert.ok(
+    Math.abs(moved.y + moved.height / 2 - (y + i * 12)) < 2,
+    "held droplet should stay under the finger",
+  );
 }
+for (const delta of [80, 64, 48, 64, 80, 96]) {
+  await cdp.send("Input.dispatchTouchEvent", {
+    type: "touchMove",
+    touchPoints: [{ x, y: y + delta }],
+  });
+  await page.waitForTimeout(20);
+  const moved = await page.locator(".scroll-thumb").boundingBox();
+  assert.ok(
+    Math.abs(moved.y + moved.height / 2 - (y + delta)) < 2,
+    "direction reversal should track the finger",
+  );
+}
+await page.evaluate(() => {
+  window.samples = [];
+});
 const releaseY = await page.evaluate(() => scrollY);
 await cdp.send("Input.dispatchTouchEvent", {
   type: "touchEnd",

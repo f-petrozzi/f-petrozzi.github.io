@@ -19,11 +19,13 @@ let drag: {
   touch: boolean;
   lastY: number;
   lastTime: number;
+  railTop: number;
+  grabOffset: number;
 } | null = null;
 let scrollFrame = 0;
 const range = () => Math.max(0, root.scrollHeight - innerHeight);
 const travel = () => Math.max(1, rail.clientHeight - thumb.offsetHeight);
-// Touch drags have a bounded gain and one frame loop, then gently coast.
+// Touch movement follows the finger exactly; only release uses the inertia loop.
 let motionFrame = 0,
   motionTime = 0,
   motionTarget = 0,
@@ -33,7 +35,12 @@ function stopMomentum() {
   cancelAnimationFrame(motionFrame);
   motionFrame = 0;
   motionVelocity = 0;
-  if (!drag?.touch) root.classList.remove("is-touch-scrolling");
+  if (!drag?.touch) {
+    root.classList.remove("is-touch-scrolling");
+    rail.style.removeProperty("top");
+    rail.style.removeProperty("height");
+    rail.style.removeProperty("bottom");
+  }
 }
 function stepMomentum(time: number) {
   motionFrame = 0;
@@ -58,7 +65,7 @@ function stepMomentum(time: number) {
     motionFrame = requestAnimationFrame(stepMomentum);
   } else {
     window.scrollTo({ top: motionTarget, behavior: "instant" });
-    root.classList.remove("is-touch-scrolling");
+    stopMomentum();
   }
 }
 function wakeMomentum() {
@@ -189,13 +196,14 @@ reducedMotion.addEventListener("change", () => {
 function updateScroll() {
   scrollFrame = 0;
   if (!drag) releaseFluid();
-  const max = range();
+  const max = drag?.touch ? drag.range : range();
+  const thumbTravel = drag?.touch ? drag.travel : travel();
   const fraction = max ? Math.min(1, Math.max(0, scrollY / max)) : 0;
-  thumb.style.transform = `translate3d(0, ${fraction * travel()}px, 0)`;
+  thumb.style.transform = `translate3d(0, ${fraction * thumbTravel}px, 0)`;
   const railBounds = rail.getBoundingClientRect();
   thumbCenter = {
     x: railBounds.left + thumb.offsetWidth / 2,
-    y: railBounds.top + fraction * travel() + thumb.offsetHeight / 2,
+    y: railBounds.top + fraction * thumbTravel + thumb.offsetHeight / 2,
   };
   const percent = Math.round(fraction * 100);
   thumb.setAttribute("aria-valuenow", String(percent));
@@ -220,80 +228,140 @@ function endDrag(coast = false) {
   const id = drag.id;
   drag = null;
   releaseFluid();
-  if (thumb.hasPointerCapture(id)) thumb.releasePointerCapture(id);
+  if (!releasedTouch && thumb.hasPointerCapture(id))
+    thumb.releasePointerCapture(id);
   thumb.classList.remove("is-dragging");
   document.body.classList.remove("is-scroll-dragging");
   if (coast && releasedTouch && !reducedMotion.matches) wakeMomentum();
   else stopMomentum();
 }
 thumb.addEventListener("pointerdown", (event) => {
-  if (!event.isPrimary || event.button !== 0 || !range()) return;
+  if (
+    event.pointerType === "touch" ||
+    !event.isPrimary ||
+    event.button !== 0 ||
+    !range()
+  )
+    return;
   event.preventDefault();
   stopMomentum();
-  motionTarget = motionPosition = scrollY;
-  if (event.pointerType !== "touch") thumb.focus({ preventScroll: true });
-  else {
-    (document.activeElement as HTMLElement)?.blur();
-    root.classList.add("is-touch-scrolling");
-    stopFluid();
-  }
+  thumb.focus({ preventScroll: true });
   drag = {
     id: event.pointerId,
-    y: event.pointerType === "touch" ? event.screenY : event.clientY,
+    y: event.clientY,
     x: event.clientX,
     scroll: scrollY,
     range: range(),
     travel: travel(),
-    touch: event.pointerType === "touch",
-    lastY: event.pointerType === "touch" ? event.screenY : event.clientY,
+    touch: false,
+    lastY: event.clientY,
     lastTime: performance.now(),
+    railTop: 0,
+    grabOffset: 0,
   };
   thumb.setPointerCapture(event.pointerId);
   thumb.classList.add("is-dragging");
   document.body.classList.add("is-scroll-dragging");
 });
 thumb.addEventListener("pointermove", (event) => {
-  if (!drag || event.pointerId !== drag.id) return;
-  if (drag.touch) {
-    const now = performance.now();
-    const gain = Math.min(4, drag.range / drag.travel);
-    const elapsed = Math.max(8, now - drag.lastTime);
-    const velocity = (((event.screenY - drag.lastY) * gain) / elapsed) * 1000;
-    motionVelocity =
-      motionVelocity * 0.3 + Math.max(-2500, Math.min(2500, velocity)) * 0.7;
-    const delta = event.screenY - drag.lastY;
-    drag.lastY = event.screenY;
-    drag.lastTime = now;
-    motionTarget = Math.max(0, Math.min(range(), motionTarget + delta * gain));
-    if (reducedMotion.matches)
-      window.scrollTo({ top: motionTarget, behavior: "instant" });
-    else wakeMomentum();
-  } else {
-    aimFluid(event.clientX, event.clientY);
-    const top =
-      drag.scroll + ((event.clientY - drag.y) / drag.travel) * drag.range;
-    window.scrollTo({
-      top: Math.min(drag.range, Math.max(0, top)),
-      behavior: "instant",
-    });
-    scheduleScroll();
-  }
+  if (!drag || drag.touch || event.pointerId !== drag.id) return;
+  aimFluid(event.clientX, event.clientY);
+  const top =
+    drag.scroll + ((event.clientY - drag.y) / drag.travel) * drag.range;
+  window.scrollTo({
+    top: Math.min(drag.range, Math.max(0, top)),
+    behavior: "instant",
+  });
+  scheduleScroll();
 });
-// Prevent Safari's long-press selection/native panning from competing with the drag.
-thumb.addEventListener("touchstart", (event) => event.preventDefault(), {
-  passive: false,
-});
+// Use one native touch stream, with viewport-relative coordinates and fixed rail
+// geometry. Mixing screen coordinates and accumulated deltas caused mobile jumps.
 thumb.addEventListener(
-  "touchmove",
+  "touchstart",
   (event) => {
-    if (drag?.touch) event.preventDefault();
+    event.preventDefault();
+    if (event.touches.length !== 1 || !range()) return;
+    endDrag();
+    stopMomentum();
+    stopFluid();
+    (document.activeElement as HTMLElement)?.blur();
+    const touch = event.touches[0];
+    const bounds = rail.getBoundingClientRect();
+    const thumbBounds = thumb.getBoundingClientRect();
+    rail.style.top = `${bounds.top}px`;
+    rail.style.height = `${bounds.height}px`;
+    rail.style.bottom = "auto";
+    root.classList.add("is-touch-scrolling");
+    motionTarget = motionPosition = scrollY;
+    drag = {
+      id: touch.identifier,
+      y: touch.clientY,
+      x: touch.clientX,
+      scroll: scrollY,
+      range: range(),
+      travel: travel(),
+      touch: true,
+      lastY: touch.clientY,
+      lastTime: performance.now(),
+      railTop: bounds.top,
+      grabOffset: touch.clientY - thumbBounds.top,
+    };
+    thumb.classList.add("is-dragging");
+    document.body.classList.add("is-scroll-dragging");
   },
   { passive: false },
 );
+thumb.addEventListener(
+  "touchmove",
+  (event) => {
+    if (!drag?.touch) return;
+    event.preventDefault();
+    const touch = [...event.touches].find(
+      (touch) => touch.identifier === drag!.id,
+    );
+    if (!touch) return;
+    const now = performance.now();
+    const top =
+      ((touch.clientY - drag.railTop - drag.grabOffset) / drag.travel) *
+      drag.range;
+    const next = Math.max(0, Math.min(drag.range, top));
+    const velocity =
+      ((next - motionPosition) / Math.max(8, now - drag.lastTime)) * 1000;
+    motionVelocity =
+      motionVelocity * 0.25 + Math.max(-1800, Math.min(1800, velocity)) * 0.75;
+    motionTarget = motionPosition = next;
+    drag.lastTime = now;
+    drag.lastY = touch.clientY;
+    window.scrollTo({ top: next, behavior: "instant" });
+    updateScroll();
+  },
+  { passive: false },
+);
+thumb.addEventListener(
+  "touchend",
+  (event) => {
+    if (!drag?.touch) return;
+    event.preventDefault();
+    if (
+      [...event.changedTouches].some((touch) => touch.identifier === drag!.id)
+    )
+      endDrag(true);
+  },
+  { passive: false },
+);
+thumb.addEventListener("touchcancel", () => {
+  if (drag?.touch) endDrag();
+});
 thumb.addEventListener("contextmenu", (event) => event.preventDefault());
-thumb.addEventListener("pointerup", () => endDrag(true));
-thumb.addEventListener("pointercancel", () => endDrag());
-thumb.addEventListener("lostpointercapture", () => endDrag());
+thumb.addEventListener("pointerup", () => {
+  if (drag && !drag.touch) endDrag();
+});
+thumb.addEventListener("pointercancel", () => {
+  if (drag && !drag.touch) endDrag();
+});
+thumb.addEventListener("lostpointercapture", () => {
+  if (drag && !drag.touch) endDrag();
+});
 window.addEventListener("blur", () => {
   endDrag();
   stopMomentum();

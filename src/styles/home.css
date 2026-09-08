@@ -2187,22 +2187,6 @@ body.is-scroll-dragging {
   .scroll-rail {
     top: 88px;
   }
-  #panel-experience .career-stop {
-    grid-template-columns: minmax(0, 1fr) 12px 27px;
-  }
-  #panel-experience .career-card {
-    grid-column: 1;
-    grid-row: 1;
-  }
-  #panel-experience .career-marker {
-    grid-column: 2;
-    grid-row: 1;
-  }
-  #panel-experience .career-date {
-    grid-column: 3;
-    grid-row: 1;
-    text-align: left;
-  }
 }
 .career-summary .gpa {
   grid-column: 2;
@@ -2236,4 +2220,31 @@ html.is-touch-scrolling {
   color: var(--text);
   background: var(--panel);
   font-size: 13px;
+}
+
+#panel-experience .career-stop {
+  grid-template-columns: minmax(0, 1fr) 16px 40px;
+}
+#panel-experience .career-card {
+  grid-column: 1;
+  grid-row: 1;
+}
+#panel-experience .career-marker {
+  grid-column: 2;
+  grid-row: 1;
+}
+#panel-experience .career-date {
+  grid-column: 3;
+  grid-row: 1;
+  text-align: left;
+}
+@media (max-width: 760px) {
+  #panel-experience .career-stop {
+    grid-template-columns: minmax(0, 1fr) 12px 29px;
+  }
+}
+@media (max-width: 400px) {
+  #panel-experience .career-stop {
+    grid-template-columns: minmax(0, 1fr) 12px 27px;
+  }
 }
