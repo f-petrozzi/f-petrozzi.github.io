@@ -29,7 +29,7 @@ const all = [
     description: "Recipe import and meal recommendation context.",
   },
 ];
-const shots = compact ? [all[2], all[0], all[1]] : all;
+const shots = compact ? [all[0], all[2], all[1]] : all;
 const first = shots[0];
 ---
 
@@ -55,6 +55,7 @@ const first = shots[0];
               height="1050"
               alt={shot.description}
               loading="lazy"
+              decoding="async"
             />
           </button>
           <figcaption>
@@ -177,145 +178,165 @@ const first = shots[0];
       );
   });
 </script>
-<style is:global>
+<style is:inline>
   .nume-gallery {
+    --gallery-bg: #f7f9fb;
+    --gallery-ink: #172630;
+    --gallery-muted: #526576;
+    --gallery-line: #dce4e9;
+    --gallery-accent: #216e65;
+    color-scheme: light;
+    color: var(--gallery-ink);
+    background: var(--gallery-bg);
     margin: 32px 0 40px;
-  }
-  .gallery-strip {
-    position: relative;
-    display: flex;
-    gap: 18px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    overscroll-behavior-x: contain;
-    scrollbar-width: thin;
-    scrollbar-color: var(--line) transparent;
-    padding-bottom: 12px;
-  }
-  .nume-gallery figure {
-    flex: 0 0 min(76vw, 420px);
-    min-width: 0;
-    margin: 0;
-    scroll-snap-align: start;
-  }
-  .nume-picture {
-    display: block;
-    width: 100%;
-    padding: 0;
-    background: none;
-    border: 0;
     border-radius: 12px;
     overflow: hidden;
-  }
-  .nume-picture img {
-    display: block;
-    width: 100%;
-    height: auto;
-    border: 1px solid var(--line);
-    border-radius: 12px;
-  }
-  .nume-gallery figcaption {
-    display: grid;
-    gap: 5px;
-    margin-top: 10px;
-    color: var(--faint);
-    font-size: 12px;
-    line-height: 1.5;
-  }
-  .nume-gallery figcaption strong {
-    color: var(--ink);
-    font-weight: 500;
-    font-size: 15px;
-  }
-  .nume-shot-description {
-    max-width: 45ch;
-  }
-  .gallery-controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    margin-top: 12px;
-  }
-  .gallery-controls button {
-    min-height: 44px;
-    padding: 0 12px;
-    font: inherit;
-    font-size: 13px;
-    color: var(--muted);
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    cursor: pointer;
-  }
-  .gallery-controls button[aria-pressed="true"] {
-    color: var(--accent);
-    background: var(--line);
-  }
-  .gallery-controls button:hover {
-    color: var(--ink);
-  }
-  .nume-gallery.is-compact {
-    margin: 0;
-    min-height: 300px;
-    display: flex;
-    flex-direction: column;
-  }
-  .is-compact .gallery-strip {
-    display: block;
-    overflow: visible;
-    padding: 0;
-    flex: 1;
-    min-height: 0;
-  }
-  .is-compact figure {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .is-compact .nume-picture {
-    min-height: 0;
-  }
-  .is-compact .nume-picture img {
-    max-height: 230px;
-    object-fit: contain;
-    border: 0;
-  }
-  .is-compact figcaption {
-    font-size: 11px;
-    text-align: center;
-    margin-top: 6px;
-  }
-  .is-compact .gallery-controls {
-    justify-content: center;
-    margin-top: 4px;
-    flex-wrap: nowrap;
-  }
-  .is-compact .gallery-controls button {
-    font-size: 12px;
-  }
-  .nume-demo-link {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    color: var(--accent);
-    font-size: 14px;
-    margin-top: 12px;
-  }
-</style>
 
-<style is:global>
-  .nume-gallery.is-compact {
-    height: auto;
-  }
-  .is-compact .gallery-strip {
-    flex: none;
-  }
-  .is-compact figure {
-    height: auto;
-    display: block;
-  }
-  .is-compact .nume-picture img {
-    max-height: none;
+    .gallery-strip {
+      position: relative;
+      display: flex;
+      gap: 18px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      overscroll-behavior-x: contain;
+      scrollbar-width: thin;
+      scrollbar-color: #91a5b0 transparent;
+      padding-bottom: 12px;
+    }
+    .gallery-strip::-webkit-scrollbar {
+      height: 6px;
+    }
+    .gallery-strip::-webkit-scrollbar-thumb {
+      background: #91a5b0;
+      border-radius: 6px;
+    }
+    .gallery-strip::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    & figure {
+      flex: 0 0 min(76vw, 420px);
+      min-width: 0;
+      margin: 0;
+      scroll-snap-align: start;
+    }
+    .nume-picture {
+      display: block;
+      width: 100%;
+      padding: 0;
+      background: none;
+      border: 0;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .nume-picture img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 0;
+      border-radius: 0;
+      transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    & figcaption {
+      display: grid;
+      gap: 5px;
+      margin-top: 10px;
+      color: var(--gallery-muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    & figcaption strong {
+      color: var(--gallery-ink);
+      font-weight: 500;
+      font-size: 15px;
+    }
+    .nume-shot-description {
+      max-width: 45ch;
+    }
+    .gallery-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 12px;
+    }
+    .gallery-controls button {
+      min-height: 44px;
+      padding: 0 12px;
+      font: inherit;
+      font-size: 13px;
+      color: var(--gallery-muted);
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      cursor: pointer;
+    }
+    .gallery-controls button[aria-pressed="true"] {
+      color: var(--gallery-accent);
+      background: #e4eeeb;
+    }
+    .gallery-controls button:hover {
+      color: var(--gallery-ink);
+    }
+    :is(button, a, [tabindex]):focus-visible {
+      outline: 2px solid var(--gallery-accent);
+      outline-offset: -3px;
+    }
+    &.is-compact {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      height: 320px;
+      min-height: 0;
+    }
+    &.is-compact .gallery-strip {
+      display: block;
+      overflow: hidden;
+      padding: 0;
+      flex: 1;
+      min-height: 0;
+    }
+    &.is-compact figure {
+      height: 100%;
+    }
+    &.is-compact .nume-picture,
+    &.is-compact .nume-picture img {
+      height: 100%;
+    }
+    &.is-compact .nume-picture img {
+      object-fit: cover;
+      object-position: top;
+    }
+    &.is-compact figcaption {
+      display: none;
+    }
+    &.is-compact .gallery-controls {
+      justify-content: center;
+      margin: 0;
+      flex-wrap: nowrap;
+      padding: 4px;
+      border-top: 1px solid var(--gallery-line);
+    }
+    .nume-demo-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      color: var(--gallery-accent);
+      font-size: 14px;
+      margin-top: 12px;
+    }
+    @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+      .nume-picture:hover img {
+        transform: translateY(-2px) scale(1.025);
+      }
+    }
+    @media (max-width: 767px) {
+      &.is-compact {
+        height: 240px;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .nume-picture img {
+        transition: none;
+      }
+    }
   }
 </style>

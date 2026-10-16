@@ -248,57 +248,74 @@ section {
   color: var(--ink);
 }
 
-/* Selected work: bento of glass panels */
+/* Selected work: adjoining, equal-height screenshot cards. */
 .work {
   padding-bottom: 112px;
 }
 .bento {
   align-items: stretch;
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  border: 1px solid var(--glass-rim);
+  border-radius: var(--radius-lg);
 }
-.work-card {
+.work-card.glass {
   display: flex;
   flex-direction: column;
-  padding: 14px;
-  transition: border-color 200ms ease;
+  min-width: 0;
+  padding: 20px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
-.work-card.is-wide {
-  grid-column: span 8;
+.work-card:nth-child(odd) {
+  border-right: 1px solid var(--glass-rim);
 }
-.work-card.is-narrow {
-  grid-column: span 4;
+.work-card:nth-child(n + 3) {
+  border-top: 1px solid var(--glass-rim);
 }
-.work-card.is-half {
-  grid-column: span 6;
+.work-card:first-child {
+  border-top-left-radius: calc(var(--radius-lg) - 1px);
 }
-@media (hover: hover) and (pointer: fine) {
-  .work-card:hover {
-    border-color: var(--glass-rim-hover);
-  }
+.work-card:nth-child(2) {
+  border-top-right-radius: calc(var(--radius-lg) - 1px);
+}
+.work-card:nth-last-child(2) {
+  border-bottom-left-radius: calc(var(--radius-lg) - 1px);
+}
+.work-card:last-child {
+  border-bottom-right-radius: calc(var(--radius-lg) - 1px);
+}
+.work-card:has(.work-more.is-expanded) {
+  z-index: 3;
 }
 .work-media {
   display: grid;
   place-items: center;
-  height: auto;
-  min-height: 200px;
+  min-height: 0;
   overflow: hidden;
-  border-radius: var(--radius-md);
+  border-radius: 12px;
 }
 .work-media img {
   width: 100%;
-  height: auto;
-  border-radius: 10px;
-}
-.work-card .work-media .project-art {
-  width: 100%;
   height: 100%;
-  min-height: 0;
-  border: 0;
-  border-radius: 0;
-  background: none;
-  box-shadow: none;
+  object-fit: contain;
+  transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.work-card[data-project="homelab"] .work-media {
+  background: #0d1522;
+}
+.work-card[data-project="proterra"] .work-media {
+  background: #f4f3eb;
+}
+.work-card[data-project="nest"] .work-media {
+  background: #10160e;
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .work-media:hover img {
+    transform: translateY(-2px) scale(1.025);
+  }
 }
 .work-body {
   display: flex;
@@ -338,20 +355,25 @@ section {
   position: relative;
   isolation: isolate;
   /* Cards in a row share a height; the stage absorbs the difference. */
-  flex: 1 1 auto;
+  flex: 1 0 320px;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  min-height: 320px;
 }
 .work-stage > * {
   flex: 1 1 auto;
+  min-height: 0;
+}
+.work-stage > .work-media {
+  height: 320px;
 }
 .work-more {
   position: relative;
+  z-index: 2;
   align-self: start;
   margin-bottom: 12px;
   border-radius: 22px;
-  --info-fill: color-mix(in srgb, var(--bg) 89%, var(--ink));
+  --info-fill: color-mix(in srgb, var(--bg) 94%, var(--ink));
 }
 .work-more summary {
   display: grid;
@@ -363,7 +385,7 @@ section {
   color: var(--muted);
   border-radius: 50%;
   position: relative;
-  z-index: 1;
+  z-index: 3;
 }
 .work-more summary::-webkit-details-marker {
   display: none;
@@ -389,18 +411,8 @@ section {
 .work-more:not(.info-enhanced)[open] .more-closed {
   display: none;
 }
-/* Mouse users open and close the panel by hovering, so the close icon stays for touch and keyboard. */
-@media (hover: hover) and (pointer: fine) {
-  .work-more.is-expanded summary:not(:focus-visible) {
-    opacity: 0;
-    pointer-events: none;
-  }
-  .work-more .work-more-body h4 {
-    padding-right: 0;
-  }
-}
 .work-more-body {
-  padding: 18px;
+  padding: 18px 18px 62px;
   margin-left: 0;
   font-size: 14px;
   line-height: 1.55;
@@ -433,11 +445,32 @@ section {
 }
 .info-enhanced .work-more-body {
   position: absolute;
+  z-index: 2;
   left: 0;
-  top: 0;
+  bottom: 0;
+  max-height: min(420px, 65dvh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--faint) transparent;
+  border-radius: 22px;
+  transform-origin: 22px calc(100% - 22px);
   margin: 0;
   opacity: 0;
   pointer-events: none;
+}
+.info-enhanced .work-more-body::-webkit-scrollbar {
+  width: 5px;
+}
+.info-enhanced .work-more-body::-webkit-scrollbar-thumb {
+  background: var(--faint);
+  border-radius: 5px;
+}
+.info-enhanced .work-more-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.work-more summary:focus-visible {
+  outline: 2px solid var(--accent);
 }
 .info-enhanced.is-expanded .work-more-body {
   pointer-events: auto;
@@ -449,7 +482,6 @@ button.work-media {
   width: 100%;
   padding: 0;
   border: 0;
-  background: transparent;
   cursor: zoom-in;
 }
 .work-contribution {
@@ -467,8 +499,9 @@ button.work-media {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  margin-top: 0;
-  padding-top: 0;
+  min-height: 44px;
+  margin-top: -56px;
+  padding-left: 56px;
 }
 .work-tools {
   display: flex;
@@ -1074,21 +1107,6 @@ button.work-media {
 }
 
 /* Responsive */
-@media (max-width: 1050px) {
-  .work-card.is-wide,
-  .work-card.is-narrow {
-    grid-column: 1 / -1;
-  }
-  .work-card.is-half {
-    grid-column: span 6;
-  }
-  .work-card.is-narrow .nume-picture img {
-    width: auto;
-    max-width: 100%;
-    max-height: 340px;
-    margin-inline: auto;
-  }
-}
 @media (max-width: 860px) {
   .hero-grid {
     grid-template-columns: 1fr;
@@ -1129,16 +1147,35 @@ button.work-media {
     gap: 0 28px;
   }
   .bento {
-    align-items: start;
-    gap: 14px;
+    grid-template-columns: minmax(0, 1fr);
   }
-  .work-card.is-wide,
-  .work-card.is-narrow,
-  .work-card.is-half {
-    grid-column: 1 / -1;
+  .work-card.glass {
+    padding: 14px;
   }
-  .work-media {
-    height: 200px;
+  .work-card:nth-child(odd) {
+    border-right: 0;
+  }
+  .work-card:nth-child(2) {
+    border-top-right-radius: 0;
+  }
+  .work-card:nth-last-child(2) {
+    border-bottom-left-radius: 0;
+  }
+  .work-card:first-child {
+    border-top-right-radius: calc(var(--radius-lg) - 1px);
+  }
+  .work-card:last-child {
+    border-bottom-left-radius: calc(var(--radius-lg) - 1px);
+  }
+  .work-card + .work-card {
+    border-top: 1px solid var(--glass-rim);
+  }
+  .work-stage {
+    flex-basis: 240px;
+    min-height: 240px;
+  }
+  .work-stage > .work-media {
+    height: 240px;
   }
   .hero-grid {
     gap: 16px;
@@ -1507,33 +1544,21 @@ button.work-media {
 
 .info-ink {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
+  bottom: 0;
+  left: 0;
+  transform-origin: left bottom;
   pointer-events: none;
 }
-.info-ink g {
+.info-ink g,
+.info-orb g {
   fill: var(--info-fill);
 }
-.info-arm {
-  display: none;
+.info-orb {
   position: absolute;
-  left: 0;
-  top: 0;
+  inset: 0;
+  z-index: -1;
   width: 44px;
   height: 44px;
-  --fluid-fill: var(--info-fill);
-}
-.info-enhanced .info-arm {
-  display: block;
-}
-.info-enhanced .more-closed .ui-icon {
-  width: 16px;
-  height: 16px;
-}
-.work-more > summary {
-  transform-origin: center;
 }
 .work-more:not(.info-enhanced) {
   background: var(--info-fill);

@@ -1,6 +1,12 @@
 export const featured = [
   {
     id: "homelab",
+    image: {
+      src: "/assets/shots/homelab-featured.webp",
+      width: 1440,
+      height: 574,
+      alt: "Homelab architecture showing private access, hosted projects and monitoring.",
+    },
     contribution: "I started my homelab and added services.",
     hook: "It also hosts Nest, the Agent Usage collector, and NüMe’s API and database on their own Docker network.",
     how: [
@@ -11,6 +17,7 @@ export const featured = [
   },
   {
     id: "nume",
+    image: undefined,
     contribution: "I developed the frontend and backend.",
     hook: "Each recommendation is stored with its reasons, alternatives, and the profile used.",
     how: [
@@ -21,6 +28,12 @@ export const featured = [
   },
   {
     id: "proterra",
+    image: {
+      src: "/assets/shots/proterra-featured.webp",
+      width: 1440,
+      height: 900,
+      alt: "Proterra Intelligence weekly issues and a cattle technology brief on the real site.",
+    },
     contribution: "I built Proterra and run Codex to draft the briefs.",
     hook: "Approval applies to the exact version reviewers read.",
     how: [
@@ -31,6 +44,12 @@ export const featured = [
   },
   {
     id: "nest",
+    image: {
+      src: "/assets/shots/nest-featured.webp",
+      width: 1120,
+      height: 636,
+      alt: "Nest home dashboard with tasks, dinner plans and a synced household phone, using sample data.",
+    },
     contribution: "I built Nest with FastAPI and SQLite.",
     hook: "AI reads receipt photos into individual items for review before saving a grocery purchase.",
     how: [
