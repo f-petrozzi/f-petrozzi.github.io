@@ -427,7 +427,7 @@ section {
   width: 100%;
 }
 .info-enhanced {
-  overflow: hidden;
+  overflow: visible;
   width: 44px;
   height: 44px;
 }
@@ -437,6 +437,10 @@ section {
   top: 0;
   margin: 0;
   opacity: 0;
+  pointer-events: none;
+}
+.info-enhanced.is-expanded .work-more-body {
+  pointer-events: auto;
 }
 .info-enhanced::details-content {
   content-visibility: visible;
@@ -1511,6 +1515,22 @@ button.work-media {
 }
 .info-ink g {
   fill: var(--info-fill);
+}
+.info-arm {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 44px;
+  height: 44px;
+  --fluid-fill: var(--info-fill);
+}
+.info-enhanced .info-arm {
+  display: block;
+}
+.info-enhanced .more-closed .ui-icon {
+  width: 16px;
+  height: 16px;
 }
 .work-more > summary {
   transform-origin: center;
