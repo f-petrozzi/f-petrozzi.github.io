@@ -606,6 +606,8 @@ const initial = createState();
     --nest-accent: #e8c276;
     --nest-accent-ink: #171b12;
     --nest-scrollbar: #718067;
+    --nest-radius-control: 8px;
+    --nest-radius-card: 12px;
     color-scheme: dark;
     container-type: inline-size;
     min-width: 0;
@@ -655,11 +657,14 @@ const initial = createState();
     button {
       min-height: 44px;
       border: 1px solid var(--nest-line);
-      border-radius: 9px;
+      border-radius: var(--nest-radius-control);
       background: var(--nest-surface);
       padding: 9px 14px;
       cursor: pointer;
       touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+      overflow-wrap: anywhere;
     }
     button:disabled {
       opacity: 0.65;
@@ -676,7 +681,7 @@ const initial = createState();
       min-height: 44px;
       padding: 9px 10px;
       border: 1px solid var(--nest-line);
-      border-radius: 8px;
+      border-radius: var(--nest-radius-control);
       background: var(--nest-bg);
       font-size: 16px;
     }
@@ -725,6 +730,8 @@ const initial = createState();
       display: flex;
       align-items: center;
       gap: 10px;
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
     .nest-brand svg {
       width: 32px;
@@ -733,6 +740,7 @@ const initial = createState();
       stroke-width: 1.6;
       stroke-linecap: round;
       stroke-linejoin: round;
+      flex-shrink: 0;
     }
     .nest-brand strong {
       font-size: 23px;
@@ -752,6 +760,9 @@ const initial = createState();
       background: transparent;
       color: var(--nest-accent);
       font-size: 12px;
+    }
+    .nest-reset {
+      flex-shrink: 0;
     }
     .nest-shell {
       display: grid;
@@ -807,6 +818,9 @@ const initial = createState();
     .nest-main > section {
       overflow-wrap: anywhere;
     }
+    :is(.nest-main, .nest-other, .nest-week-scroll):focus-visible {
+      outline-offset: -3px;
+    }
     .nest-eyebrow {
       color: var(--nest-muted);
       font-size: 10px;
@@ -840,6 +854,16 @@ const initial = createState();
     .nest-dashboard-grid h3 {
       margin-top: 8px;
     }
+    .nest-dashboard-grid .nest-card {
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+    }
+    .nest-dashboard-grid .nest-text-button {
+      margin-top: auto;
+      padding-inline: 0;
+      text-align: left;
+    }
     .nest-metric {
       font-size: 22px;
       margin-block: 14px 5px;
@@ -872,11 +896,12 @@ const initial = createState();
       padding: 18px;
       min-width: 0;
       border: 1px solid var(--nest-line);
-      border-radius: 12px;
+      border-radius: var(--nest-radius-card);
       background: var(--nest-surface);
     }
     .nest-card-top {
       margin-bottom: 14px;
+      flex-wrap: wrap;
     }
     .nest-card-top > span,
     .nest-week-heading > span {
@@ -978,6 +1003,8 @@ const initial = createState();
       min-height: 44px;
       display: flex;
       align-items: center;
+      justify-content: center;
+      cursor: pointer;
     }
     .nest-item-amount {
       display: grid;
@@ -992,6 +1019,8 @@ const initial = createState();
     .nest-item-price {
       font-size: 11px;
       color: var(--nest-muted);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
     }
     .nest-total {
       display: flex;
@@ -1176,6 +1205,10 @@ const initial = createState();
       gap: 5px;
       font-size: 12px;
       color: var(--nest-muted);
+      min-width: 0;
+    }
+    .nest-task-form :is(input, select) {
+      color: var(--nest-ink);
     }
     .nest-task-fields {
       display: grid;
@@ -1193,15 +1226,41 @@ const initial = createState();
       gap: 10px;
       padding: 10px;
       border: 1px solid var(--nest-line);
-      border-radius: 10px;
+      border-radius: var(--nest-radius-card);
       background: var(--nest-surface);
     }
-    .nest-task button {
+    .nest-task-toggle {
       display: grid;
       place-items: center;
       flex: 0 0 44px;
-      padding: 8px;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: 0;
+      background: transparent;
       color: var(--nest-accent);
+    }
+    .nest-task-toggle svg {
+      width: 26px;
+      height: 26px;
+      fill: none;
+    }
+    .nest-task-toggle rect {
+      stroke: currentColor;
+      stroke-width: 1.8;
+    }
+    .nest-task-toggle path {
+      stroke: var(--nest-accent-ink);
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0;
+    }
+    .nest-task-toggle[aria-pressed="true"] rect {
+      fill: currentColor;
+    }
+    .nest-task-toggle[aria-pressed="true"] path {
+      opacity: 1;
     }
     .nest-task-copy {
       display: grid;
@@ -1223,6 +1282,7 @@ const initial = createState();
     }
     .nest-week-heading {
       margin-block: 24px 14px;
+      flex-wrap: wrap;
     }
     .nest-date-range {
       font-size: 11px;
@@ -1231,6 +1291,8 @@ const initial = createState();
     }
     .nest-week-scroll {
       overflow: auto;
+      max-height: 220px;
+      overscroll-behavior: contain;
       padding: 3px 3px 10px;
       margin: 18px -3px 0;
       border-radius: 8px;
@@ -1282,6 +1344,8 @@ const initial = createState();
       width: min(440px, calc(100% - 28px));
       max-height: min(500px, calc(100dvh - 40px));
       overflow-y: auto;
+      overscroll-behavior: contain;
+      overflow-wrap: anywhere;
       border: 1px solid var(--nest-line);
       border-radius: 22px;
       background: var(--nest-bg);
@@ -1339,9 +1403,12 @@ const initial = createState();
       gap: 10px;
     }
 
-    @media (hover: hover) {
+    @media (hover: hover) and (pointer: fine) {
       button:hover:not(:disabled) {
         border-color: var(--nest-accent);
+      }
+      .nest-task-toggle:hover:not(:disabled) {
+        background: var(--nest-tint);
       }
     }
     @media (prefers-reduced-motion: no-preference) {
@@ -1443,7 +1510,17 @@ const initial = createState();
         padding-inline: 14px;
       }
       .nest-item-amount {
-        margin-left: 0;
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .nest-item-line {
+        grid-template-columns: 44px minmax(0, 1fr);
+      }
+      .nest-item-price {
+        grid-column: 2;
+        justify-self: end;
+      }
+      .nest-task-fields {
+        grid-template-columns: minmax(0, 1fr);
       }
       .nest-sheet {
         padding: 20px;

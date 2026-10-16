@@ -114,7 +114,30 @@ function init(root: HTMLElement) {
       list.replaceChildren(
         ...state.tasks.map((task) => {
           const row = el("li", "", `nest-task${task.done ? " is-done" : ""}`);
-          const button = el("button", task.done ? "✓" : "○");
+          const button = el("button", "", "nest-task-toggle");
+          // Nest uses a centred box for tasks; rings are reserved for chores.
+          const icon = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "svg",
+          );
+          icon.setAttribute("viewBox", "0 0 26 26");
+          icon.setAttribute("aria-hidden", "true");
+          const box = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "rect",
+          );
+          box.setAttribute("x", "3");
+          box.setAttribute("y", "3");
+          box.setAttribute("width", "20");
+          box.setAttribute("height", "20");
+          box.setAttribute("rx", "5");
+          const tick = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "path",
+          );
+          tick.setAttribute("d", "m8 13 3.5 3.5L18 10");
+          icon.append(box, tick);
+          button.append(icon);
           button.type = "button";
           button.dataset.taskId = String(task.id);
           button.setAttribute("aria-pressed", String(task.done));
