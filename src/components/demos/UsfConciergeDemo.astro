@@ -306,6 +306,11 @@ const total = reply.timings.retrieve + reply.timings.generate;
   button:hover {
     border-color: var(--accent);
   }
+  button[type="submit"] {
+    flex: 0 0 auto;
+    min-width: 64px;
+    white-space: nowrap;
+  }
   .primary,
   button[aria-pressed="true"] {
     color: var(--accent-ink);

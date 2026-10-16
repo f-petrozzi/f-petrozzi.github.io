@@ -4,6 +4,7 @@ export const demos: Record<string, () => Promise<{ default: any }>> = {
   "hospital-data-warehouse": () => import("./HospitalWarehouseDemo.astro"),
   mongodb: () => import("./MongodbDemo.astro"),
   nest: () => import("./NestDemo.astro"),
+  caremesh: () => import("./CaremeshDemo.astro"),
   eduinsight: () => import("./EduinsightDemo.astro"),
   slice: () => import("./SliceDemo.astro"),
   "text-cleaning-analyzing": () => import("./TextCleaningDemo.astro"),
@@ -11,4 +12,5 @@ export const demos: Record<string, () => Promise<{ default: any }>> = {
   "product-reviews-analysis": () => import("./ProductReviewsDemo.astro"),
   proterra: () => import("./ProterraDemo.astro"),
   "todoo-app": () => import("./TodooDemo.astro"),
+  "usf-campus-concierge": () => import("./UsfConciergeDemo.astro"),
 };
