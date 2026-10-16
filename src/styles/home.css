@@ -253,7 +253,7 @@ section {
   padding-bottom: 112px;
 }
 .bento {
-  align-items: start;
+  align-items: stretch;
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 20px;
@@ -281,15 +281,14 @@ section {
 .work-media {
   display: grid;
   place-items: center;
-  height: 260px;
+  height: auto;
+  min-height: 200px;
   overflow: hidden;
   border-radius: var(--radius-md);
 }
 .work-media img {
-  width: auto;
+  width: 100%;
   height: auto;
-  max-width: 100%;
-  max-height: 100%;
   border-radius: 10px;
 }
 .work-card .work-media .project-art {
@@ -338,6 +337,14 @@ section {
 .work-stage {
   position: relative;
   isolation: isolate;
+  /* Cards in a row share a height; the stage absorbs the difference. */
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.work-stage > * {
+  flex: 1 1 auto;
 }
 .work-more {
   position: relative;
@@ -381,6 +388,16 @@ section {
 .work-more.is-expanded .more-closed,
 .work-more:not(.info-enhanced)[open] .more-closed {
   display: none;
+}
+/* Mouse users open and close the panel by hovering, so the close icon stays for touch and keyboard. */
+@media (hover: hover) and (pointer: fine) {
+  .work-more.is-expanded summary:not(:focus-visible) {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .work-more .work-more-body h4 {
+    padding-right: 0;
+  }
 }
 .work-more-body {
   padding: 18px;
@@ -1055,9 +1072,17 @@ button.work-media {
 /* Responsive */
 @media (max-width: 1050px) {
   .work-card.is-wide,
-  .work-card.is-narrow,
+  .work-card.is-narrow {
+    grid-column: 1 / -1;
+  }
   .work-card.is-half {
     grid-column: span 6;
+  }
+  .work-card.is-narrow .nume-picture img {
+    width: auto;
+    max-width: 100%;
+    max-height: 340px;
+    margin-inline: auto;
   }
 }
 @media (max-width: 860px) {
