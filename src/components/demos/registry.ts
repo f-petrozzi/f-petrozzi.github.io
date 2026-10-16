@@ -1,6 +1,7 @@
 // Interactive samples shown on project pages, keyed by project id. NüMe embeds its own sample.
 export const demos: Record<string, () => Promise<{ default: any }>> = {
   autoclicker: () => import("./AutoclickerDemo.astro"),
+  homelab: () => import("./HomelabDemo.astro"),
   "hospital-data-warehouse": () => import("./HospitalWarehouseDemo.astro"),
   mongodb: () => import("./MongodbDemo.astro"),
   nest: () => import("./NestDemo.astro"),
