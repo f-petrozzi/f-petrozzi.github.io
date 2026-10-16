@@ -82,3 +82,28 @@ The orchestrator does visual checks.
 
 End with a short summary: files created, what a visitor can do, which details came from source vs.
 were assumed, and anything you could not verify.
+
+## Revision rules (2026-10-16, owner feedback)
+
+- **Styles render with the demo, not in the shared bundle.** All project pages share one route, so
+  Astro bundles every demo's `<style>` into every project page. Convert each demo's styles to a
+  single `<style is:inline>` block whose whole contents are nested inside the demo root selector
+  (`.demo-<id> { ... }` using native CSS nesting), drop `:global()` wrappers, and keep selectors
+  specific enough not to leak. After building, `dist/projects/<other-id>/index.html` must not
+  contain this demo's CSS.
+- **One fixed look per demo.** Demos do not follow the site's light/dark toggle. Define the demo's
+  own palette as custom properties on its root with fixed values (NüMe stays light; a project whose
+  real UI is dark stays dark). Do not read `--bg`, `--ink`, etc. from the site for demo surfaces.
+- **Feel like the real project:** card shapes, tabs, navigation and user flow follow the real app.
+  Typography stays the portfolio's fonts. Exact colors are optional.
+- **Copy:** no `·` dot separators between text items (use separate elements, spacing or line breaks),
+  no em or en dashes in visible copy (use a normal hyphen or rephrase), no left color-stripe accents
+  on pills or chips.
+- **Bounded height:** long content (tables, pipeline stages, logs, JSON) lives in a fixed-height
+  region with its own scroll, or behind tabs/disclosures, so the demo never makes the project page
+  much longer than one screen of demo.
+- **Scrollbars:** every internal scroll region gets a clean thin scrollbar
+  (`scrollbar-width: thin; scrollbar-color: <thumb> transparent;` plus matching
+  `::-webkit-scrollbar` rules), never the default.
+- **Smoothness:** animate only `transform` and `opacity`; no `backdrop-filter`; no idle
+  `requestAnimationFrame` loops; debounce heavy SVG redraws. Interactions must feel instant.
