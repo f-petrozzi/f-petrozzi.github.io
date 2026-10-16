@@ -1,0 +1,405 @@
+---
+import { COLLECTIONS, OPERATIONS } from "../../data/demos/mongodb";
+---
+
+<section
+  class="demo demo-mongodb"
+  data-demo="mongodb"
+  aria-label="MongoDB interactive sample"
+>
+  <div class="mg-top">
+    <div class="mg-ops" role="group" aria-label="Operations">
+      {
+        OPERATIONS.map((o, i) => (
+          <button
+            type="button"
+            data-op={o.id}
+            aria-pressed={i === 0 ? "true" : "false"}
+          >
+            {o.label}
+          </button>
+        ))
+      }
+    </div>
+    <button type="button" class="mg-reset">Reset</button>
+  </div>
+
+  <div class="mg-grid">
+    <div class="mg-main" aria-live="polite">
+      <h2 class="mg-title"></h2>
+
+      <div data-panel="query">
+        <div class="mg-summary">
+          <span class="mg-total"></span>
+        </div>
+        <div
+          class="mg-result"
+          tabindex="0"
+          role="region"
+          aria-label="Aggregation result"
+        >
+        </div>
+        <pre class="mg-command" tabindex="0"><code /></pre>
+        <div class="mg-stages"></div>
+      </div>
+
+      <div data-panel="appointment" hidden>
+        <form class="mg-form">
+          <label class="mg-wide"
+            ><span>Appointment</span><select name="appointment"></select></label
+          >
+          <label><span>Patient</span><select name="patient"></select></label>
+          <label><span>Doctor</span><select name="doctor"></select></label>
+          <label
+            ><span>Date</span><input type="date" name="date" required /></label
+          >
+          <label><span>Status</span><select name="status"></select></label>
+          <label class="mg-wide"
+            ><span>Reason</span><input
+              type="text"
+              name="reason"
+              maxlength="60"
+              autocomplete="off"
+            /></label
+          >
+          <button type="submit" class="mg-save mg-primary">
+            Insert appointment
+          </button>
+          <p class="mg-error" role="alert"></p>
+        </form>
+      </div>
+
+      <pre class="mg-log" tabindex="0" hidden><code /></pre>
+    </div>
+
+    <aside class="mg-collections">
+      <div class="mg-colls" role="group" aria-label="Collections">
+        {
+          COLLECTIONS.map((c) => (
+            <button type="button" data-coll={c} aria-pressed="false">
+              {c}
+            </button>
+          ))
+        }
+      </div>
+      <p class="mg-count"></p>
+      <div class="mg-docs" tabindex="0" role="region" aria-label="Documents">
+      </div>
+    </aside>
+  </div>
+
+  <p class="mg-note">
+    Operations run on an in-memory copy of the sample collections.
+  </p>
+</section>
+
+<script>
+  import "../../scripts/demos/mongodb";
+</script>
+
+<style>
+  .demo-mongodb {
+    --mg-green: #13aa52;
+    --mg-on: #04210f;
+    --mg-surface: color-mix(in srgb, var(--ink) 5%, transparent);
+    --mg-surface-2: color-mix(in srgb, var(--ink) 9%, transparent);
+    --mg-hit: color-mix(in srgb, var(--mg-green) 22%, transparent);
+    margin: 28px 0;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--mg-surface);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.5;
+    min-width: 0;
+  }
+  :global(:root[data-theme="light"]) .demo-mongodb {
+    --mg-green: #0a7a3a;
+    --mg-on: #fff;
+  }
+  [hidden] {
+    display: none !important;
+  }
+  button,
+  select,
+  input {
+    font: inherit;
+    touch-action: manipulation;
+  }
+  .mg-top {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .mg-ops,
+  .mg-colls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+  }
+  button {
+    min-height: 44px;
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition:
+      background 0.2s var(--ease),
+      color 0.2s var(--ease),
+      border-color 0.2s var(--ease);
+  }
+  button:hover {
+    color: var(--ink);
+    border-color: var(--mg-green);
+  }
+  button[aria-pressed="true"],
+  .mg-primary {
+    background: var(--mg-green);
+    border-color: var(--mg-green);
+    color: var(--mg-on);
+  }
+  .mg-reset {
+    color: var(--mg-green);
+  }
+  button:focus-visible,
+  select:focus-visible,
+  input:focus-visible,
+  [tabindex]:focus-visible {
+    box-shadow: 0 0 0 2px var(--mg-green);
+  }
+  .mg-grid {
+    display: grid;
+    gap: 18px;
+    margin-top: 16px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  @media (min-width: 1000px) {
+    .mg-grid {
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      align-items: start;
+    }
+  }
+  .mg-main,
+  .mg-collections {
+    min-width: 0;
+  }
+  .mg-title {
+    margin: 0 0 10px;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .mg-total {
+    display: inline-block;
+    margin-bottom: 8px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .mg-result {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+  }
+  .mg-result :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  .mg-result :global(th),
+  .mg-result :global(td) {
+    padding: 9px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--line);
+  }
+  .mg-result :global(tbody tr:last-child td) {
+    border-bottom: 0;
+  }
+  .mg-result :global(th) {
+    color: var(--muted);
+    font-weight: 500;
+    background: var(--mg-surface);
+  }
+  .mg-result :global(.is-num) {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .mg-result :global(.is-action) {
+    padding: 4px 8px;
+    text-align: right;
+  }
+  .mg-result :global(.mg-pay) {
+    min-height: 44px;
+    padding: 6px 14px;
+    border: 1px solid var(--mg-green);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--mg-green);
+    font: inherit;
+    cursor: pointer;
+  }
+  .mg-result :global(.mg-pay:hover) {
+    background: var(--mg-hit);
+  }
+  .mg-result :global(.mg-pay:focus-visible) {
+    box-shadow: 0 0 0 2px var(--mg-green);
+  }
+  pre {
+    margin: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12.5px;
+    line-height: 1.6;
+  }
+  .mg-command,
+  .mg-log {
+    margin-top: 14px;
+    padding: 12px 14px;
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--mg-surface-2);
+  }
+  .mg-log code {
+    color: var(--mg-green);
+  }
+  .mg-stages {
+    display: grid;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .mg-stages :global(.mg-stage) {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--mg-surface);
+    min-width: 0;
+  }
+  .mg-stages :global(summary) {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 0 12px;
+    cursor: pointer;
+  }
+  .mg-stages :global(summary:focus-visible) {
+    box-shadow: 0 0 0 2px var(--mg-green);
+  }
+  .mg-stages :global(.mg-n) {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--mg-green);
+    color: var(--mg-on);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .mg-stages :global(.mg-op) {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-weight: 600;
+  }
+  .mg-stages :global(.mg-docs-count) {
+    margin-left: auto;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .mg-stages :global(pre) {
+    margin: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12.5px;
+    line-height: 1.6;
+    padding: 8px 12px;
+    overflow-x: auto;
+    border-top: 1px solid var(--line);
+  }
+  .mg-stages :global(.mg-stage-out) {
+    color: var(--muted);
+    background: var(--mg-surface-2);
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  }
+  .mg-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .mg-form label {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .mg-wide,
+  .mg-save,
+  .mg-error {
+    grid-column: 1 / -1;
+  }
+  @media (max-width: 520px) {
+    .mg-form {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .mg-form select,
+  .mg-form input {
+    width: 100%;
+    min-height: 44px;
+    padding: 6px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--mg-surface-2);
+    color: var(--ink);
+    font-size: 16px;
+  }
+  .mg-form select option {
+    background: var(--bg);
+    color: var(--ink);
+  }
+  .mg-error {
+    margin: 0;
+    min-height: 0;
+    color: #e5484d;
+  }
+  .mg-count {
+    margin: 10px 0 6px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .mg-docs {
+    max-height: 420px;
+    overflow: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--mg-surface-2);
+  }
+  .mg-docs :global(.mg-doc) {
+    padding: 7px 12px;
+    border-bottom: 1px solid var(--line);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+  .mg-docs :global(.mg-doc:last-child) {
+    border-bottom: 0;
+  }
+  .mg-docs :global(.mg-doc.is-hit) {
+    background: var(--mg-hit);
+  }
+  .mg-note {
+    margin: 16px 0 0;
+    color: var(--faint);
+    font-size: 12px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    button {
+      transition: none;
+    }
+  }
+</style>
