@@ -1,8 +1,13 @@
-# Demo polish notes (found during integration, not yet fixed)
+# Demo polish notes
 
-- EduInsight: benchmark Sample and Peer markers overlap; the table shows only the first 9 rows without a cue to scroll.
-- Hospital Data Warehouse: bar-chart labels scale with the SVG and read larger than the table text; `dim_procedure` box clips at the diagram's right edge.
-- Tixly: seat buttons are 32px tall (below the 44px touch target) to fit the phone mock.
-- Slice: Menu analysis tab not visually checked yet.
-- All Claude-built demos (Tixly, EduInsight, Slice, Autoclicker, the DB playgrounds) carry their own small header styles on their `/demo/` pages.
+## Fixed in the polish pass (2026-10-16, not yet visually re-checked)
+- EduInsight: benchmark markers on separate lanes; all rows shown.
+- Hospital Data Warehouse: chart labels fixed at 13px HTML text; diagram bounds fit every box.
+- Tixly: 44px seat targets in a horizontally scrolling grid.
+- Slice: analysis totals wrap, ticks spaced on narrow screens, labels outside the point area.
+- USF Concierge: Ask button no longer wraps on phones.
+
+## Open
 - Text Cleaning: the Oz excerpt was written from memory; replace it with the exact Project Gutenberg text (public domain) before publishing.
+- USF Concierge: citation chips are 44px boxes inline in the answer text, which breaks the reading line on phones.
+- Claude-built demos carry their own small header styles on their `/demo/` pages.
