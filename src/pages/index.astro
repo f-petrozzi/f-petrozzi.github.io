@@ -22,6 +22,7 @@ const featured = featuredCopy.map((copy) => ({
 const recent = raw.filter((p) => p.data.category !== "Earlier work");
 const earlier = raw.filter((p) => p.data.category === "Earlier work");
 const capabilities = {
+  orbit: ["ai", "web"],
   nest: ["ai", "web"],
   nume: ["ai", "web"],
   proterra: ["data", "web"],
@@ -273,7 +274,10 @@ const education = [
             featured.map(
               ({ id, project, summary, hook, how, contribution, image }) => (
                 <article
-                  class="work-card"
+                  class:list={[
+                    "work-card",
+                    { "work-card-lead": id === "orbit" },
+                  ]}
                   aria-labelledby={`work-${id}`}
                   data-project={id}
                 >
@@ -295,8 +299,8 @@ const education = [
                         width={image?.width}
                         height={image?.height}
                         alt={image?.alt}
-                        loading={id === "homelab" ? "eager" : "lazy"}
-                        fetchpriority={id === "homelab" ? "high" : "auto"}
+                        loading={id === "orbit" ? "eager" : "lazy"}
+                        fetchpriority={id === "orbit" ? "high" : "auto"}
                         decoding="async"
                       />
                     </button>

@@ -643,10 +643,11 @@ document
     function availableWidth() {
       const parent = details.parentElement!,
         style = getComputedStyle(parent);
-      return (
+      return Math.min(
+        560,
         parent.clientWidth -
-        parseFloat(style.paddingLeft) -
-        parseFloat(style.paddingRight)
+          parseFloat(style.paddingLeft) -
+          parseFloat(style.paddingRight),
       );
     }
     // Measure once per transition or resize. Frames only write transforms/opacity.
