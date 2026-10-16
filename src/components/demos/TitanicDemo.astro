@@ -93,8 +93,6 @@ const pct = (n: number) => `${(100 * n).toFixed(1)}%`;
     font-size: 14px;
     line-height: 1.55;
     min-width: 0;
-    max-height: 780px;
-    overflow: auto;
     scrollbar-width: thin;
     scrollbar-color: #a4b5c2 transparent;
     & * {
@@ -114,7 +112,7 @@ const pct = (n: number) => `${(100 * n).toFixed(1)}%`;
     }
     .columns {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
       gap: 18px;
     }
     .card {
@@ -278,12 +276,21 @@ const pct = (n: number) => `${(100 * n).toFixed(1)}%`;
     }
 
     .tree {
-      height: 340px;
-      max-height: 340px;
+      overflow: visible;
+      max-height: none;
     }
     .tree svg {
-      width: max(100%, var(--tree-width));
+      width: 100%;
       height: auto;
+      max-height: 340px;
+    }
+    @media (max-width: 599px) {
+      .tree {
+        overflow-x: auto;
+      }
+      .tree svg {
+        min-width: 700px;
+      }
     }
     [data-path] {
       font-size: 12px;

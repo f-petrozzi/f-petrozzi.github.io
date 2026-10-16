@@ -338,7 +338,7 @@ import { PROGRAMS, TERMS } from "../../data/demos/eduinsight";
       display: block;
       width: 100%;
       height: auto;
-      overflow: visible;
+      max-height: 180px;
     }
     & .ei-bar {
       fill: var(--demo-accent);
@@ -454,8 +454,8 @@ import { PROGRAMS, TERMS } from "../../data/demos/eduinsight";
       height: 360px;
       max-height: 360px;
     }
-    .ei-grid {
-      max-height: 600px;
+    [data-main] {
+      max-height: 560px;
       overflow: auto;
       overscroll-behavior: contain;
     }

@@ -33,7 +33,7 @@ function init(root: HTMLElement) {
       .join("");
     const chart = root.querySelector<HTMLElement>("[data-history]")!;
     const width = Math.max(210, chart.clientWidth);
-    const height = Math.max(250, chart.clientHeight);
+    const height = 280;
     const bottom = height - 46;
     const x = (n: number) =>
       36 + ((n - 1) / (trials.length - 1)) * (width - 52);

@@ -41,7 +41,6 @@ function init(root: HTMLElement) {
       return `<path class="${active.has(to.id) ? "selected" : "branch"}" d="M${a.x},${a.y + layout.nodeHeight / 2}L${b.x},${b.y - layout.nodeHeight / 2}"/><text x="${(a.x + b.x) / 2}" y="${(a.y + b.y) / 2}">${label}</text>`;
     });
     const diagram = root.querySelector<HTMLElement>("[data-tree]")!;
-    diagram.style.setProperty("--tree-width", `${layout.width}px`);
     diagram.innerHTML = `<svg viewBox="0 0 ${layout.width} ${layout.height}" role="img" aria-label="Decision tree. Highlighted route: ${result.path.map((n) => (n.key ? `${labels[n.key]} equals ${n.value}: ${input[n.key] === n.value ? "yes" : "no"}` : `survival ${pct(n.probability)}`)).join("; ")}">${edges.join("")}${layout.nodes.map(({ node, x, y }) => `<g class="${active.has(node.id) ? "selected" : "branch"}"><rect x="${x - layout.nodeWidth / 2}" y="${y - layout.nodeHeight / 2}" width="${layout.nodeWidth}" height="${layout.nodeHeight}" rx="6"/><text x="${x}" y="${y - 4}">${node.key ? labels[node.key] : pct(node.probability)}</text><text x="${x}" y="${y + 13}">${node.key ? node.value : `${node.count} passengers`}</text></g>`).join("")}</svg>`;
     root.querySelector("[data-path]")!.textContent = result.path
       .map((n) =>

@@ -36,7 +36,15 @@ const reply = ask(prompts[1]);
         {
           reply.answer.map((part) => (
             <p>
-              {part.text} <span>[{part.number}]</span>
+              {part.text}
+              {"\u00a0"}
+              <a
+                class="citation"
+                href={`#usf-concierge-0-passage-${part.passageId}`}
+                aria-label={`Citation ${part.number}: ${reply.citations[part.number - 1].title}`}
+              >
+                {part.number}
+              </a>
             </p>
           ))
         }
@@ -161,27 +169,27 @@ const reply = ask(prompts[1]);
           Result
         </h4><pre><code data-tool-result /></pre>
       </section>
-      <div class="latency">
-        <h3>Last request <span data-total></span></h3>{
-          (["retrieve", "generate", "tool"] as const).map((key) => (
-            <div class="latency-row">
-              <>
-                <span>
-                  {key === "retrieve"
-                    ? "Retrieval"
-                    : key === "generate"
-                      ? "Answer"
-                      : "MCP tool"}
-                </span>
-                <div class="track" aria-hidden="true">
-                  <i data-bar={key} />
-                </div>
-                <output data-duration={key} />
-              </>
-            </div>
-          ))
-        }
-      </div>
+    </div>
+    <div class="latency">
+      <h3>Last request <span data-total></span></h3>{
+        (["retrieve", "generate", "tool"] as const).map((key) => (
+          <div class="latency-row">
+            <>
+              <span>
+                {key === "retrieve"
+                  ? "Retrieval"
+                  : key === "generate"
+                    ? "Answer"
+                    : "MCP tool"}
+              </span>
+              <div class="track" aria-hidden="true">
+                <i data-bar={key} />
+              </div>
+              <output data-duration={key} />
+            </>
+          </div>
+        ))
+      }
     </div>
   </details>
   <p class="note">
@@ -207,8 +215,6 @@ const reply = ask(prompts[1]);
     font-size: 14px;
     line-height: 1.6;
     min-width: 0;
-    max-height: 780px;
-    overflow: auto;
     scrollbar-width: thin;
     scrollbar-color: #a1b8ac transparent;
     & * {
@@ -294,7 +300,7 @@ const reply = ask(prompts[1]);
       opacity: 0.6;
       cursor: default;
     }
-    :is(button, input, textarea, summary, [tabindex]):focus-visible {
+    :is(button, input, textarea, summary, a, [tabindex]):focus-visible {
       box-shadow: 0 0 0 2px var(--usf-green);
     }
     .chat {
@@ -327,9 +333,19 @@ const reply = ask(prompts[1]);
       margin-top: 14px;
     }
     .citation {
-      padding: 0 8px;
+      display: inline;
+      padding: 18px 19px;
+      margin: -18px -16px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
       color: var(--usf-green);
       font-size: 12px;
+      line-height: 1;
+      vertical-align: super;
+      white-space: nowrap;
+      text-decoration: underline;
+      text-underline-offset: 2px;
     }
     label {
       display: grid;

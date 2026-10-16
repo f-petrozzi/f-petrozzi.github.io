@@ -124,8 +124,6 @@ const fit = regress(observations, [0, 1, 2]);
     font-size: 14px;
     line-height: 1.55;
     min-width: 0;
-    max-height: 780px;
-    overflow: auto;
     scrollbar-width: thin;
     scrollbar-color: #a4b5c2 transparent;
     & * {
@@ -271,6 +269,7 @@ const fit = regress(observations, [0, 1, 2]);
       display: block;
       width: 100%;
       height: auto;
+      max-height: 250px;
     }
     svg text {
       fill: var(--demo-muted);
