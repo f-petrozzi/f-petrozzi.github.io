@@ -1,0 +1,46 @@
+---
+import Base from "../../../layouts/Base.astro";
+import TixlyDemo from "../../../components/demos/TixlyDemo.astro";
+---
+
+<Base
+  title="Tixly App Design interactive sample | Fabrizio Petrozzi"
+  description="A disconnected interactive sample of Tixly's ticket purchase flow, wallet and door validation, using synthetic data."
+>
+  <main id="main" class="project-page wrap tixly-demo-page">
+    <a class="back-link" href="/projects/tixly-app-design/"
+      >Back to Tixly App Design</a
+    >
+    <header class="tixly-demo-intro">
+      <div><p class="eyebrow">Interactive sample</p><h1>Try Tixly</h1></div><p>
+        Sample data. Nothing connects or saves.
+      </p>
+    </header>
+    <TixlyDemo />
+  </main>
+</Base>
+
+<style>
+  .tixly-demo-page {
+    padding-top: 40px;
+    padding-bottom: 72px;
+  }
+  .tixly-demo-intro {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+    margin: 24px 0;
+  }
+  .tixly-demo-intro h1 {
+    margin: 6px 0 0;
+    font-size: clamp(32px, 5vw, 52px);
+    letter-spacing: -0.04em;
+    font-weight: 500;
+  }
+  .tixly-demo-intro > p {
+    color: var(--muted);
+    font-size: 14px;
+  }
+</style>
