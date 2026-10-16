@@ -20,6 +20,138 @@ export type State = {
   purchase: { items: ReceiptItem[]; total: number } | null;
 };
 
+// Active navigation from Nest's static/index.html. Watchlist and Countdowns
+// are dormant in the source app, so they are deliberately absent here too.
+export const navigation = [
+  { id: "dashboard", label: "Home", icon: "M3 10 12 3l9 7v11h-6v-7H9v7H3Z" },
+  {
+    id: "calendar",
+    label: "Calendar",
+    icon: "M4 5h16v16H4ZM8 2v6m8-6v6M4 11h16",
+  },
+  {
+    id: "tasks",
+    label: "Tasks",
+    icon: "m3 6 2 2 4-4m3 2h9M3 14l2 2 4-4m3 2h9M12 21h9",
+  },
+  {
+    id: "cats",
+    label: "Cats",
+    icon: "M4 4l6 4h4l6-4v11a8 6 0 0 1-16 0Zm4 9h1m6 0h1m-6 4h4",
+  },
+  {
+    id: "kitchen",
+    label: "Kitchen",
+    icon: "M4 3v6a3 3 0 0 0 6 0V3M7 3v18m13 0V3c-5 3-5 10 0 10",
+  },
+  { id: "finance", label: "Finance", icon: "M20 7V4H4v16h16V7H4m12 4h6v5h-6Z" },
+  {
+    id: "health",
+    label: "Health",
+    icon: "M20 13 12 21 4 13C-2 7 6 0 12 7c6-7 14 0 8 6ZM3 12h5l2-3 4 7 2-4h5",
+  },
+] as const;
+
+export const sectionTabs = {
+  kitchen: ["Plan", "Nesty", "Recipes", "Shop", "Pantry"],
+  cats: ["Today", "Health", "Pantry", "Gallery"],
+  finance: ["Overview", "Expenses", "Subscriptions", "History"],
+  health: ["Overview", "Activity", "Sleep", "Nutrition", "Trends"],
+} as const;
+
+// Small, invented snapshots for sections outside the four interactive flows.
+export const sectionPreviews = [
+  {
+    id: "cats",
+    title: "Cat Care",
+    eyebrow: "Juniper & Miso",
+    tabs: sectionTabs.cats,
+    cards: [
+      {
+        title: "Breakfast is sorted",
+        value: "2 bowls filled",
+        copy: "Sam fed Juniper and Miso at 07:30. Fresh water is ready.",
+      },
+      {
+        title: "Weight check",
+        value: "4.2 kg",
+        copy: "Juniper's latest entry. Next check: Saturday 17 October.",
+      },
+      {
+        title: "Cat cupboard",
+        value: "8 portions",
+        copy: "Wet food is in stock. Dry food is running low.",
+      },
+      {
+        title: "By the kitchen window",
+        value: "Wednesday",
+        copy: "Juniper and Miso found the warmest spot in the house.",
+      },
+    ],
+  },
+  {
+    id: "finance",
+    title: "Finance",
+    eyebrow: "Household ledger",
+    tabs: sectionTabs.finance,
+    cards: [
+      {
+        title: "October spending",
+        value: "$286.40",
+        copy: "Groceries $186.40. Household essentials $100.00.",
+      },
+      {
+        title: "Latest expenses",
+        value: "$24.60",
+        copy: "Maple Market grocery trip on Monday. Paid by Riley, shared equally.",
+      },
+      {
+        title: "Home internet",
+        value: "$42.00 / month",
+        copy: "Next payment: 20 October. Shared equally.",
+      },
+      {
+        title: "September settled",
+        value: "$0.00 balance",
+        copy: "Sam and Riley are all square for last month.",
+      },
+    ],
+  },
+  {
+    id: "health",
+    title: "Health",
+    eyebrow: "Sam's day",
+    tabs: sectionTabs.health,
+    cards: [
+      {
+        title: "Daily overview",
+        value: "6,240 steps",
+        copy: "7 hours 35 minutes of sleep. A 25-minute walk this morning.",
+      },
+      {
+        title: "Morning walk",
+        value: "25 minutes",
+        copy: "An easy 1.8 km around the neighborhood.",
+      },
+      {
+        title: "Last night",
+        value: "7 h 35 min",
+        copy: "Bedtime 23:10. Woke at 06:45.",
+      },
+      {
+        title: "Today's meals",
+        value: "Breakfast & lunch",
+        copy: "Oats with berries. Roasted vegetable wrap.",
+      },
+      {
+        title: "This week's steps",
+        value: "6,100 daily average",
+        copy: "Monday 5,900. Tuesday 6,160. Wednesday 6,240.",
+      },
+    ],
+  },
+] as const;
+
 export const week = [
   { date: "2026-10-12", day: "Mon", number: 12 },
   { date: "2026-10-13", day: "Tue", number: 13 },

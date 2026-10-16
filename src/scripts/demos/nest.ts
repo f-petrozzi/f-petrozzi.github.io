@@ -51,6 +51,19 @@ function init(root: HTMLElement) {
     q("[data-device-update]").textContent = message;
   }
 
+  function section(group: string, name: string) {
+    all(`[data-section-panel="${group}"]`).forEach((panel) => {
+      panel.hidden = panel.dataset.sectionName !== name;
+    });
+    all<HTMLButtonElement>(
+      `[data-section-tabs="${group}"] [data-section]`,
+    ).forEach((button) => {
+      const selected = button.dataset.section === name;
+      button.setAttribute("aria-selected", String(selected));
+      button.tabIndex = selected ? 0 : -1;
+    });
+  }
+
   function view(name: string) {
     all("[data-panel]").forEach((panel) => {
       panel.hidden = panel.dataset.panel !== name;
@@ -58,6 +71,7 @@ function init(root: HTMLElement) {
     all("[data-view]").forEach((button) => {
       button.setAttribute("aria-pressed", String(button.dataset.view === name));
     });
+    q(".nest-main").scrollTop = 0;
   }
 
   function pantryRows(container: HTMLElement, compact = false) {
@@ -79,19 +93,23 @@ function init(root: HTMLElement) {
     made.disabled = state.made;
     made.textContent = state.made ? "Made ✓" : "Mark as made";
     mealStatus.textContent = state.made
-      ? "Made by Sam · Wednesday"
+      ? "Made by Sam, Wednesday"
       : "Planned for Wednesday";
     q("[data-device-meal]").textContent = state.made
-      ? "Made · Sam"
-      : "Planned · Sam";
+      ? "Made, Sam"
+      : "Planned, Sam";
     const done = state.tasks.filter((task) => task.done).length;
-    q("[data-task-count]").textContent = String(state.tasks.length - done);
+    q("[data-dashboard-tasks]").textContent =
+      `${state.tasks.length - done} ${state.tasks.length - done === 1 ? "task" : "tasks"} to do`;
+    q("[data-dashboard-meal]").textContent = state.made
+      ? "Made by Sam"
+      : "Sam's cooking";
     q("[data-device-tasks]").textContent =
-      `${state.tasks.length} ${state.tasks.length === 1 ? "task" : "tasks"} · ${done} done`;
+      `${state.tasks.length} ${state.tasks.length === 1 ? "task" : "tasks"}, ${done} done`;
     const latest = state.tasks.at(-1)!;
     const day = week.find((entry) => entry.date === latest.date)!;
     q("[data-device-task]").textContent =
-      `${latest.title} · ${day.day} ${day.number}${latest.done ? " · Done" : ""}`;
+      `${latest.title}, ${day.day} ${day.number}${latest.done ? ", Done" : ""}`;
     all("[data-tasks]").forEach((list, listIndex) => {
       list.replaceChildren(
         ...state.tasks.map((task) => {
@@ -120,7 +138,7 @@ function init(root: HTMLElement) {
             el("strong", task.title),
             el(
               "span",
-              `${task.person} · ${day.day} ${day.number} Oct${task.done ? " · Done" : ""}`,
+              `${task.person}, ${day.day} ${day.number} Oct${task.done ? ", Done" : ""}`,
             ),
           );
           row.append(button, copy);
@@ -143,7 +161,7 @@ function init(root: HTMLElement) {
             );
             item.append(
               el("strong", task.title),
-              el("span", `${task.person} · ${task.done ? "Done ✓" : "Task"}`),
+              el("span", `${task.person}, ${task.done ? "Done ✓" : "Task"}`),
             );
             cell.append(item);
           });
@@ -155,10 +173,16 @@ function init(root: HTMLElement) {
       state.purchase !== null || !review.hidden;
     q("[data-receipt-saved]").hidden = state.purchase === null;
     q("[data-device-purchase]").hidden = state.purchase === null;
+    q("[data-dashboard-purchase]").textContent = state.purchase
+      ? `Maple Market, ${money(state.purchase.total)}`
+      : "No trip logged today";
+    q("[data-finance-purchase]").textContent = state.purchase
+      ? `Today: Maple Market, ${money(state.purchase.total)}. Paid by Sam.`
+      : "No receipt purchase logged today.";
     if (state.purchase) {
-      const trip = `${state.purchase.items.length} ${state.purchase.items.length === 1 ? "item" : "items"} · ${money(state.purchase.total)}`;
+      const trip = `${state.purchase.items.length} ${state.purchase.items.length === 1 ? "item" : "items"}, ${money(state.purchase.total)}`;
       q("[data-purchase]").textContent = trip;
-      q("[data-device-total]").textContent = `Maple Market · ${trip}`;
+      q("[data-device-total]").textContent = `Maple Market, ${trip}`;
     }
   }
 
@@ -231,8 +255,37 @@ function init(root: HTMLElement) {
     view("tasks");
     taskForm.querySelector<HTMLInputElement>("[name=title]")!.focus();
   });
-  q("[data-recipe-link]").addEventListener("click", () => {
-    q<HTMLDetailsElement>(".nest-recipe").open = true;
+  all<HTMLButtonElement>("[data-open-view]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const name = button.dataset.openView!;
+      view(name);
+      if (button.dataset.openSection) section(name, button.dataset.openSection);
+      const heading = q(`[data-panel="${name}"] h2`);
+      heading.tabIndex = -1;
+      heading.focus();
+    });
+  });
+  all("[data-section-tabs]").forEach((nav) => {
+    const buttons = [
+      ...nav.querySelectorAll<HTMLButtonElement>("[data-section]"),
+    ];
+    buttons.forEach((button, index) => {
+      button.addEventListener("click", () =>
+        section(nav.dataset.sectionTabs!, button.dataset.section!),
+      );
+      button.addEventListener("keydown", (event) => {
+        let next = index;
+        if (event.key === "ArrowRight") next = (index + 1) % buttons.length;
+        else if (event.key === "ArrowLeft")
+          next = (index + buttons.length - 1) % buttons.length;
+        else if (event.key === "Home") next = 0;
+        else if (event.key === "End") next = buttons.length - 1;
+        else return;
+        event.preventDefault();
+        section(nav.dataset.sectionTabs!, buttons[next].dataset.section!);
+        buttons[next].focus();
+      });
+    });
   });
   taskForm.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -268,7 +321,7 @@ function init(root: HTMLElement) {
     review.hidden = false;
     q("[data-receipt-start]").hidden = true;
     q("[data-review-title]").focus();
-    q("[data-status]").textContent = "Receipt read · 3 items ready for review.";
+    q("[data-status]").textContent = "Receipt read, 3 items ready for review.";
   });
   q("[data-cancel-receipt]").addEventListener("click", () => {
     receipt = [];
@@ -293,7 +346,7 @@ function init(root: HTMLElement) {
     const purchase = q("[data-purchase]");
     purchase.tabIndex = -1;
     purchase.focus();
-    announce(`Trip saved · ${money(state.purchase!.total)}. Pantry restocked.`);
+    announce(`Trip saved, ${money(state.purchase!.total)}. Pantry restocked.`);
   });
 
   made.addEventListener("click", () => {
@@ -353,11 +406,19 @@ function init(root: HTMLElement) {
     review.hidden = true;
     q("[data-receipt-items]").replaceChildren();
     q("[data-receipt-error]").hidden = true;
-    q<HTMLDetailsElement>(".nest-recipe").open = false;
+    all("[data-section-tabs]").forEach((nav) => {
+      section(
+        nav.dataset.sectionTabs!,
+        nav.querySelector<HTMLButtonElement>("[data-section]")!.dataset
+          .section!,
+      );
+      nav.scrollLeft = 0;
+    });
     all(".nest-week-scroll").forEach((scroll) => {
       scroll.scrollLeft = 0;
     });
-    view("kitchen");
+    view("dashboard");
+    q(".nest-other").scrollTop = 0;
     render();
     q("[data-status]").textContent = "Home is up to date.";
     q("[data-device-update]").textContent = "All caught up.";

@@ -1,5 +1,12 @@
 ---
-import { createState, stockLabels, week } from "../../data/demos/nest";
+import {
+  createState,
+  navigation,
+  sectionTabs,
+  sectionPreviews,
+  stockLabels,
+  week,
+} from "../../data/demos/nest";
 const id = `nest-${crypto.randomUUID()}`;
 const initial = createState();
 ---
@@ -19,39 +26,141 @@ const initial = createState();
     </div>
     <button type="button" class="nest-reset" data-reset>Reset</button>
   </header>
-  <nav class="nest-nav" aria-label="Nest views">
-    <button type="button" data-view="kitchen" aria-pressed="true"
-      >Kitchen</button
-    >
-    <button type="button" data-view="tasks" aria-pressed="false"
-      >Tasks <span data-task-count>1</span></button
-    >
-    <button type="button" data-view="calendar" aria-pressed="false"
-      >Calendar</button
-    >
-  </nav>
-  <div class="nest-layout">
-    <div class="nest-main">
-      <section data-panel="kitchen" aria-label="Kitchen">
-        <div class="nest-heading">
-          <div>
-            <p class="nest-eyebrow">12–18 October 2026</p><h2>Our kitchen</h2>
-          </div><span class="nest-person">S <span>Sam</span></span>
-        </div>
-        <nav class="nest-subnav" aria-label="Kitchen sections">
-          <a href={`#${id}-plan`}>Plan</a><a
-            href={`#${id}-recipes`}
-            data-recipe-link>Recipes</a
-          ><a href={`#${id}-shop`}>Shop</a><a href={`#${id}-pantry`}>Pantry</a>
-        </nav>
-        <div class="nest-kitchen-grid">
+  <div class="nest-shell">
+    <nav class="nest-nav" aria-label="Nest main navigation">
+      {
+        navigation.map((item) => (
+          <button
+            type="button"
+            data-view={item.id}
+            aria-pressed={item.id === "dashboard" ? "true" : "false"}
+            aria-controls={`${id}-${item.id}`}
+          >
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d={item.icon} />
+            </svg>
+            <span>{item.label}</span>
+          </button>
+        ))
+      }
+    </nav>
+    <div class="nest-layout">
+      <div
+        class="nest-main"
+        role="region"
+        aria-label="Household workspace"
+        tabindex="0"
+      >
+        <section
+          data-panel="dashboard"
+          id={`${id}-dashboard`}
+          aria-label="Dashboard"
+        >
+          <div class="nest-heading">
+            <div>
+              <p class="nest-eyebrow">Wednesday 14 October</p><h2>Home</h2>
+            </div><span class="nest-person" aria-label="Sam">S</span>
+          </div>
+          <p class="nest-welcome">Good morning, Sam</p>
+          <div class="nest-dashboard-grid">
+            <article class="nest-card">
+              <p class="nest-eyebrow">Today at a glance</p><h3>
+                Water the plants
+              </h3><p class="nest-muted">Riley's task for Wednesday</p><p
+                class="nest-metric"
+                data-dashboard-tasks
+              >
+                1 task to do
+              </p><button
+                type="button"
+                class="nest-text-button"
+                data-open-view="tasks">Open Tasks</button
+              >
+            </article>
+            <article class="nest-card">
+              <p class="nest-eyebrow">Tonight's plan</p><h3>
+                Chickpea &amp; spinach skillet
+              </h3><p class="nest-muted">20 minutes for two</p><p
+                class="nest-metric"
+                data-dashboard-meal
+              >
+                Sam's cooking
+              </p><button
+                type="button"
+                class="nest-text-button"
+                data-open-view="kitchen"
+                data-open-section="plan">Open Plan</button
+              >
+            </article>
+            <article class="nest-card">
+              <p class="nest-eyebrow">Household spending</p><h3>
+                Latest grocery trip
+              </h3><p class="nest-muted" data-dashboard-purchase>
+                No trip logged today
+              </p><button
+                type="button"
+                class="nest-text-button"
+                data-open-view="kitchen"
+                data-open-section="shop">Open Shop</button
+              >
+            </article>
+            <article class="nest-card">
+              <p class="nest-eyebrow">Cat care</p><h3>Juniper &amp; Miso</h3><p
+                class="nest-muted"
+              >
+                Both fed at 07:30. Fresh water is ready.
+              </p><button
+                type="button"
+                class="nest-text-button"
+                data-open-view="cats">Open Cats</button
+              >
+            </article>
+          </div>
+        </section>
+        <section
+          data-panel="kitchen"
+          id={`${id}-kitchen`}
+          aria-label="Kitchen"
+          hidden
+        >
+          <div class="nest-heading">
+            <div>
+              <p class="nest-eyebrow">12-18 October 2026</p><h2>Our kitchen</h2>
+            </div><span class="nest-person">S <span>Sam</span></span>
+          </div>
+          <nav
+            class="nest-subnav"
+            role="tablist"
+            aria-label="Kitchen sections"
+            data-section-tabs="kitchen"
+          >
+            {
+              sectionTabs.kitchen.map((label, index) => (
+                <button
+                  type="button"
+                  role="tab"
+                  id={`${id}-kitchen-tab-${label.toLowerCase()}`}
+                  data-section={label.toLowerCase()}
+                  aria-selected={index === 0 ? "true" : "false"}
+                  tabindex={index === 0 ? 0 : -1}
+                  aria-controls={`${id}-kitchen-${label.toLowerCase()}`}
+                >
+                  {label}
+                </button>
+              ))
+            }
+          </nav>
           <section
             class="nest-card nest-meal"
-            id={`${id}-plan`}
-            aria-label="Meal plan"
+            id={`${id}-kitchen-plan`}
+            role="tabpanel"
+            tabindex="0"
+            data-section-panel="kitchen"
+            data-section-name="plan"
+            aria-labelledby={`${id}-kitchen-tab-plan`}
           >
             <div class="nest-card-top">
-              <h3>Plan</h3><span>Wed 14 · Dinner</span>
+              <h3>Plan</h3><span><span>Wed 14</span><span>Dinner</span></span>
             </div>
             <div class="nest-meal-art" aria-hidden="true">
               <svg viewBox="0 0 260 110" fill="none"
@@ -84,23 +193,83 @@ const initial = createState();
               >
             </div>
             <h4>Chickpea &amp; spinach skillet</h4>
-            <p class="nest-muted">20 min · For two · Sam’s cooking</p>
-            <details id={`${id}-recipes`} class="nest-recipe">
-              <summary>Recipes <span>View recipe</span></summary>
-              <p>
-                Chickpeas, spinach, olive oil. Warm the chickpeas in oil, fold
-                in the spinach and cook until wilted.
-              </p>
-            </details>
+            <div class="nest-meta">
+              <span>20 min</span><span>For two</span><span>Sam’s cooking</span>
+            </div>
+            <button
+              type="button"
+              class="nest-text-button"
+              data-open-view="kitchen"
+              data-open-section="recipes">View recipe</button
+            >
             <button type="button" class="nest-primary" data-made
               >Mark as made</button
             >
             <p class="nest-small" data-meal-status>Planned for Wednesday</p>
           </section>
           <section
+            class="nest-card"
+            role="tabpanel"
+            tabindex="0"
+            id={`${id}-kitchen-nesty`}
+            data-section-panel="kitchen"
+            data-section-name="nesty"
+            aria-labelledby={`${id}-kitchen-tab-nesty`}
+            hidden
+          >
+            <p class="nest-eyebrow">Nesty</p><h3>
+              Dinner, with what we have
+            </h3><p class="nest-muted">
+              Chickpeas and spinach are on hand. The skillet fits tonight's
+              plan.
+            </p><button
+              type="button"
+              class="nest-text-button"
+              data-open-view="kitchen"
+              data-open-section="plan">Open Plan</button
+            >
+          </section>
+          <section
+            class="nest-card"
+            role="tabpanel"
+            tabindex="0"
+            id={`${id}-kitchen-recipes`}
+            data-section-panel="kitchen"
+            data-section-name="recipes"
+            aria-labelledby={`${id}-kitchen-tab-recipes`}
+            hidden
+          >
+            <div class="nest-card-top">
+              <h3>Recipes</h3><span>1 saved recipe</span>
+            </div>
+            <h4>Chickpea &amp; spinach skillet</h4><div class="nest-meta">
+              <span>20 minutes</span><span>2 servings</span>
+            </div>
+            <ul class="nest-ingredients">
+              <li>2 cans of chickpeas</li><li>1 bag of spinach</li><li>
+                1 tablespoon of olive oil
+              </li>
+            </ul>
+            <p class="nest-muted">
+              Warm the chickpeas in oil. Fold in the spinach and cook until
+              wilted.
+            </p>
+            <button
+              type="button"
+              class="nest-text-button"
+              data-open-view="kitchen"
+              data-open-section="plan">On Wednesday's plan</button
+            >
+          </section>
+          <section
             class="nest-card nest-shop"
-            id={`${id}-shop`}
-            aria-label="Shop"
+            id={`${id}-kitchen-shop`}
+            role="tabpanel"
+            tabindex="0"
+            data-section-panel="kitchen"
+            data-section-name="shop"
+            aria-labelledby={`${id}-kitchen-tab-shop`}
+            hidden
           >
             <div class="nest-card-top">
               <h3>Shop</h3><span>Log a trip</span>
@@ -158,7 +327,7 @@ const initial = createState();
               <button type="button" class="nest-primary" data-read
                 >Read receipt</button
               >
-              <p class="nest-small">Maple Market · 14 October</p>
+              <p class="nest-small">Maple Market, 14 October</p>
             </div>
             <form data-receipt-review hidden>
               <h4 tabindex="-1" data-review-title>Review receipt</h4>
@@ -179,151 +348,227 @@ const initial = createState();
             <div data-receipt-saved hidden>
               <div class="nest-saved-mark" aria-hidden="true">✓</div><h4>
                 Trip saved
-              </h4><p class="nest-muted">Maple Market · Sam</p><p
+              </h4><p class="nest-muted">Maple Market, Sam</p><p
                 class="nest-purchase"
                 data-purchase
               >
               </p><p class="nest-small">
                 Selected items restocked in the pantry
-              </p>
+              </p><button
+                type="button"
+                class="nest-text-button"
+                data-open-view="kitchen"
+                data-open-section="pantry">View Pantry</button
+              >
             </div>
           </section>
-        </div>
-        <section
-          class="nest-card nest-pantry"
-          id={`${id}-pantry`}
-          aria-label="Pantry"
-        >
-          <div class="nest-card-top">
-            <h3>Pantry</h3><span>What’s on hand</span>
-          </div>
-          <ul class="nest-pantry-list" data-pantry>
-            {
-              initial.pantry.map((item) => (
-                <li>
-                  <>
-                    <strong>{item.name}</strong>
-                    <span data-stock={item.stock}>
-                      {stockLabels[item.stock]}
-                    </span>
-                  </>
-                </li>
-              ))
-            }
-          </ul>
-        </section>
-      </section>
-      <section data-panel="tasks" aria-label="Tasks" hidden>
-        <div class="nest-heading">
-          <div>
-            <p class="nest-eyebrow">Our household</p><h2>Tasks</h2>
-          </div><span class="nest-person">S <span>Sam</span></span>
-        </div>
-        <ul class="nest-tasks" data-tasks aria-label="Household tasks"></ul>
-        <div class="nest-week-heading">
-          <h3>On the calendar</h3><span>12–18 Oct</span>
-        </div>
-        <div
-          class="nest-week-scroll"
-          role="region"
-          aria-label="Task week preview"
-          tabindex="0"
-        >
-          <div class="nest-week" data-week></div>
-        </div>
-        <form class="nest-card nest-task-form" data-task-form>
-          <label
-            >Task<input
-              name="title"
-              type="text"
-              value="Pick up the parcel"
-              required
-              maxlength="80"
-              autocomplete="off"
-            /></label
+          <section
+            class="nest-card nest-pantry"
+            id={`${id}-kitchen-pantry`}
+            role="tabpanel"
+            tabindex="0"
+            data-section-panel="kitchen"
+            data-section-name="pantry"
+            aria-labelledby={`${id}-kitchen-tab-pantry`}
+            hidden
           >
-          <div class="nest-task-fields">
-            <label
-              >Date<select name="date"
-                >{
-                  week.map((day) => (
-                    <option value={day.date} selected={day.number === 16}>
-                      {day.day} {day.number} Oct
-                    </option>
-                  ))
-                }</select
-              ></label
-            ><label
-              >For<select name="person"
-                ><option>Both</option><option>Sam</option><option>Riley</option
-                ></select
-              ></label
-            >
-          </div>
-          <button class="nest-primary" type="submit">Add task</button>
-        </form>
-      </section>
-      <section data-panel="calendar" aria-label="Calendar" hidden>
-        <div class="nest-heading">
-          <div>
-            <p class="nest-eyebrow">Sam &amp; Riley</p><h2>Calendar</h2>
-          </div><span class="nest-date-range">12–18 Oct 2026</span>
-        </div>
-        <div
-          class="nest-week-scroll"
-          role="region"
-          aria-label="Household week"
-          tabindex="0"
+            <div class="nest-card-top">
+              <h3>Pantry</h3><span>What’s on hand</span>
+            </div>
+            <ul class="nest-pantry-list" data-pantry>
+              {
+                initial.pantry.map((item) => (
+                  <li>
+                    <>
+                      <strong>{item.name}</strong>
+                      <span data-stock={item.stock}>
+                        {stockLabels[item.stock]}
+                      </span>
+                    </>
+                  </li>
+                ))
+              }
+            </ul>
+          </section>
+        </section>
+        <section
+          data-panel="tasks"
+          id={`${id}-tasks`}
+          aria-label="Tasks"
+          hidden
         >
-          <div class="nest-week" data-week></div>
-        </div>
-        <div class="nest-week-heading">
-          <h3>This week’s tasks</h3><button
+          <div class="nest-heading">
+            <div>
+              <p class="nest-eyebrow">Our household</p><h2>Tasks</h2>
+            </div><span class="nest-person">S <span>Sam</span></span>
+          </div>
+          <ul class="nest-tasks" data-tasks aria-label="Household tasks"></ul>
+          <button
             type="button"
             class="nest-text-button"
-            data-open-tasks>Add a task</button
+            data-open-view="calendar">View Calendar</button
           >
+          <form class="nest-card nest-task-form" data-task-form>
+            <label
+              >Task<input
+                name="title"
+                type="text"
+                value="Pick up the parcel"
+                required
+                maxlength="80"
+                autocomplete="off"
+              /></label
+            >
+            <div class="nest-task-fields">
+              <label
+                >Date<select name="date"
+                  >{
+                    week.map((day) => (
+                      <option value={day.date} selected={day.number === 16}>
+                        {day.day} {day.number} Oct
+                      </option>
+                    ))
+                  }</select
+                ></label
+              ><label
+                >For<select name="person"
+                  ><option>Both</option><option>Sam</option><option
+                    >Riley</option
+                  ></select
+                ></label
+              >
+            </div>
+            <button class="nest-primary" type="submit">Add task</button>
+          </form>
+        </section>
+        <section
+          data-panel="calendar"
+          id={`${id}-calendar`}
+          aria-label="Calendar"
+          hidden
+        >
+          <div class="nest-heading">
+            <div>
+              <p class="nest-eyebrow">Sam &amp; Riley</p><h2>Calendar</h2>
+            </div><span class="nest-date-range">12-18 Oct 2026</span>
+          </div>
+          <div
+            class="nest-week-scroll"
+            role="region"
+            aria-label="Household week"
+            tabindex="0"
+          >
+            <div class="nest-week" data-week></div>
+          </div>
+          <div class="nest-week-heading">
+            <h3>This week’s tasks</h3><button
+              type="button"
+              class="nest-text-button"
+              data-open-tasks>Add a task</button
+            >
+          </div>
+          <ul class="nest-tasks" data-tasks aria-label="Calendar tasks"></ul>
+        </section>
+        {
+          sectionPreviews.map((section) => (
+            <section
+              data-panel={section.id}
+              id={`${id}-${section.id}`}
+              aria-label={section.title}
+              hidden
+            >
+              <div class="nest-heading">
+                <div>
+                  <>
+                    <p class="nest-eyebrow">{section.eyebrow}</p>
+                    <h2>{section.title}</h2>
+                  </>
+                </div>
+              </div>
+              <nav
+                class="nest-subnav"
+                role="tablist"
+                aria-label={`${section.title} sections`}
+                data-section-tabs={section.id}
+              >
+                {section.tabs.map((label, index) => (
+                  <button
+                    type="button"
+                    role="tab"
+                    id={`${id}-${section.id}-tab-${label.toLowerCase()}`}
+                    data-section={label.toLowerCase()}
+                    aria-selected={index === 0 ? "true" : "false"}
+                    tabindex={index === 0 ? 0 : -1}
+                    aria-controls={`${id}-${section.id}-${label.toLowerCase()}`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </nav>
+              {section.cards.map((card, index) => (
+                <article
+                  class="nest-card"
+                  role="tabpanel"
+                  tabindex="0"
+                  id={`${id}-${section.id}-${section.tabs[index].toLowerCase()}`}
+                  data-section-panel={section.id}
+                  data-section-name={section.tabs[index].toLowerCase()}
+                  aria-labelledby={`${id}-${section.id}-tab-${section.tabs[index].toLowerCase()}`}
+                  hidden={index !== 0}
+                >
+                  <h3>{card.title}</h3>
+                  <p class="nest-metric">{card.value}</p>
+                  <p class="nest-muted">{card.copy}</p>
+                  {section.id === "finance" && index === 1 && (
+                    <p class="nest-muted" data-finance-purchase>
+                      No receipt purchase logged today.
+                    </p>
+                  )}
+                </article>
+              ))}
+            </section>
+          ))
+        }
+      </div>
+      <aside class="nest-other" aria-label="Riley’s phone preview" tabindex="0">
+        <div class="nest-phone-label">
+          <span class="nest-avatar">R</span><div>
+            <strong>Riley’s phone</strong><span>Same household</span>
+          </div>
         </div>
-        <ul class="nest-tasks" data-tasks aria-label="Calendar tasks"></ul>
-      </section>
-      <p class="nest-status" role="status" aria-live="polite" data-status>
-        Home is up to date.
-      </p>
+        <div class="nest-phone">
+          <div class="nest-phone-bar" aria-hidden="true"></div>
+          <div class="nest-phone-title">
+            <strong>Nest</strong><span
+              >Up to date <i aria-hidden="true"></i></span
+            >
+          </div>
+          <p class="nest-phone-update" data-device-update>All caught up.</p>
+          <div class="nest-phone-section">
+            <span class="nest-eyebrow">Our week</span><strong data-device-tasks
+              >1 task, 0 done</strong
+            ><p data-device-task>Water the plants, Wed 14</p>
+          </div>
+          <div class="nest-phone-section">
+            <span class="nest-eyebrow">Dinner, Wed 14</span><strong
+              >Chickpea &amp; spinach skillet</strong
+            ><p data-device-meal>Planned by Sam</p>
+          </div>
+          <div class="nest-phone-section nest-phone-pantry">
+            <span class="nest-eyebrow">Pantry</span><ul data-device-pantry></ul>
+          </div>
+          <div class="nest-phone-section" data-device-purchase hidden>
+            <span class="nest-eyebrow">Latest trip</span><strong
+              data-device-total></strong>
+          </div>
+          <div class="nest-phone-home" aria-hidden="true"></div>
+        </div>
+      </aside>
     </div>
-    <aside class="nest-other" aria-label="Riley’s phone preview">
-      <div class="nest-phone-label">
-        <span class="nest-avatar">R</span><div>
-          <strong>Riley’s phone</strong><span>Same household</span>
-        </div>
-      </div>
-      <div class="nest-phone">
-        <div class="nest-phone-bar" aria-hidden="true"></div>
-        <div class="nest-phone-title">
-          <strong>Nest</strong><span>Up to date <i aria-hidden="true"></i></span
-          >
-        </div>
-        <p class="nest-phone-update" data-device-update>All caught up.</p>
-        <div class="nest-phone-section">
-          <span class="nest-eyebrow">Our week</span><strong data-device-tasks
-            >1 task · 0 done</strong
-          ><p data-device-task>Water the plants · Wed 14</p>
-        </div>
-        <div class="nest-phone-section">
-          <span class="nest-eyebrow">Dinner · Wed 14</span><strong
-            >Chickpea &amp; spinach skillet</strong
-          ><p data-device-meal>Planned · Sam</p>
-        </div>
-        <div class="nest-phone-section nest-phone-pantry">
-          <span class="nest-eyebrow">Pantry</span><ul data-device-pantry></ul>
-        </div>
-        <div class="nest-phone-section" data-device-purchase hidden>
-          <span class="nest-eyebrow">Latest trip</span><strong data-device-total
-          ></strong>
-        </div>
-        <div class="nest-phone-home" aria-hidden="true"></div>
-      </div>
-    </aside>
   </div>
+  <p class="nest-status" role="status" aria-live="polite" data-status>
+    Home is up to date.
+  </p>
   <p class="nest-note">
     This sample simulates AI receipt reading, stock suggestions and device
     updates locally.
@@ -350,816 +595,859 @@ const initial = createState();
 <script>
   import "../../scripts/demos/nest";
 </script>
-<style>
+<style is:inline>
   .demo-nest {
-    --nest-surface: color-mix(in srgb, var(--bg) 94%, var(--ink));
-    --nest-tint: color-mix(in srgb, var(--accent) 10%, var(--bg));
+    --nest-bg: #111710;
+    --nest-surface: #1b2518;
+    --nest-tint: #283322;
+    --nest-ink: #eee8db;
+    --nest-muted: #b4b2a3;
+    --nest-line: #465040;
+    --nest-accent: #e8c276;
+    --nest-accent-ink: #171b12;
+    --nest-scrollbar: #718067;
+    color-scheme: dark;
+    container-type: inline-size;
+    min-width: 0;
     margin: 28px 0;
     overflow: hidden;
-    background: var(--bg);
-    color: var(--ink);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-lg);
+    background: var(--nest-bg);
+    color: var(--nest-ink);
+    border: 1px solid var(--nest-line);
+    border-radius: 18px;
     font-size: 14px;
     line-height: 1.5;
-  }
-  .demo-nest :global(*) {
-    box-sizing: border-box;
-  }
-  .demo-nest :global(.nest-sr) {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-    border: 0;
-  }
-  .demo-nest :global([hidden]) {
-    display: none !important;
-  }
-  .demo-nest :global(button),
-  .demo-nest :global(input),
-  .demo-nest :global(select) {
-    font: inherit;
-    color: inherit;
-  }
-  .demo-nest :global(button),
-  .demo-nest :global(summary),
-  .demo-nest :global(a) {
-    touch-action: manipulation;
-  }
-  .demo-nest :global(button) {
-    min-height: 44px;
-    border: 1px solid var(--line);
-    border-radius: 9px;
-    background: var(--nest-surface);
-    padding: 9px 14px;
-    cursor: pointer;
-  }
-  .demo-nest :global(button:hover:not(:disabled)),
-  .nest-subnav a:hover {
-    border-color: var(--accent);
-  }
-  .demo-nest :global(button:disabled) {
-    opacity: 0.6;
-    cursor: default;
-  }
-  .demo-nest
-    :global(:is(button, a, input, select, summary, [tabindex]):focus-visible) {
-    box-shadow: 0 0 0 3px var(--accent);
-  }
-  .demo-nest :global(input:not([type="checkbox"])),
-  .demo-nest :global(select) {
-    width: 100%;
-    min-width: 0;
-    min-height: 44px;
-    padding: 9px 10px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    background: var(--bg);
-    font-size: 16px;
-  }
-  .demo-nest :global(input[type="checkbox"]) {
-    width: 20px;
-    height: 20px;
-    margin: 0;
-    accent-color: var(--accent);
-    flex-shrink: 0;
-  }
-  .demo-nest :global(h2),
-  .demo-nest :global(h3),
-  .demo-nest :global(h4),
-  .demo-nest :global(p),
-  .demo-nest :global(ul) {
-    margin: 0;
-  }
-  .demo-nest :global(h2) {
-    font-size: clamp(23px, 4vw, 29px);
-    font-weight: 550;
-    letter-spacing: -0.035em;
-  }
-  .demo-nest :global(h3) {
-    font-size: 16px;
-    font-weight: 600;
-  }
-  .demo-nest :global(h4) {
-    font-size: 18px;
-    font-weight: 550;
-    line-height: 1.35;
-  }
-  .demo-nest :global(ul) {
-    list-style: none;
-    padding: 0;
-  }
-  .nest-header,
-  .nest-heading,
-  .nest-card-top,
-  .nest-week-heading {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
-  .nest-header {
-    padding: 20px 26px;
-  }
-  .nest-brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .nest-brand svg {
-    width: 34px;
-    height: 34px;
-    stroke: var(--accent);
-    stroke-width: 1.6;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  .nest-brand strong {
-    font-size: 24px;
-    font-weight: 550;
-    line-height: 1.2;
-    letter-spacing: -0.04em;
-  }
-  .nest-brand strong span {
-    display: block;
-    margin-top: 3px;
-    color: var(--muted);
-    font-size: 11px;
-    font-weight: 400;
-    letter-spacing: 0;
-  }
-  .demo-nest .nest-reset,
-  .demo-nest .nest-text-button {
-    border-color: transparent;
-    background: transparent;
-    color: var(--accent);
-    font-size: 12px;
-  }
-  .nest-nav {
-    display: flex;
-    gap: 4px;
-    padding: 0 26px 13px;
-    border-bottom: 1px solid var(--line);
-  }
-  .nest-nav button {
-    background: transparent;
-    border-color: transparent;
-    padding-inline: 18px;
-  }
-  .nest-nav button[aria-pressed="true"] {
-    background: var(--nest-tint);
-    color: var(--accent);
-  }
-  .nest-nav button span {
-    display: inline-block;
-    margin-left: 5px;
-    font-size: 10px;
-    padding: 1px 5px;
-    border-radius: 20px;
-    background: var(--nest-surface);
-  }
-  .nest-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 230px;
-  }
-  .nest-main {
-    min-width: 0;
-    padding: 26px;
-  }
-  .nest-eyebrow {
-    font-size: 10px;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .nest-person {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    border: 1px solid var(--line);
-    border-radius: 50%;
-    color: var(--accent);
-    background: var(--nest-tint);
-    font-size: 13px;
-  }
-  .nest-person span {
-    display: none;
-  }
-  .nest-subnav {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin: 12px 0 20px;
-  }
-  .nest-subnav a {
-    display: flex;
-    align-items: center;
-    min-height: 44px;
-    padding: 7px 12px;
-    color: var(--muted);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 12px;
-  }
-  .nest-kitchen-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-  }
-  .nest-card {
-    border: 1px solid var(--line);
-    border-radius: var(--radius-sm);
-    background: var(--nest-surface);
-    padding: 18px;
-    min-width: 0;
-    scroll-margin-block: 30px;
-  }
-  .nest-card-top {
-    margin-bottom: 14px;
-  }
-  .nest-card-top > span,
-  .nest-week-heading > span {
-    color: var(--muted);
-    font-size: 11px;
-    text-align: right;
-  }
-  .nest-meal-art {
-    display: grid;
-    place-items: center;
-    height: 142px;
-    margin: 0 -6px 14px;
-    background: var(--nest-tint);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  .nest-meal-art svg {
-    width: 100%;
-    max-width: 280px;
-  }
-  .nest-plate-rim {
-    fill: var(--bg);
-    stroke: var(--line);
-    stroke-width: 1.5;
-  }
-  .nest-plate {
-    fill: var(--nest-surface);
-    stroke: var(--line);
-  }
-  .nest-leaves {
-    fill: var(--accent);
-    opacity: 0.65;
-  }
-  .nest-beans {
-    fill: var(--ink);
-    opacity: 0.65;
-  }
-  .nest-muted {
-    color: var(--muted);
-    font-size: 12px;
-    margin-top: 7px !important;
-  }
-  .nest-small {
-    color: var(--muted);
-    font-size: 10px;
-    margin-top: 8px !important;
-  }
-  .nest-recipe {
-    margin: 15px 0;
-    font-size: 12px;
-  }
-  .nest-recipe summary {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
-    min-height: 44px;
-    color: var(--accent);
-    cursor: pointer;
-  }
-  .nest-recipe summary span {
-    font-size: 10px;
-    color: var(--muted);
-  }
-  .nest-recipe p {
-    color: var(--muted);
-    padding: 8px 0;
-  }
-  .demo-nest .nest-primary {
-    background: var(--accent);
-    color: var(--accent-ink);
-    border-color: var(--accent);
-    font-weight: 550;
-    width: 100%;
-    font-size: 12px;
-  }
-  .nest-receipt-stage {
-    display: grid;
-    place-items: center;
-    padding: 8px;
-    background: var(--nest-tint);
-    border-radius: 8px;
-    margin-bottom: 16px;
-  }
-  .nest-receipt {
-    height: 222px;
-    max-width: 100%;
-    transform: rotate(-4deg);
-    filter: drop-shadow(0 6px 5px rgb(0 0 0 / 0.12));
-  }
-  .nest-shop form h4 {
-    font-size: 17px;
-    margin-bottom: 12px;
-  }
-  .demo-nest :global(.nest-receipt-row) {
-    padding-block: 10px;
-    border-bottom: 1px solid var(--line);
-  }
-  .demo-nest :global(.nest-item-line) {
-    display: grid;
-    grid-template-columns: 44px minmax(0, 1fr) auto;
-    gap: 6px;
-    align-items: center;
-  }
-  .demo-nest :global(.nest-include) {
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-  }
-  .demo-nest :global(.nest-item-amount) {
-    display: grid;
-    grid-template-columns: 44px minmax(0, 1fr);
-    align-items: center;
-    gap: 6px;
-    margin-left: 50px;
-    margin-top: 5px;
-    color: var(--muted);
-    font-size: 10px;
-  }
-  .demo-nest :global(.nest-item-price) {
-    font-size: 11px;
-    color: var(--muted);
-  }
-  .nest-total {
-    display: flex;
-    justify-content: space-between;
-    margin-block: 16px;
-    font-size: 12px;
-  }
-  .nest-error {
-    color: var(--ink);
-    font-size: 12px;
-    margin-bottom: 12px !important;
-  }
-  .nest-shop .nest-text-button {
-    width: 100%;
-  }
-  .nest-saved-mark {
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    width: 70px;
-    height: 70px;
-    color: var(--accent);
-    background: var(--nest-tint);
-    font-size: 30px;
-    margin: 34px auto 24px;
-  }
-  [data-receipt-saved] {
-    text-align: center;
-  }
-  .nest-purchase {
-    font-size: 20px;
-    margin-block: 16px !important;
-  }
-  .nest-pantry {
-    margin-top: 14px;
-  }
-  .demo-nest :global(.nest-pantry-list) {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px 22px;
-  }
-  .demo-nest :global(.nest-pantry-list li) {
-    display: grid;
-    gap: 2px;
-    min-width: 0;
-    overflow-wrap: anywhere;
-  }
-  .demo-nest :global(.nest-pantry-list strong) {
-    font-size: 12px;
-    font-weight: 500;
-  }
-  .demo-nest :global([data-stock]) {
-    font-size: 10px;
-    color: var(--muted);
-  }
-  .demo-nest :global([data-stock="in"]) {
-    color: var(--accent);
-  }
-  .demo-nest :global([data-stock="out"]) {
-    text-decoration: underline dotted;
-    text-underline-offset: 4px;
-  }
-  .nest-other {
-    padding: 26px 20px;
-    border-left: 1px solid var(--line);
-    background: var(--nest-tint);
-    min-width: 0;
-  }
-  .nest-phone-label {
-    display: flex;
-    gap: 9px;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  .nest-avatar {
-    display: grid;
-    place-items: center;
-    width: 30px;
-    height: 30px;
-    border: 1px solid var(--line);
-    border-radius: 50%;
-    color: var(--accent);
-  }
-  .nest-phone-label strong {
-    display: block;
-    font-size: 12px;
-    font-weight: 500;
-  }
-  .nest-phone-label div > span {
-    display: block;
-    font-size: 10px;
-    color: var(--muted);
-  }
-  .nest-phone {
-    padding: 12px;
-    border: 3px solid color-mix(in srgb, var(--muted) 30%, var(--bg));
-    border-radius: 25px;
-    background: var(--bg);
-  }
-  .nest-phone-bar {
-    width: 44px;
-    height: 5px;
-    border-radius: 10px;
-    background: var(--line);
-    margin: 0 auto 18px;
-  }
-  .nest-phone-title {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 4px;
-    align-items: center;
-  }
-  .nest-phone-title strong {
-    font-size: 16px;
-    font-weight: 500;
-  }
-  .nest-phone-title span {
-    color: var(--muted);
-    font-size: 8px;
-  }
-  .nest-phone-title i {
-    display: inline-block;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--accent);
-    margin-left: 3px;
-  }
-  .nest-phone-update {
-    padding: 10px;
-    margin-top: 14px !important;
-    background: var(--nest-tint);
-    border-radius: 8px;
-    color: var(--accent);
-    font-size: 10px;
-    overflow-wrap: anywhere;
-  }
-  .nest-phone-section {
-    border-bottom: 1px solid var(--line);
-    padding-block: 15px;
-  }
-  .nest-phone-section .nest-eyebrow {
-    font-size: 8px;
-  }
-  .nest-phone-section > strong {
-    display: block;
-    font-size: 11px;
-    font-weight: 500;
-    margin-top: 4px;
-  }
-  .nest-phone-section p {
-    font-size: 9px;
-    color: var(--muted);
-    margin-top: 4px;
-    overflow-wrap: anywhere;
-  }
-  .demo-nest :global(.nest-phone-pantry li) {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 2px 8px;
-    padding-top: 6px;
-    font-size: 9px;
-    overflow-wrap: anywhere;
-  }
-  .demo-nest :global(.nest-phone-pantry [data-stock]) {
-    font-size: 8px;
-  }
-  .nest-phone-home {
-    height: 3px;
-    width: 60px;
-    background: var(--line);
-    border-radius: 3px;
-    margin: 20px auto 0;
-  }
-  .nest-status {
-    color: var(--accent);
-    border-top: 1px solid var(--line);
-    padding-top: 14px;
-    margin-top: 20px !important;
-    font-size: 12px;
-    overflow-wrap: anywhere;
-  }
-  .nest-note {
-    border-top: 1px solid var(--line);
-    padding: 15px 26px;
-    font-size: 11px;
-    color: var(--muted);
-  }
-  .nest-task-form {
-    display: grid;
-    gap: 14px;
-    margin-top: 20px;
-  }
-  .nest-task-form label {
-    display: grid;
-    gap: 5px;
-    font-size: 12px;
-    color: var(--muted);
-  }
-  .nest-task-fields {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-  }
-  .demo-nest :global(.nest-tasks) {
-    display: grid;
-    gap: 8px;
-    margin-top: 18px;
-  }
-  .demo-nest :global(.nest-task) {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px;
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    background: var(--nest-surface);
-  }
-  .demo-nest :global(.nest-task button) {
-    display: grid;
-    place-items: center;
-    flex: 0 0 44px;
-    padding: 8px;
-    color: var(--accent);
-  }
-  .demo-nest :global(.nest-task-copy) {
-    display: grid;
-    min-width: 0;
-    gap: 2px;
-    overflow-wrap: anywhere;
-  }
-  .demo-nest :global(.nest-task-copy strong) {
-    font-size: 13px;
-    font-weight: 500;
-  }
-  .demo-nest :global(.nest-task-copy span) {
-    font-size: 11px;
-    color: var(--muted);
-  }
-  .demo-nest :global(.is-done strong) {
-    text-decoration: line-through;
-    color: var(--muted);
-  }
-  .nest-week-heading {
-    margin-block: 24px 14px;
-  }
-  .nest-date-range {
-    font-size: 11px;
-    color: var(--muted);
-    text-align: right;
-  }
-  .nest-week-scroll {
-    overflow-x: auto;
-    padding: 3px 3px 10px;
-    margin: 18px -3px 0;
-    border-radius: 8px;
-  }
-  .demo-nest :global(.nest-week) {
-    display: grid;
-    grid-template-columns: repeat(7, minmax(78px, 1fr));
-    gap: 5px;
-    min-width: 580px;
-  }
-  .demo-nest :global(.nest-day) {
-    min-height: 155px;
-    padding: 9px 6px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-  }
-  .demo-nest :global(.nest-day-heading) {
-    display: grid;
-    font-size: 10px;
-    color: var(--muted);
-    gap: 3px;
-    margin-bottom: 10px;
-  }
-  .demo-nest :global(.nest-day-heading strong) {
-    font-size: 18px;
-    color: var(--ink);
-    font-weight: 500;
-  }
-  .demo-nest :global(.nest-calendar-item) {
-    display: grid;
-    gap: 4px;
-    padding: 7px;
-    border-left: 2px solid var(--accent);
-    background: var(--nest-tint);
-    border-radius: 4px;
-    overflow-wrap: anywhere;
-    margin-top: 5px;
-  }
-  .demo-nest :global(.nest-calendar-item strong) {
-    font-size: 10px;
-    line-height: 1.4;
-    font-weight: 500;
-  }
-  .demo-nest :global(.nest-calendar-item span) {
-    font-size: 8px;
-    color: var(--muted);
-  }
-  .nest-sheet {
-    width: min(440px, calc(100% - 28px));
-    max-height: calc(100dvh - 40px);
-    overflow-y: auto;
-    border: 1px solid var(--line);
-    border-radius: 22px;
-    background: var(--bg);
-    color: var(--ink);
-    padding: 24px;
-  }
-  .nest-sheet::backdrop {
-    background: rgb(0 0 0 / 0.65);
-  }
-  .nest-sheet h3 {
-    font-size: 24px;
-    font-weight: 500;
-    margin-top: 6px;
-  }
-  .nest-sheet-handle {
-    display: block;
-    height: 4px;
-    width: 40px;
-    margin: -9px auto 18px;
-    background: var(--line);
-    border-radius: 4px;
-  }
-  .nest-stock-rows {
-    display: grid;
-    gap: 14px;
-    margin-block: 22px;
-  }
-  .demo-nest :global(.nest-stock-row) {
-    border: 0;
-    padding: 0;
-    margin: 0;
-    min-width: 0;
-  }
-  .demo-nest :global(.nest-stock-row legend) {
-    font-size: 13px;
-    margin-bottom: 7px;
-  }
-  .demo-nest :global(.nest-stock-options) {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 6px;
-  }
-  .demo-nest :global(.nest-stock-options button) {
-    font-size: 12px;
-    padding-inline: 6px;
-  }
-  .demo-nest :global(.nest-stock-options [aria-pressed="true"]) {
-    background: var(--accent);
-    color: var(--accent-ink);
-    border-color: var(--accent);
-  }
-  .nest-sheet-actions {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 10px;
-  }
-  @media (max-width: 1050px) {
-    .nest-layout {
-      grid-template-columns: minmax(0, 1fr);
+
+    * {
+      box-sizing: border-box;
+      scrollbar-width: thin;
+      scrollbar-color: var(--nest-scrollbar) transparent;
     }
-    .nest-other {
-      display: grid;
-      grid-template-columns: 150px minmax(0, 1fr);
-      gap: 14px;
-      align-items: start;
-      border-left: 0;
-      border-top: 1px solid var(--line);
-      padding: 20px 26px;
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
     }
-    .nest-phone {
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 12px;
+    ::-webkit-scrollbar-track {
+      background: transparent;
     }
-    .nest-phone-bar,
-    .nest-phone-home,
-    .nest-phone-pantry,
-    .nest-phone-section,
-    .nest-phone-title {
-      display: none;
+    ::-webkit-scrollbar-thumb {
+      background: var(--nest-scrollbar);
+      border-radius: 8px;
     }
-    .nest-phone-update {
-      margin: 0 !important;
+    [hidden] {
+      display: none !important;
     }
-    .nest-phone-label {
-      margin-bottom: 0;
+    .nest-sr {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+      border: 0;
     }
-  }
-  @media (max-width: 580px) {
-    .nest-header {
-      padding: 16px 14px;
-      gap: 4px;
+    :is(button, input, select) {
+      font: inherit;
+      color: inherit;
     }
-    .nest-brand {
-      gap: 6px;
+    button {
+      min-height: 44px;
+      border: 1px solid var(--nest-line);
+      border-radius: 9px;
+      background: var(--nest-surface);
+      padding: 9px 14px;
+      cursor: pointer;
+      touch-action: manipulation;
     }
-    .nest-brand svg {
-      width: 28px;
+    button:disabled {
+      opacity: 0.65;
+      cursor: default;
     }
-    .nest-brand strong {
-      font-size: 22px;
+    :is(button, input, select, [tabindex]):focus-visible {
+      outline: 2px solid var(--nest-accent);
+      outline-offset: 2px;
     }
-    .nest-brand strong span {
-      font-size: 9px;
+    input:not([type="checkbox"]),
+    select {
+      width: 100%;
+      min-width: 0;
+      min-height: 44px;
+      padding: 9px 10px;
+      border: 1px solid var(--nest-line);
+      border-radius: 8px;
+      background: var(--nest-bg);
+      font-size: 16px;
     }
-    .demo-nest .nest-reset {
-      font-size: 10px;
-      padding-inline: 8px;
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin: 0;
+      accent-color: var(--nest-accent);
+      flex-shrink: 0;
     }
-    .nest-nav {
-      padding: 0 14px 12px;
-      gap: 2px;
+    :is(h2, h3, h4, p, ul) {
+      margin: 0;
     }
-    .nest-nav button {
-      flex: 1;
-      padding-inline: 8px;
-      font-size: 12px;
+    h2 {
+      font-size: 26px;
+      font-weight: 550;
+      letter-spacing: -0.035em;
     }
-    .nest-main {
-      padding: 20px 14px;
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
     }
-    .nest-kitchen-grid {
-      grid-template-columns: minmax(0, 1fr);
+    h4 {
+      font-size: 19px;
+      font-weight: 550;
+      line-height: 1.35;
     }
-    .nest-card {
-      padding: 16px;
+    ul {
+      list-style: none;
+      padding: 0;
     }
-    .nest-other {
-      grid-template-columns: minmax(0, 1fr);
-      padding: 18px 14px;
-      gap: 10px;
-    }
-    .nest-note {
-      padding-inline: 14px;
-    }
-    .nest-subnav {
-      gap: 4px;
-    }
-    .nest-subnav a {
-      padding-inline: 10px;
-    }
-    .nest-pantry-list {
+    .nest-header,
+    .nest-heading,
+    .nest-card-top,
+    .nest-week-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       gap: 12px;
     }
-    .nest-sheet {
-      margin-top: auto;
+    .nest-header {
+      padding: 16px 22px;
+      border-bottom: 1px solid var(--nest-line);
+    }
+    .nest-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .nest-brand svg {
+      width: 32px;
+      height: 32px;
+      stroke: var(--nest-accent);
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .nest-brand strong {
+      font-size: 23px;
+      font-weight: 550;
+      line-height: 1.2;
+    }
+    .nest-brand strong span {
+      display: block;
+      color: var(--nest-muted);
+      font-size: 11px;
+      font-weight: 400;
+      margin-top: 3px;
+    }
+    .nest-reset,
+    .nest-text-button {
+      border-color: transparent;
+      background: transparent;
+      color: var(--nest-accent);
+      font-size: 12px;
+    }
+    .nest-shell {
+      display: grid;
+      grid-template-columns: 80px minmax(0, 1fr);
+    }
+    .nest-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 8px 5px;
+      background: var(--nest-surface);
+      border-right: 1px solid var(--nest-line);
+    }
+    .nest-nav button {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      min-width: 44px;
+      min-height: 61px;
+      padding: 7px 2px;
+      border-color: transparent;
+      background: transparent;
+      color: var(--nest-muted);
+      font-size: 10px;
+    }
+    .nest-nav svg {
+      width: 21px;
+      height: 21px;
+      stroke: currentColor;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .nest-nav button[aria-pressed="true"] {
+      background: var(--nest-tint);
+      color: var(--nest-accent);
+    }
+    .nest-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 210px;
+      height: 480px;
+      min-width: 0;
+    }
+    .nest-main {
+      min-width: 0;
+      min-height: 0;
+      padding: 22px;
+      overflow: auto;
+      overscroll-behavior: contain;
+    }
+    .nest-main > section {
+      overflow-wrap: anywhere;
+    }
+    .nest-eyebrow {
+      color: var(--nest-muted);
+      font-size: 10px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+    .nest-person,
+    .nest-avatar {
+      display: grid;
+      place-items: center;
+      flex: 0 0 32px;
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--nest-line);
+      border-radius: 50%;
+      color: var(--nest-accent);
+      background: var(--nest-tint);
+    }
+    .nest-person span {
+      display: none;
+    }
+    .nest-welcome {
+      margin: 10px 0 18px;
+      color: var(--nest-muted);
+    }
+    .nest-dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .nest-dashboard-grid h3 {
+      margin-top: 8px;
+    }
+    .nest-metric {
+      font-size: 22px;
+      margin-block: 14px 5px;
+      color: var(--nest-accent);
+    }
+    .nest-dashboard-grid .nest-metric {
+      font-size: 15px;
+    }
+    .nest-subnav {
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      padding: 3px 3px 7px;
+      margin: 12px -3px 14px;
+    }
+    .nest-subnav button {
+      flex-shrink: 0;
+      padding-inline: 12px;
+      background: transparent;
+      border-color: transparent;
+      color: var(--nest-muted);
+      font-size: 12px;
+    }
+    .nest-subnav [aria-selected="true"] {
+      background: var(--nest-tint);
+      color: var(--nest-accent);
+      border-color: var(--nest-line);
+    }
+    .nest-card {
+      padding: 18px;
+      min-width: 0;
+      border: 1px solid var(--nest-line);
+      border-radius: 12px;
+      background: var(--nest-surface);
+    }
+    .nest-card-top {
       margin-bottom: 14px;
-      padding: 20px;
+    }
+    .nest-card-top > span,
+    .nest-week-heading > span {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: end;
+      gap: 8px;
+      color: var(--nest-muted);
+      font-size: 11px;
+      text-align: right;
+    }
+    .nest-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 16px;
+      color: var(--nest-muted);
+      font-size: 12px;
+      margin: 8px 0 12px;
+    }
+    .nest-meal-art {
+      display: grid;
+      place-items: center;
+      height: 130px;
+      margin-bottom: 14px;
+      background: var(--nest-tint);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .nest-meal-art svg {
+      width: 100%;
+      max-width: 280px;
+    }
+    .nest-plate-rim {
+      fill: #e7e2d5;
+      stroke: #b4b2a3;
+      stroke-width: 1.5;
+    }
+    .nest-plate {
+      fill: #d9d4c5;
+    }
+    .nest-leaves {
+      fill: #42663d;
+    }
+    .nest-beans {
+      fill: #a48446;
+    }
+    .nest-muted {
+      color: var(--nest-muted);
+      font-size: 13px;
+      margin-top: 7px;
+    }
+    .nest-small {
+      color: var(--nest-muted);
+      font-size: 11px;
+      margin-top: 8px;
+    }
+    .nest-ingredients {
+      display: grid;
+      gap: 9px;
+      margin-block: 22px;
+      font-size: 13px;
+    }
+    .nest-primary {
+      background: var(--nest-accent);
+      color: var(--nest-accent-ink);
+      border-color: var(--nest-accent);
+      font-weight: 550;
+      width: 100%;
+      font-size: 13px;
+    }
+    .nest-receipt-stage {
+      display: grid;
+      place-items: center;
+      padding: 8px;
+      background: var(--nest-tint);
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+    .nest-receipt {
+      height: 175px;
+      max-width: 100%;
+      transform: rotate(-4deg);
+    }
+    .nest-shop form h4 {
+      font-size: 17px;
+      margin-bottom: 12px;
+    }
+    .nest-receipt-row {
+      padding-block: 10px;
+      border-bottom: 1px solid var(--nest-line);
+    }
+    .nest-item-line {
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr) auto;
+      gap: 6px;
+      align-items: center;
+    }
+    .nest-include {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+    }
+    .nest-item-amount {
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr);
+      align-items: center;
+      gap: 6px;
+      margin-left: 50px;
+      margin-top: 5px;
+      color: var(--nest-muted);
+      font-size: 11px;
+    }
+    .nest-item-price {
+      font-size: 11px;
+      color: var(--nest-muted);
+    }
+    .nest-total {
+      display: flex;
+      justify-content: space-between;
+      margin-block: 16px;
+      font-size: 13px;
+    }
+    .nest-error {
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+    .nest-shop .nest-text-button {
+      width: 100%;
+    }
+    .nest-saved-mark {
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      color: var(--nest-accent);
+      background: var(--nest-tint);
+      font-size: 30px;
+      margin: 24px auto;
+    }
+    [data-receipt-saved] {
+      text-align: center;
+    }
+    .nest-purchase {
+      font-size: 20px;
+      margin-block: 16px;
+    }
+    .nest-pantry-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .nest-pantry-list li {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+    .nest-pantry-list strong {
+      font-size: 13px;
+      font-weight: 500;
+    }
+    [data-stock] {
+      font-size: 11px;
+      color: var(--nest-muted);
+    }
+    [data-stock="in"] {
+      color: #a5d4a1;
+    }
+    [data-stock="out"] {
+      text-decoration: underline dotted;
+      text-underline-offset: 4px;
+    }
+    .nest-other {
+      min-width: 0;
+      padding: 20px 14px;
+      border-left: 1px solid var(--nest-line);
+      background: var(--nest-tint);
+      overflow: auto;
+      overscroll-behavior: contain;
+    }
+    .nest-phone-label {
+      display: flex;
+      gap: 9px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .nest-phone-label strong {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .nest-phone-label div > span {
+      display: block;
+      color: var(--nest-muted);
+      font-size: 10px;
+    }
+    .nest-phone {
+      padding: 12px;
+      border: 2px solid var(--nest-line);
+      border-radius: 22px;
+      background: var(--nest-bg);
+    }
+    .nest-phone-bar {
+      width: 44px;
+      height: 4px;
+      border-radius: 10px;
+      background: var(--nest-line);
+      margin: 0 auto 14px;
+    }
+    .nest-phone-title {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+    }
+    .nest-phone-title strong {
+      font-size: 16px;
+      font-weight: 500;
+    }
+    .nest-phone-title span {
+      color: var(--nest-muted);
+      font-size: 9px;
+    }
+    .nest-phone-title i {
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #a5d4a1;
+      margin-left: 3px;
+    }
+    .nest-phone-update {
+      padding: 10px;
+      margin-top: 12px;
+      background: var(--nest-tint);
+      border-radius: 8px;
+      color: var(--nest-accent);
+      font-size: 11px;
+      overflow-wrap: anywhere;
+    }
+    .nest-phone-section {
+      padding-block: 12px;
+      border-bottom: 1px solid var(--nest-line);
+      overflow-wrap: anywhere;
+    }
+    .nest-phone-section .nest-eyebrow {
+      font-size: 9px;
+    }
+    .nest-phone-section > strong {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+    .nest-phone-section p {
+      font-size: 11px;
+      color: var(--nest-muted);
+      margin-top: 4px;
+    }
+    .nest-phone-pantry li {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 2px 8px;
+      padding-top: 6px;
+      font-size: 11px;
+    }
+    .nest-phone-home {
+      height: 3px;
+      width: 60px;
+      background: var(--nest-line);
+      border-radius: 3px;
+      margin: 16px auto 0;
+    }
+    .nest-status {
+      color: var(--nest-accent);
+      padding: 10px 22px;
+      border-top: 1px solid var(--nest-line);
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+    .nest-note {
+      padding: 10px 22px;
+      border-top: 1px solid var(--nest-line);
+      color: var(--nest-muted);
+      font-size: 11px;
+    }
+    .nest-task-form {
+      display: grid;
+      gap: 14px;
+      margin-top: 16px;
+    }
+    .nest-task-form label {
+      display: grid;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--nest-muted);
+    }
+    .nest-task-fields {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .nest-tasks {
+      display: grid;
+      gap: 8px;
+      margin-top: 18px;
+    }
+    .nest-task {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border: 1px solid var(--nest-line);
+      border-radius: 10px;
+      background: var(--nest-surface);
+    }
+    .nest-task button {
+      display: grid;
+      place-items: center;
+      flex: 0 0 44px;
+      padding: 8px;
+      color: var(--nest-accent);
+    }
+    .nest-task-copy {
+      display: grid;
+      min-width: 0;
+      gap: 2px;
+      overflow-wrap: anywhere;
+    }
+    .nest-task-copy strong {
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .nest-task-copy span {
+      font-size: 11px;
+      color: var(--nest-muted);
+    }
+    .is-done strong {
+      text-decoration: line-through;
+      color: var(--nest-muted);
+    }
+    .nest-week-heading {
+      margin-block: 24px 14px;
+    }
+    .nest-date-range {
+      font-size: 11px;
+      color: var(--nest-muted);
+      text-align: right;
+    }
+    .nest-week-scroll {
+      overflow: auto;
+      padding: 3px 3px 10px;
+      margin: 18px -3px 0;
+      border-radius: 8px;
+    }
+    .nest-week {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(78px, 1fr));
+      gap: 5px;
+      min-width: 580px;
+    }
+    .nest-day {
+      min-height: 155px;
+      padding: 9px 6px;
+      border: 1px solid var(--nest-line);
+      border-radius: 8px;
+    }
+    .nest-day-heading {
+      display: grid;
+      font-size: 11px;
+      color: var(--nest-muted);
+      gap: 3px;
+      margin-bottom: 10px;
+    }
+    .nest-day-heading strong {
+      font-size: 18px;
+      color: var(--nest-ink);
+      font-weight: 500;
+    }
+    .nest-calendar-item {
+      display: grid;
+      gap: 4px;
+      padding: 7px;
+      background: var(--nest-tint);
+      border: 1px solid var(--nest-line);
+      border-radius: 6px;
+      overflow-wrap: anywhere;
+      margin-top: 5px;
+    }
+    .nest-calendar-item strong {
+      font-size: 11px;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+    .nest-calendar-item span {
+      font-size: 10px;
+      color: var(--nest-muted);
+    }
+    .nest-sheet {
+      width: min(440px, calc(100% - 28px));
+      max-height: min(500px, calc(100dvh - 40px));
+      overflow-y: auto;
+      border: 1px solid var(--nest-line);
+      border-radius: 22px;
+      background: var(--nest-bg);
+      color: var(--nest-ink);
+      padding: 24px;
+    }
+    .nest-sheet::backdrop {
+      background: rgb(0 0 0 / 0.65);
+    }
+    .nest-sheet h3 {
+      font-size: 24px;
+      font-weight: 500;
+      margin-top: 6px;
+    }
+    .nest-sheet-handle {
+      display: block;
+      height: 4px;
+      width: 40px;
+      margin: -9px auto 18px;
+      background: var(--nest-line);
+      border-radius: 4px;
+    }
+    .nest-stock-rows {
+      display: grid;
+      gap: 14px;
+      margin-block: 22px;
+    }
+    .nest-stock-row {
+      border: 0;
+      padding: 0;
+      margin: 0;
+      min-width: 0;
+    }
+    .nest-stock-row legend {
+      font-size: 13px;
+      margin-bottom: 7px;
+    }
+    .nest-stock-options {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .nest-stock-options button {
+      font-size: 12px;
+      padding-inline: 6px;
+    }
+    .nest-stock-options [aria-pressed="true"] {
+      background: var(--nest-accent);
+      color: var(--nest-accent-ink);
+      border-color: var(--nest-accent);
+    }
+    .nest-sheet-actions {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 10px;
+    }
+
+    @media (hover: hover) {
+      button:hover:not(:disabled) {
+        border-color: var(--nest-accent);
+      }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      button:active:not(:disabled) {
+        transform: scale(0.98);
+      }
+    }
+    @container (max-width: 767px) {
+      .nest-shell {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .nest-nav {
+        grid-row: 2;
+        flex-direction: row;
+        overflow-x: auto;
+        border-right: 0;
+        border-top: 1px solid var(--nest-line);
+        padding: 4px;
+        gap: 0;
+      }
+      .nest-nav button {
+        flex: 1;
+        min-height: 52px;
+        font-size: 9px;
+      }
+      .nest-layout {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: minmax(0, 1fr) 112px;
+      }
+      .nest-main {
+        padding: 18px 14px;
+      }
+      .nest-other {
+        display: grid;
+        grid-template-columns: 120px minmax(0, 1fr);
+        align-items: start;
+        gap: 10px;
+        padding: 12px 14px;
+        border-left: 0;
+        border-top: 1px solid var(--nest-line);
+      }
+      .nest-phone-label {
+        position: sticky;
+        top: 0;
+        margin: 0;
+      }
+      .nest-phone {
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+      }
+      .nest-phone-bar,
+      .nest-phone-title,
+      .nest-phone-home {
+        display: none;
+      }
+      .nest-phone-update {
+        margin: 0;
+        padding: 0 0 8px;
+      }
+      .nest-phone-section {
+        padding-block: 8px;
+      }
+    }
+    @container (max-width: 420px) {
+      .nest-header {
+        padding: 12px 14px;
+      }
+      .nest-brand {
+        gap: 6px;
+      }
+      .nest-brand strong {
+        font-size: 21px;
+      }
+      .nest-brand strong span {
+        font-size: 10px;
+      }
+      .nest-reset {
+        padding-inline: 8px;
+      }
+      .nest-dashboard-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .nest-card {
+        padding: 14px;
+      }
+      .nest-subnav button {
+        padding-inline: 10px;
+      }
+      .nest-other {
+        grid-template-columns: 100px minmax(0, 1fr);
+      }
+      .nest-avatar {
+        display: none;
+      }
+      .nest-status,
+      .nest-note {
+        padding-inline: 14px;
+      }
+      .nest-item-amount {
+        margin-left: 0;
+      }
+      .nest-sheet {
+        padding: 20px;
+      }
     }
   }
 </style>
