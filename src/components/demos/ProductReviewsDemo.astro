@@ -1,0 +1,508 @@
+---
+import { PRODUCTS, SCHEMA } from "../../data/demos/product-reviews-analysis";
+---
+
+<section
+  class="demo demo-product-reviews-analysis"
+  data-demo="product-reviews-analysis"
+  aria-label="Product Reviews Database interactive sample"
+>
+  <div class="pr-schema" role="group" aria-label="Schema">
+    {
+      SCHEMA.map((t, i) => (
+        <>
+          {i === 1 && <span class="pr-link">product_id</span>}
+          <div class="pr-table-card">
+            <strong>{t.table}</strong>
+            <span>{t.columns.join(" · ")}</span>
+          </div>
+        </>
+      ))
+    }
+  </div>
+
+  <div class="pr-top">
+    <div class="pr-tabs" role="group" aria-label="Views">
+      <button type="button" data-view="reviews" aria-pressed="true"
+        >Reviews</button
+      >
+      <button type="button" data-view="prep" aria-pressed="false"
+        >Import prep</button
+      >
+    </div>
+    <button type="button" class="pr-reset">Reset</button>
+  </div>
+
+  <div data-panel="reviews" class="pr-panel">
+    <div class="pr-filters">
+      <div class="pr-products" role="group" aria-label="Product">
+        <button type="button" data-product="0" aria-pressed="true"
+          >All products <span data-stat-all></span></button
+        >
+        {
+          PRODUCTS.map((p) => (
+            <button
+              type="button"
+              data-product={p.product_id}
+              aria-pressed="false"
+            >
+              {p.product_name} <span data-stat />
+            </button>
+          ))
+        }
+      </div>
+      <label class="pr-minlabel"
+        ><span>Min rating</span>
+        <select class="pr-min">
+          <option value="0">Any</option>
+          <option value="2">2+</option>
+          <option value="3">3+</option>
+          <option value="4">4+</option>
+          <option value="5">5</option>
+        </select></label
+      >
+    </div>
+
+    <div class="pr-grid">
+      <div class="pr-main" aria-live="polite">
+        <div class="pr-sql-head"><span class="pr-kind">SELECT</span></div>
+        <pre class="pr-sql" tabindex="0"><code /></pre>
+        <div
+          class="pr-table"
+          tabindex="0"
+          role="region"
+          aria-label="Reviews joined to products"
+        >
+        </div>
+      </div>
+
+      <form class="pr-form" novalidate>
+        <h2 class="pr-form-title" tabindex="-1">Add review</h2>
+        <label
+          ><span>Product</span>
+          <select name="product">
+            {
+              PRODUCTS.map((p) => (
+                <option value={p.product_id}>{p.product_name}</option>
+              ))
+            }
+          </select></label
+        >
+        <label
+          ><span>Reviewer</span><input
+            type="text"
+            name="reviewer"
+            maxlength="60"
+            autocomplete="off"
+          /></label
+        >
+        <label
+          ><span>Rating</span>
+          <select name="rating">
+            <option value="5">5</option>
+            <option value="4">4</option>
+            <option value="3">3</option>
+            <option value="2">2</option>
+            <option value="1">1</option>
+          </select></label
+        >
+        <label
+          ><span>Review</span><textarea name="text" rows="3" maxlength="500"
+          ></textarea></label
+        >
+        <label><span>Date</span><input type="date" name="date" /></label>
+        <div class="pr-actions">
+          <button type="submit" class="pr-save pr-primary">Add review</button>
+          <button type="button" class="pr-cancel" hidden>Cancel</button>
+        </div>
+        <p class="pr-error" role="alert"></p>
+      </form>
+    </div>
+  </div>
+
+  <div data-panel="prep" class="pr-panel" hidden>
+    <div class="pr-tabs" role="group" aria-label="Show rows as">
+      <button type="button" data-mode="raw" aria-pressed="false">Raw</button>
+      <button type="button" data-mode="clean" aria-pressed="true"
+        >Cleaned</button
+      >
+    </div>
+    <div
+      class="pr-prep-table pr-table"
+      tabindex="0"
+      role="region"
+      aria-label="Rows prepared for import"
+    >
+    </div>
+    <pre class="pr-prep-sql pr-sql" tabindex="0"><code /></pre>
+    <button type="button" class="pr-import pr-primary">Import rows</button>
+  </div>
+
+  <p class="pr-note">
+    Statements run on an in-memory copy of the sample tables.
+  </p>
+</section>
+
+<script>
+  import "../../scripts/demos/product-reviews-analysis";
+</script>
+
+<style>
+  .demo-product-reviews-analysis {
+    --pr-surface: color-mix(in srgb, var(--ink) 5%, transparent);
+    --pr-surface-2: color-mix(in srgb, var(--ink) 9%, transparent);
+    --pr-hit: color-mix(in srgb, var(--accent) 20%, transparent);
+    --pr-bad: #e5484d;
+    margin: 28px 0;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--pr-surface);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.5;
+    min-width: 0;
+  }
+  :global(:root[data-theme="light"]) .demo-product-reviews-analysis {
+    --pr-bad: #b3262b;
+  }
+  [hidden] {
+    display: none !important;
+  }
+  button,
+  select,
+  input,
+  textarea {
+    font: inherit;
+    touch-action: manipulation;
+  }
+  .pr-schema {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .pr-table-card {
+    display: grid;
+    gap: 2px;
+    flex: 1 1 240px;
+    min-width: 0;
+    padding: 10px 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--pr-surface);
+  }
+  .pr-table-card strong {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    color: var(--accent);
+  }
+  .pr-table-card span {
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .pr-link {
+    align-self: center;
+    padding: 2px 10px;
+    border: 1px dashed var(--accent);
+    border-radius: 999px;
+    color: var(--accent);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+  }
+  .pr-top {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+    margin-top: 14px;
+  }
+  .pr-tabs,
+  .pr-products {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  button {
+    min-height: 44px;
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition:
+      background 0.2s var(--ease),
+      color 0.2s var(--ease),
+      border-color 0.2s var(--ease);
+  }
+  button:hover:not(:disabled) {
+    color: var(--ink);
+    border-color: var(--accent);
+  }
+  button[aria-pressed="true"],
+  .pr-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+  button:disabled {
+    opacity: 0.55;
+    cursor: default;
+  }
+  .pr-reset {
+    color: var(--accent);
+  }
+  button:focus-visible,
+  select:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  [tabindex]:focus-visible {
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  .pr-panel {
+    margin-top: 14px;
+    min-width: 0;
+  }
+  .pr-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .pr-products button span {
+    margin-left: 4px;
+    font-size: 12px;
+    opacity: 0.8;
+    font-variant-numeric: tabular-nums;
+  }
+  .pr-minlabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+  }
+  select,
+  input,
+  textarea {
+    min-height: 44px;
+    padding: 6px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--pr-surface-2);
+    color: var(--ink);
+    max-width: 100%;
+  }
+  select option {
+    background: var(--bg);
+    color: var(--ink);
+  }
+  .pr-grid {
+    display: grid;
+    gap: 18px;
+    margin-top: 14px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  @media (min-width: 1000px) {
+    .pr-grid {
+      grid-template-columns: minmax(0, 1fr) 300px;
+      align-items: start;
+    }
+  }
+  .pr-main {
+    min-width: 0;
+  }
+  .pr-sql-head {
+    margin-bottom: 6px;
+  }
+  .pr-kind {
+    display: inline-block;
+    padding: 1px 10px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .pr-sql {
+    margin: 0 0 12px;
+    padding: 12px 14px;
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--pr-surface-2);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12.5px;
+    line-height: 1.6;
+  }
+  .pr-table {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+  }
+  .pr-table :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .pr-table :global(th),
+  .pr-table :global(td) {
+    padding: 9px 12px;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--line);
+  }
+  .pr-table :global(tbody tr:last-child td) {
+    border-bottom: 0;
+  }
+  .pr-table :global(th) {
+    color: var(--muted);
+    font-weight: 500;
+    background: var(--pr-surface);
+    white-space: nowrap;
+  }
+  .pr-table :global(td:not(.is-text)) {
+    white-space: nowrap;
+  }
+  .pr-table :global(.is-text) {
+    min-width: 220px;
+    white-space: pre-wrap;
+  }
+  .pr-table :global(.is-num) {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .pr-table :global(.is-raw) {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    white-space: pre-wrap;
+  }
+  .pr-table :global(.is-changed) {
+    background: var(--pr-hit);
+  }
+  .pr-table :global(tr.is-hit) {
+    background: var(--pr-hit);
+  }
+  .pr-table :global(tr.is-editing) {
+    outline: 1px solid var(--accent);
+    outline-offset: -1px;
+  }
+  .pr-table :global(tr.is-skipped td:not(.is-result)) {
+    opacity: 0.55;
+    text-decoration: line-through;
+  }
+  .pr-table :global(.is-empty) {
+    padding: 22px;
+    color: var(--muted);
+    text-align: center;
+  }
+  .pr-table :global(.is-actions) {
+    padding: 4px 8px;
+    text-align: right;
+    white-space: nowrap;
+  }
+  .pr-table :global(.pr-row-btn) {
+    min-height: 44px;
+    min-width: 44px;
+    margin-left: 4px;
+    padding: 6px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    cursor: pointer;
+  }
+  .pr-table :global(.pr-row-btn:hover) {
+    color: var(--ink);
+    border-color: var(--accent);
+  }
+  .pr-table :global(.pr-row-btn.is-danger:hover) {
+    color: var(--pr-bad);
+    border-color: var(--pr-bad);
+  }
+  .pr-table :global(.pr-row-btn:focus-visible) {
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  .pr-table :global(.pr-chip) {
+    display: inline-block;
+    margin: 0 4px 4px 0;
+    padding: 0 8px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .pr-table :global(.pr-chip.is-bad) {
+    border-color: var(--pr-bad);
+    color: var(--pr-bad);
+  }
+  .pr-table :global(.pr-sr) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .pr-form {
+    display: grid;
+    gap: 10px;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--pr-surface);
+    min-width: 0;
+  }
+  .pr-form-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .pr-form label {
+    display: grid;
+    gap: 4px;
+    color: var(--muted);
+    font-size: 12px;
+    min-width: 0;
+  }
+  .pr-form select,
+  .pr-form input,
+  .pr-form textarea {
+    width: 100%;
+    font-size: 16px;
+  }
+  .pr-form textarea {
+    resize: vertical;
+  }
+  .pr-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .pr-error {
+    margin: 0;
+    color: var(--pr-bad);
+    font-size: 13px;
+  }
+  .pr-prep-table {
+    margin-top: 12px;
+  }
+  .pr-prep-sql {
+    margin-top: 12px;
+  }
+  .pr-import {
+    margin-top: 4px;
+  }
+  .pr-note {
+    margin: 16px 0 0;
+    color: var(--faint);
+    font-size: 12px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    button {
+      transition: none;
+    }
+  }
+</style>
