@@ -1,0 +1,542 @@
+---
+import {
+  DEFAULT_INTERVAL_MS,
+  KEY_OPTIONS,
+  MOUSE_BUTTONS,
+} from "../../data/demos/autoclicker";
+---
+
+<section
+  class="demo demo-autoclicker"
+  data-demo="autoclicker"
+  aria-label="Personal Autoclicker interactive sample"
+>
+  <div class="ac-stage">
+    <div class="ac-target">
+      <div class="ac-target-head">
+        <h2>Click target</h2>
+        <button type="button" class="ac-reset" data-reset>Reset</button>
+      </div>
+      <div class="ac-pad" data-pad>
+        <div class="ac-ripples" data-ripples aria-hidden="true"></div>
+        <div class="ac-readout">
+          <output class="ac-count" data-count>0</output>
+          <span class="ac-unit">clicks</span>
+        </div>
+      </div>
+      <p class="ac-last">Last: <b data-last>None yet</b></p>
+    </div>
+
+    <div class="ac-window" role="group" aria-label="Autoclicker window">
+      <div class="ac-titlebar" aria-hidden="true">
+        <span class="ac-titlebar-name">Personal Autoclicker</span>
+        <span class="ac-titlebar-controls"><i></i><i></i><i></i></span>
+      </div>
+      <div class="ac-body">
+        <div class="ac-field">
+          <label for="ac-interval">Click interval</label>
+          <div class="ac-entry">
+            <input
+              id="ac-interval"
+              data-interval
+              type="text"
+              inputmode="numeric"
+              autocomplete="off"
+              spellcheck="false"
+              maxlength="9"
+              value={String(DEFAULT_INTERVAL_MS)}
+              aria-describedby="ac-interval-error"
+            />
+            <span aria-hidden="true">ms</span>
+          </div>
+          <p
+            class="ac-error"
+            id="ac-interval-error"
+            data-interval-error
+            aria-live="polite"
+          >
+          </p>
+        </div>
+
+        <fieldset class="ac-field ac-mode">
+          <legend>Input</legend>
+          <div class="ac-segments">
+            {
+              MOUSE_BUTTONS.map((button) => (
+                <label>
+                  <input
+                    type="radio"
+                    name="ac-mode"
+                    value={button.id}
+                    data-mode
+                    checked={button.id === "left"}
+                  />
+                  <span>{button.label}</span>
+                </label>
+              ))
+            }
+            <label>
+              <input type="radio" name="ac-mode" value="key" data-mode />
+              <span>Key</span>
+            </label>
+          </div>
+          <div class="ac-key">
+            <label for="ac-key">Key</label>
+            <select id="ac-key" data-key disabled>
+              {KEY_OPTIONS.map((key) => <option value={key}>{key}</option>)}
+            </select>
+          </div>
+        </fieldset>
+
+        <div class="ac-actions">
+          <button
+            type="button"
+            class="ac-start"
+            data-toggle
+            aria-pressed="false">Start</button
+          >
+          <button
+            type="button"
+            class="ac-hotkey"
+            data-hotkey
+            aria-pressed="false"
+            aria-label="Hotkey F6, start or stop"
+          >
+            <span aria-hidden="true">Hotkey</span>
+            <kbd aria-hidden="true">F6</kbd>
+          </button>
+        </div>
+        <p class="ac-status" data-status aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+  <p class="ac-note">
+    Clicks stay inside this target. Nothing is sent to your system.
+  </p>
+</section>
+
+<script>
+  import "../../scripts/demos/autoclicker";
+</script>
+
+<style>
+  .demo-autoclicker {
+    --ac-bg: #242424;
+    --ac-frame: #2b2b2b;
+    --ac-entry: #343638;
+    --ac-border: #565b5e;
+    --ac-text: #dce4ee;
+    --ac-muted: #a4aeb8;
+    --ac-blue: #1f6aa5;
+    --ac-blue-hover: #2a7bb9;
+    --ac-go: #2fa572;
+    --ac-stop: #c0392b;
+    container-type: inline-size;
+    display: block;
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .demo-autoclicker button,
+  .demo-autoclicker select,
+  .demo-autoclicker input {
+    font: inherit;
+    touch-action: manipulation;
+  }
+  .ac-stage {
+    display: grid;
+    gap: 18px;
+  }
+  @container (min-width: 720px) {
+    .ac-stage {
+      grid-template-columns: minmax(0, 1fr) 340px;
+      align-items: start;
+    }
+  }
+
+  /* Target */
+  .ac-target {
+    min-width: 0;
+  }
+  .ac-target-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .ac-target-head h2 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .ac-reset {
+    min-height: 44px;
+    padding: 0 18px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .ac-pad {
+    position: relative;
+    height: 240px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background:
+      radial-gradient(
+          circle at center,
+          color-mix(in srgb, var(--ink) 9%, transparent) 1px,
+          transparent 1.5px
+        )
+        0 0 / 22px 22px,
+      color-mix(in srgb, var(--ink) 4%, transparent);
+    cursor: crosshair;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .ac-readout {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    pointer-events: none;
+  }
+  .ac-count {
+    font-size: clamp(48px, 12cqw, 88px);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .ac-unit {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .ac-last {
+    margin: 10px 2px 0;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .ac-last b {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .demo-autoclicker.is-running .ac-pad {
+    border-color: color-mix(in srgb, var(--ac-go) 70%, var(--line));
+  }
+  .demo-autoclicker :global(.ac-ripples) {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .demo-autoclicker :global(.ac-ripple) {
+    --c: #3b8ed0;
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    margin: -7px 0 0 -7px;
+    border: 2px solid var(--c);
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--c) 35%, transparent);
+    animation: ac-ripple 0.7s var(--ease) forwards;
+  }
+  .demo-autoclicker :global(.ac-ripple.is-right),
+  .demo-autoclicker :global(.ac-marker[data-kind="right"]) {
+    --c: #e0832f;
+  }
+  .demo-autoclicker :global(.ac-ripple.is-middle),
+  .demo-autoclicker :global(.ac-marker[data-kind="middle"]) {
+    --c: #2fa572;
+  }
+  .demo-autoclicker :global(.ac-ripple.is-key),
+  .demo-autoclicker :global(.ac-marker[data-kind="key"]) {
+    --c: #9b8cf0;
+  }
+  .demo-autoclicker :global(.ac-ripple.is-key) {
+    display: grid;
+    place-items: center;
+    width: auto;
+    height: auto;
+    min-width: 44px;
+    margin: 0;
+    padding: 6px 12px;
+    border-radius: 10px;
+    transform: translate(-50%, -50%);
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 600;
+    animation: ac-key 0.7s var(--ease) forwards;
+  }
+  .demo-autoclicker :global(.ac-marker) {
+    --c: #3b8ed0;
+    position: absolute;
+    min-width: 14px;
+    min-height: 14px;
+    margin: -7px 0 0 -7px;
+    padding: 2px 8px;
+    border: 2px solid var(--c);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--c) 35%, transparent);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .demo-autoclicker :global(.ac-marker[data-kind="key"]) {
+    transform: translate(-50%, -50%);
+    margin: 0;
+  }
+  @keyframes ac-ripple {
+    from {
+      opacity: 1;
+      transform: scale(0.6);
+    }
+    to {
+      opacity: 0;
+      transform: scale(4.2);
+    }
+  }
+  @keyframes ac-key {
+    from {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(0.9);
+    }
+    to {
+      opacity: 0;
+      transform: translate(-50%, -90%) scale(1.25);
+    }
+  }
+
+  /* CustomTkinter-style window */
+  .ac-window {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid #3a3d40;
+    border-radius: 10px;
+    background: var(--ac-bg);
+    color: var(--ac-text);
+    font-family:
+      "Segoe UI",
+      system-ui,
+      -apple-system,
+      "Helvetica Neue",
+      Arial,
+      sans-serif;
+  }
+  .ac-titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: #1b1b1b;
+    color: var(--ac-muted);
+    font-size: 12px;
+  }
+  .ac-titlebar-controls {
+    display: inline-flex;
+    gap: 14px;
+  }
+  .ac-titlebar-controls i {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border: 1.5px solid var(--ac-muted);
+    border-radius: 2px;
+  }
+  .ac-titlebar-controls i:first-child {
+    height: 0;
+    margin-top: 8px;
+    border-width: 0 0 1.5px;
+    border-radius: 0;
+  }
+  .ac-body {
+    display: grid;
+    gap: 14px;
+    padding: 16px;
+  }
+  .ac-field {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .ac-field label,
+  .ac-mode legend {
+    padding: 0;
+    color: var(--ac-text);
+    font-size: 14px;
+  }
+  .ac-entry {
+    position: relative;
+  }
+  .ac-entry input {
+    width: 100%;
+    height: 44px;
+    padding: 0 44px 0 12px;
+    border: 2px solid var(--ac-border);
+    border-radius: 6px;
+    background: var(--ac-entry);
+    color: var(--ac-text);
+    font-size: 16px;
+    font-variant-numeric: tabular-nums;
+  }
+  .ac-entry span {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--ac-muted);
+    pointer-events: none;
+  }
+  .ac-entry input[aria-invalid="true"] {
+    border-color: #e5675a;
+  }
+  .ac-error {
+    min-height: 1.4em;
+    margin: 0;
+    color: #ff8f84;
+    font-size: 12px;
+  }
+  .ac-segments {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding: 3px;
+    border-radius: 8px;
+    background: var(--ac-entry);
+  }
+  .ac-segments label {
+    position: relative;
+    display: block;
+  }
+  .ac-segments input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .ac-segments span {
+    display: grid;
+    place-items: center;
+    min-height: 44px;
+    border-radius: 6px;
+    color: var(--ac-text);
+    font-size: 14px;
+    transition: background 0.18s var(--ease);
+  }
+  .ac-segments input:checked + span {
+    background: var(--ac-blue);
+    color: #fff;
+  }
+  .ac-segments input:focus-visible + span,
+  .demo-autoclicker button:focus-visible,
+  .ac-entry input:focus-visible,
+  .ac-key select:focus-visible {
+    box-shadow:
+      0 0 0 2px var(--ac-bg),
+      0 0 0 4px #7cc0f0;
+  }
+  .ac-reset:focus-visible {
+    box-shadow:
+      0 0 0 2px var(--bg),
+      0 0 0 4px var(--accent);
+  }
+  .ac-key {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .ac-key select {
+    height: 44px;
+    padding: 0 10px;
+    border: 0;
+    border-radius: 6px;
+    background: var(--ac-blue);
+    color: #fff;
+    font-size: 16px;
+  }
+  .ac-key select:disabled {
+    background: #3a3d40;
+    color: #8c959e;
+  }
+  .ac-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+  }
+  .ac-start,
+  .ac-hotkey {
+    min-height: 48px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition:
+      background 0.18s var(--ease),
+      border-color 0.18s var(--ease);
+  }
+  .ac-start {
+    border: 0;
+    background: var(--ac-go);
+    color: #04150e;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .ac-start[aria-pressed="true"] {
+    background: var(--ac-stop);
+    color: #fff;
+  }
+  .ac-hotkey {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 14px;
+    border: 2px solid var(--ac-blue);
+    background: transparent;
+    color: var(--ac-text);
+  }
+  .ac-hotkey kbd {
+    padding: 1px 7px;
+    border-radius: 4px;
+    background: var(--ac-entry);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .ac-hotkey[aria-pressed="true"] {
+    background: var(--ac-blue);
+  }
+  @media (hover: hover) {
+    .ac-hotkey:hover {
+      background: color-mix(in srgb, var(--ac-blue) 55%, transparent);
+    }
+    .ac-segments label:hover input:not(:checked) + span {
+      background: #3f4244;
+    }
+    .ac-reset:hover {
+      background: color-mix(in srgb, var(--ink) 8%, transparent);
+    }
+  }
+  .ac-status {
+    margin: 0;
+    color: var(--ac-muted);
+    font-size: 13px;
+  }
+  .ac-note {
+    margin: 14px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .demo-autoclicker * {
+      transition: none !important;
+    }
+  }
+</style>
