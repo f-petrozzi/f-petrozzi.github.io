@@ -1,0 +1,2078 @@
+---
+import {
+  accounts,
+  createState,
+  days,
+  groundedNote,
+  money,
+  navigation,
+  products,
+  sources,
+  spending,
+  spendingGroups,
+  transactions,
+} from "../../data/demos/orbit";
+const initial = createState();
+const uid = `orbit-${crypto.randomUUID().slice(0, 8)}`;
+// Local paths match Orbit's pinned Lucide vocabulary; no icon runtime.
+const icons: Record<string, string> = {
+  tasks: '<path d="m4 7 2 2 4-4M13 7h7M4 15l2 2 4-4M13 15h7"/>',
+  chat: '<path d="M21 11a8 8 0 0 1-8 8H7l-4 3V11a9 9 0 0 1 18 0Z"/>',
+  book: '<rect x="5" y="3" width="15" height="18" rx="2"/><path d="M3 7h4M3 12h4M3 17h4M10 8h6M10 12h6"/>',
+  wallet:
+    '<rect x="3" y="5" width="18" height="15" rx="3"/><path d="M3 8h18M16 12h5v5h-5a2.5 2.5 0 0 1 0-5Z"/>',
+};
+---
+
+<section
+  class="demo demo-orbit"
+  data-demo="orbit"
+  aria-label="Orbit interactive sample"
+>
+  <aside class="orbit-sidebar">
+    <div class="orbit-brand">
+      <span class="orbit-mark" aria-hidden="true"></span><strong>Orbit</strong>
+    </div>
+    <nav aria-label="Orbit views" role="tablist">
+      <span class="orbit-nav-highlight" aria-hidden="true"></span>
+      {
+        navigation.map((item) => (
+          <button
+            type="button"
+            role="tab"
+            id={`${uid}-${item.id}-tab`}
+            aria-controls={`${uid}-${item.id}`}
+            aria-selected={item.id === "tasks" ? "true" : "false"}
+            tabindex={item.id === "tasks" ? 0 : -1}
+            data-view={item.id}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              set:html={icons[item.icon]}
+            />
+            <span>{item.label}</span>
+          </button>
+        ))
+      }
+    </nav>
+    <button type="button" class="orbit-reset" data-reset>Reset</button>
+  </aside>
+  <div class="orbit-workspace">
+    <section
+      class="orbit-view"
+      role="tabpanel"
+      id={`${uid}-tasks`}
+      aria-labelledby={`${uid}-tasks-tab`}
+      data-panel="tasks"
+    >
+      <header class="orbit-page-head">
+        <h2>Tasks</h2><span>October 2026</span>
+      </header>
+      <div class="orbit-segments" role="group" aria-label="Task views">
+        <button type="button" data-task-view="plan" aria-pressed="true"
+          >Plan</button
+        >
+        <button type="button" data-task-view="all" aria-pressed="false"
+          >All</button
+        >
+        <button type="button" data-task-view="completed" aria-pressed="false"
+          >Completed</button
+        >
+      </div>
+      <div class="orbit-list-filters" role="group" aria-label="Task lists">
+        {
+          ["All lists", "Personal", "Home", "Work"].map((label, index) => (
+            <button
+              type="button"
+              data-list={index ? label : "all"}
+              aria-pressed={index === 0 ? "true" : "false"}
+            >
+              {index > 0 && (
+                <i
+                  class={`orbit-dot orbit-${label.toLowerCase()}`}
+                  aria-hidden="true"
+                />
+              )}
+              {label}
+            </button>
+          ))
+        }
+      </div>
+      <div class="orbit-week" aria-label="Week of October 12">
+        {
+          ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
+            (label, index) => (
+              <div class:list={["orbit-week-day", { "is-today": index === 4 }]}>
+                <b>{12 + index}</b>
+                {index >= 4 && index <= 5 && <i aria-hidden="true" />}
+              </div>
+            ),
+          )
+        }
+      </div>
+      <div
+        class="orbit-agenda orbit-scroll"
+        tabindex="0"
+        aria-label="Task agenda"
+      >
+        <div class="orbit-days">
+          {
+            days.map((day) => (
+              <section
+                class:list={["orbit-day", { "is-today": day.id === "today" }]}
+                data-day={day.id}
+              >
+                <header>
+                  <>
+                    <h3>{day.label}</h3>
+                    <span>{day.date}</span>
+                  </>
+                </header>
+                <div class="orbit-task-list" data-task-list={day.id}>
+                  {initial.tasks
+                    .filter((task) => task.day === day.id)
+                    .map((task) => (
+                      <article
+                        class:list={["orbit-task", { "is-done": task.done }]}
+                        data-task={task.id}
+                      >
+                        <label
+                          class={`orbit-check orbit-${task.list.toLowerCase()}`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={task.done}
+                            data-complete={task.id}
+                            aria-label={`Complete ${task.title}`}
+                          />
+                          <span aria-hidden="true">✓</span>
+                        </label>
+                        <details>
+                          <summary>
+                            <span data-task-title>{task.title}</span>
+                            <span class="orbit-edit-symbol" aria-hidden="true">
+                              ⌄
+                            </span>
+                          </summary>
+                          <label class="orbit-field">
+                            Planned day
+                            <select data-move={task.id}>
+                              {days.map((option) => (
+                                <option
+                                  value={option.id}
+                                  selected={option.id === task.day}
+                                >
+                                  {option.label}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+                        </details>
+                      </article>
+                    ))}
+                </div>
+                <p class="orbit-empty" data-task-empty hidden>
+                  No tasks
+                </p>
+              </section>
+            ))
+          }
+        </div>
+      </div>
+      <form class="orbit-capture" data-capture>
+        <label class="orbit-sr"
+          >New task<input
+            name="task"
+            type="text"
+            maxlength="120"
+            required
+            autocomplete="off"
+            placeholder="Add a task…"
+          /></label
+        >
+        <label class="orbit-sr"
+          >Planned day<select name="day"
+            >{
+              days.map((day) => <option value={day.id}>{day.label}</option>)
+            }</select
+          ></label
+        >
+        <button type="submit" class="orbit-primary" aria-label="Add task"
+          >↑</button
+        >
+      </form>
+    </section>
+    <section
+      class="orbit-view"
+      role="tabpanel"
+      id={`${uid}-chat`}
+      aria-labelledby={`${uid}-chat-tab`}
+      data-panel="chat"
+      hidden
+    >
+      <header class="orbit-page-head"><h2>Chat</h2><span>Codex</span></header>
+      <div class="orbit-chat-layout">
+        <aside class="orbit-chat-picker orbit-card">
+          <h3>Projects</h3><details open>
+            <summary>Reading room</summary><button
+              type="button"
+              aria-pressed="true"
+              class="orbit-session"
+              >Build the catalog<small>Codex / Orbit</small></button
+            >
+          </details>
+        </aside>
+        <div class="orbit-conversation orbit-card">
+          <header class="orbit-pane-head">
+            <strong>Build the catalog</strong><button
+              type="button"
+              data-preview-toggle
+              aria-pressed="true">Preview</button
+            >
+          </header>
+          <div
+            class="orbit-transcript orbit-scroll"
+            data-transcript
+            tabindex="0"
+            aria-label="Project conversation"
+          >
+            <article class="orbit-message is-user">
+              <span>You</span><p>
+                Build a reading room catalog with availability and a reservation
+                button.
+              </p>
+            </article>
+            <article class="orbit-message">
+              <span><i class="orbit-mark" aria-hidden="true"></i>Orbit</span><p>
+                The catalog is ready. The preview has three books, availability,
+                and a reservation action for each title.
+              </p><button type="button" class="orbit-file" data-open-preview
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  aria-hidden="true"
+                  ><path d="M4 3h10l6 6v12H4ZM14 3v6h6M8 14h8M8 17h5"
+                  ></path></svg
+                ><span>catalog.html<small>App preview</small></span></button
+              >
+            </article>
+          </div>
+          <form class="orbit-chat-composer" data-chat-form>
+            <label class="orbit-sr"
+              >Message<input
+                name="message"
+                type="text"
+                maxlength="200"
+                required
+                autocomplete="off"
+                value="Make the cards more compact"
+              /></label
+            >
+            <div>
+              <span>Codex</span><button
+                class="orbit-primary"
+                type="submit"
+                aria-label="Send message">↑</button
+              >
+            </div>
+          </form>
+        </div>
+        <section
+          class="orbit-preview orbit-card"
+          data-preview
+          aria-label="Catalog app preview"
+        >
+          <header class="orbit-pane-head">
+            <strong>Preview</strong><button
+              type="button"
+              data-preview-size
+              aria-pressed="false">Phone</button
+            ><button type="button" data-preview-close aria-label="Close preview"
+              >Close</button
+            >
+          </header>
+          <div
+            class="orbit-preview-scroll orbit-scroll"
+            tabindex="0"
+            aria-label="Reading room app"
+          >
+            <div class="orbit-app" data-app data-density="comfortable">
+              <p class="orbit-app-label">THE READING ROOM</p><h3>
+                A little space<br />for a good book.
+              </h3><p>Saturday, 10 am to 2 pm</p>
+              <div class="orbit-books">
+                {
+                  [
+                    "Ways of Seeing",
+                    "A Field Guide to Trees",
+                    "The Quiet Garden",
+                  ].map((title, index) => (
+                    <article>
+                      <>
+                        <div
+                          class={`orbit-book-cover orbit-cover-${index}`}
+                          aria-hidden="true"
+                        >
+                          <span>{["SEE", "GROW", "REST"][index]}</span>
+                        </div>
+                        <div>
+                          <>
+                            <h4>{title}</h4>
+                            <small data-availability>Available</small>
+                            <button
+                              type="button"
+                              data-reserve={index}
+                              aria-pressed="false"
+                            >
+                              Reserve
+                            </button>
+                          </>
+                        </div>
+                      </>
+                    </article>
+                  ))
+                }
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+    <section
+      class="orbit-view"
+      role="tabpanel"
+      id={`${uid}-library`}
+      aria-labelledby={`${uid}-library-tab`}
+      data-panel="library"
+      hidden
+    >
+      <header class="orbit-page-head">
+        <h2>Library</h2><span>Reading room</span>
+      </header>
+      <div
+        class="orbit-library-tabs orbit-segments"
+        role="group"
+        aria-label="Notebook panes"
+      >
+        {
+          ["Sources", "Chat", "Studio"].map((label, index) => (
+            <button
+              type="button"
+              data-library-tab={label.toLowerCase()}
+              aria-pressed={index === 0 ? "true" : "false"}
+            >
+              {label}
+            </button>
+          ))
+        }
+      </div>
+      <div class="orbit-notebook">
+        <section
+          class="orbit-card orbit-library-pane orbit-scroll"
+          data-library-pane="sources"
+          tabindex="0"
+          aria-label="Notebook sources"
+        >
+          <h3>Sources</h3><div class="orbit-sources">
+            {
+              sources.map((source) => (
+                <article>
+                  <>
+                    <label class="orbit-source-use">
+                      <>
+                        <input
+                          type="checkbox"
+                          checked
+                          data-source={source.id}
+                        />
+                        <span class="orbit-sr-text">Use {source.title}</span>
+                      </>
+                    </label>
+                    <button type="button" data-read-source={source.id}>
+                      <>
+                        <strong>{source.title}</strong>
+                        <small>{source.kind}</small>
+                      </>
+                    </button>
+                  </>
+                </article>
+              ))
+            }
+          </div><div class="orbit-source-reader" data-source-reader>
+            <h4>{sources[0].title}</h4><p>{sources[0].text}</p>
+          </div>
+        </section>
+        <section
+          class="orbit-card orbit-library-pane orbit-library-chat"
+          data-library-pane="chat"
+        >
+          <h3>Chat</h3><div
+            class="orbit-scroll"
+            tabindex="0"
+            aria-label="Notebook conversation"
+          >
+            <article class="orbit-message is-user">
+              <span>You</span><p>What should the first release include?</p>
+            </article><article class="orbit-message">
+              <span>Orbit</span><div data-grounded-answer>
+                {
+                  groundedNote(initial.selected).map((note, index) => (
+                    <p>
+                      {note.text}{" "}
+                      <button
+                        type="button"
+                        class="orbit-citation"
+                        data-citation={note.source}
+                        aria-label={`Read source: ${note.title}`}
+                      >
+                        [{index + 1}]
+                      </button>
+                    </p>
+                  ))
+                }
+              </div>
+            </article>
+          </div><button type="button" class="orbit-secondary" data-generate
+            >Summarize selected sources</button
+          >
+        </section>
+        <section
+          class="orbit-card orbit-library-pane orbit-scroll"
+          data-library-pane="studio"
+          tabindex="0"
+          aria-label="Studio notes"
+        >
+          <h3>Studio</h3><article class="orbit-studio-note">
+            <span class="orbit-note-type">Grounded note</span><h4>
+              First release
+            </h4><div data-studio-note>
+              {
+                groundedNote(initial.selected).map((note) => (
+                  <p>
+                    {note.text}
+                    <small>{note.title}</small>
+                  </p>
+                ))
+              }
+            </div>
+          </article><button type="button" class="orbit-secondary" data-save-note
+            >Save answer to Studio</button
+          >
+        </section>
+      </div>
+    </section>
+    <section
+      class="orbit-view"
+      role="tabpanel"
+      id={`${uid}-finance`}
+      aria-labelledby={`${uid}-finance-tab`}
+      data-panel="finance"
+      hidden
+    >
+      <header class="orbit-page-head">
+        <h2>Finances</h2><span>October 2026</span>
+      </header>
+      <div class="orbit-segments" role="group" aria-label="Finance views">
+        <button type="button" data-fin-view="overview" aria-pressed="true"
+          >Overview</button
+        ><button type="button" data-fin-view="accounts" aria-pressed="false"
+          >Accounts</button
+        ><button type="button" data-fin-view="spending" aria-pressed="false"
+          >Spending</button
+        ><button type="button" data-fin-view="wishlist" aria-pressed="false"
+          >Wishlist</button
+        >
+      </div>
+      <div
+        class="orbit-fin-body orbit-scroll"
+        tabindex="0"
+        aria-label="Finance records"
+      >
+        <section data-fin-panel="overview">
+          <div class="orbit-fin-summary orbit-card">
+            <div>
+              <span>Spent</span><strong class="orbit-amount"
+                >{money(spending())}</strong
+              ><small>October 1 to 16</small>
+            </div><div>
+              <span>Income</span><strong>{money(240000)}</strong><span
+                >Net income</span
+              ><strong>{money(240000 - spending())}</strong>
+            </div>
+          </div><div class="orbit-fin-grid">
+            <button
+              type="button"
+              class="orbit-card orbit-shelf"
+              data-fin-view="accounts"
+              ><span class="orbit-shelf-orb" aria-hidden="true">$</span><h3>
+                Accounts
+              </h3><strong
+                >{
+                  money(
+                    accounts
+                      .filter((account) => account.type === "Cash")
+                      .reduce((sum, account) => sum + account.cents, 0),
+                  )
+                }</strong
+              ><small>Cash in 2 accounts</small></button
+            ><button
+              type="button"
+              class="orbit-card orbit-shelf"
+              data-fin-view="spending"
+              ><span class="orbit-shelf-orb" aria-hidden="true">↗</span><h3>
+                Spending
+              </h3><strong>Home</strong><small>Largest spending family</small
+              ></button
+            ><button
+              type="button"
+              class="orbit-card orbit-shelf"
+              data-fin-view="wishlist"
+              ><span class="orbit-shelf-orb" aria-hidden="true">♡</span><h3>
+                Wishlist
+              </h3><strong>3 items</strong><small>Reading corner</small></button
+            >
+          </div>
+        </section>
+        <section data-fin-panel="accounts" hidden>
+          <h3>Accounts</h3><div class="orbit-account-list orbit-card">
+            {
+              accounts.map((account) => (
+                <article>
+                  <>
+                    <span class="orbit-bank-coin" aria-hidden="true">
+                      {account.name[0]}
+                    </span>
+                    <div>
+                      <>
+                        <strong>{account.name}</strong>
+                        <small>
+                          {account.type} / {account.read}
+                        </small>
+                      </>
+                    </div>
+                    <strong>{money(account.cents)}</strong>
+                  </>
+                </article>
+              ))
+            }
+          </div>
+        </section>
+        <section data-fin-panel="spending" hidden>
+          <h3>Spending by family</h3><div class="orbit-spending orbit-card">
+            {
+              spendingGroups().map((group) => (
+                <button
+                  type="button"
+                  data-spending={group.name}
+                  aria-pressed="false"
+                >
+                  <>
+                    <span>
+                      {group.name}
+                      <strong>{money(group.cents)}</strong>
+                    </span>
+                    <i>
+                      <b
+                        style={`width:${(group.cents / spendingGroups()[0].cents) * 100}%`}
+                      />
+                    </i>
+                  </>
+                </button>
+              ))
+            }
+          </div><div class="orbit-transactions" data-transactions>
+            {
+              transactions.map((row) => (
+                <article>
+                  <>
+                    <strong>{row.merchant}</strong>
+                    <small>{row.category}</small>
+                    <span>{money(row.cents)}</span>
+                  </>
+                </article>
+              ))
+            }
+          </div>
+        </section>
+        <section data-fin-panel="wishlist" hidden>
+          <h3>Wishlist</h3><div class="orbit-wishlist">
+            {
+              products.map((product) => (
+                <details class="orbit-product orbit-card">
+                  <>
+                    <summary>
+                      <>
+                        <span
+                          class={`orbit-product-art orbit-art-${product.shape}`}
+                          aria-hidden="true"
+                        >
+                          <>
+                            <i />
+                            <b />
+                          </>
+                        </span>
+                        <small>{product.store}</small>
+                        <h4>{product.name}</h4>
+                        <strong>{money(product.cents)}</strong>
+                      </>
+                    </summary>
+                    <div class="orbit-product-detail">
+                      <>
+                        <dl>
+                          <>
+                            <div>
+                              <>
+                                <dt>Oct 2</dt>
+                                <dd>{money(product.previous)}</dd>
+                              </>
+                            </div>
+                            <div>
+                              <>
+                                <dt>Oct 16</dt>
+                                <dd>{money(product.cents)}</dd>
+                              </>
+                            </div>
+                            <div>
+                              <>
+                                <dt>Target price</dt>
+                                <dd>{money(product.target)}</dd>
+                              </>
+                            </div>
+                          </>
+                        </dl>
+                        <button
+                          type="button"
+                          class="orbit-secondary"
+                          data-purchase={product.id}
+                          aria-pressed="false"
+                        >
+                          Mark purchased
+                        </button>
+                      </>
+                    </div>
+                  </>
+                </details>
+              ))
+            }
+          </div>
+        </section>
+      </div>
+    </section>
+    <div
+      class="orbit-status"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+      data-status
+    >
+    </div>
+  </div>
+  <p class="orbit-note">
+    Invented data. Agent replies, app changes, bank readings, and product prices
+    are simulated locally.
+  </p>
+</section>
+<script>
+  import "../../scripts/demos/orbit";
+</script>
+<style is:inline>
+  .demo-orbit {
+    --orbit-cloud: #edf1f3;
+    --orbit-glass: #ffffff80;
+    --orbit-ink: #29313a;
+    --orbit-slate: #5f6a74;
+    --orbit-sage: #4e766e;
+    --orbit-blue: #577994;
+    --orbit-line: #4b5b6e1f;
+    --orbit-steel: #8aa5b8;
+    --orbit-selected: #ffffffd9;
+    --orbit-shadow: inset 0 1px 0 #fff, 0 2px 8px #344b590f;
+    --orbit-ease: cubic-bezier(0.22, 0.75, 0.25, 1);
+    color-scheme: light;
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr);
+    gap: 20px;
+    margin: 28px 0;
+    padding: 20px;
+    border: 1px solid #fff9;
+    border-radius: 28px;
+    background:
+      radial-gradient(ellipse at 90% 0%, #dce7ed, transparent 60%),
+      linear-gradient(130deg, #e8ecf0, #f4f6f7 42%, #e1e9e8);
+    color: var(--orbit-ink);
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    isolation: isolate;
+
+    &,
+    * {
+      box-sizing: border-box;
+      scrollbar-width: thin;
+      scrollbar-color: #9aaebc transparent;
+    }
+    &::-webkit-scrollbar,
+    *::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    &::-webkit-scrollbar-thumb,
+    *::-webkit-scrollbar-thumb {
+      border-radius: 8px;
+      background: #9aaebc;
+    }
+    &::-webkit-scrollbar-track,
+    *::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    [hidden] {
+      display: none !important;
+    }
+    h2,
+    h3,
+    h4,
+    p {
+      margin: 0;
+      color: inherit;
+    }
+    h2 {
+      font-size: 30px;
+      font-weight: 500;
+      letter-spacing: -1px;
+      line-height: 1.2;
+    }
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.25px;
+    }
+    h4 {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    small {
+      font-size: 12px;
+      color: var(--orbit-slate);
+    }
+    button,
+    input,
+    select {
+      font: inherit;
+      color: inherit;
+    }
+    button {
+      min-height: 44px;
+      padding: 8px 12px;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      background: transparent;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button:focus-visible,
+    summary:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    [tabindex="0"]:focus-visible {
+      outline: 2px solid var(--orbit-blue);
+      outline-offset: 3px;
+    }
+    button:disabled {
+      cursor: default;
+      opacity: 0.6;
+    }
+    input,
+    select {
+      min-width: 0;
+      border: 1px solid var(--orbit-line);
+      border-radius: 12px;
+      padding: 10px;
+      background: #f5f8fa;
+      font-size: 16px;
+    }
+    select {
+      max-width: 100%;
+    }
+    summary {
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .orbit-sr-text {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .orbit-sr {
+      font-size: 0;
+      min-width: 0;
+    }
+    .orbit-sr input,
+    .orbit-sr select {
+      font-size: 16px;
+      width: 100%;
+    }
+    .orbit-scroll {
+      overflow: auto;
+      overscroll-behavior: contain;
+    }
+    .orbit-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 20px 10px 10px;
+      border: 1px solid #ffffffdc;
+      border-radius: 28px;
+      background: var(--orbit-glass);
+      box-shadow: var(--orbit-shadow);
+    }
+    .orbit-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 8px;
+    }
+    .orbit-brand strong {
+      font-size: 23px;
+      font-weight: 650;
+      letter-spacing: -1px;
+    }
+    .orbit-mark {
+      position: relative;
+      display: inline-block;
+      flex: none;
+      width: 28px;
+      height: 28px;
+      border: 1px solid #fff;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 30% 22%, #fff, transparent 55%),
+        linear-gradient(145deg, #fff9, #b8cbd4a6);
+      box-shadow:
+        inset -3px -3px 6px #8097a921,
+        0 2px 6px #344b5914;
+    }
+    .orbit-mark::after {
+      content: "";
+      position: absolute;
+      inset: 7px -5px;
+      border: 1.5px solid #fffe;
+      border-radius: 50%;
+      transform: rotate(-32deg);
+    }
+    .orbit-sidebar nav {
+      position: relative;
+      isolation: isolate;
+      display: grid;
+      gap: 6px;
+    }
+    .orbit-sidebar nav button {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-align: left;
+      color: var(--orbit-slate);
+    }
+    .orbit-nav-highlight {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      border-radius: 12px;
+      background: var(--orbit-selected);
+      box-shadow: var(--orbit-shadow);
+      pointer-events: none;
+    }
+    .orbit-sidebar nav[data-highlight-ready] button[aria-selected="true"] {
+      background: transparent;
+      box-shadow: none;
+    }
+    .orbit-sidebar svg {
+      flex: none;
+      width: 20px;
+      height: 20px;
+    }
+    .orbit-sidebar button[aria-selected="true"],
+    .orbit-segments button[aria-pressed="true"],
+    .orbit-list-filters button[aria-pressed="true"],
+    .orbit-session {
+      background: var(--orbit-selected);
+      box-shadow: var(--orbit-shadow);
+      color: var(--orbit-ink);
+    }
+    .orbit-reset {
+      margin-top: auto;
+      color: var(--orbit-slate);
+      text-align: left;
+    }
+    .orbit-workspace {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .orbit-view {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      height: 550px;
+      gap: 14px;
+    }
+    .orbit-page-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 44px;
+    }
+    .orbit-page-head > span {
+      font-size: 12px;
+      color: var(--orbit-slate);
+      text-align: right;
+    }
+    .orbit-segments {
+      display: flex;
+      flex: none;
+      width: max-content;
+      max-width: 100%;
+      padding: 4px;
+      gap: 3px;
+      background: #ffffff55;
+      border: 1px solid #ffffffb3;
+      border-radius: 16px;
+      overflow: auto;
+    }
+    .orbit-segments button {
+      flex: none;
+      color: var(--orbit-slate);
+      padding: 6px 14px;
+    }
+    .orbit-list-filters {
+      display: flex;
+      gap: 3px;
+      overflow: auto;
+      flex: none;
+    }
+    .orbit-list-filters button {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex: none;
+      font-size: 13px;
+    }
+    .orbit-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--list-hue);
+    }
+    .orbit-personal {
+      --list-hue: #577994;
+    }
+    .orbit-home {
+      --list-hue: #4e766e;
+    }
+    .orbit-work {
+      --list-hue: #88769c;
+    }
+    .orbit-week {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      max-width: 430px;
+      flex: none;
+      gap: 4px;
+    }
+    .orbit-week-day {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      padding: 6px 0;
+      border: 1px solid transparent;
+      border-radius: 14px;
+    }
+    .orbit-week-day small {
+      font-size: 11px;
+    }
+    .orbit-week-day b {
+      font-size: 17px;
+      font-weight: 500;
+    }
+    .orbit-week-day i {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--orbit-blue);
+    }
+    .is-today {
+      border-color: transparent;
+      background:
+        linear-gradient(#eef3f4f2, #edf2f3f2) padding-box,
+        linear-gradient(135deg, #679bb9, #70a894 30%, #a48eba 62%, #609faf)
+          border-box;
+    }
+    .orbit-agenda {
+      flex: 1;
+      min-height: 0;
+      padding: 3px;
+    }
+    .orbit-days {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      align-items: start;
+    }
+    .orbit-day {
+      min-width: 0;
+      min-height: 170px;
+      border: 1px solid #ffffffb0;
+      border-radius: 24px;
+      padding: 10px;
+      background-color: #ffffff26;
+    }
+    .orbit-day > header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 5px 12px;
+    }
+    .orbit-day.is-today {
+      border-color: transparent;
+    }
+    .orbit-day > header span {
+      color: var(--orbit-slate);
+      font-size: 12px;
+    }
+    .orbit-task-list {
+      display: grid;
+      gap: 8px;
+    }
+    .orbit-task {
+      display: flex;
+      align-items: flex-start;
+      min-width: 0;
+      border-radius: 16px;
+      background: #ffffffb0;
+      border: 1px solid #ffffffd0;
+      box-shadow: 0 1px 2px #344b590a;
+    }
+    .orbit-check {
+      display: grid;
+      place-items: center;
+      position: relative;
+      flex: 0 0 40px;
+      min-height: 48px;
+      cursor: pointer;
+    }
+    .orbit-check input {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .orbit-check span {
+      display: grid;
+      place-items: center;
+      width: 19px;
+      height: 19px;
+      border: 1.5px solid var(--list-hue);
+      color: transparent;
+      border-radius: 50%;
+      font-size: 12px;
+    }
+    .orbit-check input:checked + span {
+      background: var(--list-hue);
+      color: #fff;
+    }
+    .orbit-check input:focus-visible + span {
+      outline: 2px solid var(--orbit-blue);
+      outline-offset: 4px;
+    }
+    .orbit-task details {
+      min-width: 0;
+      flex: 1;
+    }
+    .orbit-task summary {
+      display: flex;
+      align-items: center;
+      min-height: 48px;
+      gap: 4px;
+      padding: 9px 8px 9px 0;
+      list-style: none;
+      line-height: 1.4;
+    }
+    .orbit-task summary::-webkit-details-marker {
+      display: none;
+    }
+    [data-task-title] {
+      overflow-wrap: anywhere;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+    }
+    details[open] [data-task-title] {
+      -webkit-line-clamp: unset;
+    }
+    .is-done [data-task-title] {
+      text-decoration: line-through;
+      color: var(--orbit-slate);
+    }
+    .orbit-edit-symbol {
+      margin-left: auto;
+      color: var(--orbit-slate);
+    }
+    .orbit-field {
+      display: grid;
+      gap: 4px;
+      font-size: 12px;
+      color: var(--orbit-slate);
+      padding: 6px 8px 12px 0;
+    }
+    .orbit-field select {
+      width: 100%;
+      padding: 8px 2px;
+    }
+    .orbit-empty {
+      padding: 10px 4px;
+      color: var(--orbit-slate);
+      font-size: 13px;
+    }
+    .orbit-capture {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      padding: 6px;
+      border: 1px solid #fff;
+      border-radius: 24px;
+      background: #f3f7f8f0;
+      box-shadow: 0 8px 22px -12px #344b5952;
+    }
+    .orbit-capture > label:first-child {
+      flex: 1;
+    }
+    .orbit-capture input {
+      border: 0;
+      background: transparent;
+    }
+    .orbit-capture select {
+      width: 110px;
+      padding: 8px 4px;
+      font-size: 13px;
+      background: #e6edf1;
+    }
+    .orbit-primary {
+      background: #344b59;
+      color: #fff;
+      min-width: 44px;
+      font-size: 22px;
+    }
+    .orbit-secondary {
+      background: #ffffffb3;
+      border: 1px solid #fff;
+      color: var(--orbit-ink);
+      font-size: 13px;
+    }
+    .orbit-card {
+      background: var(--orbit-glass);
+      border: 1px solid #ffffffdb;
+      border-radius: 20px;
+      box-shadow: var(--orbit-shadow);
+      min-width: 0;
+    }
+    .orbit-chat-layout {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 135px minmax(0, 1fr) minmax(185px, 0.9fr);
+      min-height: 0;
+      gap: 10px;
+    }
+    .orbit-chat-picker {
+      padding: 14px 8px;
+    }
+    .orbit-chat-picker h3 {
+      padding: 0 4px 12px;
+    }
+    .orbit-chat-picker summary {
+      min-height: 44px;
+      font-size: 13px;
+    }
+    .orbit-session {
+      width: 100%;
+      text-align: left;
+      font-size: 12px;
+      padding: 10px 6px;
+    }
+    .orbit-session small {
+      display: block;
+      font-size: 11px;
+    }
+    .orbit-conversation {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .orbit-pane-head {
+      display: flex;
+      flex: none;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 48px;
+      border-bottom: 1px solid var(--orbit-line);
+      padding: 4px 8px;
+      gap: 6px;
+    }
+    .orbit-pane-head strong {
+      font-size: 12px;
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+    .orbit-pane-head button {
+      padding: 4px 8px;
+      color: var(--orbit-blue);
+      font-size: 12px;
+    }
+    .orbit-transcript {
+      flex: 1;
+      min-height: 0;
+      padding: 14px 10px;
+    }
+    .orbit-message {
+      margin-bottom: 18px;
+      font-size: 13px;
+    }
+    .orbit-message > span {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: var(--orbit-slate);
+      margin: 0 4px 6px;
+    }
+    .orbit-message .orbit-mark {
+      width: 18px;
+      height: 18px;
+    }
+    .orbit-message .orbit-mark::after {
+      inset: 5px -3px;
+      border-width: 1px;
+    }
+    .orbit-message > p,
+    [data-grounded-answer] {
+      padding: 13px;
+      border: 1px solid #ffffffd9;
+      border-radius: 20px 20px 20px 7px;
+      background: linear-gradient(130deg, #ffffff85, #ffffff3d);
+      line-height: 1.65;
+      overflow-wrap: anywhere;
+    }
+    .orbit-message.is-user {
+      margin-left: 12%;
+    }
+    .orbit-message.is-user > span {
+      justify-content: flex-end;
+    }
+    .orbit-message.is-user > p {
+      border-radius: 20px 20px 4px 20px;
+      background: linear-gradient(135deg, #d3e3eaa6, #b4cdd970);
+    }
+    .orbit-file {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 10px auto;
+      background: #ffffffa6;
+      border: 1px solid #fff;
+      text-align: left;
+      font-size: 12px;
+    }
+    .orbit-file svg {
+      width: 22px;
+      height: 22px;
+    }
+    .orbit-file small {
+      display: block;
+    }
+    .orbit-chat-composer {
+      flex: none;
+      padding: 10px;
+      margin: 6px;
+      border: 1px solid #fff;
+      border-radius: 18px;
+      background: linear-gradient(145deg, #f8fafbe8, #edf2f4e0);
+    }
+    .orbit-chat-composer input {
+      border: 0;
+      background: transparent;
+      padding: 8px 2px;
+    }
+    .orbit-chat-composer > div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--orbit-slate);
+      font-size: 12px;
+    }
+    .orbit-preview {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .orbit-preview-scroll {
+      flex: 1;
+      min-height: 0;
+      padding: 10px;
+    }
+    .orbit-app {
+      background: #f6f5ef;
+      color: #35483e;
+      padding: 18px 12px;
+      border-radius: 12px;
+    }
+    .orbit-app-label {
+      font-size: 9px;
+      letter-spacing: 1.8px;
+    }
+    .orbit-app > h3 {
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.2;
+      margin: 15px 0 10px;
+    }
+    .orbit-app > p:not(.orbit-app-label) {
+      font-size: 11px;
+      color: #596b5f;
+    }
+    .orbit-books {
+      display: grid;
+      gap: 14px;
+      margin-top: 24px;
+    }
+    .orbit-books article {
+      display: flex;
+      gap: 10px;
+      padding-top: 12px;
+      border-top: 1px solid #35483e24;
+    }
+    .orbit-books article > div:last-child {
+      min-width: 0;
+    }
+    .orbit-books h4 {
+      font-size: 12px;
+    }
+    .orbit-books small {
+      display: block;
+      color: #596b5f;
+      font-size: 11px;
+    }
+    .orbit-books button {
+      background: #e4e8dd;
+      color: #35483e;
+      font-size: 11px;
+      padding: 4px 8px;
+      margin-top: 4px;
+    }
+    .orbit-book-cover {
+      flex: none;
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 68px;
+      border-radius: 3px 7px 7px 3px;
+      background: #b8c4b3;
+      color: #35483e;
+      box-shadow: inset 3px 0 0 #0001;
+      font-size: 10px;
+      letter-spacing: 2px;
+    }
+    .orbit-cover-1 {
+      background: #d1bba1;
+    }
+    .orbit-cover-2 {
+      background: #b9c9cd;
+    }
+    [data-density="compact"] .orbit-books {
+      gap: 6px;
+      margin-top: 14px;
+    }
+    [data-density="compact"] .orbit-books article {
+      padding-top: 6px;
+    }
+    [data-density="compact"] .orbit-book-cover {
+      height: 52px;
+      width: 38px;
+    }
+    .orbit-preview.is-phone .orbit-app {
+      max-width: 210px;
+      margin: auto;
+    }
+    .orbit-chat-layout:has([data-preview][hidden]) {
+      grid-template-columns: 135px minmax(0, 1fr);
+    }
+    .orbit-library-tabs {
+      display: none;
+    }
+    .orbit-notebook {
+      display: grid;
+      flex: 1;
+      min-height: 0;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 10px;
+    }
+    .orbit-library-pane {
+      padding: 14px;
+      min-height: 0;
+    }
+    .orbit-library-pane > h3 {
+      margin-bottom: 18px;
+    }
+    .orbit-sources {
+      border-radius: 13px;
+      background: #ffffff6b;
+      overflow: hidden;
+    }
+    .orbit-sources article {
+      display: flex;
+      gap: 2px;
+      border-bottom: 1px solid var(--orbit-line);
+    }
+    .orbit-sources article:last-child {
+      border: 0;
+    }
+    .orbit-source-use {
+      display: grid;
+      place-items: center;
+      flex: 0 0 44px;
+      min-height: 54px;
+      cursor: pointer;
+    }
+    .orbit-source-use input {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--orbit-blue);
+    }
+    .orbit-sources button {
+      flex: 1;
+      min-width: 0;
+      text-align: left;
+      padding: 10px 6px 10px 0;
+    }
+    .orbit-sources strong {
+      display: block;
+      font-size: 12px;
+      overflow-wrap: anywhere;
+      font-weight: 550;
+    }
+    .orbit-source-reader {
+      margin-top: 20px;
+    }
+    .orbit-source-reader h4 {
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+    .orbit-source-reader p {
+      font-size: 13px;
+      line-height: 1.8;
+      margin-top: 10px;
+    }
+    .orbit-library-chat {
+      display: flex;
+      flex-direction: column;
+    }
+    .orbit-library-chat > .orbit-scroll {
+      flex: 1;
+      min-height: 0;
+    }
+    .orbit-library-chat > button {
+      margin-top: 8px;
+      flex: none;
+    }
+    .orbit-citation {
+      color: var(--orbit-blue);
+      font-size: 12px;
+      padding: 4px;
+      min-width: 44px;
+    }
+    .orbit-studio-note {
+      padding: 14px;
+      border: 1px solid #fff;
+      background: #ffffff70;
+      border-radius: 14px;
+    }
+    .orbit-note-type {
+      font-size: 11px;
+      color: var(--orbit-sage);
+    }
+    .orbit-studio-note h4 {
+      margin: 4px 0 14px;
+    }
+    .orbit-studio-note p {
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+    .orbit-studio-note small {
+      display: block;
+      font-size: 11px;
+      color: var(--orbit-blue);
+      overflow-wrap: anywhere;
+      margin-top: 5px;
+    }
+    [data-save-note] {
+      margin-top: 10px;
+      width: 100%;
+    }
+    .orbit-fin-body {
+      flex: 1;
+      min-height: 0;
+      padding: 3px;
+    }
+    .orbit-fin-body > section > h3 {
+      margin: 6px 0 18px;
+    }
+    .orbit-fin-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 24px;
+    }
+    .orbit-fin-summary > div {
+      display: grid;
+      gap: 4px;
+    }
+    .orbit-fin-summary span,
+    .orbit-fin-summary small {
+      color: var(--orbit-slate);
+      font-size: 13px;
+    }
+    .orbit-fin-summary strong {
+      font-size: 20px;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+    .orbit-fin-summary .orbit-amount {
+      font-size: 38px;
+      letter-spacing: -1px;
+    }
+    .orbit-fin-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .orbit-shelf {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+    }
+    .orbit-shelf strong {
+      font-size: 20px;
+      font-weight: 500;
+      margin: 14px 0 4px;
+    }
+    .orbit-shelf-orb {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 28% 22%, #fff, transparent 60%),
+        linear-gradient(145deg, #eef5f8, #cddfe8);
+      box-shadow:
+        inset 0 1px 1px #fff,
+        0 3px 8px #344b5914;
+      font-size: 19px;
+      color: var(--orbit-blue);
+      margin-bottom: 14px;
+    }
+    .orbit-account-list {
+      padding: 10px 18px;
+    }
+    .orbit-account-list article {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--orbit-line);
+    }
+    .orbit-account-list article:last-child {
+      border: 0;
+    }
+    .orbit-account-list article > div {
+      min-width: 0;
+      flex: 1;
+    }
+    .orbit-account-list small {
+      display: block;
+    }
+    .orbit-account-list strong {
+      font-weight: 550;
+      font-variant-numeric: tabular-nums;
+    }
+    .orbit-bank-coin {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      flex: none;
+      background: #e2e9ed;
+      border: 1px solid #fff;
+      border-radius: 50%;
+      color: var(--orbit-blue);
+    }
+    .orbit-spending {
+      padding: 16px;
+    }
+    .orbit-spending button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 8px 4px;
+    }
+    .orbit-spending button > span {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .orbit-spending strong {
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+    .orbit-spending i {
+      display: block;
+      height: 5px;
+      border-radius: 5px;
+      background: #d3dde299;
+      overflow: hidden;
+    }
+    .orbit-spending b {
+      display: block;
+      height: 100%;
+      background: var(--orbit-steel);
+      border-radius: inherit;
+    }
+    .orbit-spending [aria-pressed="true"] {
+      background: #ffffffb3;
+    }
+    .orbit-transactions {
+      margin-top: 14px;
+    }
+    .orbit-transactions article {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 90px 80px;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 4px;
+      border-bottom: 1px solid var(--orbit-line);
+      font-size: 13px;
+    }
+    .orbit-transactions article > span {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+    .orbit-wishlist {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: start;
+      gap: 12px;
+    }
+    .orbit-product {
+      overflow: hidden;
+    }
+    .orbit-product summary {
+      padding: 12px;
+      list-style: none;
+    }
+    .orbit-product summary::-webkit-details-marker {
+      display: none;
+    }
+    .orbit-product summary > small {
+      display: block;
+      margin-top: 12px;
+    }
+    .orbit-product h4 {
+      margin: 5px 0;
+    }
+    .orbit-product summary > strong {
+      font-size: 20px;
+      font-weight: 500;
+    }
+    .orbit-product-art {
+      display: block;
+      position: relative;
+      height: 125px;
+      border-radius: 12px;
+      background: linear-gradient(150deg, #f7f8f6, #dce4e6);
+      overflow: hidden;
+    }
+    .orbit-product-art i,
+    .orbit-product-art b {
+      position: absolute;
+      display: block;
+      background: #536978;
+    }
+    .orbit-art-lamp i {
+      width: 7px;
+      height: 62px;
+      left: 50%;
+      top: 34px;
+      transform: rotate(22deg);
+      border-radius: 5px;
+    }
+    .orbit-art-lamp b {
+      width: 62px;
+      height: 10px;
+      border-radius: 50%;
+      bottom: 22px;
+      left: calc(50% - 31px);
+    }
+    .orbit-art-lamp::after {
+      content: "";
+      position: absolute;
+      width: 48px;
+      height: 24px;
+      top: 24px;
+      left: calc(50% - 16px);
+      background: #536978;
+      border-radius: 25px 25px 4px 4px;
+      transform: rotate(22deg);
+    }
+    .orbit-art-stand i {
+      width: 70px;
+      height: 47px;
+      border: 5px solid #879ca8;
+      border-radius: 5px;
+      transform: skewY(-15deg);
+      background: #bac9d0;
+      top: 28px;
+      left: calc(50% - 35px);
+    }
+    .orbit-art-stand b {
+      width: 65px;
+      height: 10px;
+      left: calc(50% - 32px);
+      bottom: 26px;
+      border-radius: 4px;
+      background: #879ca8;
+    }
+    .orbit-art-books i,
+    .orbit-art-books b {
+      width: 53px;
+      height: 74px;
+      border-radius: 3px 8px 8px 3px;
+      background: #a5b8ab;
+      left: calc(50% - 32px);
+      top: 26px;
+      transform: rotate(-12deg);
+      box-shadow: inset 4px 0 0 #fff5;
+    }
+    .orbit-art-books b {
+      left: calc(50% - 15px);
+      top: 20px;
+      background: #c1ad94;
+      transform: rotate(10deg);
+    }
+    .orbit-product-detail {
+      padding: 0 12px 12px;
+    }
+    .orbit-product dl {
+      margin: 0 0 12px;
+      font-size: 12px;
+    }
+    .orbit-product dl > div {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 4px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--orbit-line);
+    }
+    .orbit-product dt {
+      color: var(--orbit-slate);
+    }
+    .orbit-product dd {
+      margin: 0;
+    }
+    .orbit-product button {
+      width: 100%;
+    }
+    .orbit-status {
+      min-height: 20px;
+      padding: 4px 2px 0;
+      font-size: 12px;
+      color: var(--orbit-slate);
+    }
+    .orbit-note {
+      grid-column: 1 / -1;
+      font-size: 12px;
+      color: var(--orbit-slate);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      button:hover {
+        background-color: #ffffffb3;
+        color: var(--orbit-ink);
+      }
+      .orbit-primary:hover {
+        background: #293e4b;
+        color: #fff;
+      }
+    }
+    @media (max-width: 1100px) {
+      & {
+        grid-template-columns: 130px minmax(0, 1fr);
+        gap: 14px;
+        padding: 14px;
+      }
+      .orbit-chat-layout {
+        grid-template-columns: minmax(0, 1fr) minmax(170px, 0.9fr);
+      }
+      .orbit-chat-picker {
+        display: none;
+      }
+      .orbit-chat-layout:has([data-preview][hidden]) {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .orbit-days {
+        grid-template-columns: 1fr;
+      }
+      .orbit-day {
+        min-height: 70px;
+      }
+      .orbit-notebook {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      }
+      [data-library-pane="studio"] {
+        display: none;
+      }
+      .orbit-library-tabs {
+        display: flex;
+      }
+      .orbit-notebook:has([data-library-pane="studio"].is-selected)
+        [data-library-pane="chat"] {
+        display: none;
+      }
+      [data-library-pane="studio"].is-selected {
+        display: block;
+      }
+      .orbit-product-art {
+        height: 100px;
+      }
+    }
+    @media (max-width: 760px) {
+      & {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+        padding: 12px;
+        border-radius: 24px;
+      }
+      .orbit-sidebar {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        padding: 10px;
+        border-radius: 20px;
+      }
+      .orbit-brand {
+        padding-left: 8px;
+      }
+      .orbit-brand strong {
+        font-size: 21px;
+      }
+      .orbit-sidebar nav {
+        position: relative;
+        isolation: isolate;
+        grid-column: 1 / -1;
+        grid-row: 2;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 2px;
+      }
+      .orbit-sidebar nav button {
+        flex-direction: column;
+        justify-content: center;
+        gap: 4px;
+        padding: 8px 3px;
+        font-size: 11px;
+      }
+      .orbit-reset {
+        grid-column: 2;
+        grid-row: 1;
+        margin: 0;
+      }
+      .orbit-view {
+        height: 530px;
+        gap: 10px;
+      }
+      h2 {
+        font-size: 28px;
+      }
+      .orbit-page-head > span {
+        font-size: 12px;
+      }
+      .orbit-list-filters button {
+        padding: 6px 9px;
+      }
+      .orbit-task summary {
+        font-size: 15px;
+      }
+      .orbit-capture select {
+        width: 90px;
+        font-size: 16px;
+      }
+      .orbit-capture {
+        border-radius: 18px;
+      }
+      .orbit-chat-layout {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+      }
+      .orbit-conversation {
+        flex: 1;
+      }
+      .orbit-preview {
+        position: absolute;
+        inset: 0;
+        background: var(--orbit-cloud);
+        z-index: 2;
+      }
+      .orbit-preview .orbit-pane-head {
+        padding: 4px 10px;
+      }
+      .orbit-app {
+        max-width: 330px;
+        margin: auto;
+      }
+      .orbit-library-tabs {
+        flex: none;
+      }
+      .orbit-notebook {
+        display: block;
+        min-height: 0;
+        overflow: hidden;
+      }
+      .orbit-notebook .orbit-library-pane {
+        display: none !important;
+        height: 100%;
+      }
+      .orbit-notebook .orbit-library-pane.is-selected {
+        display: flex !important;
+        flex-direction: column;
+      }
+      .orbit-library-pane {
+        padding: 16px;
+      }
+      .orbit-sources {
+        flex: none;
+      }
+      .orbit-library-chat > .orbit-scroll {
+        flex: 1;
+      }
+      .orbit-fin-summary {
+        padding: 18px;
+        gap: 10px;
+      }
+      .orbit-fin-summary .orbit-amount {
+        font-size: 30px;
+      }
+      .orbit-fin-summary strong {
+        font-size: 17px;
+      }
+      .orbit-fin-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .orbit-shelf {
+        display: grid;
+        grid-template-columns: 38px 1fr;
+        gap: 2px 12px;
+        padding: 14px;
+      }
+      .orbit-shelf-orb {
+        grid-row: span 3;
+        margin: 0;
+        align-self: center;
+      }
+      .orbit-shelf strong {
+        font-size: 18px;
+        margin: 0;
+      }
+      .orbit-segments button {
+        padding: 6px 10px;
+        font-size: 13px;
+      }
+      .orbit-account-list {
+        padding: 6px 10px;
+      }
+      .orbit-account-list article {
+        flex-wrap: wrap;
+        gap: 8px;
+        font-size: 13px;
+      }
+      .orbit-account-list article > div {
+        min-width: 100px;
+      }
+      .orbit-transactions article {
+        grid-template-columns: minmax(0, 1fr) auto;
+      }
+      .orbit-transactions small {
+        grid-column: 1;
+        grid-row: 2;
+      }
+      .orbit-transactions article > span {
+        grid-column: 2;
+        grid-row: 1 / 3;
+      }
+      .orbit-wishlist {
+        grid-template-columns: 1fr;
+      }
+      .orbit-product summary {
+        display: grid;
+        grid-template-columns: 80px minmax(0, 1fr);
+        gap: 3px 12px;
+      }
+      .orbit-product-art {
+        grid-row: span 3;
+        height: 100px;
+      }
+      .orbit-product summary > small {
+        margin: 0;
+      }
+      .orbit-product h4 {
+        margin: 0;
+      }
+      .orbit-product-detail {
+        padding: 0 16px 16px;
+      }
+      .orbit-note {
+        font-size: 11px;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  }
+</style>
