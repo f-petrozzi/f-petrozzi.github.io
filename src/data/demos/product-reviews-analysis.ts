@@ -229,7 +229,7 @@ export const RAW_ROWS: RawRow[] = [
     product_id: "2",
     reviewer: "Omar  K.",
     rating: "4",
-    review_text: "Good value &amp; sharp text – no dead pixels 👍",
+    review_text: "Good value &amp; sharp text - no dead pixels 👍",
     review_date: "2025.03.09",
   },
   {
@@ -243,7 +243,7 @@ export const RAW_ROWS: RawRow[] = [
     product_id: "5",
     reviewer: "d.brandt",
     rating: "5",
-    review_text: "Smooth 165Hz   — no tearing",
+    review_text: "Smooth 165Hz    -  no tearing",
     review_date: "14th March 2025",
   },
   {

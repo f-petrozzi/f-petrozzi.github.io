@@ -35,7 +35,7 @@ export const nodes = [
   {
     id: "host",
     label: "One physical host",
-    tag: "Linux · Docker Compose",
+    tag: "Linux / Docker Compose",
     x: 28,
     y: 124,
     w: 360,
@@ -165,7 +165,7 @@ export const nodes = [
   {
     id: "exporters",
     label: "Exporters",
-    tag: "Host · containers · probes",
+    tag: "Host / containers / probes",
     x: 250,
     y: 524,
     w: 202,

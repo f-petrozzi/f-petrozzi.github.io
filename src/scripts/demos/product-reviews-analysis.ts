@@ -33,7 +33,7 @@ function visible(value: string) {
   return value
     .replace(/\n/g, "↵")
     .replace(/\t/g, "⇥")
-    .replace(/^ +| +$/g, (m) => "·".repeat(m.length));
+    .replace(/^ +| +$/g, (m) => "␠".repeat(m.length));
 }
 
 function init(root: HTMLElement) {
@@ -90,7 +90,7 @@ function init(root: HTMLElement) {
       );
       const stat = button?.querySelector<HTMLElement>("[data-stat]");
       if (stat)
-        stat.textContent = count ? `${count} · ${average!.toFixed(1)}` : "none";
+        stat.textContent = count ? `${count} / ${average!.toFixed(1)}` : "none";
     });
     const total = $("[data-stat-all]");
     total.textContent = String(state.reviews.length);

@@ -57,7 +57,7 @@ function init(root: HTMLElement) {
     );
     get("[data-parse-status]").textContent = recipe.warnings.length
       ? recipe.warnings.join(" ")
-      : `Gemini extraction → Recipe validated · ${recipe.ingredients.length} ingredients · ${recipe.steps.length} steps`;
+      : `Gemini extraction → Recipe validated / ${recipe.ingredients.length} ingredients / ${recipe.steps.length} steps`;
   }
   get<HTMLFormElement>("[data-recipe-form]").addEventListener(
     "submit",
@@ -74,7 +74,7 @@ function init(root: HTMLElement) {
   input.addEventListener("input", () => {
     picker.value = "paste";
     get("[data-parse-status]").textContent =
-      "Input changed · extract to update the recipe.";
+      "Input changed / extract to update the recipe.";
   });
   const sleep = get<HTMLInputElement>("[data-sleep]");
   const steps = get<HTMLInputElement>("[data-walking]");
@@ -119,7 +119,7 @@ function init(root: HTMLElement) {
       ...run.priorities.map((priority) => {
         const row = document.createElement("div");
         const label = document.createElement("span");
-        label.textContent = `${priority.specialist} · ${Math.round(priority.score * 100)}%`;
+        label.textContent = `${priority.specialist} / ${Math.round(priority.score * 100)}%`;
         const meter = document.createElement("meter");
         meter.min = 0;
         meter.max = 1;

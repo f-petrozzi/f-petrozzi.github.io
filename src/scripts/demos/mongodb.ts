@@ -19,7 +19,6 @@ import {
 const NEW = "";
 const DEFAULT_DATE = "2025-04-22";
 const MONEY = new Set(["revenue", "amount"]);
-const PREVIEW = 3;
 
 const money = (n: number) => "$" + Math.round(n).toLocaleString("en-US");
 const flat = (doc: Doc) =>
@@ -90,7 +89,7 @@ function init(root: HTMLElement) {
       option(NEW, "New appointment"),
       ...db.appointments.map((a) => {
         const patient = db.patients.find((p) => p._id === a.patientId)!;
-        return option(a._id, `${a._id} · ${patient.name} · ${a.date}`);
+        return option(a._id, `${a._id} / ${patient.name} / ${a.date}`);
       }),
     );
     apptSelect.value = db.appointments.some((a) => a._id === keep.appt)
@@ -100,7 +99,7 @@ function init(root: HTMLElement) {
       ...db.patients.map((p) => option(p._id, p.name)),
     );
     doctorSelect.replaceChildren(
-      ...db.doctors.map((d) => option(d._id, `${d.name} · ${d.specialty}`)),
+      ...db.doctors.map((d) => option(d._id, `${d.name} / ${d.specialty}`)),
     );
     statusSelect.replaceChildren(...STATUSES.map((s) => option(s, s)));
     if (keep.patient) patientSelect.value = keep.patient;
@@ -176,35 +175,46 @@ function init(root: HTMLElement) {
     };
     total.textContent = totals[id];
 
-    stagesBox.replaceChildren(
-      ...run.stages.map(({ stage, output }, i) => {
-        const last = i === run.stages.length - 1;
-        const details = el("details", "mg-stage");
-        details.open = true;
-        const summary = el("summary");
-        summary.append(
-          el("span", "mg-n", String(i + 1)),
-          el("code", "mg-op", Object.keys(stage)[0]),
-          el(
-            "span",
-            "mg-docs-count",
-            `${output.length} ${output.length === 1 ? "doc" : "docs"}`,
-          ),
-        );
-        const input = el("pre", "mg-stage-json");
-        input.textContent = shell(stage);
-        const out = el("pre", "mg-stage-out");
-        const shown = last ? output : output.slice(0, PREVIEW);
-        out.textContent =
-          shown.map(flat).join("\n") +
-          (shown.length < output.length
-            ? `\n... ${output.length - shown.length} more`
-            : "");
-        if (!output.length) out.textContent = "(no documents)";
-        details.append(summary, input, out);
-        return details;
-      }),
-    );
+    const stepper = el("div", "mg-stepper");
+    stepper.setAttribute("role", "group");
+    stepper.setAttribute("aria-label", "Pipeline stages");
+    const detail = el("section", "mg-stage-detail");
+    detail.setAttribute("aria-label", "Selected pipeline stage");
+    detail.setAttribute("aria-live", "polite");
+    detail.tabIndex = 0;
+    const buttons = run.stages.map(({ stage }, i) => {
+      const button = el(
+        "button",
+        "mg-stage-button",
+        `${i + 1} ${Object.keys(stage)[0]}`,
+      );
+      button.type = "button";
+      button.setAttribute("aria-pressed", String(i === 0));
+      button.addEventListener("click", () => selectStage(i));
+      return button;
+    });
+    function selectStage(index: number) {
+      const { stage, output } = run.stages[index];
+      buttons.forEach((button, i) =>
+        button.setAttribute("aria-pressed", String(i === index)),
+      );
+      const json = el("pre", "mg-stage-json", shell(stage));
+      const out = el(
+        "pre",
+        "mg-stage-out",
+        output.length ? output.map(flat).join("\n") : "(no documents)",
+      );
+      detail.replaceChildren(
+        el("h3", undefined, `Stage ${index + 1}: ${Object.keys(stage)[0]}`),
+        el("h4", undefined, "JSON"),
+        json,
+        el("h4", undefined, `Output (${output.length} documents)`),
+        out,
+      );
+    }
+    stepper.append(...buttons);
+    stagesBox.replaceChildren(stepper, detail);
+    selectStage(0);
   }
 
   function renderDocs() {

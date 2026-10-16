@@ -136,7 +136,7 @@ function init(root: HTMLElement) {
     }).join("");
     const total = quote(e, s.picked).total;
     const ready = s.picked.length === s.qty;
-    return `<button type="button" class="tx-back" data-act="back-detail" data-key="back">${esc(e.title)}</button><h2 class="tx-h" tabindex="-1" data-heading>Choose seats</h2><div class="tx-qty"><span id="tx-qty-label">Tickets</span><div role="group" aria-labelledby="tx-qty-label"><button type="button" data-act="qty-" data-key="q-" aria-label="Fewer tickets" ${s.qty <= 1 ? "disabled" : ""}>−</button><output aria-live="polite">${s.qty}</output><button type="button" data-act="qty+" data-key="q+" aria-label="More tickets" ${s.qty >= maxQty() ? "disabled" : ""}>+</button></div></div><div class="tx-stage-bar">Stage</div><div class="tx-seats" style="--cols:${COLS}">${grid}</div><p class="tx-legend"><i class="a"></i>Open <i class="t"></i>Taken <i class="p"></i>Yours</p><p class="tx-sum" aria-live="polite">${s.picked.length} of ${s.qty} seats${s.picked.length ? ` · ${money(total)}` : ""}</p><button type="button" class="tx-cta" data-act="to-checkout" data-key="cta" ${ready ? "" : "disabled"}>Continue</button>`;
+    return `<button type="button" class="tx-back" data-act="back-detail" data-key="back">${esc(e.title)}</button><h2 class="tx-h" tabindex="-1" data-heading>Choose seats</h2><div class="tx-qty"><span id="tx-qty-label">Tickets</span><div role="group" aria-labelledby="tx-qty-label"><button type="button" data-act="qty-" data-key="q-" aria-label="Fewer tickets" ${s.qty <= 1 ? "disabled" : ""}>−</button><output aria-live="polite">${s.qty}</output><button type="button" data-act="qty+" data-key="q+" aria-label="More tickets" ${s.qty >= maxQty() ? "disabled" : ""}>+</button></div></div><div class="tx-stage-bar">Stage</div><div class="tx-seats" style="--cols:${COLS}">${grid}</div><p class="tx-legend"><i class="a"></i>Open <i class="t"></i>Taken <i class="p"></i>Yours</p><p class="tx-sum" aria-live="polite">${s.picked.length} of ${s.qty} seats${s.picked.length ? ` / ${money(total)}` : ""}</p><button type="button" class="tx-cta" data-act="to-checkout" data-key="cta" ${ready ? "" : "disabled"}>Continue</button>`;
   }
 
   function checkout() {
@@ -165,10 +165,10 @@ function init(root: HTMLElement) {
     const others = s.tickets
       .map(
         (x) =>
-          `<li><button type="button" class="tx-mini" data-act="select" data-id="${x.id}" data-key="t-${x.id}" aria-pressed="${x.id === t.id}"><span>${esc(getEvent(x.eventId).title)}</span><small>Seat ${x.seat}${s.used.has(x.id) ? " · scanned" : ""}</small></button></li>`,
+          `<li><button type="button" class="tx-mini" data-act="select" data-id="${x.id}" data-key="t-${x.id}" aria-pressed="${x.id === t.id}"><span>${esc(getEvent(x.eventId).title)}</span><small>Seat ${x.seat}${s.used.has(x.id) ? " / scanned" : ""}</small></button></li>`,
       )
       .join("");
-    return `<h2 class="tx-h" tabindex="-1" data-heading>Tickets</h2>${flash}<article class="tx-ticket${used ? " is-used" : ""}">${art(e.hue, e.category)}<div class="tx-ticket-body"><b>${esc(e.title)}</b><small>${esc(e.date)} · ${esc(e.venue)}</small><small>Seat ${t.seat} · ${esc(t.holder)}</small></div><svg class="tx-qr" viewBox="-2 -2 29 29" role="img" aria-label="Illustrative QR code for ticket ${t.id}"><rect x="-2" y="-2" width="29" height="29" fill="#fff"/><path d="${qrPath(t.id)}" fill="#111"/></svg><code class="tx-id">${t.id}</code>${used ? '<span class="tx-stamp">Scanned</span>' : ""}<button type="button" class="tx-door-btn" data-act="to-door" data-id="${t.id}" data-key="door">Scan at door</button></article>${s.tickets.length > 1 ? `<ul class="tx-minis">${others}</ul>` : ""}`;
+    return `<h2 class="tx-h" tabindex="-1" data-heading>Tickets</h2>${flash}<article class="tx-ticket${used ? " is-used" : ""}">${art(e.hue, e.category)}<div class="tx-ticket-body"><b>${esc(e.title)}</b><small>${esc(e.date)} / ${esc(e.venue)}</small><small>Seat ${t.seat} / ${esc(t.holder)}</small></div><svg class="tx-qr" viewBox="-2 -2 29 29" role="img" aria-label="Illustrative QR code for ticket ${t.id}"><rect x="-2" y="-2" width="29" height="29" fill="#fff"/><path d="${qrPath(t.id)}" fill="#111"/></svg><code class="tx-id">${t.id}</code>${used ? '<span class="tx-stamp">Scanned</span>' : ""}<button type="button" class="tx-door-btn" data-act="to-door" data-id="${t.id}" data-key="door">Scan at door</button></article>${s.tickets.length > 1 ? `<ul class="tx-minis">${others}</ul>` : ""}`;
   }
 
   function currentStep(): StepId {
@@ -247,7 +247,7 @@ function init(root: HTMLElement) {
       unknown: "Not on the sold list",
       empty: "",
     }[r.status];
-    doorResult.innerHTML = `<b>${head}</b><span>${esc(r.id)}${where ? ` · ${where}` : ""}</span>`;
+    doorResult.innerHTML = `<b>${head}</b><span>${esc(r.id)}${where ? ` / ${where}` : ""}</span>`;
   }
 
   function scan(raw: string) {
