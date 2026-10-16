@@ -8,6 +8,9 @@ import {
   togglePin,
   initialPins,
   MAX_MINUTES,
+  motion,
+  spring,
+  usageColor,
 } from "../src/data/demos/agent-usage.ts";
 
 const windowOf = (minute, account = "lumen", id = "fiveHour") =>
@@ -66,10 +69,10 @@ test("reset renews allowance at the boundary and retains the prior alert", () =>
   );
   assert.equal(
     snapshot(45).notices.filter((notice) => notice.kind === "Usage").length,
-    1,
+    2,
   );
   assert.equal(
-    snapshot(60).notices.find((notice) => notice.kind === "Usage").minute,
+    snapshot(60).notices.find((notice) => /warning/.test(notice.title)).minute,
     20,
   );
 });
@@ -112,4 +115,96 @@ test("Sessions search spans title, workspace and account; pins sort first", () =
   assert.deepEqual(togglePin(pins, "s1"), initialPins);
   assert.deepEqual(togglePin(initialPins, "unknown"), initialPins);
   assert.deepEqual(initialPins, ["s4", "s3"]);
+});
+
+test("renewals enter the same log once, at the reset time", () => {
+  assert.equal(
+    snapshot(44).notices.some((notice) => notice.title === "Allowance renewed"),
+    false,
+  );
+  const renewal = snapshot(45).notices.find(
+    (notice) => notice.title === "Allowance renewed",
+  );
+  assert.equal(renewal.minute, 45);
+  assert.equal(renewal.account, "lumen");
+  assert.match(renewal.body, /5-hour window reset/);
+  assert.deepEqual(
+    snapshot(120).notices.filter(
+      (notice) => notice.title === "Allowance renewed",
+    ),
+    [renewal],
+  );
+  assert.equal(
+    snapshot(20).notices.some((notice) => notice.id === renewal.id),
+    false,
+  );
+});
+
+test("the opening spring overshoots gently and every renderer spring settles", () => {
+  for (const config of [
+    motion.open,
+    motion.detailOpen,
+    motion.detailClose,
+    motion.armHover,
+    motion.armReturn,
+  ]) {
+    let value = 0,
+      velocity = 0,
+      maximum = 0;
+    for (let frame = 0; frame < 180; frame++) {
+      [value, velocity] = spring(
+        value,
+        velocity,
+        1,
+        config.response,
+        config.damping,
+        1 / 60,
+      );
+      maximum = Math.max(maximum, value);
+    }
+    assert.ok(Math.abs(value - 1) < 0.0001);
+    assert.ok(Math.abs(velocity) < 0.0001);
+    assert.ok(maximum < 1.05, "overshoot stays below five percent");
+    if (config === motion.open) assert.ok(maximum > 1.03);
+  }
+});
+
+test("spring reversal keeps its incoming velocity instead of restarting", () => {
+  const { response, damping } = motion.open;
+  let value = 0,
+    velocity = 0;
+  for (let i = 0; i < 8; i++)
+    [value, velocity] = spring(value, velocity, 1, response, damping, 1 / 60);
+  assert.ok(velocity > 0);
+  const reversed = spring(value, velocity, 0, response, damping, 0.001);
+  assert.ok(reversed[0] > value, "momentum continues briefly after reversing");
+  assert.ok(reversed[1] > 0);
+  assert.ok(reversed[1] < velocity);
+  assert.deepEqual(spring(value, velocity, 0, response, damping, 0), [
+    value,
+    velocity,
+  ]);
+  assert.deepEqual(
+    spring(value, velocity, 0, response, damping, 10),
+    spring(value, velocity, 0, response, damping, 0.1),
+  );
+});
+
+test("analytic spring is independent of frame partitioning", () => {
+  for (const damping of [0.72, 1, 1.3]) {
+    const full = spring(0.2, -0.1, 1, 0.62, damping, 0.08);
+    let partial = [0.2, -0.1];
+    for (let i = 0; i < 4; i++)
+      partial = spring(...partial, 1, 0.62, damping, 0.02);
+    assert.ok(Math.abs(partial[0] - full[0]) < 1e-12);
+    assert.ok(Math.abs(partial[1] - full[1]) < 1e-12);
+  }
+});
+
+test("usage colors flag consumed allowance rather than remaining allowance", () => {
+  assert.equal(usageColor(0), "#00ff88");
+  assert.equal(usageColor(79.9), "#00ff88");
+  assert.equal(usageColor(80), "#f2ff00");
+  assert.equal(usageColor(95), "#ff6b47");
+  assert.equal(usageColor(100), "#ff6b47");
 });
