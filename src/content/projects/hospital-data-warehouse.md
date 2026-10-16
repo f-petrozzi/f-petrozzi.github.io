@@ -1,15 +1,15 @@
 ---
 title: "Hospital Data Warehouse"
-summary: "SQL analyses with visuals."
+summary: "A data warehouse for analyzing hospital visits and prescriptions using synthetic data."
 category: "Earlier work"
 tools: ["SQL", "Data Visualization"]
 order: 26
 featured: false
-status: "Earlier work"
+status: "Group project"
 visual: "code"
 repo: "https://github.com/f-petrozzi/Healthcare_Data_Warehouse"
 ---
 
-SQL analyses with visuals.
+For this course project, we modeled hospital visits and prescriptions using fact and dimension tables. Synthetic data let us populate the warehouse and write queries against it.
 
-This project is part of my earlier work. The original project description and technology labels have been retained from my first portfolio. See the linked repository for implementation details.
+The queries and visualizations look at prescriptions by specialty, procedure charges and length of stay, and revenue by state. The report also considers how to preserve historical records when details such as a doctor’s specialty change.

@@ -1,0 +1,71 @@
+---
+import Icon from "./Icon.astro";
+import { toolIcon } from "../data/tool-icons";
+
+interface Props {
+  tool: string;
+  size?: number;
+  label?: boolean;
+}
+
+const { tool, size = 16, label = false } = Astro.props;
+const mapping = toolIcon(tool);
+// Brand marks come from a page-level ToolIconSprite, so paths are not repeated.
+const brand = mapping.si;
+---
+
+<span
+  class="tool-icon"
+  style={`--tool-icon-size: ${size}px`}
+  title={label ? undefined : tool}
+>
+  {
+    brand ? (
+      <svg
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        width={size}
+        height={size}
+        aria-hidden="true"
+        focusable="false"
+      >
+        <use href={`#tool-${brand}`} />
+      </svg>
+    ) : (
+      <Icon name={mapping.icon ?? "grid"} />
+    )
+  }
+  <span class={label ? "tool-icon__label" : "tool-icon__sr"}>{tool}</span>
+</span>
+
+<style>
+  .tool-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    max-width: 100%;
+    vertical-align: middle;
+  }
+  .tool-icon > svg,
+  .tool-icon > :global(.ui-icon) {
+    width: var(--tool-icon-size);
+    height: var(--tool-icon-size);
+    flex: 0 0 var(--tool-icon-size);
+  }
+  .tool-icon__label {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .tool-icon__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>

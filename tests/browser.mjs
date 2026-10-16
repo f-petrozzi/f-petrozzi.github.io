@@ -1,178 +1,217 @@
-import { chromium } from "@playwright/test";
-import assert from "node:assert/strict";
-import { readdirSync } from "node:fs";
-const base = process.env.PREVIEW_URL || "http://petro.ink:4444";
-const projectCount = readdirSync("src/content/projects").filter((f) =>
-  f.endsWith(".md"),
-).length;
+import { chromium, expect } from "@playwright/test";
+
+const base = (process.env.PREVIEW_URL || "http://127.0.0.1:4620").replace(
+  /\/$/,
+  "",
+);
 const browser = await chromium.launch({
   headless: true,
   executablePath: process.env.CHROMIUM_PATH,
   args: ["--no-sandbox"],
 });
-const errors = [];
-const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
-page.on("pageerror", (e) => errors.push(e.message));
-const requests = [];
-page.on("request", (r) => requests.push(r.url()));
-await page.goto(`${base}/`, { waitUntil: "networkidle" });
-await page.evaluate(() => scrollTo({ top: 0, behavior: "instant" }));
-await page.screenshot({ path: "/tmp/portfolio-desktop.png", fullPage: true });
-assert.equal(await page.locator(".project-row:visible").count(), projectCount);
-assert.ok(
-  !requests.some(
-    (r) =>
-      r.includes("unpkg") ||
-      r.includes("googleapis") ||
-      r.includes("/classic/"),
-  ),
-);
-await page.locator("#project-search").fill("nume");
-assert.equal(await page.locator(".project-row:visible").count(), 1);
-await page.locator("#project-search").fill("FastAPI");
-assert.equal(await page.locator(".project-row:visible").count(), 3);
-await page.getByRole("button", { name: "Reset filters" }).click();
-await page.locator("#project-search").fill("p");
-assert.ok(
-  await page.getByRole("option", { name: "Python", exact: true }).isVisible(),
-);
-assert.ok(
+
+try {
+  const context = await browser.newContext({
+    viewport: { width: 1440, height: 1000 },
+  });
+  const errors = [];
+  context.on("page", (page) =>
+    page.on("pageerror", (error) => errors.push(error.message)),
+  );
+  const page = await context.newPage();
+  await page.goto(`${base}/`);
+  await expect(page.locator(".filters")).toBeVisible();
+  await expect(page.locator(".project-row:visible")).toHaveCount(21);
+  await expect(page.locator("h1")).toContainText("Fabrizio Petrozzi");
+
+  // Each featured disclosure supports native pointer and keyboard activation.
+  const cards = page.locator("article.work-card");
+  await expect(cards).toHaveCount(4);
+  const projects = [];
+  for (const card of await cards.all()) {
+    const details = card.locator("details");
+    const summary = details.locator("summary");
+    await expect(summary).toHaveAccessibleName(/^About /);
+    await expect(details).toHaveJSProperty("open", false);
+    await summary.hover();
+    await expect(details).toHaveJSProperty("open", true);
+    await expect(summary).toHaveAttribute("aria-expanded", "true");
+    await expect
+      .poll(() =>
+        details.evaluate((el) =>
+          Math.abs(
+            el.clientHeight - el.querySelector(".work-more-body").scrollHeight,
+          ),
+        ),
+      )
+      .toBeLessThan(2);
+    await expect(details.locator(".work-more-body")).toBeVisible();
+    await summary.click();
+    await expect(details).toHaveJSProperty("open", false);
+    await summary.focus();
+    await summary.press("Enter");
+    await expect(details).toHaveJSProperty("open", true);
+    await summary.press("Space");
+    await expect(details).toHaveJSProperty("open", false);
+
+    const link = card.getByRole("link", { name: /^Read project/ });
+    const href = await link.getAttribute("href");
+    expect(href).toMatch(/^\/projects\/[a-z0-9-]+\/$/);
+    projects.push({
+      href,
+      title: (await card.locator("h3").innerText()).trim(),
+    });
+  }
+  expect(projects.map(({ href }) => href).sort()).toEqual([
+    "/projects/homelab/",
+    "/projects/nest/",
+    "/projects/nume/",
+    "/projects/proterra/",
+  ]);
+  // Follow every Read project link and verify its destination actually renders.
+  for (const { href, title } of projects) {
+    await page.locator(`.work-read[href="${href}"]`).click();
+    await expect(page).toHaveURL(`${base}${href}`);
+    await expect(page.locator("h1")).toHaveText(title);
+    await expect(page.locator(".case-facts")).toBeVisible();
+    await page.goto(`${base}/`);
+    await expect(page.locator(".filters")).toBeVisible();
+  }
+
+  // Featured photos and diagrams open quick previews without navigating.
   await page
-    .getByRole("option", { name: "PostgreSQL", exact: true })
-    .isVisible(),
-);
-await page.getByRole("option", { name: "Python", exact: true }).click();
-assert.ok(
-  await page.getByRole("button", { name: "Remove Python filter" }).isVisible(),
-);
-assert.equal(await page.locator("#tool-suggestions").isVisible(), false);
-assert.ok((await page.locator(".project-row:visible").count()) > 0);
-await page.locator("#project-search").fill("py");
-await page.keyboard.press("ArrowDown");
-const selectedTool = await page
-  .getByRole("option", { selected: true })
-  .innerText();
-await page.keyboard.press("Enter");
-assert.ok(
+    .getByRole("button", { name: "Preview Homelab", exact: true })
+    .click();
+  await expect(page.locator(".image-viewer")).toBeVisible();
+  await expect(page).toHaveURL(`${base}/`);
+  await page.keyboard.press("Escape");
+  await expect(page.locator(".image-viewer")).toBeHidden();
+  await page.getByRole("button", { name: "Preview Nest", exact: true }).click();
+  await expect(page.locator(".visual-viewer")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.locator(".visual-viewer")).toBeHidden();
+
+  // Screenshot controls switch real captures, with the enlarged image following selection.
+  const gallery = page.locator(".nume-gallery");
+  await gallery.getByRole("button", { name: "Agents", exact: true }).click();
+  await expect(gallery.locator("img")).toHaveAttribute(
+    "src",
+    /nume-orchestration.webp$/,
+  );
+  await page.locator("#work-nume").locator("../..").locator("summary").click();
+  await expect(gallery).not.toHaveAttribute("inert", "");
   await page
-    .getByRole("button", { name: `Remove ${selectedTool} filter` })
-    .isVisible(),
-);
-await page.locator("#project-search").fill("p");
-await page.keyboard.press("Escape");
-assert.equal(await page.locator("#tool-suggestions").isVisible(), false);
-assert.equal(await page.locator("#project-search").inputValue(), "p");
-assert.equal(
+    .locator("#work-nume")
+    .locator("../..")
+    .locator("summary")
+    .press("Escape");
+  await expect(gallery).not.toHaveAttribute("inert", "");
+  await gallery
+    .getByRole("button", { name: "Preview NüMe screenshot" })
+    .click();
+  await expect(page.locator(".preview-tabs")).toBeVisible();
   await page
-    .locator("#project-search")
-    .evaluate((el) => getComputedStyle(el).outlineStyle),
-  "none",
-);
-await page.locator("#project-search").fill("nothingmatches");
-assert.ok(await page.locator("#empty-results").isVisible());
-await page.getByRole("button", { name: "Reset filters" }).click();
-const tooltipDark = await page
-  .locator(".scroll-readout")
-  .evaluate((el) => getComputedStyle(el).backgroundColor);
-const iconDark = await page
-  .locator(".theme-rays")
-  .evaluate((el) => getComputedStyle(el).opacity);
-await page.getByRole("button", { name: "Switch to light theme" }).click();
-await page.waitForTimeout(500);
-assert.notEqual(
+    .locator(".preview-tabs")
+    .getByRole("button", { name: "Sleep", exact: true })
+    .click();
+  await expect(page.locator(".image-viewer img")).toHaveAttribute(
+    "src",
+    /nume-sleep.webp$/,
+  );
+  await page.keyboard.press("ArrowRight");
+  await expect(page.locator(".image-viewer img")).toHaveAttribute(
+    "src",
+    /nume-orchestration.webp$/,
+  );
+  await page.keyboard.press("Escape");
+  await expect(page.locator(".image-viewer")).toBeHidden();
+  await page.goto(`${base}/projects/nume/`);
+  await expect(page.locator(".nume-sample")).toBeVisible();
+  await expect(page.locator(".nume-gallery")).toHaveCount(0);
   await page
-    .locator(".scroll-readout")
-    .evaluate((el) => getComputedStyle(el).backgroundColor),
-  tooltipDark,
-);
-assert.notEqual(
-  await page
-    .locator(".theme-rays")
-    .evaluate((el) => getComputedStyle(el).opacity),
-  iconDark,
-);
-const handshake = page
-  .locator(".career-card")
-  .filter({ hasText: "Handshake AI" });
-assert.ok((await handshake.innerText()).includes("Jul – Aug 2026"));
-assert.equal(await handshake.locator(".current-label").count(), 0);
-assert.equal(await page.locator("html").getAttribute("data-theme"), "light");
-await page.reload();
-assert.equal(await page.locator("html").getAttribute("data-theme"), "light");
-await page.getByRole("button", { name: "Switch to dark theme" }).click();
-await page.locator(".project-summary").first().click();
-await page.waitForURL("**/projects/nume/");
-assert.ok(
-  await page.getByRole("heading", { name: "How it works" }).isVisible(),
-);
-await page.goto(`${base}/`);
-// Block external legacy requests to keep offline comparison checks deterministic.
-await page.route("https://**/*", (route) => route.abort());
-await page.locator(".era-switch").click();
-await page.waitForURL("**/classic/");
-assert.ok(
-  ((await page.locator("html").getAttribute("class")) || "").includes(
-    "era-arrival",
-  ),
-);
-await page.waitForTimeout(1000);
-assert.ok(await page.locator(".classic-era-switch").isVisible());
-await page.locator(".classic-era-switch").click();
-await page.waitForURL(`${base}/`);
-await page.waitForTimeout(1000);
-assert.equal(await page.locator(".project-row:visible").count(), projectCount);
-await page.setViewportSize({ width: 320, height: 740 });
-assert.ok(
-  await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
-);
-await page.setViewportSize({ width: 390, height: 844 });
-await page.screenshot({ path: "/tmp/portfolio-mobile.png", fullPage: true });
-assert.ok(
-  await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
-);
-await page.emulateMedia({ reducedMotion: "reduce" });
-await page.locator(".era-switch").click();
-await page.waitForURL("**/classic/");
-assert.ok(
-  !((await page.locator("html").getAttribute("class")) || "").includes(
-    "era-arrival",
-  ),
-);
-const nojs = await browser.newContext({ javaScriptEnabled: false });
-const p = await nojs.newPage();
-await p.goto(`${base}/`);
-assert.equal(await p.locator(".project-row:visible").count(), projectCount);
-assert.ok(!(await p.locator(".filters").isVisible()));
-// Legacy's third-party map is intentionally unavailable in this offline check.
-assert.deepEqual(
-  errors.filter((e) => !e.includes("maplibregl")),
-  [],
-);
-const fallback = await browser.newContext();
-await fallback.addInitScript(() => {
-  const supports = CSS.supports.bind(CSS);
-  CSS.supports = (...args) =>
-    args[0] === "view-transition-name" ? false : supports(...args);
-});
-const fp = await fallback.newPage();
-await fp.route("https://**/*", (r) => r.abort());
-await fp.goto(`${base}/`);
-await fp.locator(".era-switch").click();
-await fp.waitForURL("**/classic/");
-assert.ok(
-  ((await fp.locator("html").getAttribute("class")) || "").includes(
-    "era-fallback-arrival",
-  ),
-);
-await fp.locator(".classic-era-switch").click();
-await fp.waitForURL(`${base}/`);
-console.log(
-  JSON.stringify({
-    result: "passed",
-    homeRequests: requests.filter((r) => r.startsWith(`${base}/`)).length,
-    desktop: "/tmp/portfolio-desktop.png",
-    mobile: "/tmp/portfolio-mobile.png",
-    legacyExternalRequests: "blocked for deterministic test",
-  }),
-);
-await browser.close();
+    .getByRole("button", { name: "What should I eat?", exact: true })
+    .click();
+  await expect(page.locator(".sample-reply")).toContainText("Spinach & Walnut");
+  await page.goto(`${base}/`);
+
+  const theme = page.locator(".nav-capsule .theme-toggle");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  for (const value of ["light", "dark"]) {
+    await theme.click();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", value);
+    await expect
+      .poll(() => page.evaluate(() => localStorage.getItem("portfolio-theme")))
+      .toBe(value);
+    await page.reload();
+    await expect(page.locator(".filters")).toBeVisible();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", value);
+    await expect(theme).toHaveAccessibleName(
+      `Switch to ${value === "light" ? "dark" : "light"} theme`,
+    );
+  }
+
+  const nav = page.getByRole("navigation", { name: "Main navigation" });
+  for (const [name, id] of [
+    ["Work", "work"],
+    ["Background", "background"],
+    ["Projects", "projects"],
+    ["Contact", "contact"],
+  ]) {
+    const link = nav.getByRole("link", { name, exact: true });
+    await expect(link).toHaveAttribute("href", `#${id}`);
+    await link.click();
+    await expect(page).toHaveURL(`${base}/#${id}`);
+    await expect(page.locator(`#${id}`)).toBeInViewport();
+  }
+  const era = page
+    .locator("footer")
+    .getByRole("link", { name: "Original portfolio (2023)" });
+  await expect(era).toHaveAttribute("href", "/classic/");
+  await expect(era).toBeVisible();
+
+  // Verify progressive enhancement in a genuinely script-free context.
+  const nojs = await browser.newContext({
+    javaScriptEnabled: false,
+    viewport: { width: 1440, height: 1000 },
+  });
+  const plain = await nojs.newPage();
+  await plain.goto(`${base}/`);
+  await expect(plain.locator(".project-row:visible")).toHaveCount(21);
+  await expect(plain.locator(".filters")).toBeHidden();
+  await expect(plain.locator("#panel-experience")).toBeVisible();
+  await expect(plain.locator("#panel-education")).toBeVisible();
+  await expect(plain.locator(".career-stop:visible")).toHaveCount(8);
+  await expect(plain.locator("footer a[href='/classic/']")).toBeVisible();
+  await nojs.close();
+
+  const reduced = await browser.newContext({ reducedMotion: "reduce" });
+  const quiet = await reduced.newPage();
+  quiet.on("pageerror", (error) => errors.push(error.message));
+  await quiet.goto(`${base}/`);
+  await expect(quiet.locator(".filters")).toBeVisible();
+  await expect(quiet.locator("article.work-card")).toHaveCount(4);
+  await expect(quiet.locator(".project-row:visible")).toHaveCount(21);
+  expect(
+    await quiet.evaluate(
+      () => matchMedia("(prefers-reduced-motion: reduce)").matches,
+    ),
+  ).toBe(true);
+  await quiet.locator(".filter-toggle").click();
+  await quiet.locator('[data-filter="infra"]').click();
+  await expect(quiet.locator(".project-row:visible")).toHaveCount(1);
+  await expect(quiet.locator("#result-count")).toHaveText("1 project");
+  await quiet.locator("#project-search").fill("no-such-project-regression");
+  await expect(quiet.locator("#empty-results")).toBeVisible();
+  await quiet
+    .getByRole("button", { name: "Clear filters", exact: true })
+    .click();
+  await expect(quiet.locator(".project-row:visible")).toHaveCount(21);
+  await reduced.close();
+
+  expect(errors).toEqual([]);
+  console.log(
+    "PASS browser: four featured disclosures and project destinations, persistent themes, capsule navigation, footer era link, no-JS rows/timelines, reduced-motion filtering, no page errors.",
+  );
+} finally {
+  await browser.close();
+}

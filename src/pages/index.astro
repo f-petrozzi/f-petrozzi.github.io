@@ -1,22 +1,42 @@
 ---
-import { existsSync } from "node:fs";
+import ImageViewer from "../components/ImageViewer.astro";
+import QuickPreview from "../components/QuickPreview.astro";
+import ScrollControl from "../components/ScrollControl.astro";
 import { getCollection } from "astro:content";
+import "../styles/tokens.css";
 import "../styles/home.css";
 import Icon from "../components/Icon.astro";
-import ThemeToggle from "../components/ThemeToggle.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import { featured as featuredCopy } from "../data/featured";
+import NumeGallery from "../components/NumeGallery.astro";
+import ProjectVisual from "../components/ProjectVisual.astro";
+import ToolIcon from "../components/ToolIcon.astro";
+import ToolIconSprite from "../components/ToolIconSprite.astro";
 const raw = (await getCollection("projects")).sort(
   (a, b) => a.data.order - b.data.order,
 );
-const featured = raw.filter((p) => p.data.featured);
+const byId = Object.fromEntries(raw.map((p) => [p.id, p]));
+const featured = featuredCopy.map((copy) => ({
+  ...copy,
+  project: byId[copy.id],
+}));
+const featureLayout = {
+  homelab: "wide",
+  nume: "narrow",
+  proterra: "half",
+  nest: "half",
+};
+const recent = raw.filter((p) => p.data.category !== "Earlier work");
+const earlier = raw.filter((p) => p.data.category === "Earlier work");
 const capabilities = {
-  nest: ["web"],
+  nest: ["ai", "web"],
   nume: ["ai", "web"],
   proterra: ["data", "web"],
   homelab: ["infra"],
   "agent-usage": ["desktop"],
   slice: ["web", "data"],
   autoclicker: ["desktop"],
-  caremesh: ["web"],
+  caremesh: ["ai", "web"],
   "usf-campus-concierge": ["ai"],
   optuna: ["ai"],
   eduinsight: ["web"],
@@ -62,79 +82,90 @@ const projectIcons = {
 const experience = [
   {
     year: "2023",
-    when: "Nov 2023 – Aug 2024",
+    when: "Nov 2023 - Aug 2024",
     org: "Raymond James",
     role: "Managed Customer Accounts Associate",
     icon: "briefcase",
-    logo: "/assets/org/raymond-james.png",
+    logo: "/assets/org/rj.svg",
     description:
-      "Account operations, transaction review and an Excel workflow for reconciliation.",
+      "I reviewed daily transactions across client accounts and built an Excel workflow to flag accounts needing reconciliation.",
   },
   {
     year: "2024",
-    when: "Aug 2024 – May 2025",
+    when: "Aug 2024 - May 2025",
     org: "USF MUMA College of Business",
     role: "Graduate Teaching Assistant",
     icon: "graduation-cap",
-    logo: "/assets/org/usf.png",
+    logo: "/assets/org/usf.svg",
     description:
-      "CGS 2100: Computers in Business. Supported students with Excel, Word, Teams and technical questions.",
+      "I helped students in Computers in Business use Excel, Word, and Teams, working through assignments and questions with them.",
   },
   {
     year: "2026",
-    when: "Feb – May 2026",
+    when: "Feb - May 2026",
     org: "University of South Florida",
     role: "Audio Visual Technician",
     icon: "audio",
-    logo: "/assets/org/usf.png",
+    logo: "/assets/org/usf.svg",
     description:
-      "Classroom technology support across 12 learning spaces, with incident tracking and IT escalation.",
+      "I troubleshot classroom technology, documented issues, and worked with faculty and IT to resolve them.",
   },
   {
     year: "2026",
-    when: "Jul – Aug 2026",
+    when: "Jul - Aug 2026",
     org: "Handshake AI",
     role: "AI Evaluation Contractor and Reviewer",
     icon: "brain-circuit",
+    logo: "/assets/org/handshake.svg",
     description:
-      "Project Vortex. Created evaluation scenarios, reviewed prompts and documented model behavior.",
+      "I wrote scenarios for evaluating AI, then reviewed other contributors’ prompts for realism and quality.",
   },
   {
     year: "2026",
-    when: "Jul 2026 – Present",
+    when: "Jul - Oct 2026",
     org: "Slice of the Burg",
     role: "Freelance Data and Technology Consultant",
     icon: "pizza",
+    logo: "/assets/org/slice.webp",
     description:
-      "Requirements, a technology roadmap and Toast menu analysis for the restaurant’s owners.",
+      "I worked with the owners to plan technology improvements and analyze menu performance using Toast data.",
+  },
+  {
+    year: "2026",
+    when: "2026 - Present",
+    org: "Raymond James",
+    role: "Business Transformation AI Enablement (Finance) Analyst",
+    icon: "briefcase",
+    logo: "/assets/org/rj.svg",
+    description:
+      "I work on AI enablement within Business Transformation in Finance.",
     current: true,
   },
 ];
 const education = [
   {
     year: "2019",
-    when: "Aug 2019 – Aug 2023",
+    when: "Aug 2019 - Aug 2023",
     org: "University of South Florida",
     role: "B.S. Business Management",
     icon: "graduation-cap",
-    logo: "/assets/org/usf.png",
+    logo: "/assets/org/usf.svg",
     description:
-      "Honors College and Dean’s List. Golden Bull Award and MUMA 25 under 25 honoree.",
+      "I was part of the Honors College and made the Dean’s List. I received the Golden Bull Award and was named a MUMA 25 under 25 honoree.",
     mark: "3.98 GPA",
   },
   {
     year: "2024",
-    when: "Aug 2024 – May 2026",
+    when: "Aug 2024 - May 2026",
     org: "University of South Florida",
     role: "M.S. Artificial Intelligence & Business Analytics",
     icon: "graduation-cap",
-    logo: "/assets/org/usf.png",
-    description: "Graduate study in applied AI and business analytics.",
+    logo: "/assets/org/usf.svg",
+    description:
+      "I studied machine learning, text analytics, data warehousing, and systems design, applying them in projects throughout the program.",
     mark: "4.0 GPA",
   },
 ];
-
-const hasMark = existsSync("public/brand/f-mark.webp");
 ---
 
 <!doctype html>
@@ -142,20 +173,23 @@ const hasMark = existsSync("public/brand/f-mark.webp");
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Fabrizio Petrozzi | Projects</title>
+    <title>Fabrizio Petrozzi</title>
     <meta
       name="description"
-      content="Software, AI, and data projects by Fabrizio Petrozzi in St. Petersburg, Florida."
+      content="Fabrizio Petrozzi builds apps and tools and is interested in how AI works. Projects, background and contact."
     />
     <link rel="canonical" href={new URL("/", Astro.site)} />
-    <meta property="og:title" content="Fabrizio Petrozzi | Projects" />
+    <meta property="og:title" content="Fabrizio Petrozzi" />
     <meta
       property="og:description"
-      content="Software, AI, and data projects by Fabrizio Petrozzi in St. Petersburg, Florida."
+      content="I build apps and tools. I’m interested in how AI works and what I can build with it."
     />
     <meta property="og:type" content="website" />
-    <meta name="theme-color" content="#0d1422" />
+    <meta name="theme-color" content="#0a0f18" />
     <script is:inline>
+      document.documentElement.classList.add("timeline-js");
+      if (!matchMedia("(prefers-reduced-motion: reduce)").matches)
+        document.documentElement.classList.add("timeline-motion");
       try {
         document.documentElement.dataset.theme =
           localStorage.getItem("portfolio-theme") === "light"
@@ -178,154 +212,202 @@ const hasMark = existsSync("public/brand/f-mark.webp");
   </head>
   <body>
     <a class="skip-link" href="#page-content">Skip to content</a>
-    <div class="scroll-rail" hidden>
-      <div class="scroll-track" aria-hidden="true"></div>
-      <div
-        class="scroll-thumb"
-        role="scrollbar"
-        tabindex="0"
-        aria-label="Page scroll"
-        aria-controls="page-content"
-        aria-orientation="vertical"
-        aria-valuemin="0"
-        aria-valuemax="100"
-        aria-valuenow="0"
-        aria-valuetext="Top of page"
-        title="Drag to scroll. Arrow keys, Page Up, Page Down, Home and End also work."
-      >
-        <span class="scroll-fluid" aria-hidden="true"
-          ><span class="scroll-glass"
-            ><span class="drop-core"></span><span class="drop-glint"
-            ></span></span
-          ></span
-        >
-        <span class="scroll-readout" aria-hidden="true">0%</span>
-      </div>
-    </div>
-    <header class="site-header wrap">
-      <a class="brand" href="#top" aria-label="Fabrizio Petrozzi, top of page">
-        {
-          hasMark ? (
-            <img src="/brand/f-mark.webp" width="32" height="32" alt="" />
-          ) : (
-            <span>FP</span>
-          )
-        }
-        <span>Fabrizio Petrozzi</span>
-      </a>
-      <nav aria-label="Main navigation">
-        <a href="#work"><Icon name="grid" /><span>Work</span></a><a
-          href="#background"><Icon name="briefcase" /><span>Background</span></a
-        ><a href="#contact"><Icon name="mail" /><span>Contact</span></a>
-      </nav>
-      <ThemeToggle />
-    </header>
-    <main id="page-content">
+    <ScrollControl controls="page-content" />
+    <SiteHeader home />
+    <ToolIconSprite tools={raw.flatMap((p) => p.data.tools.slice(0, 5))} />
+    <main id="page-content" class="home">
+      <span class="field field-hero-a" aria-hidden="true"></span>
+      <span class="field field-hero-b" aria-hidden="true"></span>
+      <span class="field field-work" aria-hidden="true"></span>
+      <span class="field field-index" aria-hidden="true"></span>
+
       <section class="hero wrap" id="top" aria-labelledby="intro-title">
-        <p class="location">St. Petersburg, Florida</p>
         <h1 id="intro-title">
-          Fabrizio <br />Petrozzi<span class="name-period">.</span>
+          Fabrizio Petrozzi<span class="name-period">.</span>
         </h1>
-        <div class="intro-bottom">
-          <p>
-            I studied business and AI at USF. I build web apps, work with data,
-            and run my own server.
-          </p>
-          <div class="intro-links">
-            <a href="#work"><Icon name="grid" />Explore my work </a><a
-              href="/files/resume.pdf"
-              ><Icon name="file-text" />Résumé
-            </a>
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <p class="hero-lead">I build apps and tools.</p>
+            <p class="hero-sub">
+              I’m interested in how AI works and what I can build with it.
+            </p>
+            <ul class="hero-links" aria-label="Profiles and résumé">
+              <li>
+                <a href="/files/resume.pdf"><Icon name="file-text" />Résumé</a>
+              </li>
+              <li>
+                <a href="https://github.com/f-petrozzi"
+                  ><Icon name="github" />GitHub</a
+                >
+              </li>
+              <li>
+                <a href="https://www.linkedin.com/in/fabriziopetrozzi/"
+                  ><Icon name="linkedin" />LinkedIn</a
+                >
+              </li>
+              <li><a href="#contact"><Icon name="mail" />Email</a></li>
+            </ul>
           </div>
+          <dl class="hero-facts">
+            <div>
+              <dt><Icon name="briefcase" /><span class="sr-only">Now</span></dt>
+              <dd>AI Enablement Analyst at Raymond James</dd>
+            </div>
+            <div>
+              <dt>
+                <Icon name="graduation-cap" /><span class="sr-only"
+                  >Studied</span
+                >
+              </dt>
+              <dd>M.S. AI &amp; Business Analytics, USF</dd>
+            </div>
+            <div>
+              <dt>
+                <Icon name="map-pin" /><span class="sr-only">Based in</span>
+              </dt>
+              <dd>St. Petersburg, Florida</dd>
+            </div>
+          </dl>
         </div>
       </section>
 
       <section class="work wrap" id="work" aria-labelledby="work-title">
         <div class="section-heading">
-          <h2 id="work-title"><Icon name="grid" />Selected work</h2><a
-            href="#projects"
-            ><Icon name="grid" />All {raw.length} projects
-          </a>
+          <h2 id="work-title">Selected work</h2>
         </div>
-        <article class="feature" id="homelab-feature">
-          <a
-            class="feature-image project-open"
-            href="/projects/homelab/"
-            aria-label="Explore the Homelab project"
-          >
-            <div class="image-caption">
-              <span>Homelab</span><span>Applications &amp; infrastructure</span>
-            </div>
-            <img
-              id="feature-shot"
-              src="/assets/shots/homelab.webp"
-              width="1400"
-              height="851"
-              alt="Homelab dashboard with application services, Minecraft server status and monitoring"
-              fetchpriority="high"
-            />
-            <span class="image-action"
-              ><Icon name="server" />Explore project
-            </span>
-          </a>
-          <div class="feature-info">
-            <div>
-              <p class="project-kind">Infrastructure</p><h3>Homelab</h3>
-            </div>
-            <div>
-              <p>
-                The server behind my apps, home automation and Minecraft world.
-                Built around Docker, with monitoring and backups alongside the
-                services.
-              </p>
-              <a class="text-link project-open" href="/projects/homelab/"
-                ><Icon name="server" />Inside the homelab
-              </a>
-            </div>
-          </div>
-        </article>
-        <div class="selected-pair">
+        <div class="bento">
           {
-            featured.map((p) => (
-              <a class="project-summary" href={`/projects/${p.id}/`}>
-                <span class="project-kind">
-                  <Icon name={projectIcons[p.id] || "grid"} />
-                  {p.data.category}
-                </span>
-                <h3>{p.data.title}</h3>
-                <p>{p.data.summary}</p>
-                <span class="summary-foot">
-                  {p.data.tools.slice(0, 4).join(" / ")}
-                </span>
-              </a>
+            featured.map(({ id, project, hook, how, contribution }) => (
+              <article
+                class:list={["work-card", "glass", `is-${featureLayout[id]}`]}
+                aria-labelledby={`work-${id}`}
+              >
+                <header class="work-heading">
+                  <p class="work-kind">
+                    <>
+                      <span>{project.data.category}</span>
+                      <span>{project.data.status}</span>
+                    </>
+                  </p>
+                  <h3 id={`work-${id}`}>
+                    <a href={`/projects/${id}/`}>{project.data.title}</a>
+                  </h3>
+                  <p class="work-summary">{project.data.summary}</p>
+                </header>
+                <div class="work-stage">
+                  {id === "nume" ? (
+                    <NumeGallery compact />
+                  ) : (
+                    <button
+                      class:list={[
+                        "work-media",
+                        id === "homelab"
+                          ? "screenshot-open"
+                          : "visual-preview-open",
+                      ]}
+                      type="button"
+                      disabled
+                      aria-label={`Preview ${project.data.title}`}
+                      data-preview-title={project.data.title}
+                    >
+                      {id === "homelab" ? (
+                        <img
+                          src="/assets/shots/homelab.webp"
+                          width="1808"
+                          height="721"
+                          alt=""
+                          fetchpriority="high"
+                        />
+                      ) : (
+                        <ProjectVisual
+                          kind={project.data.visual}
+                          title={project.data.title}
+                          compact
+                        />
+                      )}
+                    </button>
+                  )}
+                </div>
+                <div class="work-body">
+                  <details class="work-more">
+                    <summary aria-controls={`info-${id}`}>
+                      <span class="more-closed">
+                        <>
+                          <Icon name="info" />
+                          <span class="sr-only">
+                            About {project.data.title}
+                          </span>
+                        </>
+                      </span>
+                      <span class="more-open">
+                        <>
+                          <Icon name="close" />
+                          <span class="sr-only">
+                            Close information about {project.data.title}
+                          </span>
+                        </>
+                      </span>
+                    </summary>
+                    <svg class="info-ink" aria-hidden="true">
+                      <>
+                        <defs>
+                          <filter
+                            id={`info-goo-${id}`}
+                            x="-10%"
+                            y="-10%"
+                            width="120%"
+                            height="120%"
+                            color-interpolation-filters="sRGB"
+                          >
+                            <>
+                              <feGaussianBlur stdDeviation="0" />
+                              <feColorMatrix values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 20 -9.5" />
+                            </>
+                          </filter>
+                        </defs>
+                        <g>
+                          <>
+                            <rect rx="22" />
+                            <path />
+                            <circle cx="22" cy="22" r="22" />
+                          </>
+                        </g>
+                      </>
+                    </svg>
+                    <div
+                      class="work-more-body"
+                      id={`info-${id}`}
+                      role="region"
+                      aria-labelledby={`info-title-${id}`}
+                    >
+                      <h4 id={`info-title-${id}`}>
+                        Inside {project.data.title}
+                      </h4>
+                      <ul>
+                        {[...how, hook].map((line) => (
+                          <li>{line}</li>
+                        ))}
+                      </ul>
+                      <p class="work-contribution">{contribution}</p>
+                    </div>
+                  </details>
+                  <div class="work-foot">
+                    <ul class="work-tools" aria-label="Built with">
+                      {project.data.tools.slice(0, 5).map((tool) => (
+                        <li>
+                          <ToolIcon tool={tool} size={18} />
+                        </li>
+                      ))}
+                    </ul>
+                    <a class="work-read" href={`/projects/${id}/`}>
+                      Read project
+                      <span class="sr-only"> {project.data.title}</span>
+                    </a>
+                  </div>
+                </div>
+              </article>
             ))
           }
-        </div>
-      </section>
-
-      <section
-        class="era-story wrap"
-        id="about"
-        aria-labelledby="era-story-title"
-      >
-        <div>
-          <p class="project-kind">Then &amp; now</p><h2 id="era-story-title">
-            The first version is part of the story.
-          </h2>
-        </div>
-        <div>
-          <p>
-            In 2023, I was learning HTML, CSS, and JavaScript and building a
-            place to share my coursework. That became my first portfolio.
-          </p>
-          <p>
-            Today, I build apps I use, work with data, and run the server behind
-            my projects. This site reflects that work. The original is still
-            here, as a snapshot of where I started.
-          </p>
-          <a href="/classic/" data-era-link class="pill-link era-switch"
-            >Step into the 2023 site <Icon name="arrow-up-right" /></a
-          >
         </div>
       </section>
 
@@ -335,25 +417,13 @@ const hasMark = existsSync("public/brand/f-mark.webp");
         aria-labelledby="background-title"
       >
         <div class="section-heading">
-          <h2 id="background-title"><Icon name="briefcase" />Background</h2><a
-            href="/files/resume.pdf"><Icon name="file-text" />Résumé</a
-          >
+          <h2 id="background-title">Background</h2>
+          <a href="/files/resume.pdf">Résumé</a>
         </div>
         <div class="journey">
-          <div class="journey-intro">
-            <p class="project-kind">Business, technology &amp; AI</p><h3>
-              Along the way.
-            </h3><p>
-              From business school and financial operations to classroom IT,
-              consulting and AI evaluation.
-            </p><div class="journey-years" aria-hidden="true">
-              <span id="journey-start">2023</span><span class="year-line"
-              ></span><span>2026</span>
-            </div>
-          </div>
           <div class="journey-content">
             <div
-              class="timeline-tabs"
+              class="timeline-tabs glass"
               role="tablist"
               aria-label="Background timeline"
               hidden
@@ -379,6 +449,11 @@ const hasMark = existsSync("public/brand/f-mark.webp");
                 ><Icon name="graduation-cap" />Education</button
               >
             </div>
+            <p class="timeline-hint" aria-hidden="true">
+              <span class="hint-pointer">Click</span><span class="hint-touch"
+                >Tap</span
+              > to expand
+            </p>
             <div class="timeline-stage">
               {
                 [
@@ -386,7 +461,10 @@ const hasMark = existsSync("public/brand/f-mark.webp");
                   ["education", education],
                 ].map(([kind, items]) => (
                   <div
-                    class="timeline-panel"
+                    class:list={[
+                      "timeline-panel",
+                      { "is-active": kind === "experience" },
+                    ]}
                     id={`panel-${kind}`}
                     role="tabpanel"
                     aria-labelledby={`tab-${kind}`}
@@ -410,32 +488,43 @@ const hasMark = existsSync("public/brand/f-mark.webp");
                             <span class="career-segment" />
                             <span class="career-node" />
                           </div>
-                          <details class="career-card">
+                          <details class="career-card glass">
                             <summary class="career-summary">
-                              <div class="career-card-top">
-                                <span class="org-icon">
-                                  {item.logo ? (
-                                    <img
-                                      src={item.logo}
-                                      width="32"
-                                      height="32"
-                                      alt=""
-                                      loading="lazy"
-                                    />
-                                  ) : (
-                                    <Icon name={item.icon} />
-                                  )}
-                                </span>
-                                <span class="career-org">{item.org}</span>
+                              <span
+                                class:list={[
+                                  "org-icon",
+                                  {
+                                    "org-wordmark":
+                                      item.logo?.includes("rj.svg") ||
+                                      item.logo?.includes("slice.webp"),
+                                  },
+                                ]}
+                              >
+                                {item.logo ? (
+                                  <img
+                                    src={item.logo}
+                                    width="32"
+                                    height="32"
+                                    alt=""
+                                    loading="eager"
+                                  />
+                                ) : (
+                                  <Icon name={item.icon} />
+                                )}
+                              </span>
+                              <span class="career-org">
+                                {item.org}
                                 {item.current && (
                                   <span class="current-label">Current</span>
                                 )}
-                              </div>
-                              <h4>{item.role}</h4>
-                              <p class="career-period">{item.when}</p>
-                              {item.mark && (
-                                <span class="gpa">{item.mark}</span>
-                              )}
+                              </span>
+                              <h3 class="career-role">{item.role}</h3>
+                              <p class="career-period">
+                                {item.when}
+                                {item.mark && (
+                                  <span class="gpa">{item.mark}</span>
+                                )}
+                              </p>
                             </summary>
                             <div class="career-description">
                               <div class="career-description-inner">
@@ -456,14 +545,51 @@ const hasMark = existsSync("public/brand/f-mark.webp");
 
       <section class="index wrap" id="projects" aria-labelledby="index-title">
         <div class="section-heading">
-          <h2 id="index-title"><Icon name="grid" />All projects</h2><span
-            class="index-total"
-            >{raw.length} projects, including earlier work</span
-          >
+          <h2 id="index-title">All projects</h2>
+          <p id="result-count" role="status" aria-live="polite">
+            {raw.length} projects
+          </p>
         </div>
         <span id="all-projects" aria-hidden="true"></span>
         <div class="filters" hidden>
-          <div class="filter-scroll-shell">
+          <div class="search-box">
+            <div class="search-row">
+              <label class="search-label glass"
+                ><Icon name="search" /><span class="sr-only"
+                  >Search all projects and tools</span
+                >
+                <input
+                  id="project-search"
+                  type="search"
+                  role="combobox"
+                  aria-autocomplete="list"
+                  aria-expanded="false"
+                  aria-controls="tool-suggestions"
+                  autocomplete="off"
+                  placeholder="Search projects or tools"
+                />
+              </label>
+              <button
+                type="button"
+                class="filter-toggle glass"
+                aria-expanded="false"
+                aria-controls="filter-panel"
+                ><Icon name="sliders" /><span class="filter-toggle-label"
+                  >Filters</span
+                ><span class="filter-dot" aria-hidden="true" hidden></span><span
+                  class="sr-only filter-state"></span></button
+              >
+            </div>
+            <ul
+              id="tool-suggestions"
+              class="tool-suggestions glass-float"
+              role="listbox"
+              aria-label="Suggested tools"
+              hidden
+            >
+            </ul>
+          </div>
+          <div class="filter-scroll-shell" id="filter-panel" hidden>
             <div class="filter-chips" role="group" aria-label="Filter projects">
               {
                 facets.map(([id, label]) => (
@@ -485,205 +611,128 @@ const hasMark = existsSync("public/brand/f-mark.webp");
               hidden><span aria-hidden="true">›</span></button
             >
           </div>
-          <div class="search-box">
-            <label class="search-label"
-              ><Icon name="search" /><span class="sr-only"
-                >Search all projects and tools</span
-              >
-              <input
-                id="project-search"
-                type="search"
-                role="combobox"
-                aria-autocomplete="list"
-                aria-expanded="false"
-                aria-controls="tool-suggestions"
-                autocomplete="off"
-                placeholder="Search projects or tools"
-              />
-            </label>
-            <ul
-              id="tool-suggestions"
-              class="tool-suggestions"
-              role="listbox"
-              aria-label="Suggested tools"
-              hidden
-            >
-            </ul>
-          </div>
-          <button type="button" id="reset-filters" hidden>Reset filters</button>
           <div
             id="active-search-filters"
             class="active-search-filters"
+            role="group"
             aria-label="Active search filters"
             hidden
           >
           </div>
-          <p id="result-count" role="status" aria-live="polite">
-            {raw.length} projects
-          </p>
+          <button type="button" id="reset-filters" hidden>Reset filters</button>
         </div>
-        <div class="project-list">
+        <div class="project-list glass">
           {
-            raw.map((p) => (
-              <article
-                class="project-row"
-                data-category={p.data.category}
-                data-tools={JSON.stringify(p.data.tools)}
-                data-facets={(capabilities[p.id] || []).join(" ")}
-                data-search={`${p.data.title} ${p.data.summary} ${p.data.tools.join(" ")}`.toLowerCase()}
-              >
-                <a
-                  class:list={[
-                    "project-row-link",
-                    { "project-open": p.id === "homelab" },
-                  ]}
-                  href={`/projects/${p.id}/`}
-                >
-                  <div
-                    class:list={[
-                      "project-thumb",
-                      `thumb-${(capabilities[p.id] || ["web"])[0]}`,
-                    ]}
+            [recent, earlier].map((group, groupIndex) => (
+              <>
+                {groupIndex === 1 && (
+                  <h3 class="list-divider" id="earlier-work" data-list-divider>
+                    Earlier work
+                    <span>Coursework and earlier personal projects</span>
+                  </h3>
+                )}
+                {group.map((p) => (
+                  <article
+                    class="project-row"
+                    data-category={p.data.category}
+                    data-tools={JSON.stringify(p.data.tools)}
+                    data-facets={(capabilities[p.id] || []).join(" ")}
+                    data-search={`${p.data.title} ${p.data.summary} ${p.data.tools.join(" ")}`.toLowerCase()}
                   >
-                    <span class="project-emblem">
-                      <Icon
-                        name={
-                          projectIcons[p.id] ||
-                          facetIcons[(capabilities[p.id] || ["web"])[0]]
-                        }
-                      />
-                    </span>
-                  </div>
-                  <div class="project-card-copy">
-                    <>
-                      <span class="card-category">
+                    <a class="project-row-link" href={`/projects/${p.id}/`}>
+                      <span class="row-icon" aria-hidden="true">
                         <Icon
-                          name={facetIcons[(capabilities[p.id] || ["web"])[0]]}
+                          name={
+                            projectIcons[p.id] ||
+                            facetIcons[(capabilities[p.id] || ["web"])[0]]
+                          }
                         />
-                        {p.data.category === "Earlier work"
-                          ? "Earlier work"
-                          : p.data.status}
                       </span>
-                      <h3>{p.data.title}</h3>
-                      <p>{p.data.summary}</p>
-                      <span class="card-tools">
-                        {p.data.tools.slice(0, 3).join(" / ")}
+                      <span class="row-main">
+                        <h3>{p.data.title}</h3>
+                        <p>{p.data.summary}</p>
                       </span>
-                    </>
-                  </div>
-                </a>
-              </article>
+                      <span class="row-meta">
+                        <span class="card-category">{p.data.status}</span>
+                        <span class="card-tools">
+                          {p.data.tools.slice(0, 4).map((tool) => (
+                            <ToolIcon tool={tool} size={15} />
+                          ))}
+                        </span>
+                      </span>
+                    </a>
+                  </article>
+                ))}
+              </>
             ))
           }
+          <p id="empty-results" hidden>
+            No projects match. <button type="button" id="clear-filters"
+              >Clear filters</button
+            >
+          </p>
         </div>
-        <p id="empty-results" hidden>
-          No projects match. <button type="button" id="clear-filters"
-            >Clear filters</button
-          >
-        </p>
       </section>
-      <section class="contact wrap" id="contact">
-        <p>Contact</p><h2>Let’s talk.</h2><a
-          class="contact-email"
-          href="mailto:petrozzi@usf.edu"
-          ><Icon name="mail" />petrozzi@usf.edu
-        </a>
-        <div class="contact-links">
-          <a href="https://github.com/f-petrozzi"
-            ><Icon name="github" />GitHub</a
-          ><a href="https://www.linkedin.com/in/fabriziopetrozzi/"
-            ><Icon name="linkedin" />LinkedIn</a
-          ><a href="/files/resume.pdf"><Icon name="file-text" />Résumé</a>
+
+      <section
+        class="contact wrap"
+        id="contact"
+        aria-labelledby="contact-title"
+      >
+        <div class="contact-card glass">
+          <div class="contact-copy">
+            <h2 id="contact-title">Get in touch</h2>
+            <p>Email is the best way to reach me.</p>
+          </div>
+          <div class="contact-actions">
+            <a class="btn btn-primary" href="mailto:petrozzi@usf.edu"
+              ><Icon name="mail" />Email me</a
+            >
+            <button
+              type="button"
+              class="btn copy-email"
+              data-email="petrozzi@usf.edu"
+              hidden
+              ><Icon name="copy" /><span class="copy-label">Copy email</span
+              ></button
+            >
+            <span
+              class="sr-only"
+              role="status"
+              aria-live="polite"
+              id="copy-status"></span>
+          </div>
+          <ul class="contact-links" aria-label="Profiles">
+            <li>
+              <a
+                class="btn btn-quiet"
+                href="https://www.linkedin.com/in/fabriziopetrozzi/"
+                ><Icon name="linkedin" />LinkedIn</a
+              >
+            </li>
+            <li>
+              <a class="btn btn-quiet" href="https://github.com/f-petrozzi"
+                ><Icon name="github" />GitHub</a
+              >
+            </li>
+            <li>
+              <a class="btn btn-quiet" href="/files/resume.pdf"
+                ><Icon name="file-text" />Résumé</a
+              >
+            </li>
+          </ul>
         </div>
       </section>
       <footer class="footer wrap">
-        <span>Fabrizio Petrozzi</span><a href="/classic/" data-era-link
-          ><Icon name="monitor-smartphone" />Visit the 2023 site
-        </a><span>© {new Date().getFullYear()}</span>
+        <span>Fabrizio Petrozzi</span>
+        <a href="/classic/" data-era-link class="era-switch"
+          >Original portfolio (2023)</a
+        >
+        <span>© {new Date().getFullYear()}</span>
       </footer>
     </main>
-
-    <dialog class="project-dialog" aria-labelledby="detail-title">
-      <div class="dialog-toolbar">
-        <span>Selected work / Homelab</span><button
-          type="button"
-          class="close-project"
-          autofocus><Icon name="close" />Back to portfolio</button
-        >
-      </div>
-      <div class="dialog-body">
-        <div class="detail-heading">
-          <div>
-            <p class="project-kind">Infrastructure</p><h2 id="detail-title">
-              Inside the homelab.
-            </h2>
-          </div><p>
-            A self-hosted environment for applications, home automation and a
-            Minecraft server.
-          </p>
-        </div>
-        <figure class="detail-image">
-          <img
-            id="detail-shot"
-            src="/assets/shots/homelab.webp"
-            width="1400"
-            height="851"
-            alt="Application services and monitoring on the homelab dashboard"
-          /><figcaption>Dashboard capture / September 2026</figcaption>
-        </figure>
-        <div class="case-grid">
-          <h3>What runs here</h3><div>
-            <p>
-              Docker Compose brings the services together. The same environment
-              supports household applications, Home Assistant, monitoring and a
-              Minecraft server.
-            </p><p>
-              Keeping these services in one place also means looking after
-              updates, storage and backups.
-            </p>
-          </div>
-        </div>
-        <div class="case-grid">
-          <h3>How it connects</h3><div>
-            <p>
-              Tailscale provides private access. Selected public applications
-              use Cloudflare Tunnel. Prometheus and Grafana provide monitoring.
-            </p><div
-              class="connection-map"
-              role="img"
-              aria-label="Private access through Tailscale and selected public access through Cloudflare Tunnel reach the homelab services, monitored by Prometheus and Grafana."
-            >
-              <div><span>Private access</span><b>Tailscale</b></div><div>
-                <span>Selected public apps</span><b>Cloudflare Tunnel</b>
-              </div><div class="map-server">
-                <span>Homelab</span><b>Docker Compose services</b>
-              </div><div class="map-monitor">
-                <span>Monitoring</span><b>Prometheus &amp; Grafana</b>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="case-grid">
-          <h3>A useful boundary</h3><div>
-            <p>
-              Application code lives in separate repositories from deployment
-              configuration. That keeps changes to an app separate from the
-              configuration and backups of the server running it.
-            </p><p>
-              Centralizing services makes them easier to manage, but also makes
-              the host a shared dependency. Backups and a practical rollback
-              path matter alongside deployment.
-            </p>
-          </div>
-        </div>
-        <div class="detail-footer">
-          <span>Linux / Docker Compose / Tailscale / Prometheus / Grafana</span
-          ><button type="button" class="close-project"
-            ><Icon name="close" />Back to portfolio</button
-          >
-        </div>
-      </div>
-    </dialog>
+    <ImageViewer />
+    <QuickPreview />
     <span id="era-ready" hidden></span>
     <script>
       import "../scripts/home";

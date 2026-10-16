@@ -1,6 +1,6 @@
 ---
 title: "Nest"
-summary: "My household app for planning, groceries, recipes, and everyday care."
+summary: "A household app for shared plans, groceries, recipes, and daily tracking."
 category: "AI & applications"
 tools: ["Python", "FastAPI", "SQLite", "Alpine.js", "Jinja2", "Docker"]
 order: 2
@@ -9,14 +9,16 @@ status: "Private application"
 visual: "nest"
 ---
 
-## The idea
+Nest started as a shared calendar and task list. Over time, I added groceries, recipes, budgeting, and daily tracking. I use it every day, and it runs on my homelab.
 
-A household application connecting planning, pantry, recipes, groceries, calendars, and everyday care workflows.
+## Connecting the features
 
-## How it works
+A task with a date appears on the calendar. Groceries connect to the pantry, and logging a cooked meal prompts an update to the ingredients on hand.
 
-FastAPI and SQLite power the backend. Server-rendered HTML fragments and Alpine.js provide focused interactions without a large client application.
+I also added receipt scanning. AI reads the photo into individual items, which can be reviewed before saving the grocery purchase.
 
-## A closer look
+## Building and running it
 
-Application source and tests are separated from deployment configuration and backups. Household records stay private; this page describes the software rather than its personal data.
+I built Nest with FastAPI and SQLite, using Jinja2 and Alpine.js for the interface. The server renders the pages and sends updates to connected devices when data changes.
+
+The application source is separate from the deployment configuration and backups, so I can work on features independently of how they are hosted.

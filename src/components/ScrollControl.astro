@@ -1,0 +1,28 @@
+---
+import ScrollDroplet from "./ScrollDroplet.astro";
+import "../styles/scroll-control.css";
+const { controls = "main" } = Astro.props;
+---
+
+<aside class="scroll-rail" aria-label="Page scroll" hidden>
+  <div class="scroll-track" aria-hidden="true"></div>
+  <div
+    class="scroll-thumb"
+    role="scrollbar"
+    tabindex="0"
+    aria-label="Page scroll"
+    aria-controls={controls}
+    aria-orientation="vertical"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    aria-valuenow="0"
+    aria-valuetext="Top of page"
+    title="Drag to scroll. Arrow keys, Page Up, Page Down, Home and End also work."
+  >
+    <ScrollDroplet />
+  </div>
+</aside>
+
+<script>
+  import "../scripts/scroll-control";
+</script>

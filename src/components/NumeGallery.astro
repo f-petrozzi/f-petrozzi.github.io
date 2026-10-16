@@ -1,0 +1,321 @@
+---
+const { compact = false } = Astro.props;
+const all = [
+  {
+    id: "health",
+    label: "Health",
+    description: "Health overview with wearable metrics.",
+  },
+  {
+    id: "sleep",
+    label: "Sleep",
+    description: "Sleep history with deep, light and REM stages.",
+  },
+  {
+    id: "orchestration",
+    label: "Agents",
+    description:
+      "Admin trace with parallel agents, a remote specialist and validation loop.",
+  },
+  {
+    id: "dashboard",
+    label: "Dashboard",
+    description:
+      "Member dashboard with a support plan and the signals behind it.",
+  },
+  {
+    id: "recipes",
+    label: "Recipes",
+    description: "Recipe import and meal recommendation context.",
+  },
+];
+const shots = compact ? [all[2], all[0], all[1]] : all;
+const first = shots[0];
+---
+
+<div class:list={["nume-gallery", { "is-compact": compact }]}>
+  <div
+    class="gallery-strip"
+    role={compact ? "group" : "region"}
+    tabindex={compact ? undefined : 0}
+    aria-label="NüMe project images"
+  >
+    {
+      (compact ? [first] : all).map((shot) => (
+        <figure data-image={shot.id}>
+          <button
+            class="screenshot-open nume-picture"
+            type="button"
+            disabled
+            aria-label={`Preview NüMe ${compact ? "screenshot" : shot.label}`}
+          >
+            <img
+              src={`/assets/shots/nume-${shot.id}.webp`}
+              width="1440"
+              height="1050"
+              alt={shot.description}
+              loading="lazy"
+            />
+          </button>
+          <figcaption>
+            {!compact && (
+              <>
+                <strong>{shot.label}</strong>
+                <span class="nume-shot-description">{shot.description}</span>
+              </>
+            )}
+            <span>Demo data / October 2026</span>
+          </figcaption>
+        </figure>
+      ))
+    }
+  </div>
+  <div
+    class="gallery-controls"
+    role="group"
+    aria-label="NüMe screenshots"
+    hidden
+  >
+    {
+      shots.map((shot, index) => (
+        <button
+          type="button"
+          aria-pressed={index === 0 ? "true" : "false"}
+          data-shot={shot.id}
+          data-description={shot.description}
+        >
+          {shot.label}
+        </button>
+      ))
+    }
+  </div>
+  {
+    !compact && (
+      <a class="nume-demo-link" href="/projects/nume/demo/">
+        Try the interactive demo
+      </a>
+    )
+  }
+</div>
+<script>
+  document.querySelectorAll<HTMLElement>(".nume-gallery").forEach((gallery) => {
+    const controls = gallery.querySelector<HTMLElement>(".gallery-controls")!;
+    controls.hidden = false;
+    const strip = gallery.querySelector<HTMLElement>(".gallery-strip")!;
+    const buttons = [...controls.querySelectorAll<HTMLButtonElement>("button")];
+    const compact = gallery.classList.contains("is-compact");
+    let request = 0,
+      animation: Animation | undefined,
+      scrollFrame = 0;
+    function select(button: HTMLButtonElement) {
+      buttons.forEach((other) =>
+        other.setAttribute("aria-pressed", String(other === button)),
+      );
+    }
+    buttons.forEach((button) =>
+      button.addEventListener("click", async () => {
+        const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (!compact) {
+          const target = strip.querySelector<HTMLElement>(
+            `[data-image="${button.dataset.shot}"]`,
+          )!;
+          strip.scrollTo({
+            left:
+              target.offsetLeft -
+              strip.querySelector<HTMLElement>("figure")!.offsetLeft,
+            behavior: reduced ? "instant" : "smooth",
+          });
+          select(button);
+          return;
+        }
+        const current = ++request,
+          image = gallery.querySelector<HTMLImageElement>("img")!;
+        const preload = new Image();
+        preload.src = `/assets/shots/nume-${button.dataset.shot}.webp`;
+        try {
+          await preload.decode();
+        } catch {
+          return;
+        }
+        if (current !== request) return;
+        select(button);
+        animation?.cancel();
+        image.src = preload.src;
+        image.alt = button.dataset.description!;
+        if (!reduced)
+          animation = image.animate(
+            [
+              { opacity: 0.4, transform: "translateX(8px)" },
+              { opacity: 1, transform: "none" },
+            ],
+            { duration: 240, easing: "cubic-bezier(.22,1,.36,1)" },
+          );
+      }),
+    );
+    if (!compact)
+      strip.addEventListener(
+        "scroll",
+        () => {
+          if (scrollFrame) return;
+          scrollFrame = requestAnimationFrame(() => {
+            scrollFrame = 0;
+            const edge = strip.getBoundingClientRect().left;
+            const figures = [...strip.querySelectorAll<HTMLElement>("figure")];
+            const nearest = figures.reduce((a, b) =>
+              Math.abs(a.getBoundingClientRect().left - edge) <
+              Math.abs(b.getBoundingClientRect().left - edge)
+                ? a
+                : b,
+            );
+            const button = buttons.find(
+              (b) => b.dataset.shot === nearest.dataset.image,
+            );
+            if (button) select(button);
+          });
+        },
+        { passive: true },
+      );
+  });
+</script>
+<style is:global>
+  .nume-gallery {
+    margin: 32px 0 40px;
+  }
+  .gallery-strip {
+    position: relative;
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--line) transparent;
+    padding-bottom: 12px;
+  }
+  .nume-gallery figure {
+    flex: 0 0 min(76vw, 420px);
+    min-width: 0;
+    margin: 0;
+    scroll-snap-align: start;
+  }
+  .nume-picture {
+    display: block;
+    width: 100%;
+    padding: 0;
+    background: none;
+    border: 0;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .nume-picture img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+  .nume-gallery figcaption {
+    display: grid;
+    gap: 5px;
+    margin-top: 10px;
+    color: var(--faint);
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .nume-gallery figcaption strong {
+    color: var(--ink);
+    font-weight: 500;
+    font-size: 15px;
+  }
+  .nume-shot-description {
+    max-width: 45ch;
+  }
+  .gallery-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 12px;
+  }
+  .gallery-controls button {
+    min-height: 44px;
+    padding: 0 12px;
+    font: inherit;
+    font-size: 13px;
+    color: var(--muted);
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+  }
+  .gallery-controls button[aria-pressed="true"] {
+    color: var(--accent);
+    background: var(--line);
+  }
+  .gallery-controls button:hover {
+    color: var(--ink);
+  }
+  .nume-gallery.is-compact {
+    margin: 0;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+  }
+  .is-compact .gallery-strip {
+    display: block;
+    overflow: visible;
+    padding: 0;
+    flex: 1;
+    min-height: 0;
+  }
+  .is-compact figure {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .is-compact .nume-picture {
+    min-height: 0;
+  }
+  .is-compact .nume-picture img {
+    max-height: 230px;
+    object-fit: contain;
+    border: 0;
+  }
+  .is-compact figcaption {
+    font-size: 11px;
+    text-align: center;
+    margin-top: 6px;
+  }
+  .is-compact .gallery-controls {
+    justify-content: center;
+    margin-top: 4px;
+    flex-wrap: nowrap;
+  }
+  .is-compact .gallery-controls button {
+    font-size: 12px;
+  }
+  .nume-demo-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--accent);
+    font-size: 14px;
+    margin-top: 12px;
+  }
+</style>
+
+<style is:global>
+  .nume-gallery.is-compact {
+    height: auto;
+  }
+  .is-compact .gallery-strip {
+    flex: none;
+  }
+  .is-compact figure {
+    height: auto;
+    display: block;
+  }
+  .is-compact .nume-picture img {
+    max-height: none;
+  }
+</style>

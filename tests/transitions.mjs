@@ -48,14 +48,20 @@ const results = [];
 for (let i = 0; i < 6; i++) {
   const old = i % 2 === 0;
   const link = page.locator(old ? ".era-switch" : ".classic-era-switch");
+  // Chromium can skip a cross-document transition started within the first
+  // moments after load (also true before the redesign); visitors reach these
+  // links after reading, so let the page settle first.
+  await page.waitForTimeout(1200);
   await link.focus();
   await page.keyboard.press("Enter");
   await page.waitForURL(`${base}${old ? "/classic/" : "/"}`, {
     waitUntil: "domcontentloaded",
   });
-  await page.waitForFunction(() => window.transitionSample?.finished === true, {
-    timeout: 5000,
-  });
+  await page.waitForFunction(
+    () => window.transitionSample?.finished === true,
+    null,
+    { timeout: 5000 },
+  );
   const sample = await page.evaluate(() => {
     const times = window.transitionSample.frames;
     const gaps = times

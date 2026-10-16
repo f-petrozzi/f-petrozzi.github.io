@@ -1,0 +1,307 @@
+<dialog class="image-viewer" aria-label="Enlarged image">
+  <button type="button" class="image-viewer-close">Close image</button>
+  <img alt="" />
+  <div
+    class="preview-tabs"
+    role="group"
+    aria-label="Preview screenshots"
+    hidden
+  >
+  </div>
+</dialog>
+<script>
+  const viewer = document.querySelector<HTMLDialogElement>(".image-viewer");
+  if (viewer) {
+    const picture = viewer.querySelector<HTMLImageElement>("img")!;
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+    let trigger: HTMLButtonElement | null = null;
+    let previousOverflow = "";
+    let animation: Animation | null = null;
+    let closing = false;
+    const tabs = viewer.querySelector<HTMLElement>(".preview-tabs")!;
+    let selection = 0;
+    function fit(width: number, height: number) {
+      const ratio = width / height;
+      const w = Math.min(
+        Math.max(860, (trigger?.clientWidth || 0) * 1.6),
+        width,
+        innerWidth * 0.94,
+        innerHeight * (tabs.hidden ? 0.9 : 0.78) * ratio,
+      );
+      picture.style.width = `${w}px`;
+      picture.style.height = `${w / ratio}px`;
+    }
+    function buildTabs(button: HTMLButtonElement) {
+      tabs.replaceChildren();
+      const gallery = button.closest(".nume-gallery");
+      const options = gallery
+        ? [
+            ...gallery.querySelectorAll<HTMLButtonElement>(
+              ".gallery-controls button",
+            ),
+          ]
+        : [];
+      tabs.hidden = options.length < 2;
+      options.forEach((option) => {
+        const tab = document.createElement("button");
+        tab.type = "button";
+        tab.textContent = option.textContent;
+        tab.setAttribute(
+          "aria-pressed",
+          String(picture.src.includes(`nume-${option.dataset.shot}.webp`)),
+        );
+        tab.addEventListener("click", async () => {
+          const request = ++selection,
+            next = new Image();
+          next.src = `/assets/shots/nume-${option.dataset.shot}.webp`;
+          try {
+            await next.decode();
+          } catch {
+            return;
+          }
+          if (request !== selection || !viewer!.open || closing) return;
+          animation?.cancel();
+          picture.src = next.src;
+          picture.alt = option.dataset.description!;
+          const source = button.querySelector<HTMLImageElement>("img")!;
+          source.src = next.src;
+          source.alt = picture.alt;
+          options.forEach((other) =>
+            other.setAttribute("aria-pressed", String(other === option)),
+          );
+          tabs
+            .querySelectorAll("button")
+            .forEach((other) =>
+              other.setAttribute("aria-pressed", String(other === tab)),
+            );
+          fit(next.naturalWidth, next.naturalHeight);
+          if (!reducedMotion.matches)
+            animation = picture.animate([{ opacity: 0.35 }, { opacity: 1 }], {
+              duration: 180,
+            });
+        });
+        tabs.append(tab);
+      });
+    }
+    const transform = (rect: DOMRect, base: DOMRect) =>
+      `translate(${rect.left - base.left}px, ${rect.top - base.top}px) scale(${rect.width / base.width}, ${rect.height / base.height})`;
+    function finishClose() {
+      viewer!.close();
+      animation?.cancel();
+      animation = null;
+    }
+    function closeImage(immediate = false) {
+      if (!viewer!.open || closing) return;
+      closing = true;
+      selection++;
+      const current = picture.getBoundingClientRect();
+      animation?.cancel();
+      animation = null;
+      const target = trigger?.querySelector("img")?.getBoundingClientRect();
+      if (
+        immediate ||
+        reducedMotion.matches ||
+        !target ||
+        target.bottom < 0 ||
+        target.top > innerHeight
+      ) {
+        finishClose();
+        return;
+      }
+      const base = picture.getBoundingClientRect();
+      animation = picture.animate(
+        [
+          { transform: transform(current, base) },
+          { transform: transform(target, base) },
+        ],
+        { duration: 420, easing: "cubic-bezier(.76, 0, .24, 1)", fill: "both" },
+      );
+      animation.onfinish = finishClose;
+    }
+    document
+      .querySelectorAll<HTMLButtonElement>(".screenshot-open")
+      .forEach((button) => {
+        button.disabled = false;
+        button.addEventListener("click", () => {
+          if (viewer!.open) return;
+          trigger = button;
+          closing = false;
+          const source = button.querySelector("img")!;
+          const from = source.getBoundingClientRect();
+          picture.src = source.src;
+          picture.alt = source.alt;
+          buildTabs(button);
+          fit(
+            source.naturalWidth || from.width,
+            source.naturalHeight || from.height,
+          );
+          picture.style.padding = getComputedStyle(source).padding;
+          previousOverflow = document.body.style.overflow;
+          document.body.style.overflow = "hidden";
+          viewer!.showModal();
+          button.classList.add("is-expanded");
+          viewer!.focus({ preventScroll: true });
+          if (!reducedMotion.matches) {
+            const to = picture.getBoundingClientRect();
+            animation = picture.animate(
+              [
+                { transform: transform(from, to) },
+                { transform: "translate(0, 0) scale(1)" },
+              ],
+              { duration: 420, easing: "cubic-bezier(.76, 0, .24, 1)" },
+            );
+          }
+        });
+      });
+    viewer
+      .querySelector(".image-viewer-close")!
+      .addEventListener("click", () => closeImage());
+    viewer.addEventListener("click", (event) => {
+      if (event.target === viewer) closeImage();
+    });
+    viewer.addEventListener("keydown", (event) => {
+      if (
+        tabs.hidden ||
+        !(event.key === "ArrowLeft" || event.key === "ArrowRight")
+      )
+        return;
+      event.preventDefault();
+      const buttons = [...tabs.querySelectorAll<HTMLButtonElement>("button")];
+      const current = buttons.findIndex(
+        (b) => b.getAttribute("aria-pressed") === "true",
+      );
+      buttons[
+        (current + (event.key === "ArrowRight" ? 1 : -1) + buttons.length) %
+          buttons.length
+      ].click();
+    });
+    viewer.addEventListener("cancel", (event) => {
+      event.preventDefault();
+      closeImage();
+    });
+    viewer.addEventListener("close", () => {
+      animation?.cancel();
+      animation = null;
+      document.body.style.overflow = previousOverflow;
+      trigger?.classList.remove("is-expanded");
+      trigger?.focus({ preventScroll: true });
+      closing = false;
+    });
+    window.addEventListener("resize", () => {
+      if (viewer.open) {
+        closing = false;
+        closeImage(true);
+      }
+    });
+  }
+</script>
+<style is:global>
+  .screenshot-open {
+    display: block;
+    width: 100%;
+    /* One hairline edge on the image itself: no frame, padding or shadow. */
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: none;
+    cursor: zoom-in;
+  }
+  .screenshot-open.is-expanded {
+    visibility: hidden;
+  }
+  .screenshot-open:disabled {
+    cursor: default;
+  }
+  .screenshot-open img {
+    box-sizing: border-box;
+    border: 1px solid var(--glass-rim);
+    border-radius: var(--radius-md);
+  }
+  .image-viewer {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    overflow: hidden;
+    outline: none;
+  }
+  .image-viewer[open] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .image-viewer::backdrop {
+    background: transparent;
+  }
+  .image-viewer > img {
+    display: block;
+    max-width: 94vw;
+    max-height: 90dvh;
+    height: auto;
+    object-fit: contain;
+    box-sizing: border-box;
+    transform-origin: top left;
+    background: var(--bg);
+    border: 1px solid var(--glass-rim);
+    border-radius: var(--radius-md);
+  }
+  .image-viewer-close {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .image-viewer-close:focus-visible {
+    top: 16px;
+    right: 16px;
+    width: auto;
+    height: auto;
+    clip-path: none;
+    padding: 12px 16px;
+    color: var(--ink);
+    background: var(--bg);
+    border: 1px solid var(--glass-rim);
+    border-radius: var(--radius-sm);
+  }
+</style>
+
+<style is:global>
+  .preview-tabs {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 6px;
+    border-radius: 16px;
+    background: var(--bg);
+    max-width: 94vw;
+  }
+  .preview-tabs[hidden] {
+    display: none;
+  }
+  .preview-tabs button {
+    font: inherit;
+    font-size: 13px;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .preview-tabs button[aria-pressed="true"] {
+    background: var(--line);
+    color: var(--accent);
+  }
+</style>

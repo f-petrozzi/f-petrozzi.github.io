@@ -1,9 +1,4 @@
-<button
-  class="theme-toggle"
-  aria-label="Switch theme"
-  aria-pressed="true"
-  hidden
->
+<button class="theme-toggle" aria-label="Switch theme" aria-pressed="true">
   <span class="theme-slider" aria-hidden="true">
     <svg
       class="theme-icon"
@@ -81,7 +76,8 @@
     transition: transform 450ms ease;
   }
   :global(html:not([data-theme="light"])) .theme-disc {
-    transform: scale(1.5);
+    /* Balance the crescent's visible mass within the same box as the nav icons. */
+    transform: translate(0.8px, -0.8px) scale(1.9);
   }
   :global(html:not([data-theme="light"])) .theme-cutout {
     transform: translate(-10px, 9px);
@@ -99,29 +95,33 @@
     }
   }
 </style>
-<script>
-  const button = document.querySelector<HTMLButtonElement>(".theme-toggle")!;
-  const root = document.documentElement;
-  const update = () => {
-    button.setAttribute("aria-pressed", String(root.dataset.theme !== "light"));
-    button.setAttribute(
-      "aria-label",
-      `Switch to ${root.dataset.theme === "light" ? "dark" : "light"} theme`,
-    );
-    document
-      .querySelector('meta[name="theme-color"]')
-      ?.setAttribute(
-        "content",
-        root.dataset.theme === "light" ? "#f2f5fa" : "#0d1422",
+<script is:inline>
+  (() => {
+    const button = document.querySelector(".theme-toggle");
+    const root = document.documentElement;
+    const update = () => {
+      button.setAttribute(
+        "aria-pressed",
+        String(root.dataset.theme !== "light"),
       );
-  };
-  update();
-  button.hidden = false;
-  button.addEventListener("click", () => {
-    root.dataset.theme = root.dataset.theme === "light" ? "dark" : "light";
-    try {
-      localStorage.setItem("portfolio-theme", root.dataset.theme);
-    } catch {}
+      button.setAttribute(
+        "aria-label",
+        `Switch to ${root.dataset.theme === "light" ? "dark" : "light"} theme`,
+      );
+      document
+        .querySelector('meta[name="theme-color"]')
+        ?.setAttribute(
+          "content",
+          root.dataset.theme === "light" ? "#f2f5fa" : "#0d1422",
+        );
+    };
     update();
-  });
+    button.addEventListener("click", () => {
+      root.dataset.theme = root.dataset.theme === "light" ? "dark" : "light";
+      try {
+        localStorage.setItem("portfolio-theme", root.dataset.theme);
+      } catch {}
+      update();
+    });
+  })();
 </script>

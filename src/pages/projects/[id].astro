@@ -1,50 +1,140 @@
 ---
 import { getCollection, render } from "astro:content";
 import Base from "../../layouts/Base.astro";
+import NumeDemo from "../../components/NumeDemo.astro";
+import ImageViewer from "../../components/ImageViewer.astro";
 import ProjectVisual from "../../components/ProjectVisual.astro";
+import ToolIcon from "../../components/ToolIcon.astro";
+import ToolIconSprite from "../../components/ToolIconSprite.astro";
 export async function getStaticPaths() {
-  return (await getCollection("projects")).map((project) => ({
+  const all = (await getCollection("projects")).sort(
+    (a, b) => a.data.order - b.data.order,
+  );
+  return all.map((project, i) => ({
     params: { id: project.id },
-    props: { project },
+    props: {
+      project,
+      previous: all[(i - 1 + all.length) % all.length],
+      next: all[(i + 1) % all.length],
+    },
   }));
 }
-const { project } = Astro.props;
+const { project, previous, next } = Astro.props;
 const { Content } = await render(project);
+const { category, status } = project.data;
 ---
 
 <Base
   title={`${project.data.title} | Fabrizio Petrozzi`}
   description={project.data.summary}
 >
+  <ToolIconSprite tools={project.data.tools} />
   <main id="main" class="project-page wrap">
-    <a href="/#projects" class="text-link">← Back to the collection</a><div
-      class="eyebrow"
+    <a href="/#projects" class="back-link" data-collection-return
+      >All projects</a
     >
-      {project.data.category} / {project.data.status}
-    </div><h1>{project.data.title}</h1><p class="project-intro">
-      {project.data.summary}
-    </p><ul class="tool-list">
-      {project.data.tools.map((tool) => <li>{tool}</li>)}
-    </ul><div class="project-actions">
+    <header class="case-head">
+      <p class="eyebrow">{category}</p>
+      <h1>{project.data.title}</h1>
+      <p class="project-intro">{project.data.summary}</p>
+    </header>
+    <dl class="case-facts glass">
+      <div>
+        <dt>Type</dt>
+        <dd>{status === category ? category : status}</dd>
+      </div>
+      <div class="facts-tools">
+        <dt>Built with</dt>
+        <dd>
+          <ul class="tool-list">
+            {
+              project.data.tools.map((tool) => (
+                <li>
+                  <ToolIcon tool={tool} label={true} />
+                </li>
+              ))
+            }
+          </ul>
+        </dd>
+      </div>
       {
-        project.data.repo && (
-          <a class="pill-link" href={project.data.repo}>
-            View repository
-          </a>
-        )
-      }{
-        project.data.demo && (
-          <a class="pill-link" href={project.data.demo}>
-            Visit demo
-          </a>
+        (project.data.repo || project.data.demo) && (
+          <div>
+            <dt>Links</dt>
+            <dd class="project-actions">
+              {project.data.demo && <a href={project.data.demo}>Visit demo</a>}
+              {project.data.repo && <a href={project.data.repo}>Repository</a>}
+            </dd>
+          </div>
         )
       }
-    </div>{
-      project.data.featured && (
-        <ProjectVisual kind={project.data.visual} title={project.data.title} />
+    </dl>
+    {
+      project.id === "nume" ? (
+        <NumeDemo />
+      ) : (
+        project.data.featured && (
+          <ProjectVisual
+            kind={project.data.visual}
+            title={project.data.title}
+          />
+        )
       )
-    }<div class="prose"><Content /></div><a class="text-link" href="/#projects"
-      >← Explore more projects</a
-    >
+    }
+    <div class:list={["prose", { "visual-story": project.id === "homelab" }]}>
+      <Content />
+    </div>
+    <nav class="case-nav" aria-label="More projects">
+      <a class="glass" href={`/projects/${previous.id}/`} rel="prev">
+        <span>Previous</span>
+        <strong>{previous.data.title}</strong>
+      </a>
+      <a class="glass" href={`/projects/${next.id}/`} rel="next">
+        <span>Next</span>
+        <strong>{next.data.title}</strong>
+      </a>
+      <a href="/#projects" class="case-nav-all" data-collection-return
+        >All projects</a
+      >
+    </nav>
+    {project.id === "homelab" && <ImageViewer />}
   </main>
+  <script is:inline>
+    (() => {
+      // Only traverse history when this project was opened from this tab's collection.
+      try {
+        const pending = JSON.parse(
+          sessionStorage.getItem("portfolio-collection-departure") || "null",
+        );
+        sessionStorage.removeItem("portfolio-collection-departure");
+        if (
+          pending &&
+          pending.path === location.pathname &&
+          Date.now() - pending.at < 60000 &&
+          history.length > 1 &&
+          document.referrer &&
+          new URL(document.referrer).origin === location.origin &&
+          new URL(document.referrer).pathname === "/"
+        ) {
+          history.replaceState({ ...history.state, collectionBack: true }, "");
+        }
+      } catch {}
+      document.querySelectorAll("[data-collection-return]").forEach((link) => {
+        link.addEventListener("click", (event) => {
+          if (
+            event.button !== 0 ||
+            event.metaKey ||
+            event.ctrlKey ||
+            event.shiftKey ||
+            event.altKey ||
+            !history.state?.collectionBack ||
+            history.length < 2
+          )
+            return;
+          event.preventDefault();
+          history.back();
+        });
+      });
+    })();
+  </script>
 </Base>

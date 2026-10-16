@@ -1,0 +1,139 @@
+/* One glass object replaces the native scrollbar only after its controller is ready. */
+html.has-scroll-control {
+  scrollbar-width: none;
+}
+html.has-scroll-control::-webkit-scrollbar {
+  display: none;
+}
+.scroll-rail {
+  position: fixed;
+  left: max(3px, calc((100vw - 1360px) / 2));
+  top: 108px;
+  bottom: 30px;
+  width: 44px;
+  z-index: 45;
+  user-select: none;
+  touch-action: none;
+}
+.scroll-track {
+  position: absolute;
+  left: 21px;
+  top: 32px;
+  bottom: 32px;
+  width: 1px;
+  background: linear-gradient(
+    transparent,
+    #7d999a35 8%,
+    #7d999a35 92%,
+    transparent
+  );
+}
+.scroll-thumb {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 44px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  cursor: grab;
+  touch-action: none;
+  border-radius: 24px;
+  outline: none;
+  outline-offset: 0 !important;
+}
+.scroll-rail .scroll-thumb:focus-visible {
+  outline: none;
+}
+/* The hit target stays fixed; only the small SVG surface deforms. */
+.scroll-fluid {
+  position: relative;
+  display: block;
+  width: 44px;
+  height: 64px;
+  transform-origin: 50% 50%;
+  pointer-events: none;
+  overflow: visible;
+}
+.scroll-liquid {
+  position: absolute;
+  left: -18px;
+  top: -13px;
+  width: 80px;
+  height: 90px;
+  overflow: visible;
+  pointer-events: none;
+}
+.droplet-departure .brand {
+  position: relative;
+  z-index: 46;
+}
+.scroll-thumb.is-dragging {
+  cursor: grabbing;
+}
+body.is-scroll-dragging {
+  user-select: none;
+  cursor: grabbing;
+}
+
+.scroll-rail[hidden] {
+  display: none;
+}
+:root {
+  --scroll-rail-left: max(3px, calc((100vw - 1360px) / 2));
+}
+.scroll-rail {
+  left: var(--scroll-rail-left);
+}
+.site-header .brand img,
+.site-header .wordmark img {
+  position: absolute;
+  /* Optical offset aligns the base of the F with the falling drops. */
+  left: calc(var(--scroll-rail-left) + 12.4px);
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+}
+.site-header .brand {
+  position: static;
+}
+.scroll-rail .scroll-thumb:focus-visible {
+  outline: none;
+}
+html.is-touch-scrolling {
+  scroll-behavior: auto !important;
+  overflow-anchor: none;
+}
+.scroll-rail,
+.scroll-thumb {
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+@media (max-width: 650px) {
+  :root {
+    --scroll-rail-left: 0px;
+  }
+  .scroll-rail {
+    top: 88px;
+    bottom: 20px;
+  }
+  .site-header .brand {
+    min-width: 26px;
+  }
+}
+@media (forced-colors: active) {
+  html.has-scroll-control {
+    scrollbar-width: auto;
+  }
+  html.has-scroll-control::-webkit-scrollbar {
+    display: revert;
+  }
+  .scroll-rail {
+    display: none !important;
+  }
+}
+
+/* Keep the page control out of homepage modal views. */
+body:has(dialog[open]) > .scroll-rail {
+  visibility: hidden;
+}

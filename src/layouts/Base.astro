@@ -1,8 +1,8 @@
 ---
+import "../styles/tokens.css";
 import "../styles/global.css";
-import ThemeToggle from "../components/ThemeToggle.astro";
-import { existsSync } from "node:fs";
-const hasBrand = existsSync("public/brand/f-mark.webp");
+import ScrollControl from "../components/ScrollControl.astro";
+import SiteHeader from "../components/SiteHeader.astro";
 const {
   title = "Fabrizio Petrozzi | Projects",
   description = "Software, AI, and data projects by Fabrizio Petrozzi in St. Petersburg, Florida.",
@@ -20,9 +20,16 @@ const {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta name="theme-color" content="#f2f5fa" />
+    <meta name="theme-color" content="#0a0f18" />
     <link rel="icon" href="/images/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="/assets/fonts/fonts.css" />
+    <link
+      rel="preload"
+      href="/assets/fonts/instrument-sans.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <link rel="stylesheet" href="/era.css" />
     <link rel="expect" href="#era-ready" blocking="render" />
     <script is:inline>
@@ -37,32 +44,19 @@ const {
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <header class="site-header wrap">
-      <a class="wordmark" href="/" aria-label="Fabrizio Petrozzi home">
-        {
-          hasBrand ? (
-            <img src="/brand/f-mark.webp" width="48" height="48" alt="" />
-          ) : (
-            <span class="text-mark">FP</span>
-          )
-        }
-      </a>
-      <nav aria-label="Main navigation">
-        <a href="/#work">Work</a><a href="/#about">About</a><a
-          href="mailto:petrozzi@usf.edu">Contact</a
-        >
-      </nav>
-      <div class="header-controls">
-        <ThemeToggle />
-      </div>
-    </header>
+    <div class="project-fields" aria-hidden="true">
+      <div class="field project-field-cyan"></div>
+      <div class="field project-field-violet"></div>
+    </div>
+    <SiteHeader />
+    <ScrollControl />
     <slot />
     <footer class="wrap">
       <a href="/" class="footer-name">Fabrizio Petrozzi</a>
       <div>
         <a href="https://github.com/f-petrozzi">GitHub</a><a
           href="https://www.linkedin.com/in/fabriziopetrozzi/">LinkedIn</a
-        ><a href="/files/resume.pdf">Resume</a>
+        ><a href="/files/resume.pdf">Résumé</a>
       </div>
       <span class="copyright">© {new Date().getFullYear()}</span>
     </footer>

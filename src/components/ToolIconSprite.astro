@@ -1,0 +1,39 @@
+---
+// Defines each brand mark once per page; ToolIcon references it with <use>.
+import * as simpleIcons from "simple-icons";
+import { toolIcon } from "../data/tool-icons";
+
+interface Props {
+  tools: string[];
+}
+const { tools } = Astro.props;
+const brands = new Map(
+  Object.values(simpleIcons).map((icon) => [icon.slug, icon]),
+);
+const slugs = [
+  ...new Set(tools.map((tool) => toolIcon(tool).si).filter(Boolean)),
+];
+const symbols = slugs
+  .map((slug) => brands.get(slug!))
+  .filter((icon) => icon !== undefined);
+---
+
+<svg class="tool-icon-sprite" aria-hidden="true" focusable="false">
+  {
+    symbols.map((icon) => (
+      <symbol id={`tool-${icon.slug}`} viewBox="0 0 24 24">
+        <path d={icon.path} />
+      </symbol>
+    ))
+  }
+</svg>
+
+<style>
+  /* Not display:none, so every engine can still resolve the <use> references. */
+  .tool-icon-sprite {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+  }
+</style>

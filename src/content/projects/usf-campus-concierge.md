@@ -1,15 +1,23 @@
 ---
 title: "USF Campus Concierge"
-summary: "AI assistant for university admissions with MCP integration for Gmail and Google Calendar automation."
+summary: "An AI assistant for admissions questions, email drafts, and meeting scheduling."
 category: "Earlier work"
-tools: ["Python", "Deep Learning", "Text Analytics", "Cloud Computing", "MCP"]
+tools: ["Python", "Streamlit", "Supabase", "pgvector", "MCP", "Splunk"]
 order: 20
 featured: false
-status: "Earlier work"
+status: "Group project"
 visual: "code"
 repo: "https://github.com/f-petrozzi/USFConcierge"
 ---
 
-AI assistant for university admissions with MCP integration for Gmail and Google Calendar automation.
+Our text analytics group built USF Campus Concierge for admissions and orientation questions. The assistant retrieves relevant university information and cites the passages used in its answers.
 
-This project is part of my earlier work. The original project description and technology labels have been retained from my first portfolio. See the linked repository for implementation details.
+## My contribution
+
+I worked on the retrieval pipeline, Azure model integration, email and meeting assistants, Google API integrations, and data ingestion. I also added structured logging and Splunk dashboards to measure where requests spent time.
+
+## From questions to actions
+
+The interface uses Streamlit, with documents stored in Supabase and searched through pgvector. MCP tools connect the assistant to Gmail and Google Calendar for email drafts and meetings.
+
+We presented the system to USF faculty and revised it based on their feedback.

@@ -1,23 +1,23 @@
 ---
 title: "Slice of the Burg"
-summary: "A restaurant website and custom carousel integration for Toast."
+summary: "Website development, menu analysis, and technology consulting for a local restaurant."
 category: "Web & design"
 tools: ["HTML", "CSS", "JavaScript", "JSON", "Cloudflare Pages", "Toast"]
 order: 4
 featured: false
-status: "Website prototype"
+status: "Client work"
 visual: "slice"
 repo: "https://github.com/f-petrozzi/SliceofTheBurg"
 ---
 
-## The idea
+I worked with Slice of the Burg, a pizza restaurant in St. Petersburg, on their website, menu data, and technology planning.
 
-A restaurant website prototype with structured menu content and a reusable favorites carousel for Toast Websites.
+## Planning the work
 
-## How it works
+I met with the owners to understand their existing tools and priorities, then put together a plan for improvements. I also analyzed Toast menu data to help them review how different items were performing.
 
-Local JSON drives the menu and page content. The carousel can render inside Toast’s embedded code block and respond to the actual available width.
+## Website development
 
-## A closer look
+I built a website prototype on Cloudflare Pages and a custom carousel for their Toast website. The prototype keeps menu content in JSON, so the menu can be updated separately from the page layout.
 
-The project includes responsive food imagery, a static homepage, and separate motion concepts. The integration is designed around the constraints of an existing website platform.
+Toast’s embedded code block made the carousel too narrow on desktop. I adjusted the sizing within that block so the carousel could use the available space.

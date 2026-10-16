@@ -1,0 +1,135 @@
+---
+import { existsSync } from "node:fs";
+import Icon from "./Icon.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+const { home = false } = Astro.props;
+const prefix = home ? "" : "/";
+const hasMark = existsSync("public/brand/f-mark.webp");
+---
+
+<header class="site-header shared-header">
+  <a
+    class="brand"
+    href={home ? "#top" : "/"}
+    aria-label="Fabrizio Petrozzi, home"
+  >
+    {
+      hasMark ? (
+        <img src="/brand/f-mark.webp" width="38" height="38" alt="" />
+      ) : (
+        <span>FP</span>
+      )
+    }
+  </a>
+  <nav class="nav-capsule glass-float" aria-label="Main navigation">
+    <a href={`${prefix}#work`}><Icon name="grid" /><span>Work</span></a>
+    <a href={`${prefix}#background`}
+      ><Icon name="briefcase" /><span>Background</span></a
+    >
+    <a href={`${prefix}#projects`}
+      ><Icon name="search" /><span>Projects</span></a
+    >
+    <a href={`${prefix}#contact`}><Icon name="mail" /><span>Contact</span></a>
+    <ThemeToggle />
+  </nav>
+</header>
+
+<style>
+  /* Not positioned: the logo is placed against the droplet rail (scroll-control.css). */
+  .site-header.shared-header {
+    display: flex;
+    align-items: center;
+    height: 96px;
+    width: min(var(--measure, 1240px), 100%);
+    margin-inline: auto;
+    padding-inline: var(--gutter, 60px);
+  }
+  .site-header.shared-header .brand {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    min-width: 44px;
+  }
+  /* Floats over the page once scrolled; blur is reserved for floating layers. */
+  .nav-capsule {
+    position: fixed;
+    z-index: 50;
+    top: 22px;
+    right: max(
+      var(--gutter, 60px),
+      calc((100vw - var(--measure, 1240px)) / 2 + var(--gutter, 60px))
+    );
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 4px;
+    border-radius: 999px;
+    font-size: 14px;
+  }
+  .nav-capsule a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 14px;
+    border-radius: 999px;
+    color: var(--muted);
+    transition:
+      color 140ms ease,
+      background-color 140ms ease;
+  }
+  .nav-capsule a:hover {
+    color: var(--ink);
+    background: rgb(255 255 255 / 0.06);
+  }
+  :global(html[data-theme="light"]) .nav-capsule a:hover {
+    background: rgb(20 34 53 / 0.06);
+  }
+  .nav-capsule :global(.ui-icon) {
+    width: 16px;
+    height: 16px;
+  }
+  .nav-capsule :global(.theme-toggle) {
+    width: 44px;
+    height: 44px;
+    margin: 0;
+    border: 0;
+    border-radius: 999px;
+    color: var(--muted);
+  }
+  .nav-capsule :global(.theme-icon) {
+    width: 17px;
+    height: 17px;
+  }
+  @media (max-width: 900px) {
+    .nav-capsule a {
+      padding: 0 10px;
+    }
+  }
+  @media (max-width: 760px) {
+    .site-header.shared-header {
+      height: 76px;
+    }
+    .nav-capsule {
+      top: 16px;
+      right: 14px;
+    }
+    .nav-capsule a {
+      width: 44px;
+      padding: 0;
+      justify-content: center;
+    }
+    .nav-capsule a span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .nav-capsule :global(.ui-icon) {
+      width: 18px;
+      height: 18px;
+    }
+  }
+</style>

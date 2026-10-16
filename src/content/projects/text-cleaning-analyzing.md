@@ -1,15 +1,15 @@
 ---
 title: "Text Cleaning & Analyzing"
-summary: "Cleans public‑domain book, extracting patterns for analysis using Regex."
+summary: "Cleaning and analyzing The Wonderful Wizard of Oz with Python."
 category: "Earlier work"
 tools: ["Python", "Text Analytics"]
 order: 28
 featured: false
-status: "Earlier work"
+status: "Course project"
 visual: "code"
 repo: "https://github.com/f-petrozzi/Regex_Text_Analytics"
 ---
 
-Cleans public‑domain book, extracting patterns for analysis using Regex.
+I used the Project Gutenberg text of The Wonderful Wizard of Oz for this text analytics assignment. Regular expressions remove the header and footer, normalize punctuation, identify chapters, and split the text into sentences and words.
 
-This project is part of my earlier work. The original project description and technology labels have been retained from my first portfolio. See the linked repository for implementation details.
+After removing common stopwords, I calculated word frequencies, plotted sentence lengths, and compared sections using bag-of-words similarity.

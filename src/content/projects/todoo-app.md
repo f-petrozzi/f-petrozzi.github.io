@@ -1,15 +1,15 @@
 ---
 title: "Todoo App"
-summary: "Notes and tasks app with alarms and Siri shortcuts."
+summary: "An iOS notes and tasks app with AI note generation, alarms, and Siri shortcuts."
 category: "Earlier work"
-tools: ["SQL", "Machine Learning", "Systems Architecture", "UX / UI"]
+tools: ["Swift", "SwiftUI", "SQLite", "OpenAI API", "App Intents", "AlarmKit"]
 order: 23
 featured: false
-status: "Earlier work"
+status: "Personal project"
 visual: "code"
 repo: "https://github.com/f-petrozzi/Todoo_App"
 ---
 
-Notes and tasks app with alarms and Siri shortcuts.
+I built Todoo with SwiftUI and SQLite for local storage. Notes can contain subtasks, and the app can generate note content through the OpenAI API.
 
-This project is part of my earlier work. The original project description and technology labels have been retained from my first portfolio. See the linked repository for implementation details.
+App Intents connect it to Siri shortcuts for adding notes. AlarmKit handles scheduling, stopping, and snoozing alarms.

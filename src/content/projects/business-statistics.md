@@ -1,15 +1,15 @@
 ---
 title: "Business Statistics"
-summary: "Regression models and optimization with Solver."
+summary: "Regression analysis in R and optimization models in Excel."
 category: "Earlier work"
 tools: ["R", "Excel"]
 order: 27
 featured: false
-status: "Earlier work"
+status: "Coursework"
 visual: "code"
 repo: "https://github.com/f-petrozzi/Business_Statistics"
 ---
 
-Regression models and optimization with Solver.
+In these assignments, I used R to fit regression models, interpret their coefficients, and check how well the models matched the data. The medical charges analysis included examining residuals and identifying observations that had a large influence on the results.
 
-This project is part of my earlier work. The original project description and technology labels have been retained from my first portfolio. See the linked repository for implementation details.
+In Excel, I used Solver to model production choices, scheduling, and distribution networks. The work involved defining an objective, setting resource constraints, and finding a solution within them.

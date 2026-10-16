@@ -1,6 +1,6 @@
 ---
 title: "CareMesh"
-summary: "Coordinating personalized support through a team of specialist agents."
+summary: "A hackathon prototype that uses wearable data and AI agents to create wellness support plans."
 category: "AI & applications"
 tools:
   [
@@ -19,14 +19,14 @@ visual: "code"
 repo: "https://github.com/f-petrozzi/HackUSF26"
 ---
 
-## The idea
-
-A HackUSF 2026 team project exploring how wearable signals and personal check-ins can inform a coordinated support plan. The system routes requests to specialist agents and validates their output.
+At HackUSF 2026, I worked on the backend for CareMesh. Our team combined sleep, activity, and mood information with specialist AI agents to suggest support for students and caregivers.
 
 ## My contribution
 
-The repository documents my focus on the FastAPI backend, database models and migrations, Garmin integration, and recipe parsing. Agent orchestration and specialist services were shared across the team.
+I built the FastAPI backend, database models and migrations, Garmin integration, and recipe parsing. Other team members worked on the frontend, agent orchestration, and specialist services.
 
-## How it works
+The recipe parser uses Gemini to extract a recipe from a URL or pasted text. Shared Pydantic models define the data the backend and agents exchange.
 
-A React frontend connects to FastAPI and PostgreSQL. Shared Pydantic models define service contracts, while Google ADK coordinates the agent pipeline. The public repository documents the team structure and implementation.
+## How the agents connect
+
+Google ADK coordinates the agents and routes requests to the relevant specialist. The system checks the resulting plan and records the steps of each run so they can be reviewed.

@@ -1,6 +1,6 @@
 ---
 title: "Agent Usage"
-summary: "A Windows overlay for tracking Codex and Claude usage and reset times."
+summary: "A Windows overlay for checking Codex and Claude usage limits and reset times."
 category: "Tools & experiments"
 tools: ["C#", "PowerShell", "Python", "SSH", "WSL"]
 order: 3
@@ -10,14 +10,14 @@ visual: "agent"
 repo: "https://github.com/f-petrozzi/Agent-Usage"
 ---
 
-## The idea
+I run AI agents on my Linux server and work from Windows. I built Agent Usage so I could check the remaining allowance and reset times from my desktop.
 
-A small Windows overlay showing Codex and Claude usage, reset times, and banked resets.
+## Reading the limits
 
-## How it works
+The overlay switches between five-hour and weekly limits. Each bar has a marker for the time remaining in that period, so I can compare how much allowance is left with how long it needs to last.
 
-The overlay switches between five-hour and weekly readings, with an animated gauge and hover details. Time-left markers help compare usage against an even pace.
+## Getting the readings
 
-## A closer look
+A collector runs on the machine where the agents are signed in. The Windows app reads from it through SSH, or through WSL when both run on the same computer. The app does not need its own copy of the agents’ credentials.
 
-A collector runs on the agent machine and connects over SSH or local WSL. Cached Claude reads and a shared cooldown handle rate limiting; the Windows app does not open agent credentials.
+Claude requests are cached, and a rate-limit response pauses further requests until the cooldown ends.

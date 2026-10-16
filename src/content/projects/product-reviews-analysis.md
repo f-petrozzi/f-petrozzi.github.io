@@ -1,15 +1,15 @@
 ---
-title: "Product Reviews Analysis"
-summary: "Combines Amazon product listings and reviews into a Redshift database for analysis."
+title: "Product Reviews Database"
+summary: "A Redshift database exercise for storing products and reviews."
 category: "Earlier work"
-tools: ["Cloud Computing", "SQL", "Python"]
+tools: ["Amazon Redshift", "SQL", "Excel", "VBA"]
 order: 29
 featured: false
-status: "Earlier work"
+status: "Group project"
 visual: "code"
 repo: "https://github.com/f-petrozzi/Amazon_Redshift_Transactional_DB"
 ---
 
-Combines Amazon product listings and reviews into a Redshift database for analysis.
+Our group built a sample product-review database in Amazon Redshift. We used monitor listings and reviews of the Amazon Shopping app to populate the two-table schema.
 
-This project is part of my earlier work. The original project description and technology labels have been retained from my first portfolio. See the linked repository for implementation details.
+The work included preparing the text and dates for import, linking records through a product identifier, and demonstrating how to add, read, update, and delete records.

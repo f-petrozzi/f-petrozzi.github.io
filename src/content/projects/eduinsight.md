@@ -1,16 +1,15 @@
 ---
 title: "EduInsight"
-summary: "ASP.NET Core MVC web application with CRUD enrollment management, chatbot integration, and API-driven analytics dashboard."
+summary: "An enrollment management app built with ASP.NET MVC and deployed to Azure."
 category: "Earlier work"
-tools:
-  ["C#", "CSS", "Cloud Computing", "Data Visualization", "Systems Architecture"]
+tools: ["C#", "ASP.NET MVC", "Razor", "Azure App Service", "JSON"]
 order: 22
 featured: false
-status: "Earlier work"
+status: "Course project"
 visual: "code"
 repo: "https://github.com/f-petrozzi/AppDevFinal"
 ---
 
-ASP.NET Core MVC web application with CRUD enrollment management, chatbot integration, and API-driven analytics dashboard.
+For this course project, I worked with ASP.NET MVC to manage enrollment records. Each record contains the student, program, term, GPA, and enrollment date. The app includes forms for adding and updating records, an enrollment list, and charts that summarize the data.
 
-This project is part of my earlier work. The original project description and technology labels have been retained from my first portfolio. See the linked repository for implementation details.
+Records are stored in JSON and initially loaded from a CSV file. The project also involved configuring persistent storage on Azure and using College Scorecard data for benchmarks.

@@ -1,0 +1,135 @@
+<dialog class="visual-viewer" aria-label="Project visual preview">
+  <button type="button" class="visual-viewer-close">Close preview</button>
+  <div class="visual-viewer-content"></div>
+</dialog>
+<script>
+  const viewer = document.querySelector<HTMLDialogElement>(".visual-viewer")!;
+  const content = viewer.querySelector<HTMLElement>(".visual-viewer-content")!;
+  let trigger: HTMLButtonElement | null = null;
+  let animation: Animation | undefined;
+  let closing = false,
+    overflow = "";
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+  const transform = (a: DOMRect, b: DOMRect) =>
+    `translate(${a.left - b.left}px,${a.top - b.top}px) scale(${a.width / b.width},${a.height / b.height})`;
+  function close(immediate = false) {
+    if (closing || !viewer.open) return;
+    closing = true;
+    const from = content.getBoundingClientRect();
+    animation?.cancel();
+    const target = trigger?.getBoundingClientRect();
+    if (
+      immediate ||
+      reduced.matches ||
+      !target ||
+      target.bottom < 0 ||
+      target.top > innerHeight
+    ) {
+      viewer.close();
+      return;
+    }
+    animation = content.animate(
+      [
+        { transform: transform(from, content.getBoundingClientRect()) },
+        { transform: transform(target, content.getBoundingClientRect()) },
+      ],
+      { duration: 340, easing: "cubic-bezier(.22,1,.36,1)", fill: "both" },
+    );
+    animation.onfinish = () => viewer.close();
+  }
+  document
+    .querySelectorAll<HTMLButtonElement>(".visual-preview-open")
+    .forEach((button) => {
+      button.disabled = false;
+      button.addEventListener("click", () => {
+        if (viewer.open) return;
+        trigger = button;
+        closing = false;
+        const from = button.getBoundingClientRect();
+        const visual = button
+          .querySelector("figure")!
+          .cloneNode(true) as HTMLElement;
+        visual.removeAttribute("aria-hidden");
+        visual.classList.remove("compact");
+        content.replaceChildren(visual);
+        content.setAttribute("role", "img");
+        content.setAttribute(
+          "aria-label",
+          `${button.dataset.previewTitle} workflow overview`,
+        );
+        overflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        viewer.showModal();
+        if (!reduced.matches)
+          animation = content.animate(
+            [
+              {
+                transform: transform(from, content.getBoundingClientRect()),
+                opacity: 0.5,
+              },
+              { transform: "none", opacity: 1 },
+            ],
+            { duration: 440, easing: "cubic-bezier(.22,1,.36,1)" },
+          );
+      });
+    });
+  viewer.addEventListener("click", (event) => {
+    if (event.target === viewer) close();
+  });
+  viewer.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    close();
+  });
+  viewer.querySelector("button")!.addEventListener("click", () => close());
+  viewer.addEventListener("close", () => {
+    animation?.cancel();
+    document.body.style.overflow = overflow;
+    trigger?.focus({ preventScroll: true });
+    closing = false;
+  });
+  window.addEventListener("resize", () => {
+    if (viewer.open) close(true);
+  });
+</script>
+<style is:global>
+  .visual-viewer {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    overflow: hidden;
+  }
+  .visual-viewer[open] {
+    display: grid;
+    place-items: center;
+  }
+  .visual-viewer::backdrop {
+    background: transparent;
+  }
+  .visual-viewer-content {
+    width: min(860px, 92vw);
+    transform-origin: top left;
+  }
+  .visual-viewer-content .project-art {
+    min-height: min(440px, 75dvh);
+    max-height: 85dvh;
+    background: var(--bg);
+    padding: 32px;
+  }
+  .visual-viewer-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    padding: 12px;
+    border: 0;
+    border-radius: 12px;
+    color: var(--ink);
+    background: var(--bg);
+  }
+</style>

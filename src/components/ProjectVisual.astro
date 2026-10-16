@@ -1,71 +1,229 @@
 ---
-const { kind, title } = Astro.props;
+// Lightweight HTML/CSS diagrams of each featured project's actual workflow.
+// `compact` renders the same diagram as card art on the homepage.
+const { kind, title, compact = false } = Astro.props;
+const notes = {
+  nume: "How the agents connect",
+  proterra: "The editorial workflow",
+  nest: "How the features connect",
+};
 ---
 
-<div class:list={["project-art", kind]} aria-hidden="true">
+<figure
+  class:list={["project-art", "glass", `art-${kind}`, { compact }]}
+  aria-hidden="true"
+>
   {
     kind === "nume" ? (
-      <div class="system-preview">
-        <div class="preview-title">NüMe</div>
-        <div class="agent-flow">
-          <div class="flow-inputs">
-            <>
-              <span>Sleep</span>
-              <span>Activity</span>
-              <span>Check-ins</span>
-            </>
-          </div>
-          <div class="flow-connector" />
-          <div class="flow-coordinator">Coordinator agent</div>
-          <div class="flow-connector" />
-          <div class="flow-inputs">
-            <>
-              <span>Student specialist</span>
-              <span>Caregiver specialist</span>
-            </>
-          </div>
-          <div class="flow-connector" />
-          <div class="flow-result">Validated support plan</div>
+      <div class="agent-flow">
+        <div class="flow-row">
+          <span>Sleep</span>
+          <span>Activity</span>
+          <span>Check-ins</span>
         </div>
-        <span class="preview-note">How the agents connect</span>
+        <i class="flow-line" />
+        <div class="flow-key">Coordinator agent</div>
+        <i class="flow-line" />
+        <div class="flow-row">
+          <span>Student specialist</span>
+          <span>Caregiver specialist</span>
+        </div>
+        <i class="flow-line" />
+        <div class="flow-out">Support plan</div>
       </div>
     ) : kind === "proterra" ? (
-      <div class="publication-preview">
-        <div class="preview-title">
-          Proterra
-          <br />
-          Intelligence
-        </div>
-        <p>Dairy. Meat. Bovine genetics.</p>
-        <ol>
-          <>
-            <li>Collect sources</li>
-            <li>Draft the brief</li>
-            <li>Review the evidence</li>
-            <li>Approve publication</li>
-          </>
-        </ol>
-        <span class="preview-note">The editorial workflow</span>
-      </div>
+      <ol class="pipeline">
+        <li>
+          <b>01</b>Collect sources
+        </li>
+        <li>
+          <b>02</b>Draft the brief
+        </li>
+        <li>
+          <b>03</b>Review the evidence
+        </li>
+        <li class="flow-key">
+          <b>04</b>Approve publication
+        </li>
+      </ol>
     ) : kind === "nest" ? (
-      <div class="nest-preview">
-        <div class="preview-title">Nest</div>
-        <div class="room-grid">
-          <>
-            <span>Weekly plans</span>
-            <span>Recipes</span>
-            <span>Pantry</span>
-            <span>Groceries</span>
-            <span>Cat care</span>
-            <span>Calendar</span>
-          </>
-        </div>
-        <span class="preview-note">What lives in the household app</span>
+      <div class="room-grid">
+        <span>Dated task → Calendar</span>
+        <span>Receipt photo → Review → Purchase</span>
+        <span>Logged meal → Pantry update</span>
       </div>
     ) : (
-      <div class="small-art">
-        <strong>{title}</strong>
-      </div>
+      <strong class="small-art">{title}</strong>
     )
   }
-</div>
+  {!compact && notes[kind] && <figcaption>{notes[kind]}</figcaption>}
+</figure>
+
+<style>
+  /* Diagrams are flat: the panel keeps its rim but no shadow layers. */
+  .project-art.glass {
+    box-shadow: none;
+  }
+  .project-art {
+    display: grid;
+    place-items: center;
+    gap: 32px;
+    margin: 0;
+    min-height: 380px;
+    padding: 44px 32px 24px;
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  figcaption {
+    justify-self: start;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .flow-row span,
+  .flow-key,
+  .flow-out,
+  .pipeline li,
+  .room-grid span {
+    min-width: 0;
+    border: 1px solid var(--glass-rim);
+    border-radius: var(--radius-sm);
+    background: var(--glass-tint);
+    padding: 12px 18px;
+    text-align: center;
+  }
+  .project-art .flow-key {
+    border-color: transparent;
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+  .agent-flow {
+    display: grid;
+    justify-items: center;
+    width: min(100%, 500px);
+    min-width: 0;
+  }
+  .flow-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    min-width: 0;
+  }
+  .flow-row span {
+    flex: 1;
+  }
+  .agent-flow .flow-key {
+    width: min(100%, 300px);
+  }
+  .flow-out {
+    width: min(100%, 340px);
+  }
+  .flow-line {
+    width: 1px;
+    height: 18px;
+    background: var(--accent);
+    opacity: 0.5;
+  }
+  .pipeline {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    width: min(100%, 540px);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .pipeline li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+    padding-block: 20px;
+  }
+  .pipeline b {
+    flex: none;
+    white-space: nowrap;
+    font-weight: 500;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+  .room-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    width: min(100%, 420px);
+  }
+  .room-grid span {
+    padding-block: 14px;
+  }
+  .small-art {
+    font-size: 28px;
+    font-weight: 500;
+  }
+
+  /* Same factual diagrams at the homepage card scale. */
+  .compact {
+    min-height: 210px;
+    padding: 20px;
+    border-radius: var(--radius-md);
+    font-size: 12px;
+    gap: 0;
+  }
+  .compact .flow-row {
+    gap: 6px;
+  }
+  .compact :is(.flow-row span, .flow-key, .flow-out) {
+    padding: 6px 9px;
+    border-radius: 8px;
+  }
+  .compact .flow-line {
+    height: 10px;
+  }
+  .compact .pipeline,
+  .compact .room-grid {
+    gap: 7px;
+  }
+  .compact .pipeline li {
+    padding: 12px 10px;
+    gap: 8px;
+  }
+  .compact .pipeline b {
+    font-size: 10px;
+  }
+  .compact .room-grid span {
+    padding: 11px 10px;
+    border-radius: 8px;
+  }
+
+  @media (max-width: 560px) {
+    .project-art:not(.compact) {
+      min-height: 0;
+      padding: 28px 16px 20px;
+      font-size: 12px;
+      gap: 24px;
+    }
+    .flow-row {
+      gap: 6px;
+    }
+    .flow-row span,
+    .flow-key,
+    .flow-out,
+    .pipeline li,
+    .room-grid span {
+      padding: 10px 8px;
+    }
+    .compact {
+      min-height: 0;
+      padding: 24px 14px;
+    }
+  }
+  @media (max-width: 359px) {
+    .project-art:not(.compact) .pipeline {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .project-art:not(.compact) .flow-row span {
+      padding-inline: 4px;
+    }
+  }
+</style>

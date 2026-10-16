@@ -1,15 +1,17 @@
 ---
 title: "Optuna"
-summary: "Hyperparameter optimization framework for a small image classifier."
+summary: "Tuning a customer churn prediction model with Optuna."
 category: "Earlier work"
-tools: ["Python", "Deep Learning"]
+tools: ["Python", "PyTorch", "Optuna", "scikit-learn"]
 order: 21
 featured: false
-status: "Earlier work"
+status: "Class presentation"
 visual: "code"
 repo: "https://github.com/f-petrozzi/Optuna_CNN"
 ---
 
-Hyperparameter optimization framework for a small image classifier.
+For this class presentation, I used Optuna to tune a neural network in PyTorch on the Telco Customer Churn dataset.
 
-This project is part of my earlier work. The original project description and technology labels have been retained from my first portfolio. See the linked repository for implementation details.
+Each trial tests a combination of layer sizes, dropout, learning rate, and optimizer. Validation loss determines which configuration performs best, and pruning stops less promising trials early.
+
+The notebook includes plots of the trial history and parameter importance, along with a recorded walkthrough of the code.

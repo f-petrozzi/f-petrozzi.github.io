@@ -1,15 +1,15 @@
 ---
 title: "Portfolio"
-summary: "A website built to showcase projects."
+summary: "My original portfolio, built with HTML, CSS, and JavaScript in 2023."
 category: "Earlier work"
 tools: ["HTML", "CSS", "JavaScript", "UX / UI"]
 order: 24
 featured: false
-status: "Earlier work"
+status: "Personal project"
 visual: "code"
 repo: "https://github.com/f-petrozzi/f-petrozzi.github.io"
 ---
 
-A website built to showcase projects.
+I built my first portfolio in 2023 while learning HTML, CSS, and JavaScript. It includes project filters and a dark mode toggle.
 
-This project is part of my earlier work. The original project description and technology labels have been retained from my first portfolio. See the linked repository for implementation details.
+The [original site](/classic/) is still available to visit.

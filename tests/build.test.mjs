@@ -40,11 +40,13 @@ test("homepage renders all projects without JavaScript and no legacy dependencie
 test("integrated homepage retains main content and retires the PoC route", () => {
   const html = readFileSync(join(root, "index.html"), "utf8");
   for (const marker of [
-    'id="about"',
+    'id="work"',
+    'id="background"',
     'id="projects"',
+    'id="contact"',
     'id="tool-suggestions"',
     "theme-toggle",
-    "The first version is part of the story.",
+    "data-era-link",
     "/projects/nume/",
     "/projects/nest/",
     "/projects/proterra/",

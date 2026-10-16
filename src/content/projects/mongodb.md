@@ -1,15 +1,15 @@
 ---
 title: "MongoDB"
-summary: "A database that tracks appointments, doctors, patients, and billing, with sample data and queries."
+summary: "A MongoDB database for hospital appointments, patients, doctors, and billing."
 category: "Earlier work"
 tools: ["MongoDB", "JavaScript", "Python"]
 order: 32
 featured: false
-status: "Earlier work"
+status: "Course project"
 visual: "code"
 repo: "https://github.com/f-petrozzi/MongoDB"
 ---
 
-A database that tracks appointments, doctors, patients, and billing, with sample data and queries.
+I modeled appointments, patients, doctors, and billing as separate MongoDB collections, linked through identifiers. The project uses synthetic records to demonstrate how a hospital could organize scheduling and payment data.
 
-This project is part of my earlier work. The original project description and technology labels have been retained from my first portfolio. See the linked repository for implementation details.
+The query examples cover adding and editing records, grouping revenue by doctor, counting appointment statuses, and finding outstanding invoices.

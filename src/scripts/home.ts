@@ -1,428 +1,21 @@
+import { scheduleScroll } from "./scroll-control";
 import { gsap } from "gsap";
 import { Flip } from "gsap/Flip";
 gsap.registerPlugin(Flip);
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
 const duration = (seconds: number) => (reducedMotion.matches ? 0 : seconds);
 
-// The scrollbar follows native page scrolling. It never intercepts wheel or touch scrolling.
 const root = document.documentElement;
-const rail = document.querySelector<HTMLElement>(".scroll-rail")!;
-const thumb = document.querySelector<HTMLElement>(".scroll-thumb")!;
-const readout = document.querySelector<HTMLElement>(".scroll-readout")!;
-let drag: {
-  id: number;
-  y: number;
-  x: number;
-  scroll: number;
-  range: number;
-  travel: number;
-  touch: boolean;
-  lastY: number;
-  lastTime: number;
-  railTop: number;
-  grabOffset: number;
-} | null = null;
-let scrollFrame = 0;
-const range = () => Math.max(0, root.scrollHeight - innerHeight);
-const travel = () => Math.max(1, rail.clientHeight - thumb.offsetHeight);
-// Touch movement follows the finger exactly; only release uses the inertia loop.
-let motionFrame = 0,
-  motionTime = 0,
-  motionTarget = 0,
-  motionPosition = 0,
-  motionVelocity = 0;
-function stopMomentum() {
-  cancelAnimationFrame(motionFrame);
-  motionFrame = 0;
-  motionVelocity = 0;
-  if (!drag?.touch) {
-    root.classList.remove("is-touch-scrolling");
-    rail.style.removeProperty("top");
-    rail.style.removeProperty("height");
-    rail.style.removeProperty("bottom");
-  }
-}
-function stepMomentum(time: number) {
-  motionFrame = 0;
-  const dt = Math.min(0.04, Math.max(0.001, (time - motionTime) / 1000));
-  motionTime = time;
-  if (!drag) {
-    motionTarget += motionVelocity * dt;
-    motionVelocity *= Math.exp(-dt / 0.22);
-  }
-  const limit = range();
-  motionTarget = Math.max(0, Math.min(limit, motionTarget));
-  if (motionTarget === 0 || motionTarget === limit) motionVelocity = 0;
-  motionPosition +=
-    (motionTarget - motionPosition) * (1 - Math.exp(-dt / 0.045));
-  window.scrollTo({ top: motionPosition, behavior: "instant" });
-  scheduleScroll();
-  if (
-    drag?.touch ||
-    Math.abs(motionVelocity) > 10 ||
-    Math.abs(motionTarget - motionPosition) > 0.5
-  ) {
-    motionFrame = requestAnimationFrame(stepMomentum);
-  } else {
-    window.scrollTo({ top: motionTarget, behavior: "instant" });
-    stopMomentum();
-  }
-}
-function wakeMomentum() {
-  if (motionFrame || reducedMotion.matches) return;
-  motionTime = performance.now();
-  motionFrame = requestAnimationFrame(stepMomentum);
-}
-// Cursor proximity deforms the small surface. Scrolling only changes its position.
-const fluid = document.querySelector<HTMLElement>(".scroll-fluid")!;
-let fluidFrame = 0,
-  fluidTime = 0;
-const fluidState = {
-  x: 0,
-  y: 0,
-  pressure: 0,
-  vx: 0,
-  vy: 0,
-  vp: 0,
-  tx: 0,
-  ty: 0,
-  tp: 0,
-};
-let thumbCenter = { x: 0, y: 0 };
-const clamp = (value: number, limit: number) =>
-  Math.max(-limit, Math.min(limit, value));
-function drawFluid() {
-  const { x, y, pressure: p } = fluidState;
-  if (Math.abs(x) + Math.abs(y) + p < 0.001) {
-    fluid.style.transform = "";
-    fluid.style.removeProperty("--fluid-radius");
-    return;
-  }
-  const stretchX = 1 + p * 0.2 + Math.abs(x) * 0.014;
-  const stretchY = 1 - p * 0.13 + Math.abs(y) * 0.01;
-  fluid.style.transform = `translate3d(${x * 0.45}px,${y * 0.35}px,0) scale(${stretchX},${stretchY})`;
-  // Local corner curvature changes independently of translation: the surface spreads
-  // beneath the pointer instead of behaving as a rigid, rotating object.
-  const lx = (x + y) * 0.707,
-    ly = (y - x) * 0.707;
-  const horizontal = [12 + p * 27 - ly, 64 + lx, 59 + ly, 65 - lx]
-    .map((v) => `${v}%`)
-    .join(" ");
-  const vertical = [18 + p * 25 - lx, 68 - ly, 57 + lx, 65 + ly]
-    .map((v) => `${v}%`)
-    .join(" ");
-  fluid.style.setProperty("--fluid-radius", `${horizontal} / ${vertical}`);
-}
-function settleFluid(time: number) {
-  fluidFrame = 0;
-  const dt = Math.min(0.032, Math.max(0.001, (time - fluidTime) / 1000));
-  fluidTime = time;
-  for (const [position, velocity, target] of [
-    ["x", "vx", "tx"],
-    ["y", "vy", "ty"],
-    ["pressure", "vp", "tp"],
-  ] as const) {
-    fluidState[velocity] +=
-      (190 * (fluidState[target] - fluidState[position]) -
-        22 * fluidState[velocity]) *
-      dt;
-    fluidState[position] += fluidState[velocity] * dt;
-  }
-  drawFluid();
-  const residual =
-    Math.abs(fluidState.tx - fluidState.x) +
-    Math.abs(fluidState.ty - fluidState.y) +
-    Math.abs(fluidState.tp - fluidState.pressure) +
-    Math.abs(fluidState.vx) +
-    Math.abs(fluidState.vy) +
-    Math.abs(fluidState.vp);
-  if (residual > 0.012) fluidFrame = requestAnimationFrame(settleFluid);
-  else {
-    fluidState.x = fluidState.tx;
-    fluidState.y = fluidState.ty;
-    fluidState.pressure = fluidState.tp;
-    fluidState.vx = fluidState.vy = fluidState.vp = 0;
-    drawFluid();
-  }
-}
-function wakeFluid() {
-  if (reducedMotion.matches || document.hidden || fluidFrame) return;
-  fluidTime = performance.now();
-  fluidFrame = requestAnimationFrame(settleFluid);
-}
-function releaseFluid() {
-  fluidState.tx = fluidState.ty = fluidState.tp = 0;
-  wakeFluid();
-}
-function stopFluid() {
-  cancelAnimationFrame(fluidFrame);
-  fluidFrame = 0;
-  Object.keys(fluidState).forEach((key) => (fluidState[key] = 0));
-  drawFluid();
-}
-function aimFluid(x: number, y: number) {
-  if (reducedMotion.matches) return;
-  const dx = x - thumbCenter.x,
-    dy = y - thumbCenter.y,
-    distance = Math.hypot(dx, dy);
-  const proximity = Math.max(0, 1 - distance / 88);
-  fluidState.tx = clamp(dx, 24) * proximity * 0.6;
-  fluidState.ty = clamp(dy, 28) * proximity * 0.5;
-  fluidState.tp = Math.max(0, 1 - distance / 32);
-  wakeFluid();
-}
-document.addEventListener(
-  "pointermove",
-  (event) => {
-    if (event.pointerType !== "touch" && !drag)
-      aimFluid(event.clientX, event.clientY);
-  },
-  { passive: true },
-);
-document.documentElement.addEventListener("pointerleave", releaseFluid);
-document.addEventListener("visibilitychange", () => {
-  if (document.hidden) {
-    endDrag();
-    stopMomentum();
-    stopFluid();
-  }
-});
-reducedMotion.addEventListener("change", () => {
-  if (reducedMotion.matches) {
-    stopFluid();
-    stopMomentum();
-  }
-});
-function updateScroll() {
-  scrollFrame = 0;
-  if (!drag) releaseFluid();
-  const max = drag?.touch ? drag.range : range();
-  const thumbTravel = drag?.touch ? drag.travel : travel();
-  const fraction = max ? Math.min(1, Math.max(0, scrollY / max)) : 0;
-  thumb.style.transform = `translate3d(0, ${fraction * thumbTravel}px, 0)`;
-  const railBounds = rail.getBoundingClientRect();
-  thumbCenter = {
-    x: railBounds.left + thumb.offsetWidth / 2,
-    y: railBounds.top + fraction * thumbTravel + thumb.offsetHeight / 2,
-  };
-  const percent = Math.round(fraction * 100);
-  thumb.setAttribute("aria-valuenow", String(percent));
-  thumb.setAttribute(
-    "aria-valuetext",
-    percent === 0
-      ? "Top of page"
-      : percent === 100
-        ? "Bottom of page"
-        : `${percent}% down the page`,
-  );
-  readout.textContent = `${percent}%`;
-  thumb.setAttribute("aria-disabled", String(max === 0));
-}
-function scheduleScroll() {
-  if (!scrollFrame) scrollFrame = requestAnimationFrame(updateScroll);
-}
-function endDrag(coast = false) {
-  if (!drag) return;
-  const releasedTouch = drag.touch;
-  if (performance.now() - drag.lastTime > 100) motionVelocity = 0;
-  const id = drag.id;
-  drag = null;
-  releaseFluid();
-  if (!releasedTouch && thumb.hasPointerCapture(id))
-    thumb.releasePointerCapture(id);
-  thumb.classList.remove("is-dragging");
-  document.body.classList.remove("is-scroll-dragging");
-  if (coast && releasedTouch && !reducedMotion.matches) wakeMomentum();
-  else stopMomentum();
-}
-thumb.addEventListener("pointerdown", (event) => {
-  if (
-    event.pointerType === "touch" ||
-    !event.isPrimary ||
-    event.button !== 0 ||
-    !range()
-  )
-    return;
-  event.preventDefault();
-  stopMomentum();
-  thumb.focus({ preventScroll: true });
-  drag = {
-    id: event.pointerId,
-    y: event.clientY,
-    x: event.clientX,
-    scroll: scrollY,
-    range: range(),
-    travel: travel(),
-    touch: false,
-    lastY: event.clientY,
-    lastTime: performance.now(),
-    railTop: 0,
-    grabOffset: 0,
-  };
-  thumb.setPointerCapture(event.pointerId);
-  thumb.classList.add("is-dragging");
-  document.body.classList.add("is-scroll-dragging");
-});
-thumb.addEventListener("pointermove", (event) => {
-  if (!drag || drag.touch || event.pointerId !== drag.id) return;
-  aimFluid(event.clientX, event.clientY);
-  const top =
-    drag.scroll + ((event.clientY - drag.y) / drag.travel) * drag.range;
-  window.scrollTo({
-    top: Math.min(drag.range, Math.max(0, top)),
-    behavior: "instant",
-  });
-  scheduleScroll();
-});
-// Use one native touch stream, with viewport-relative coordinates and fixed rail
-// geometry. Mixing screen coordinates and accumulated deltas caused mobile jumps.
-thumb.addEventListener(
-  "touchstart",
-  (event) => {
-    event.preventDefault();
-    if (event.touches.length !== 1 || !range()) return;
-    endDrag();
-    stopMomentum();
-    stopFluid();
-    (document.activeElement as HTMLElement)?.blur();
-    const touch = event.touches[0];
-    const bounds = rail.getBoundingClientRect();
-    const thumbBounds = thumb.getBoundingClientRect();
-    rail.style.top = `${bounds.top}px`;
-    rail.style.height = `${bounds.height}px`;
-    rail.style.bottom = "auto";
-    root.classList.add("is-touch-scrolling");
-    motionTarget = motionPosition = scrollY;
-    drag = {
-      id: touch.identifier,
-      y: touch.clientY,
-      x: touch.clientX,
-      scroll: scrollY,
-      range: range(),
-      travel: travel(),
-      touch: true,
-      lastY: touch.clientY,
-      lastTime: performance.now(),
-      railTop: bounds.top,
-      grabOffset: touch.clientY - thumbBounds.top,
-    };
-    thumb.classList.add("is-dragging");
-    document.body.classList.add("is-scroll-dragging");
-  },
-  { passive: false },
-);
-thumb.addEventListener(
-  "touchmove",
-  (event) => {
-    if (!drag?.touch) return;
-    event.preventDefault();
-    const touch = [...event.touches].find(
-      (touch) => touch.identifier === drag!.id,
-    );
-    if (!touch) return;
-    const now = performance.now();
-    const top =
-      ((touch.clientY - drag.railTop - drag.grabOffset) / drag.travel) *
-      drag.range;
-    const next = Math.max(0, Math.min(drag.range, top));
-    const velocity =
-      ((next - motionPosition) / Math.max(8, now - drag.lastTime)) * 1000;
-    motionVelocity =
-      motionVelocity * 0.25 + Math.max(-1800, Math.min(1800, velocity)) * 0.75;
-    motionTarget = motionPosition = next;
-    drag.lastTime = now;
-    drag.lastY = touch.clientY;
-    window.scrollTo({ top: next, behavior: "instant" });
-    updateScroll();
-  },
-  { passive: false },
-);
-thumb.addEventListener(
-  "touchend",
-  (event) => {
-    if (!drag?.touch) return;
-    event.preventDefault();
-    if (
-      [...event.changedTouches].some((touch) => touch.identifier === drag!.id)
-    )
-      endDrag(true);
-  },
-  { passive: false },
-);
-thumb.addEventListener("touchcancel", () => {
-  if (drag?.touch) endDrag();
-});
-thumb.addEventListener("contextmenu", (event) => event.preventDefault());
-thumb.addEventListener("pointerup", () => {
-  if (drag && !drag.touch) endDrag();
-});
-thumb.addEventListener("pointercancel", () => {
-  if (drag && !drag.touch) endDrag();
-});
-thumb.addEventListener("lostpointercapture", () => {
-  if (drag && !drag.touch) endDrag();
-});
-window.addEventListener("blur", () => {
-  endDrag();
-  stopMomentum();
-});
-let viewportWidth = innerWidth;
-window.addEventListener("resize", () => {
-  // Mobile browser chrome and the keyboard change height during normal use.
-  if (innerWidth !== viewportWidth) {
-    endDrag();
-    stopMomentum();
-    viewportWidth = innerWidth;
-  }
-  scheduleScroll();
-});
-window.addEventListener("wheel", stopMomentum, { passive: true });
-document.addEventListener(
-  "pointerdown",
-  (event) => {
-    if (!thumb.contains(event.target as Node)) stopMomentum();
-  },
-  { passive: true },
-);
-document.addEventListener("keydown", stopMomentum);
-thumb.addEventListener("keydown", (event) => {
-  const positions: Record<string, number> = {
-    ArrowDown: scrollY + 60,
-    ArrowUp: scrollY - 60,
-    PageDown: scrollY + innerHeight * 0.85,
-    PageUp: scrollY - innerHeight * 0.85,
-    Home: 0,
-    End: range(),
-    " ": scrollY + innerHeight * 0.85 * (event.shiftKey ? -1 : 1),
-  };
-  if (!(event.key in positions)) return;
-  event.preventDefault();
-  window.scrollTo({ top: positions[event.key], behavior: "instant" });
-});
-rail.addEventListener("pointerdown", (event) => {
-  if (
-    event.target !== rail &&
-    !(event.target as HTMLElement).classList.contains("scroll-track")
-  )
-    return;
-  if (event.button !== 0 || !event.isPrimary) return;
-  const rect = rail.getBoundingClientRect();
-  const fraction = Math.min(
-    1,
-    Math.max(0, (event.clientY - rect.top - thumb.offsetHeight / 2) / travel()),
-  );
-  window.scrollTo({ top: fraction * range(), behavior: "instant" });
-  thumb.focus({ preventScroll: true });
-});
-window.addEventListener("scroll", scheduleScroll, { passive: true });
-new ResizeObserver(scheduleScroll).observe(document.body);
-rail.hidden = false;
-root.classList.add("has-scroll-control");
-updateScroll();
 
 // Fast, interruptible index filtering; keep the complete tools list searchable.
 const filters = document.querySelector<HTMLElement>(".filters")!;
 const rows = [...document.querySelectorAll<HTMLElement>(".project-row")];
+// Labels the earlier-work group while any of its projects remain visible.
+const listDivider = document.querySelector<HTMLElement>("[data-list-divider]")!;
+const earlierRows = rows.filter(
+  (row) =>
+    listDivider.compareDocumentPosition(row) & Node.DOCUMENT_POSITION_FOLLOWING,
+);
 const filterButtons = [
   ...document.querySelectorAll<HTMLButtonElement>("[data-filter]"),
 ];
@@ -439,10 +32,58 @@ const pillList = document.querySelector<HTMLElement>("#active-search-filters")!;
 const resetButton =
   document.querySelector<HTMLButtonElement>("#reset-filters")!;
 let activeFilter = "all";
+// Category chips stay out of the way until asked for; a dot marks an active one.
+const filterToggle =
+  document.querySelector<HTMLButtonElement>(".filter-toggle")!;
+const filterPanel = document.querySelector<HTMLElement>("#filter-panel")!;
+const filterDot = filterToggle.querySelector<HTMLElement>(".filter-dot")!;
+const filterState = filterToggle.querySelector<HTMLElement>(".filter-state")!;
+function setFilterPanel(open: boolean) {
+  filterPanel.hidden = !open;
+  filterToggle.setAttribute("aria-expanded", String(open));
+  if (open) requestAnimationFrame(() => updateFilterOverflow());
+  scheduleScroll();
+}
+filterToggle.addEventListener("click", () =>
+  setFilterPanel(filterPanel.hidden),
+);
 let filterAnimation: gsap.core.Timeline | null = null;
+let restoringCollection = false;
+// Filtering shrinks the list. Near the bottom of the page that would force the
+// browser to pull the scroll position up, so the search box would jump. A spacer
+// after the footer keeps the page tall enough for the search box to stay put,
+// then gives the height back as the reader scrolls up.
+const filterSpacer = document.createElement("div");
+filterSpacer.className = "filter-spacer";
+filterSpacer.setAttribute("aria-hidden", "true");
+document.querySelector("#page-content")!.append(filterSpacer);
+let spacerHeight = 0;
+function setSpacer(height: number) {
+  height = Math.max(0, Math.ceil(height));
+  if (height === spacerHeight) return;
+  spacerHeight = height;
+  filterSpacer.style.height = `${height}px`;
+  scheduleScroll();
+}
+function spacerNeeded() {
+  const content = document.documentElement.scrollHeight - spacerHeight;
+  return scrollY + innerHeight - content;
+}
+addEventListener(
+  "scroll",
+  () => {
+    if (spacerHeight > 0 && spacerNeeded() < spacerHeight)
+      setSpacer(spacerNeeded());
+  },
+  { passive: true },
+);
 function filterProjects() {
   filterAnimation?.progress(1).kill();
-  const state = reducedMotion.matches ? null : Flip.getState(rows);
+  const anchorTop = filters.getBoundingClientRect().top;
+  const state =
+    reducedMotion.matches || restoringCollection
+      ? null
+      : Flip.getState([...rows, listDivider]);
   const term = normalizeSearch(search.value.trim());
   resetButton.hidden =
     activeFilter === "all" && activeSearchFilters.length === 0 && !term;
@@ -464,6 +105,17 @@ function filterProjects() {
     row.hidden = !matches;
     if (matches) total++;
   });
+  listDivider.hidden = earlierRows.every((row) => row.hidden);
+  // No recent work above it: drop the divider's rule and top spacing.
+  listDivider.classList.toggle(
+    "is-leading",
+    rows.every((row) => row.hidden || earlierRows.includes(row)),
+  );
+  filterDot.hidden = activeFilter === "all";
+  filterState.textContent =
+    activeFilter === "all"
+      ? ""
+      : `, ${filterButtons.find((b) => b.dataset.filter === activeFilter)?.textContent?.trim()} selected`;
   count.textContent = `${total} ${total === 1 ? "project" : "projects"}`;
   empty.hidden = total !== 0;
   if (state)
@@ -478,6 +130,11 @@ function filterProjects() {
           { opacity: 1, duration: 0.16, clearProps: "opacity" },
         ),
     });
+  if (!restoringCollection) {
+    setSpacer(spacerNeeded());
+    const drift = filters.getBoundingClientRect().top - anchorTop;
+    if (Math.abs(drift) > 0.5) scrollBy({ top: drift, behavior: "instant" });
+  }
   scheduleScroll();
 }
 filterButtons.forEach((button) =>
@@ -705,121 +362,102 @@ document
       event.preventDefault();
       expand(!expanded);
     });
-    card.addEventListener("pointerenter", (event) => {
-      if (event.pointerType === "mouse" && matchMedia("(hover: hover)").matches)
-        expand(true);
-    });
-    card.addEventListener("pointerleave", (event) => {
-      if (event.pointerType === "mouse" && matchMedia("(hover: hover)").matches)
-        expand(false);
-    });
   });
 
 // The two timelines share an animated selector and a continuous chronological spine.
 const timelineTabs = [
   ...document.querySelectorAll<HTMLButtonElement>("[data-timeline]"),
 ];
-const timelineStage = document.querySelector<HTMLElement>(".timeline-stage")!;
 const timelineIndicator = document.querySelector<HTMLElement>(
   ".timeline-tab-indicator",
 )!;
 // Connect card centers even when descriptions wrap to different heights.
 function sizeCareerSegments() {
-  document
-    .querySelectorAll<HTMLElement>(".timeline-panel:not([hidden])")
-    .forEach((panel) => {
-      const stops = [...panel.querySelectorAll<HTMLElement>(".career-stop")];
-      stops.forEach((stop, index) => {
-        const next = stops[index + 1];
-        if (!next) return;
-        const marker = stop.querySelector<HTMLElement>(".career-marker")!;
-        const nextMarker = next.querySelector<HTMLElement>(".career-marker")!;
-        const length =
-          next.offsetTop -
-          stop.offsetTop +
-          (nextMarker.offsetHeight - marker.offsetHeight) / 2;
-        stop.style.setProperty("--segment-length", `${length}px`);
-      });
+  const measurements = [
+    ...document.querySelectorAll<HTMLElement>(".timeline-panel:not([hidden])"),
+  ].flatMap((panel) => {
+    const stops = [...panel.querySelectorAll<HTMLElement>(".career-stop")];
+    const centers = stops.map((stop) => {
+      const rect = stop
+        .querySelector(".career-marker")!
+        .getBoundingClientRect();
+      return rect.top + rect.height / 2;
     });
+    return stops.slice(1).map((stop, index) => ({
+      stop,
+      length: centers[index + 1] - centers[index],
+    }));
+  });
+  measurements.forEach(({ stop, length }) =>
+    stop.style.setProperty("--segment-length", `${length}px`),
+  );
 }
 const careerResizeObserver = new ResizeObserver(sizeCareerSegments);
 document
   .querySelectorAll(".career-card")
   .forEach((card) => careerResizeObserver.observe(card));
 sizeCareerSegments();
-let timelineAnimation: gsap.core.Timeline | null = null;
 let activeTimeline = "experience";
-let timelineExit: Animation | null = null;
-let timelineRevision = 0;
-let timelineVisited = false;
-function revealPath(panel: HTMLElement, beforeHeight?: number) {
-  timelineAnimation?.progress(1).kill();
-  if (reducedMotion.matches) {
-    scheduleScroll();
-    return;
-  }
-  const stops = [...panel.querySelectorAll<HTMLElement>(".career-stop")];
-  timelineAnimation = gsap.timeline({ onComplete: scheduleScroll });
-  if (beforeHeight !== undefined)
-    timelineAnimation.fromTo(
-      timelineStage,
-      { height: beforeHeight, overflow: "hidden" },
-      {
-        height: panel.getBoundingClientRect().height,
-        duration: 0.35,
-        ease: "power3.inOut",
-        clearProps: "height,overflow",
-      },
-      0,
-    );
-  let arrival = 0.06;
-  stops.forEach((stop, index) => {
-    const dot = stop.querySelector(".career-node");
-    const date = stop.querySelector(".career-date");
-    const card = stop.querySelector(".career-card");
-    timelineAnimation!.fromTo(
-      dot,
-      { opacity: 0, scale: 0.65 },
-      {
-        opacity: 1,
-        scale: 1,
-        duration: 0.18,
-        ease: "power2.out",
-        clearProps: "opacity,transform",
-      },
-      arrival,
-    );
-    timelineAnimation!.fromTo(
-      [date, card],
-      { opacity: 0, x: 7 },
-      {
-        opacity: 1,
-        x: 0,
-        duration: 0.26,
-        ease: "power2.out",
-        clearProps: "opacity,transform",
-      },
-      arrival + 0.08,
-    );
-    if (index < stops.length - 1) {
-      const segment = stop.querySelector(".career-segment");
-      const run = Math.max(0.19, Math.min(0.3, stop.offsetHeight / 1000));
-      timelineAnimation!.fromTo(
-        segment,
-        { scaleY: 0 },
-        { scaleY: 1, duration: run, ease: "none", clearProps: "transform" },
-        arrival + 0.13,
-      );
-      arrival += 0.13 + run - 0.035;
+const careerStops = [...document.querySelectorAll<HTMLElement>(".career-stop")];
+const revealTimers = new Map<HTMLElement, ReturnType<typeof setTimeout>>();
+let nextRevealAt = 0;
+const revealObserver = new IntersectionObserver(
+  (entries) => {
+    for (const entry of entries) {
+      const stop = entry.target as HTMLElement;
+      if (
+        !entry.isIntersecting ||
+        stop.closest<HTMLElement>(".timeline-panel")!.hidden ||
+        stop.classList.contains("is-revealed") ||
+        stop.classList.contains("is-revealing")
+      )
+        continue;
+      if (reducedMotion.matches) {
+        stop.classList.add("is-revealed");
+      } else {
+        const delay = Math.max(0, nextRevealAt - performance.now());
+        nextRevealAt = performance.now() + delay + 780;
+        revealTimers.set(
+          stop,
+          setTimeout(() => {
+            stop.classList.add("is-revealing");
+            revealTimers.set(
+              stop,
+              setTimeout(() => {
+                stop.classList.add("is-revealed");
+                stop.classList.remove("is-revealing");
+                revealTimers.delete(stop);
+              }, 1200),
+            );
+          }, delay),
+        );
+      }
+      revealObserver.unobserve(stop);
     }
+  },
+  { threshold: 0.15, rootMargin: "0px 0px -32px 0px" },
+);
+// Each panel's arrival plays once. Returning to a panel shows what already
+// arrived; only stops that never revealed wait for the viewport.
+function observeTimeline(panel: HTMLElement) {
+  revealObserver.disconnect();
+  nextRevealAt = 0;
+  for (const stop of careerStops) {
+    if (!stop.classList.contains("is-revealing")) continue;
+    // Finish an arrival interrupted by a tab switch instead of replaying it.
+    clearTimeout(revealTimers.get(stop));
+    revealTimers.delete(stop);
+    stop.classList.remove("is-revealing");
+    stop.classList.add("is-revealed");
+  }
+  panel.querySelectorAll<HTMLElement>(".career-stop").forEach((stop) => {
+    if (stop.classList.contains("is-revealed")) return;
+    if (reducedMotion.matches) stop.classList.add("is-revealed");
+    else if (!revealTimers.has(stop)) revealObserver.observe(stop);
   });
 }
-async function selectTimeline(kind: string) {
+function selectTimeline(kind: string) {
   if (kind === activeTimeline) return;
-  const revision = ++timelineRevision;
-  timelineVisited = true;
-  timelineExit?.cancel();
-  timelineAnimation?.progress(1).kill();
   activeTimeline = kind;
   timelineTabs.forEach((tab) => {
     const selected = tab.dataset.timeline === kind;
@@ -832,25 +470,14 @@ async function selectTimeline(kind: string) {
     ease: "power3.inOut",
     overwrite: true,
   });
-  const oldPanel = document.querySelector<HTMLElement>(
-    ".timeline-panel:not([hidden])",
-  )!;
-  if (!reducedMotion.matches) {
-    timelineExit = oldPanel.animate([{ opacity: 1 }, { opacity: 0 }], {
-      duration: 120,
-      easing: "ease-out",
-    });
-    await timelineExit.finished.catch(() => {});
-    if (revision !== timelineRevision) return;
-  }
-  const beforeHeight = timelineStage.getBoundingClientRect().height;
-  document
-    .querySelectorAll<HTMLElement>(".timeline-panel")
-    .forEach((panel) => (panel.hidden = panel.id !== `panel-${kind}`));
-  document.getElementById("journey-start")!.textContent =
-    kind === "education" ? "2019" : "2023";
+  document.querySelectorAll<HTMLElement>(".timeline-panel").forEach((panel) => {
+    const selected = panel.id === `panel-${kind}`;
+    panel.hidden = !selected;
+    panel.classList.toggle("is-active", selected);
+  });
+  observeTimeline(document.getElementById(`panel-${kind}`)!);
   sizeCareerSegments();
-  revealPath(document.getElementById(`panel-${kind}`)!, beforeHeight);
+  scheduleScroll();
 }
 timelineTabs.forEach((tab, index) => {
   tab.addEventListener("click", () => selectTimeline(tab.dataset.timeline!));
@@ -870,214 +497,309 @@ timelineTabs.forEach((tab, index) => {
     selectTimeline(timelineTabs[next].dataset.timeline!);
   });
 });
+// Keyboard focus must never land on (or skip) cards still waiting to reveal.
+document.querySelectorAll<HTMLElement>(".timeline-panel").forEach((panel) =>
+  panel.addEventListener("focusin", () => {
+    panel.querySelectorAll<HTMLElement>(".career-stop").forEach((stop) => {
+      clearTimeout(revealTimers.get(stop));
+      revealTimers.delete(stop);
+      revealObserver.unobserve(stop);
+      stop.classList.remove("is-revealing");
+      stop.classList.add("is-revealed");
+    });
+  }),
+);
 document.getElementById("panel-education")!.hidden = true;
 document.querySelector<HTMLElement>(".timeline-tabs")!.hidden = false;
 document.querySelector(".journey")!.classList.add("timeline-enhanced");
-const timelineObserver = new IntersectionObserver(
-  (entries) => {
-    if (!timelineVisited && entries.some((entry) => entry.isIntersecting)) {
-      timelineVisited = true;
-      revealPath(document.getElementById("panel-experience")!);
-      timelineObserver.disconnect();
-    }
-  },
-  { threshold: 0.12 },
-);
-timelineObserver.observe(timelineStage);
+observeTimeline(document.getElementById("panel-experience")!);
 reducedMotion.addEventListener("change", () => {
-  if (reducedMotion.matches) {
-    timelineExit?.finish();
-    timelineAnimation?.progress(1).kill();
-    gsap.killTweensOf(timelineIndicator);
-    gsap.set(timelineIndicator, {
-      xPercent: activeTimeline === "education" ? 100 : 0,
-    });
-  }
+  root.classList.toggle("timeline-motion", !reducedMotion.matches);
+  observeTimeline(document.getElementById(`panel-${activeTimeline}`)!);
+  gsap.killTweensOf(timelineIndicator);
+  gsap.set(timelineIndicator, {
+    xPercent: activeTimeline === "education" ? 100 : 0,
+  });
 });
 
-// A native dialog supplies focus containment and Escape behavior. The shared screenshot
-// carries the opening and closing movement; normal links remain the no-JavaScript path.
-const dialog = document.querySelector<HTMLDialogElement>(".project-dialog")!;
-const featureImage = document.querySelector<HTMLImageElement>("#feature-shot")!;
-const detailImage = document.querySelector<HTMLImageElement>("#detail-shot")!;
-let returnFocus: HTMLElement | null = null;
-let returnScroll = 0;
-let previousOverflow = "";
-let ghost: HTMLImageElement | null = null;
-let imageTween: gsap.core.Tween | null = null;
-let closing = false;
-let ownedHistoryEntry = false;
-function clearImageTransition() {
-  imageTween?.kill();
-  imageTween = null;
-  ghost?.remove();
-  ghost = null;
-  detailImage.style.visibility = "";
-  featureImage.style.visibility = "";
-}
-function moveImage(from: DOMRect, to: DOMRect, complete: () => void) {
-  clearImageTransition();
+reducedMotion.addEventListener("change", () => {
+  if (reducedMotion.matches) filterAnimation?.progress(1).kill();
+});
+
+// Save the collection on its existing history entry. Returning can reuse the
+// browser's cached document; this snapshot also covers a cache miss.
+document.addEventListener("click", (event) => {
   if (
-    reducedMotion.matches ||
-    from.bottom < 0 ||
-    from.top > innerHeight ||
-    from.width === 0 ||
-    to.bottom < 0 ||
-    to.top > innerHeight
-  ) {
-    complete();
+    event.defaultPrevented ||
+    event.button !== 0 ||
+    event.metaKey ||
+    event.ctrlKey ||
+    event.shiftKey ||
+    event.altKey
+  )
     return;
-  }
-  ghost = featureImage.cloneNode() as HTMLImageElement;
-  ghost.removeAttribute("id");
-  ghost.alt = "";
-  ghost.setAttribute("aria-hidden", "true");
-  ghost.className = "project-ghost";
-  dialog.append(ghost);
-  detailImage.style.visibility = "hidden";
-  featureImage.style.visibility = "hidden";
-  gsap.set(ghost, {
-    left: to.left,
-    top: to.top,
-    width: to.width,
-    height: to.height,
-  });
-  imageTween = gsap.fromTo(
-    ghost,
+  const link = (event.target as Element).closest<HTMLAnchorElement>("a[href]");
+  if (!link || link.target || link.hasAttribute("download")) return;
+  const url = new URL(link.href);
+  if (url.origin !== location.origin || !url.pathname.startsWith("/projects/"))
+    return;
+  history.replaceState(
     {
-      x: from.left - to.left,
-      y: from.top - to.top,
-      scaleX: from.width / to.width,
-      scaleY: from.height / to.height,
-    },
-    {
-      x: 0,
-      y: 0,
-      scaleX: 1,
-      scaleY: 1,
-      duration: 0.42,
-      ease: "power3.inOut",
-      onComplete: () => {
-        clearImageTransition();
-        complete();
+      ...history.state,
+      collectionSnapshot: {
+        scroll: scrollY,
+        search: search.value,
+        category: activeFilter,
+        filters: activeSearchFilters,
       },
     },
+    "",
   );
-}
-function openProject(trigger: HTMLElement | null, push = true) {
-  if (dialog.open) return;
-  endDrag();
-  closing = false;
-  returnFocus = trigger;
-  returnScroll = scrollY;
-  const source = featureImage.getBoundingClientRect();
-  previousOverflow = root.style.overflow;
-  root.style.overflow = "hidden";
-  dialog.showModal();
-  dialog.scrollTop = 0;
-  if (push) {
-    history.pushState({ portfolioProject: true }, "", "#project-homelab");
-    ownedHistoryEntry = true;
-  }
-  const target = detailImage.getBoundingClientRect();
-  moveImage(source, target, () => {});
-  gsap.fromTo(
-    dialog.querySelector(".detail-heading"),
-    { y: 8 },
-    { y: 0, duration: duration(0.35), clearProps: "transform" },
-  );
-}
-function finishClose() {
-  clearImageTransition();
-  dialog.close();
-  root.style.overflow = previousOverflow;
-  window.scrollTo({ top: returnScroll, behavior: "instant" });
-  returnFocus?.focus({ preventScroll: true });
-  closing = false;
-  scheduleScroll();
-}
-function closeProject() {
-  if (!dialog.open || closing) return;
-  closing = true;
-  clearImageTransition();
-  const source = detailImage.getBoundingClientRect();
-  const target = featureImage.getBoundingClientRect();
-  moveImage(source, target, finishClose);
-}
-function requestClose() {
-  if (closing) return;
-  if (ownedHistoryEntry) {
-    ownedHistoryEntry = false;
-    history.back();
-  } else {
-    history.replaceState(
-      history.state,
-      "",
-      location.pathname + location.search,
+  try {
+    sessionStorage.setItem(
+      "portfolio-collection-departure",
+      JSON.stringify({ path: url.pathname, at: Date.now() }),
     );
-    closeProject();
-  }
-}
-document.querySelectorAll<HTMLAnchorElement>(".project-open").forEach((link) =>
-  link.addEventListener("click", (event) => {
-    if (
-      event.metaKey ||
-      event.ctrlKey ||
-      event.shiftKey ||
-      event.altKey ||
-      event.button !== 0
-    )
-      return;
-    event.preventDefault();
-    openProject(link);
-  }),
-);
-document
-  .querySelectorAll(".close-project")
-  .forEach((button) => button.addEventListener("click", requestClose));
-dialog.addEventListener("cancel", (event) => {
-  event.preventDefault();
-  requestClose();
+  } catch {}
 });
-dialog.addEventListener("click", (event) => {
-  if (event.target !== dialog) return;
-  const rect = dialog.getBoundingClientRect();
-  if (
-    event.clientX < rect.left ||
-    event.clientX > rect.right ||
-    event.clientY < rect.top ||
-    event.clientY > rect.bottom
-  )
-    requestClose();
-});
-window.addEventListener("popstate", () => {
-  if (location.hash === "#project-homelab") {
-    ownedHistoryEntry = !!history.state?.portfolioProject;
-    if (closing) {
-      clearImageTransition();
-      closing = false;
-    }
-    openProject(null, false);
-  } else {
-    ownedHistoryEntry = false;
-    closeProject();
-  }
-});
-window.addEventListener("resize", () => {
-  if (closing) finishClose();
-  else clearImageTransition();
-});
-reducedMotion.addEventListener("change", () => {
-  if (!reducedMotion.matches) return;
-  filterAnimation?.progress(1).kill();
-  if (closing) finishClose();
-  else clearImageTransition();
-});
-if (location.hash === "#project-homelab") openProject(null, false);
-// One restrained arrival, leaving the name and introduction readable from first paint.
-if (!reducedMotion.matches)
-  gsap.fromTo(
-    ".feature-image",
-    { y: 14 },
-    { y: 0, duration: 0.5, ease: "power3.out", clearProps: "transform" },
+const collectionSnapshot = history.state?.collectionSnapshot;
+const navigation = performance.getEntriesByType("navigation")[0] as
+  PerformanceNavigationTiming | undefined;
+if (navigation?.type === "back_forward" && collectionSnapshot) {
+  restoringCollection = true;
+  search.value = collectionSnapshot.search;
+  activeFilter = collectionSnapshot.category;
+  activeSearchFilters.splice(
+    0,
+    activeSearchFilters.length,
+    ...collectionSnapshot.filters,
   );
+  filterButtons.forEach((button) =>
+    button.setAttribute(
+      "aria-pressed",
+      String(button.dataset.filter === activeFilter),
+    ),
+  );
+  renderSearchFilters();
+  if (activeFilter !== "all") setFilterPanel(true);
+  filterProjects();
+  restoringCollection = false;
+  window.scrollTo({ top: collectionSnapshot.scroll, behavior: "instant" });
+}
+
+// Copy-email is an enhancement: mailto stays the primary path without JavaScript.
+const copyButton = document.querySelector<HTMLButtonElement>(".copy-email");
+if (copyButton && navigator.clipboard) {
+  const label = copyButton.querySelector<HTMLElement>(".copy-label")!;
+  const status = document.querySelector<HTMLElement>("#copy-status")!;
+  let resetTimer: ReturnType<typeof setTimeout> | undefined;
+  copyButton.hidden = false;
+  copyButton.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(copyButton.dataset.email!);
+      label.textContent = "Copied";
+      status.textContent = "Email address copied";
+      copyButton.classList.add("is-copied");
+    } catch {
+      label.textContent = copyButton.dataset.email!;
+      status.textContent = "Copy unavailable; the address is shown";
+    }
+    clearTimeout(resetTimer);
+    resetTimer = setTimeout(() => {
+      label.textContent = "Copy email";
+      status.textContent = "";
+      copyButton.classList.remove("is-copied");
+    }, 2200);
+  });
+}
+
+// The information surface grows in flow from its icon, keeping spring velocity on reversal.
+document
+  .querySelectorAll<HTMLDetailsElement>(".work-more")
+  .forEach((details) => {
+    const summary = details.querySelector<HTMLElement>("summary")!;
+    const body = details.querySelector<HTMLElement>(".work-more-body")!;
+    const foot =
+      details.parentElement!.querySelector<HTMLElement>(".work-foot")!;
+    const ink = details.querySelector<SVGSVGElement>(".info-ink")!;
+    const group = ink.querySelector("g")!,
+      rect = ink.querySelector("rect")!,
+      circle = ink.querySelector("circle")!,
+      neck = ink.querySelector("path")!;
+    const blurNode = ink.querySelector("feGaussianBlur")!,
+      filter = ink.querySelector("filter")!;
+    details.classList.add("info-enhanced");
+    let expanded = false,
+      frame = 0,
+      last = 0;
+    let width = 44,
+      height = 44,
+      widthVelocity = 0,
+      heightVelocity = 0;
+    let openWidth = 44,
+      openHeight = 44;
+    const spring = (
+      value: number,
+      velocity: number,
+      target: number,
+      dt: number,
+    ) => {
+      const omega = 17,
+        damping = 0.86;
+      const y = value - target,
+        a = damping * omega;
+      const b = omega * Math.sqrt(1 - damping * damping);
+      const decay = Math.exp(-a * dt),
+        c = Math.cos(b * dt),
+        s = Math.sin(b * dt);
+      const q = (velocity + a * y) / b;
+      return [
+        target + decay * (y * c + q * s),
+        decay * (velocity * c - ((a * velocity + omega * omega * y) / b) * s),
+      ];
+    };
+    function availableWidth() {
+      const parent = details.parentElement!,
+        style = getComputedStyle(parent);
+      return (
+        parent.clientWidth -
+        parseFloat(style.paddingLeft) -
+        parseFloat(style.paddingRight)
+      );
+    }
+    function measure() {
+      openWidth = availableWidth();
+      body.style.width = `${openWidth}px`;
+      openHeight = Math.max(44, body.scrollHeight);
+    }
+    function paint() {
+      details.style.width = `${Math.max(44, width)}px`;
+      details.style.height = `${Math.max(44, height)}px`;
+      const space = Math.max(
+        0,
+        Math.min(1, (width - 44) / Math.max(1, openWidth - 44)),
+      );
+      foot.style.marginTop = `${-56 * (1 - space)}px`;
+      foot.style.paddingLeft = `${52 * (1 - space)}px`;
+      body.style.opacity = String(
+        expanded ? Math.max(0, (space - 0.45) / 0.55) : 0,
+      );
+      body.style.transform = `translateY(${(1 - space) * 5}px)`;
+      summary.style.transform = `translateX(${Math.max(0, width - 44)}px)`;
+      const w = Math.max(44, width),
+        h = Math.max(44, height),
+        lobe = Math.max(0, w - 60 * (1 - space));
+      rect.setAttribute("width", String(lobe));
+      rect.setAttribute("height", String(h));
+      circle.setAttribute("cx", String(w - 22));
+      const x = Math.max(0, lobe - 6),
+        end = w - 22;
+      neck.setAttribute(
+        "d",
+        space > 0.02 && space < 0.9
+          ? `M${x} 8 C${x + 20} 8 ${end - 18} 14 ${end} 10 L${end} 34 C${end - 18} 30 ${x + 20} 36 ${x} 36Z`
+          : "",
+      );
+      const blur = reducedMotion.matches ? 0 : 3.5 * Math.sin(Math.PI * space);
+      blurNode.setAttribute("stdDeviation", String(Math.max(0, blur)));
+      if (blur > 0.15) group.setAttribute("filter", `url(#${filter.id})`);
+      else group.removeAttribute("filter");
+    }
+    function tick(now: number) {
+      const dt = Math.min(0.05, Math.max(0, (now - last) / 1000));
+      last = now;
+      const targetWidth = expanded ? openWidth : 44,
+        targetHeight = expanded ? openHeight : 44;
+      [width, widthVelocity] = spring(width, widthVelocity, targetWidth, dt);
+      [height, heightVelocity] = spring(
+        height,
+        heightVelocity,
+        targetHeight,
+        dt,
+      );
+      const settled =
+        Math.abs(width - targetWidth) +
+          Math.abs(height - targetHeight) +
+          Math.abs(widthVelocity) +
+          Math.abs(heightVelocity) <
+        0.25;
+      if (settled) {
+        width = targetWidth;
+        height = targetHeight;
+        widthVelocity = heightVelocity = 0;
+      }
+      paint();
+      scheduleScroll();
+      if (!settled) frame = requestAnimationFrame(tick);
+      else {
+        frame = 0;
+        if (!expanded) details.open = false;
+      }
+    }
+    function setExpanded(value: boolean, immediate = false) {
+      expanded = value;
+      details.classList.toggle("is-expanded", value);
+      summary.setAttribute("aria-expanded", String(value));
+      body.inert = !value;
+      details.open = true;
+      measure();
+      if (reducedMotion.matches || immediate) {
+        cancelAnimationFrame(frame);
+        frame = 0;
+        width = value ? openWidth : 44;
+        height = value ? openHeight : 44;
+        widthVelocity = heightVelocity = 0;
+        paint();
+        details.open = value;
+        scheduleScroll();
+      } else if (!frame) {
+        last = performance.now();
+        frame = requestAnimationFrame(tick);
+      }
+    }
+    let leaveTimer: ReturnType<typeof setTimeout> | undefined;
+    details.addEventListener("pointerenter", (event) => {
+      if (
+        event.pointerType !== "mouse" ||
+        !matchMedia("(hover: hover)").matches
+      )
+        return;
+      clearTimeout(leaveTimer);
+      if (!expanded) setExpanded(true);
+    });
+    details.addEventListener("pointerleave", (event) => {
+      if (event.pointerType !== "mouse") return;
+      clearTimeout(leaveTimer);
+      leaveTimer = setTimeout(() => {
+        if (
+          !details.contains(document.activeElement) ||
+          !document.activeElement?.matches(":focus-visible")
+        )
+          setExpanded(false);
+      }, 200);
+    });
+    summary.setAttribute("aria-expanded", "false");
+    body.inert = true;
+    paint();
+    summary.addEventListener("click", (event) => {
+      event.preventDefault();
+      clearTimeout(leaveTimer);
+      setExpanded(!expanded, (event as MouseEvent).detail === 0);
+    });
+    details.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape" || !expanded) return;
+      event.preventDefault();
+      setExpanded(false, true);
+      summary.focus({ preventScroll: true });
+    });
+    new ResizeObserver((entries) => {
+      if (
+        expanded &&
+        Math.abs(entries[0].contentRect.width - openWidth) > 0.5
+      ) {
+        measure();
+        if (!frame) setExpanded(true);
+      }
+    }).observe(details.parentElement!);
+    reducedMotion.addEventListener("change", () => setExpanded(expanded));
+  });
