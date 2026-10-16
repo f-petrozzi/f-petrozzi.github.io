@@ -93,6 +93,7 @@ const Demo = demos[project.id]
     >
       <Content />
     </div>
+    {project.id === "nume" && Demo && <Demo />}
     <nav class="case-nav" aria-label="More projects">
       <a class="glass" href={`/projects/${previous.id}/`} rel="prev">
         <span>Previous</span>
