@@ -15,6 +15,14 @@ Read those four files before starting. They are a working reference for structur
   When the real thing uses a model or service, simulate it with deterministic local rules and say
   so once in a short note, as NüMe does ("This sample does not run …").
 - Two to four views or interactions at most. A focused slice beats a shallow clone.
+- Lead with the project's output, not its controls: the first screen should show what the project
+  produces, with inputs next to it.
+- Simulated internals (agents, pipelines, models) replay the real system's stages and vocabulary.
+  Do not narrate the demo's own mechanics ("matched a keyword table").
+- Continuous inputs should produce continuous changes (rankings, scores, charts), not a single
+  threshold flip between two canned outputs.
+- Say "sample/synthetic" once: the page header line plus at most one short note inside the demo.
+  No toolbar disclaimers or helper sentences.
 
 ## Files (create only these; do not edit existing files)
 
