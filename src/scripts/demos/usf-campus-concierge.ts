@@ -8,7 +8,8 @@ import {
   type Reply,
 } from "../../data/demos/usf-campus-concierge";
 
-function init(root: HTMLElement) {
+function init(root: HTMLElement, index: number) {
+  const passagePrefix = `usf-concierge-${index}-passage`;
   const get = <T extends HTMLElement>(selector: string) =>
     root.querySelector<T>(selector)!;
   const question = get<HTMLInputElement>("[data-question]");
@@ -81,16 +82,19 @@ function init(root: HTMLElement) {
     if (!reply.answer.length) answer.textContent = reply.fallback;
     for (const part of reply.answer) {
       const paragraph = document.createElement("p");
-      paragraph.append(document.createTextNode(`${part.text} `));
-      const citation = document.createElement("button");
-      citation.type = "button";
+      paragraph.append(document.createTextNode(`${part.text}\u00a0`));
+      const citation = document.createElement("a");
+      citation.href = `#${passagePrefix}-${part.passageId}`;
       citation.className = "citation";
-      citation.textContent = `[${part.number}]`;
+      citation.textContent = String(part.number);
       citation.setAttribute(
         "aria-label",
         `Citation ${part.number}: ${reply.citations[part.number - 1].title}`,
       );
-      citation.addEventListener("click", () => selectPassage(part.passageId));
+      citation.addEventListener("click", (event) => {
+        event.preventDefault();
+        selectPassage(part.passageId);
+      });
       paragraph.append(citation);
       answer.append(paragraph);
     }
@@ -98,6 +102,7 @@ function init(root: HTMLElement) {
       ...reply.ranked.map((passage, index) => {
         const article = document.createElement("article");
         article.dataset.passage = String(passage.id);
+        article.id = `${passagePrefix}-${passage.id}`;
         article.tabIndex = -1;
         const citation = reply.citations.findIndex((p) => p.id === passage.id);
         if (citation !== -1) article.dataset.cited = "true";

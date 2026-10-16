@@ -34,3 +34,9 @@ Users can accept or skip a recommendation. The original app records those respon
 Google ADK coordinates the agents and specialist services. Each recommendation is stored with its selection reasons, alternatives, and the profile used for that run. A trace view lets me follow the steps that produced the plan.
 
 The frontend uses React and TypeScript, with FastAPI and PostgreSQL behind it.
+
+## Where it started
+
+NüMe grew out of CareMesh, our HackUSF 2026 team prototype for wellness support using wearable data and AI agents. I built its FastAPI backend, database models and migrations, Garmin integration, and recipe parsing. Other team members built the frontend, agent orchestration, and specialist services.
+
+The [CareMesh repository](https://github.com/f-petrozzi/HackUSF26) preserves the hackathon prototype.

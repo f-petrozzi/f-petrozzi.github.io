@@ -296,8 +296,7 @@ const lines = EDGES.map(([factName, dimName], index) => {
       font-weight: 600;
       letter-spacing: -0.01em;
     }
-    .hw-table,
-    .hw-scroll {
+    .hw-table {
       overflow-x: auto;
       border: 1px solid var(--demo-line);
       border-radius: var(--radius-sm);
@@ -371,11 +370,23 @@ const lines = EDGES.map(([factName, dimName], index) => {
       margin: 0;
       min-width: 0;
     }
+    .hw-scroll {
+      border: 1px solid var(--demo-line);
+      border-radius: var(--radius-sm);
+    }
     .hw-scroll svg {
       display: block;
-      min-width: 600px;
       width: 100%;
       height: auto;
+      max-height: 400px;
+    }
+    @media (max-width: 599px) {
+      .hw-scroll {
+        overflow-x: auto;
+      }
+      .hw-scroll svg {
+        min-width: 600px;
+      }
     }
     .hw-edge {
       stroke: var(--demo-faint);
@@ -472,10 +483,11 @@ const lines = EDGES.map(([factName, dimName], index) => {
     *::-webkit-scrollbar-track {
       background: transparent;
     }
-    .hw-grid {
-      max-height: 560px;
-      overflow: auto;
-      overscroll-behavior: contain;
+    .hw-table {
+      max-height: 260px;
+    }
+    .hw-sql {
+      max-height: 180px;
     }
   }
 </style>

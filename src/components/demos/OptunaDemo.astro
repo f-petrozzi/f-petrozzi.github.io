@@ -68,8 +68,6 @@ const best = bestTrial(trials)!;
     font-size: 14px;
     line-height: 1.55;
     min-width: 0;
-    max-height: 780px;
-    overflow: auto;
     scrollbar-width: thin;
     scrollbar-color: #a4b5c2 transparent;
     & * {
@@ -255,18 +253,6 @@ const best = bestTrial(trials)!;
     .columns {
       grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
     }
-    .card:first-child {
-      display: grid;
-      grid-template-rows: auto minmax(250px, 1fr) auto;
-    }
-    .card:first-child [data-history] {
-      height: 100%;
-      position: relative;
-    }
-    [data-history] svg {
-      position: absolute;
-      inset: 0;
-    }
     .study-heading {
       display: flex;
       gap: 12px;
@@ -294,12 +280,12 @@ const best = bestTrial(trials)!;
     }
     [data-history],
     [data-importance] {
-      height: 250px;
       min-width: 0;
     }
     [data-history] svg,
     [data-importance] svg {
-      height: 100%;
+      height: auto;
+      max-height: 250px;
     }
     .legend {
       display: flex;

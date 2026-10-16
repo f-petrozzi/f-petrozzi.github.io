@@ -1,15 +1,15 @@
-// Interactive samples shown on project pages, keyed by project id. NüMe embeds its own sample.
+// Interactive samples shown on project pages, keyed by project id. NüMe shows its origin sample after its own demo and copy.
 export const demos: Record<string, () => Promise<{ default: any }>> = {
   "agent-usage": () => import("./AgentUsageDemo.astro"),
   autoclicker: () => import("./AutoclickerDemo.astro"),
   "business-statistics": () => import("./BusinessStatisticsDemo.astro"),
-  caremesh: () => import("./CaremeshDemo.astro"),
   eduinsight: () => import("./EduinsightDemo.astro"),
   homelab: () => import("./HomelabDemo.astro"),
   "hospital-data-warehouse": () => import("./HospitalWarehouseDemo.astro"),
   "image-classifier": () => import("./ImageClassifierDemo.astro"),
   mongodb: () => import("./MongodbDemo.astro"),
   nest: () => import("./NestDemo.astro"),
+  nume: () => import("./CaremeshDemo.astro"),
   optuna: () => import("./OptunaDemo.astro"),
   "product-reviews-analysis": () => import("./ProductReviewsDemo.astro"),
   proterra: () => import("./ProterraDemo.astro"),
