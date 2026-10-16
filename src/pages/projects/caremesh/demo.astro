@@ -1,0 +1,43 @@
+---
+import Base from "../../../layouts/Base.astro";
+import CaremeshDemo from "../../../components/demos/CaremeshDemo.astro";
+---
+
+<Base
+  title="CareMesh interactive sample | Fabrizio Petrozzi"
+  description="Explore CareMesh recipe extraction and wearable ingestion with a disconnected backend sample."
+>
+  <main id="main" class="project-page wrap demo-page">
+    <a class="back-link" href="/projects/caremesh/">Back to CareMesh</a>
+    <header class="demo-intro">
+      <div>
+        <p class="eyebrow">Interactive sample</p><h1>Try CareMesh</h1>
+      </div><p>Sample data. Nothing connects or saves.</p>
+    </header>
+    <CaremeshDemo />
+  </main>
+</Base>
+<style>
+  .demo-page {
+    padding-top: 40px;
+    padding-bottom: 72px;
+  }
+  .demo-intro {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  h1 {
+    margin: 6px 0 0;
+    font-size: clamp(32px, 5vw, 52px);
+    letter-spacing: -0.04em;
+    font-weight: 500;
+  }
+  .demo-intro > p {
+    color: var(--muted);
+    font-size: 14px;
+  }
+</style>

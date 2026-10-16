@@ -1,0 +1,48 @@
+---
+import Base from "../../../layouts/Base.astro";
+import UsfConciergeDemo from "../../../components/demos/UsfConciergeDemo.astro";
+---
+
+<Base
+  title="USF Campus Concierge interactive sample | Fabrizio Petrozzi"
+  description="Try cited admissions answers, email drafts and meeting proposals in a disconnected USF Campus Concierge sample."
+>
+  <main id="main" class="project-page wrap demo-page">
+    <a class="back-link" href="/projects/usf-campus-concierge/"
+      >Back to USF Campus Concierge</a
+    >
+    <header class="demo-intro">
+      <div>
+        <p class="eyebrow">Interactive sample</p><h1>
+          Try USF Campus Concierge
+        </h1>
+      </div><p>Sample data. Nothing connects or saves.</p>
+    </header>
+    <UsfConciergeDemo />
+  </main>
+</Base>
+<style>
+  .demo-page {
+    padding-top: 40px;
+    padding-bottom: 72px;
+  }
+  .demo-intro {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  h1 {
+    margin: 6px 0 0;
+    font-size: clamp(32px, 5vw, 52px);
+    letter-spacing: -0.04em;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+  }
+  .demo-intro > p {
+    color: var(--muted);
+    font-size: 14px;
+  }
+</style>

@@ -1,0 +1,564 @@
+---
+import {
+  ask,
+  meetingSlots,
+  prompts,
+} from "../../data/demos/usf-campus-concierge";
+const reply = ask(prompts[0]);
+const total = reply.timings.retrieve + reply.timings.generate;
+---
+
+<section
+  class="demo demo-usf-campus-concierge"
+  data-demo="usf-campus-concierge"
+  aria-label="USF Campus Concierge interactive sample"
+>
+  <header class="toolbar">
+    <div>
+      <span class="kicker">USF Campus Concierge</span><h2>
+        A question. A source. A next step.
+      </h2>
+    </div><button type="button" data-reset>Reset</button>
+  </header>
+  <div class="workspace">
+    <div class="conversation">
+      <article class="answer-card">
+        <span class="kicker">Answer / grounded in passages</span>
+        <h3 data-last-question>{reply.question}</h3>
+        <div data-answer aria-live="polite">
+          {
+            reply.answer.map((part) => (
+              <p>
+                {part.text}{" "}
+                <button
+                  type="button"
+                  class="citation"
+                  aria-label={`Citation ${part.number}: ${reply.citations[part.number - 1].title}`}
+                >
+                  [{part.number}]
+                </button>
+              </p>
+            ))
+          }
+        </div>
+        <div class="actions" role="group" aria-label="Answer actions">
+          <button type="button" data-action="email" aria-pressed="false"
+            >Draft email</button
+          ><button type="button" data-action="calendar" aria-pressed="false"
+            >Schedule meeting</button
+          >
+        </div>
+      </article>
+      <form data-question-form>
+        <label
+          >Your question<div class="question-row">
+            <input
+              data-question
+              type="text"
+              value={prompts[0]}
+              placeholder="Ask about admissions or orientation"
+              maxlength="280"
+              required
+              autocomplete="off"
+            /><button type="submit" class="primary">Ask</button>
+          </div></label
+        >
+      </form>
+      <div class="prompts" role="group" aria-label="Admissions questions">
+        {
+          prompts.map((prompt, i) => (
+            <button
+              type="button"
+              data-prompt={prompt}
+              aria-pressed={String(i === 0)}
+            >
+              {prompt}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+    <aside class="retrieval" aria-label="Retrieved passages">
+      <div class="retrieval-heading">
+        <h3>Retrieved passages</h3><span data-retrieval-status
+          >{reply.citations.length} cited / 12 passages ranked</span
+        >
+      </div>
+      <div class="passages" data-passages>
+        {
+          reply.ranked.map((passage, index) => {
+            const citation = reply.citations.findIndex(
+              (p) => p.id === passage.id,
+            );
+            return (
+              <article
+                data-passage={passage.id}
+                data-cited={citation !== -1 ? "true" : undefined}
+                tabindex="-1"
+              >
+                <>
+                  <h4>
+                    {citation === -1 ? `${index + 1}.` : `[${citation + 1}]`}{" "}
+                    {passage.title}
+                  </h4>
+                  <span class="score">
+                    Similarity {(passage.score * 100).toFixed(1)}%
+                    {citation !== -1 ? " · cited" : ""}
+                  </span>
+                  <p>{passage.text}</p>
+                </>
+              </article>
+            );
+          })
+        }
+      </div>
+    </aside>
+  </div>
+  <section
+    class="action-card"
+    data-action-panel="email"
+    aria-label="Email draft"
+    hidden
+  >
+    <span class="kicker">Gmail / draft</span><h3>Email draft</h3>
+    <div class="draft-fields">
+      <label>To<input data-email-to type="email" maxlength="160" /></label
+      ><label
+        >Subject<input data-email-subject type="text" maxlength="200" /></label
+      >
+    </div>
+    <label
+      >Message<textarea data-email-body rows="8" maxlength="3000"
+      ></textarea></label
+    >
+  </section>
+  <section
+    class="action-card"
+    data-action-panel="calendar"
+    aria-label="Meeting slots"
+    hidden
+  >
+    <div class="calendar-heading">
+      <div>
+        <span class="kicker">Google Calendar / availability</span><h3>
+          April 2026
+        </h3>
+      </div><span>America/New_York</span>
+    </div>
+    <div class="calendar">
+      {
+        meetingSlots.map((day) => (
+          <div class="calendar-day">
+            <strong>{day.day}</strong>
+            {day.times.map((time) => (
+              <button
+                type="button"
+                data-slot
+                data-date={day.date}
+                data-time={time}
+                aria-pressed="false"
+                aria-label={`${day.day} April at ${time} Eastern`}
+              >
+                {time}
+              </button>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+    <p class="muted" data-slot-status role="status">
+      6 available slots · 30 minutes · Eastern time
+    </p>
+  </section>
+  <section class="tool-card" data-tool aria-label="MCP tool call" hidden>
+    <span class="kicker">MCP tool call</span><h3 data-tool-name></h3>
+    <div class="tool-columns">
+      <div><h4>Arguments</h4><pre><code data-tool-args /></pre></div><div>
+        <h4>Result</h4><pre><code data-tool-result /></pre>
+      </div>
+    </div>
+  </section>
+  <section class="latency" aria-label="Last request latency">
+    <div class="latency-heading">
+      <h3>Last request</h3><strong data-total aria-live="polite"
+        >{total} ms</strong
+      >
+    </div>
+    <div class="latency-rows">
+      {
+        (["retrieve", "generate", "tool"] as const).map((key) => (
+          <div class="latency-row">
+            <>
+              <span>
+                {key === "tool"
+                  ? "Tool call"
+                  : key === "retrieve"
+                    ? "Retrieve"
+                    : "Generate"}
+              </span>
+              <div class="track" aria-hidden="true">
+                <i
+                  data-bar={key}
+                  style={`width:${(reply.timings[key] / total) * 100}%`}
+                />
+              </div>
+              <output data-duration={key}>{reply.timings[key]} ms</output>
+            </>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+  <p class="note">
+    Passages are invented; pgvector retrieval, Azure generation, MCP tools and
+    Splunk timings are simulated locally.
+  </p>
+</section>
+<script>
+  import "../../scripts/demos/usf-campus-concierge";
+</script>
+<style>
+  .demo-usf-campus-concierge {
+    color: var(--ink);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    font-size: 14px;
+    line-height: 1.65;
+    min-width: 0;
+  }
+  .toolbar,
+  .calendar-heading,
+  .latency-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  h2 {
+    font-size: clamp(20px, 3vw, 28px);
+    line-height: 1.3;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    margin: 6px 0;
+  }
+  h3 {
+    font-size: 18px;
+    line-height: 1.4;
+    margin: 8px 0 16px;
+    font-weight: 550;
+    overflow-wrap: anywhere;
+  }
+  h4 {
+    font-size: 12px;
+    margin: 0 0 8px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .kicker {
+    color: var(--accent);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: 20px;
+    margin-top: 24px;
+  }
+  .conversation,
+  .retrieval {
+    min-width: 0;
+  }
+  .answer-card,
+  .action-card,
+  .tool-card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    min-width: 0;
+  }
+  .answer-card {
+    background: color-mix(in srgb, var(--accent) 5%, var(--bg));
+  }
+  .demo-usf-campus-concierge :global([data-answer] p) {
+    margin: 12px 0;
+    overflow-wrap: anywhere;
+  }
+  button,
+  input,
+  textarea {
+    font: inherit;
+    background: var(--bg);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  button {
+    min-height: 44px;
+    padding: 10px 14px;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  button:hover {
+    border-color: var(--accent);
+  }
+  .primary,
+  button[aria-pressed="true"] {
+    color: var(--accent-ink);
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .demo-usf-campus-concierge :global(.citation) {
+    display: inline-grid;
+    place-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 8px;
+    color: var(--accent);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--bg);
+    font: inherit;
+    cursor: pointer;
+    vertical-align: middle;
+  }
+  .demo-usf-campus-concierge
+    :global(
+      :is(button, input, textarea, summary, [data-passage]):focus-visible
+    ) {
+    box-shadow: 0 0 0 3px var(--accent);
+  }
+  .actions,
+  .prompts {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .actions {
+    margin-top: 20px;
+  }
+  .prompts button {
+    text-align: left;
+    font-size: 12px;
+  }
+  form {
+    margin: 20px 0 12px;
+  }
+  label {
+    display: grid;
+    gap: 8px;
+    font-size: 13px;
+    min-width: 0;
+  }
+  .question-row {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+    min-width: 0;
+  }
+  input,
+  textarea {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    font-size: 16px;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  textarea {
+    resize: vertical;
+    line-height: 1.6;
+  }
+  .retrieval {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    align-self: start;
+  }
+  .retrieval-heading {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  .retrieval-heading h3 {
+    margin: 0 0 2px;
+  }
+  .retrieval-heading span,
+  .score,
+  .muted,
+  .calendar-heading > span {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .passages {
+    max-height: 480px;
+    overflow: auto;
+    padding: 8px;
+    scroll-padding: 8px;
+  }
+  .passages :global(article) {
+    padding: 14px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    margin: 4px;
+    overflow-wrap: anywhere;
+  }
+  .passages :global(article[data-cited]) {
+    border-color: var(--line);
+    background: color-mix(in srgb, var(--accent) 4%, var(--bg));
+  }
+  .passages :global(article.selected) {
+    border-color: var(--accent);
+    box-shadow: inset 4px 0 var(--accent);
+    background: color-mix(in srgb, var(--accent) 12%, var(--bg));
+  }
+  .passages :global(h4) {
+    font-size: 14px;
+    color: var(--ink);
+    margin: 0;
+    font-weight: 600;
+  }
+  .passages :global(.score) {
+    color: var(--muted);
+    font-size: 11px;
+  }
+  .passages :global(p) {
+    font-size: 12px;
+    margin: 8px 0 0;
+    color: var(--muted);
+  }
+  .action-card,
+  .tool-card {
+    margin-top: 20px;
+  }
+  .draft-fields,
+  .tool-columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 16px;
+  }
+  .draft-fields {
+    margin-bottom: 16px;
+  }
+  .calendar {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .calendar-day {
+    display: grid;
+    gap: 8px;
+    border: 1px solid var(--line);
+    padding: 12px;
+    border-radius: 10px;
+    min-width: 0;
+  }
+  .calendar-day strong {
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+  .calendar-day button {
+    width: 100%;
+    padding-inline: 4px;
+  }
+  pre {
+    max-width: 100%;
+    overflow: auto;
+    padding: 14px;
+    margin: 0;
+    background: color-mix(in srgb, var(--ink) 4%, var(--bg));
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  .tool-columns > div {
+    min-width: 0;
+  }
+  .latency {
+    border-top: 1px solid var(--line);
+    margin-top: 24px;
+    padding-top: 20px;
+  }
+  .latency-heading h3 {
+    margin: 0;
+  }
+  .latency-heading strong {
+    font-size: 18px;
+    color: var(--accent);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .latency-rows {
+    display: grid;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .latency-row {
+    display: grid;
+    grid-template-columns: 70px minmax(0, 1fr) 70px;
+    gap: 12px;
+    align-items: center;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .latency-row output {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .track {
+    background: var(--line);
+    height: 8px;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .track i {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    border-radius: inherit;
+  }
+  .note {
+    color: var(--muted);
+    font-size: 12px;
+    margin: 20px 0 0;
+  }
+  [hidden] {
+    display: none !important;
+  }
+  @media (max-width: 800px) {
+    .workspace {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .passages {
+      max-height: 340px;
+    }
+  }
+  @media (max-width: 520px) {
+    .demo-usf-campus-concierge {
+      padding: 16px;
+    }
+    .answer-card,
+    .action-card,
+    .tool-card {
+      padding: 16px;
+    }
+    .draft-fields,
+    .tool-columns {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .calendar {
+      gap: 6px;
+    }
+    .calendar-day {
+      padding: 8px;
+    }
+    .latency-row {
+      grid-template-columns: 58px minmax(0, 1fr) 58px;
+      gap: 8px;
+    }
+  }
+</style>

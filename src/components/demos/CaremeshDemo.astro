@@ -1,0 +1,470 @@
+---
+import {
+  garminDays,
+  ingestDay,
+  parseRecipe,
+  recipeSamples,
+  sourceSegments,
+} from "../../data/demos/caremesh";
+const recipe = parseRecipe(recipeSamples[0].text);
+const run = ingestDay(garminDays[0]);
+---
+
+<section
+  class="demo demo-caremesh"
+  data-demo="caremesh"
+  aria-label="CareMesh interactive sample"
+>
+  <header class="toolbar">
+    <div>
+      <span class="eyebrow">CareMesh / backend lab</span><h2>
+        From input to shared context
+      </h2>
+    </div>
+    <button type="button" data-reset>Reset</button>
+  </header>
+  <nav aria-label="CareMesh flows">
+    <button type="button" data-view="recipe" aria-pressed="true"
+      >01 · Recipe parsing</button
+    >
+    <button type="button" data-view="wearable" aria-pressed="false"
+      >02 · Wearable ingestion</button
+    >
+  </nav>
+  <section data-panel="recipe" aria-label="Recipe parsing">
+    <div class="columns">
+      <article class="card extracted" aria-live="polite">
+        <span class="kicker">Recipe / structured output</span>
+        <h3 data-title>{recipe.title}</h3>
+        <p class="muted" data-servings>{recipe.servings} servings</p>
+        <h4>Ingredients</h4>
+        <ul data-ingredients>
+          {
+            recipe.ingredients.map((item) => (
+              <li>
+                {[item.quantity, item.unit, item.name]
+                  .filter((v) => v !== null)
+                  .join(" ")}
+              </li>
+            ))
+          }
+        </ul>
+        <h4>Steps</h4>
+        <ol data-steps>{recipe.steps.map((step) => <li>{step}</li>)}</ol>
+        <details>
+          <summary>Recipe JSON</summary
+          ><pre><code data-recipe-json>{JSON.stringify({ title: recipe.title, servings: recipe.servings, ingredients: recipe.ingredients, steps: recipe.steps }, null, 2)}</code></pre>
+        </details>
+      </article>
+      <div class="input-column">
+        <form data-recipe-form class="card">
+          <label
+            >Recipe source<select data-recipe-picker
+              >{
+                recipeSamples.map((sample, i) => (
+                  <option value={i}>{sample.url}</option>
+                ))
+              }<option value="paste">Pasted text</option></select
+            ></label
+          >
+          <label
+            >Recipe text<textarea
+              data-recipe-input
+              rows="10"
+              maxlength="6000"
+              spellcheck="false">{recipeSamples[0].text}</textarea
+            ></label
+          >
+          <button type="submit" class="primary">Extract recipe</button>
+        </form>
+        <details class="card" data-source-details open>
+          <summary>Source fields</summary>
+          <div class="legend">
+            <span>Title</span><span>Servings</span><span>Ingredients</span><span
+              >Steps</span
+            >
+          </div>
+          <pre
+            class="source"><code data-source>{sourceSegments(recipeSamples[0].text, recipe.spans).map((segment) => segment.field ? <mark data-field={segment.field} title={segment.field}>{segment.text}</mark> : segment.text)}</code></pre>
+        </details>
+      </div>
+    </div>
+    <p class="status" data-parse-status role="status">
+      Gemini extraction → Recipe validated · 4 ingredients · 3 steps
+    </p>
+  </section>
+  <section data-panel="wearable" aria-label="Wearable ingestion" hidden>
+    <div class="route-banner">
+      <span>ADK coordinator →</span><strong data-route aria-live="polite"
+        >{run.specialist}</strong
+      >
+    </div>
+    <div class="columns">
+      <article class="card">
+        <span class="kicker">Shared model / validated</span><h3>WearableDay</h3>
+        <pre><code data-model-json>{JSON.stringify(run.model, null, 2)}</code></pre>
+        <details>
+          <summary>Type contract</summary
+          ><pre><code>{`class WearableDay(BaseModel):
+    model: Literal["WearableDay"]
+    source: Literal["garmin"]
+    date: date
+    sleep_hours: float  # 0..24
+    steps: int          # 0..100000
+    stress_score: int   # 0..100`}</code></pre>
+        </details>
+        <h4>Routing priority</h4><div class="priorities" data-priorities>
+          {
+            run.priorities.map((priority) => (
+              <div>
+                <>
+                  <span>
+                    {priority.specialist} · {Math.round(priority.score * 100)}%
+                  </span>
+                  <meter
+                    min="0"
+                    max="1"
+                    value={priority.score}
+                    aria-label={`${priority.specialist} routing priority`}
+                  />
+                </>
+              </div>
+            ))
+          }
+        </div>
+      </article>
+      <article class="card">
+        <span class="kicker">Garmin / incoming day</span>
+        <label
+          >Day<select data-day
+            >{
+              garminDays.map((day, i) => <option value={i}>{day.label}</option>)
+            }<option value="" disabled>Edited day</option></select
+          ></label
+        >
+        <label
+          >Sleep <output data-sleep-value>5.2 h</output><input
+            data-sleep
+            type="range"
+            min="0"
+            max="12"
+            step="0.1"
+            value="5.2"
+          /></label
+        >
+        <label
+          >Steps <output data-walking-value>3,200</output><input
+            data-walking
+            type="range"
+            min="0"
+            max="20000"
+            step="100"
+            value="3200"
+          /></label
+        >
+        <label
+          >Stress <output data-stress-value>52 / 100</output><input
+            data-stress
+            type="range"
+            min="0"
+            max="100"
+            step="1"
+            value="52"
+          /></label
+        >
+        <pre><code data-garmin-json>{JSON.stringify({ sleepSeconds: 18720, totalSteps: 3200, averageStress: 52 }, null, 2)}</code></pre>
+      </article>
+    </div>
+    <article class="card run">
+      <span class="kicker">Recorded run / completed</span><h3>
+        Ingestion → specialist
+      </h3><ol data-run aria-live="polite">
+        {
+          run.trace.map((step) => (
+            <li>
+              <>
+                <strong>{step.stage}</strong>
+                <span>{step.result}</span>
+              </>
+            </li>
+          ))
+        }
+      </ol>
+    </article>
+  </section>
+  <p class="note">
+    Gemini extraction, Garmin, Pydantic validation and ADK runs are simulated
+    locally with deterministic rules.
+  </p>
+</section>
+<script>
+  import "../../scripts/demos/caremesh";
+</script>
+<style>
+  .demo-caremesh {
+    padding: 24px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.6;
+    min-width: 0;
+  }
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  h2 {
+    font-size: clamp(20px, 3vw, 28px);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    margin: 4px 0;
+  }
+  h3 {
+    font-size: 22px;
+    line-height: 1.3;
+    margin: 12px 0 4px;
+    font-weight: 550;
+    overflow-wrap: anywhere;
+  }
+  h4 {
+    margin: 24px 0 8px;
+    font-size: 14px;
+  }
+  .eyebrow,
+  .kicker {
+    color: var(--accent);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 20px 0;
+  }
+  button,
+  select,
+  textarea {
+    font: inherit;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg);
+  }
+  button {
+    min-height: 44px;
+    padding: 10px 14px;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  button:hover {
+    border-color: var(--accent);
+  }
+  button[aria-pressed="true"],
+  .primary {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: var(--accent);
+  }
+  .demo-caremesh
+    :global(:is(button, input, select, textarea, summary):focus-visible) {
+    box-shadow: 0 0 0 3px var(--accent);
+    outline-offset: 3px;
+  }
+  .columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 16px;
+  }
+  .card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    min-width: 0;
+  }
+  .extracted {
+    background: color-mix(in srgb, var(--accent) 5%, var(--bg));
+  }
+  .input-column {
+    display: grid;
+    gap: 16px;
+    align-content: start;
+    min-width: 0;
+  }
+  .muted,
+  .note,
+  output {
+    color: var(--muted);
+  }
+  .demo-caremesh :global(li) {
+    padding: 4px 0;
+    overflow-wrap: anywhere;
+  }
+  ul,
+  ol {
+    padding-left: 22px;
+    margin: 8px 0;
+  }
+  label {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  select,
+  textarea {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    padding: 10px;
+    font-size: 16px;
+  }
+  select {
+    min-height: 44px;
+  }
+  textarea {
+    resize: vertical;
+    line-height: 1.55;
+  }
+  input[type="range"] {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    accent-color: var(--accent);
+    margin: 0;
+  }
+  pre {
+    max-width: 100%;
+    overflow: auto;
+    font-size: 12px;
+    line-height: 1.7;
+    background: color-mix(in srgb, var(--ink) 4%, var(--bg));
+    padding: 14px;
+    border-radius: 8px;
+    tab-size: 2;
+  }
+  .source {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .demo-caremesh :global(mark) {
+    color: var(--ink);
+    background: color-mix(in srgb, var(--accent) 22%, var(--bg));
+    box-decoration-break: clone;
+  }
+  .demo-caremesh :global(mark[data-field="title"]) {
+    text-decoration: underline;
+    text-decoration-style: double;
+  }
+  .demo-caremesh :global(mark[data-field="servings"]) {
+    font-weight: 700;
+  }
+  .demo-caremesh :global(mark[data-field="step"]) {
+    background: color-mix(in srgb, var(--accent) 9%, var(--bg));
+    border-bottom: 1px dashed var(--accent);
+  }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    color: var(--muted);
+    font-size: 11px;
+    margin: 12px 0;
+  }
+  .legend span:first-child {
+    text-decoration: underline double;
+  }
+  .legend span:nth-child(2) {
+    font-weight: 700;
+  }
+  .legend span:last-child {
+    border-bottom: 1px dashed var(--accent);
+  }
+  summary {
+    min-height: 44px;
+    display: list-item;
+    align-content: center;
+    cursor: pointer;
+    color: var(--accent);
+  }
+  .status {
+    margin: 16px 0 0;
+    color: var(--accent);
+    font-size: 12px;
+  }
+  .note {
+    margin: 24px 0 0;
+    font-size: 12px;
+  }
+  .route-banner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    border-block: 1px solid var(--line);
+    padding: 16px 0;
+    margin-bottom: 16px;
+  }
+  .route-banner span {
+    color: var(--muted);
+  }
+  .priorities {
+    display: grid;
+    gap: 12px;
+  }
+  .priorities :global(div) {
+    display: grid;
+    gap: 4px;
+  }
+  .priorities :global(span) {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .priorities :global(meter) {
+    width: 100%;
+    accent-color: var(--accent);
+    height: 12px;
+  }
+  .run {
+    margin-top: 16px;
+  }
+  .run ol {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 32px;
+  }
+  .run :global(li) {
+    padding: 10px 0;
+  }
+  .run :global(strong),
+  .run :global(span) {
+    display: block;
+  }
+  .run :global(span) {
+    color: var(--muted);
+    font-size: 12px;
+  }
+  [hidden] {
+    display: none !important;
+  }
+  @media (max-width: 700px) {
+    .columns {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .demo-caremesh {
+      padding: 16px;
+    }
+    .card {
+      padding: 16px;
+    }
+    .run ol {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
