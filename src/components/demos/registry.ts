@@ -11,6 +11,7 @@ export const demos: Record<string, () => Promise<{ default: any }>> = {
   nest: () => import("./NestDemo.astro"),
   nume: () => import("./CaremeshDemo.astro"),
   optuna: () => import("./OptunaDemo.astro"),
+  orbit: () => import("./OrbitDemo.astro"),
   "product-reviews-analysis": () => import("./ProductReviewsDemo.astro"),
   proterra: () => import("./ProterraDemo.astro"),
   slice: () => import("./SliceDemo.astro"),
