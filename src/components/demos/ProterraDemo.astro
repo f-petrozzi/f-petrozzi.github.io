@@ -374,20 +374,6 @@ const instance = `proterra-${crypto.randomUUID()}`;
     :is(button, a, input, textarea, summary) {
       touch-action: manipulation;
     }
-    :is(
-      button,
-      a,
-      input,
-      textarea,
-      summary,
-      h2,
-      [data-excerpt],
-      [data-panel]
-    ):focus-visible {
-      outline: 2px solid var(--proterra-forest);
-      outline-offset: 3px;
-      box-shadow: none;
-    }
     button {
       min-height: 44px;
       padding: 10px 14px;

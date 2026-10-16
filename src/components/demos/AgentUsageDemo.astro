@@ -512,10 +512,6 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
       opacity: 0.45;
       cursor: default;
     }
-    :is(button, input, select, [tabindex]):focus-visible {
-      outline: 2px solid var(--au-focus);
-      outline-offset: -2px;
-    }
     svg {
       display: block;
       width: 20px;
@@ -970,9 +966,6 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
       gap: 8px;
       border-radius: 16px;
       padding: 8px;
-    }
-    .session-row:focus-within {
-      background: var(--au-surface);
     }
     .session-row .session-mark {
       width: 22px;

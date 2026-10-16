@@ -64,7 +64,7 @@ test("featured screenshots are real WebPs within budget, with accurate dimension
   assert.equal(featured.find((item) => item.id === "nest").image.height, 630);
 });
 
-test("Orbit leads the grid with the existing card controls and an uncropped frame", () => {
+test("Orbit leads a compact two-column card with existing controls and an uncropped frame", () => {
   const card = html.match(
     /<article\b[^>]*data-project="orbit"[^>]*>([\s\S]*?)<\/article>/,
   );
@@ -75,10 +75,28 @@ test("Orbit leads the grid with the existing card controls and an uncropped fram
   assert.match(card[1], /href="\/projects\/orbit\/"/);
   assert.match(card[1], /Read project/);
   assert.match(css(html), /\.work-card-lead\s*\{grid-column:1\/-1\}/);
+  const stage = css(html).match(
+    /\.work-card-lead \.work-stage\s*\{([^}]+)\}/,
+  )[1];
+  for (const declaration of [
+    "aspect-ratio:1120/650",
+    "max-height:340px",
+    "border-radius:0",
+  ])
+    assert.ok(stage.includes(declaration), declaration);
   assert.match(
     css(html),
-    /\.work-card-lead \.work-stage\s*\{aspect-ratio:1120\/650;border-radius:0\}/,
+    /grid-template-columns:minmax\(0,\.8fr\) minmax\(0,1\.2fr\)/,
   );
+  assert.match(
+    css(html),
+    /\.work-card-lead \.work-media img\{object-fit:contain\}/,
+  );
+  const orbit = featured.find((item) => item.id === "orbit");
+  assert.ok(orbit.summary.length < 45);
+  const info = [orbit.contribution, orbit.hook, ...orbit.how].join(" ");
+  assert.ok(info.length < 240);
+  assert.doesNotMatch(orbit.summary + info, /[:;]/);
   assert.match(
     readFileSync("src/content/projects/orbit.md", "utf8"),
     /^featured: true$/m,

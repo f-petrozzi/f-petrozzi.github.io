@@ -152,11 +152,6 @@
     .td-btn:hover:not(:disabled) {
       border-color: var(--demo-accent);
     }
-    .td-btn:focus-visible {
-      box-shadow:
-        0 0 0 2px var(--demo-bg),
-        0 0 0 4px var(--demo-accent);
-    }
     .td-btn:disabled {
       opacity: 0.45;
       cursor: default;
@@ -191,9 +186,7 @@
       box-shadow:
         0 0 0 1px rgb(255 255 255 / 0.16),
         0 18px 40px -18px rgb(0 0 0 / 0.55);
-      font-family:
-        -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue",
-        system-ui, sans-serif;
+      font-family: inherit;
       font-size: 16px;
       line-height: 1.35;
       isolation: isolate;
@@ -303,17 +296,9 @@
       touch-action: manipulation;
       cursor: pointer;
     }
-    .td-phone button:focus-visible,
-    .td-phone input:focus-visible,
-    .td-phone textarea:focus-visible {
-      box-shadow:
-        0 0 0 2px var(--td-bg),
-        0 0 0 4px var(--td-tint);
-    }
     .td-phone .td-check input:focus-visible + .td-box {
-      box-shadow:
-        0 0 0 2px var(--td-group),
-        0 0 0 4px var(--td-tint);
+      outline: 1px solid color-mix(in srgb, var(--td-tint) 65%, transparent);
+      outline-offset: 3px;
     }
 
     /* nav + list */
@@ -688,13 +673,6 @@
     .td-phone .td-snooze {
       background: #ff9f0a;
       color: #1a1000;
-    }
-    .td-phone .td-alert button:focus-visible,
-    .td-phone .td-siri-card button:focus-visible,
-    .td-phone .td-siri-card input:focus-visible {
-      box-shadow:
-        0 0 0 2px #232326,
-        0 0 0 4px #fff;
     }
 
     /* Siri card */

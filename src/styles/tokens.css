@@ -128,9 +128,55 @@
   background: radial-gradient(closest-side, var(--c), transparent);
 }
 
-/* Owner preference: no focus frames anywhere on the site. */
-*:focus,
-*:focus-visible,
-*:focus-within {
-  outline: none !important;
+/* Pointer focus stays quiet. Text fields show only their caret on focus. */
+*:focus {
+  outline: none;
+}
+:where(
+  input:not(
+    [type="button"],
+    [type="submit"],
+    [type="reset"],
+    [type="checkbox"],
+    [type="radio"],
+    [type="range"],
+    [type="color"],
+    [type="file"],
+    [type="image"]
+  ),
+  textarea,
+  select,
+  [contenteditable]:not([contenteditable="false"])
+):focus {
+  box-shadow: none;
+}
+/* A single subtle ring for keyboard navigation, including scroll regions. */
+:root .scroll-rail .scroll-thumb:focus-visible,
+:where(
+    a[href],
+    button,
+    input,
+    summary,
+    [tabindex]:not([tabindex="-1"]),
+    [role="button"]
+  ):focus-visible:not(
+    :where(
+      input:not(
+        [type="button"],
+        [type="submit"],
+        [type="reset"],
+        [type="checkbox"],
+        [type="radio"],
+        [type="range"],
+        [type="color"],
+        [type="file"],
+        [type="image"]
+      ),
+      textarea,
+      select,
+      [contenteditable]:not([contenteditable="false"])
+    )
+  ) {
+  outline: 1px solid color-mix(in srgb, currentColor 65%, transparent);
+  outline-offset: 3px;
 }

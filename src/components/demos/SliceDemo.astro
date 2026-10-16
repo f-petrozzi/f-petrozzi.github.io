@@ -175,13 +175,6 @@ import { PERIODS, QUADRANTS } from "../../data/demos/slice";
       touch-action: manipulation;
       cursor: pointer;
     }
-    & button:focus-visible,
-    & textarea:focus-visible,
-    .sl-table-scroll:focus-visible {
-      box-shadow:
-        0 0 0 2px var(--demo-bg),
-        0 0 0 4px var(--demo-accent);
-    }
     .sl-sr {
       position: absolute;
       width: 1px;
@@ -280,7 +273,7 @@ import { PERIODS, QUADRANTS } from "../../data/demos/slice";
       color: #fff;
     }
     .sl-site-head strong {
-      font-family: Georgia, "Times New Roman", serif;
+      font-family: inherit;
       font-size: 19px;
       font-weight: 900;
       letter-spacing: 0.02em;
@@ -338,11 +331,6 @@ import { PERIODS, QUADRANTS } from "../../data/demos/slice";
       background: #a4221e;
       color: #fff;
     }
-    & .sl-tab:focus-visible {
-      box-shadow:
-        0 0 0 2px #fff,
-        0 0 0 4px #a4221e;
-    }
     .sl-site-body {
       flex: 1;
       min-height: 0;
@@ -362,7 +350,7 @@ import { PERIODS, QUADRANTS } from "../../data/demos/slice";
     & .sl-section-title {
       margin: 0 0 8px;
       color: #a4221e;
-      font-family: Georgia, "Times New Roman", serif;
+      font-family: inherit;
       font-size: 25px;
       font-weight: 900;
       line-height: 1.15;
@@ -601,9 +589,6 @@ import { PERIODS, QUADRANTS } from "../../data/demos/slice";
       cursor: pointer;
       transition: opacity 0.2s var(--ease);
     }
-    & .sl-point:focus {
-      outline: none;
-    }
     & .sl-hit {
       fill: transparent;
     }
@@ -613,8 +598,7 @@ import { PERIODS, QUADRANTS } from "../../data/demos/slice";
       stroke-width: 2;
       opacity: 0;
     }
-    & .sl-point.is-selected .sl-ring,
-    & .sl-point:focus-visible .sl-ring {
+    & .sl-point.is-selected .sl-ring {
       opacity: 1;
     }
     & .sl-mark {

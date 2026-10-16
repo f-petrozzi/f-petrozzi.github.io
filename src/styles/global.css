@@ -44,13 +44,6 @@ button {
 [hidden] {
   display: none !important;
 }
-a:focus-visible,
-button:focus-visible,
-input:focus-visible,
-select:focus-visible {
-  outline: none;
-  outline-offset: 5px;
-}
 a,
 button {
   touch-action: manipulation;

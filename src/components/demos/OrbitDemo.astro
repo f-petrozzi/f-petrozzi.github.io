@@ -779,14 +779,6 @@ const icons: Record<string, string> = {
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
     }
-    button:focus-visible,
-    summary:focus-visible,
-    input:focus-visible,
-    select:focus-visible,
-    [tabindex="0"]:focus-visible {
-      outline: 2px solid var(--orbit-blue);
-      outline-offset: 3px;
-    }
     button:disabled {
       cursor: default;
       opacity: 0.6;
@@ -1097,8 +1089,8 @@ const icons: Record<string, string> = {
       color: #fff;
     }
     .orbit-check input:focus-visible + span {
-      outline: 2px solid var(--orbit-blue);
-      outline-offset: 4px;
+      outline: 1px solid color-mix(in srgb, var(--orbit-blue) 65%, transparent);
+      outline-offset: 3px;
     }
     .orbit-task details {
       min-width: 0;

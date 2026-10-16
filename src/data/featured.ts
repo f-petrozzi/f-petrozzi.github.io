@@ -1,20 +1,19 @@
 export const featured = [
   {
     id: "orbit",
-    summary: "A personal workspace for tasks, AI, research and finances.",
+    summary: "Tasks, AI, research and finances.",
     image: {
       src: "/assets/shots/orbit-featured.webp",
       width: 1120,
       height: 650,
       alt: "Orbit chat workspace with three connected agent accounts, delegated sessions and a running app preview, using invented data.",
     },
-    contribution:
-      "I built Orbit with Python, SQLite and native web interfaces.",
-    hook: "It runs on my homelab, so I can pick up the same work from my phone, laptop or PC.",
+    contribution: "Built with Python and SQLite.",
+    hook: "Hosted on my homelab. Available across devices.",
     how: [
-      "Task capture keeps planned dates, deadlines and reminders separate.",
-      "Chat connects to native Codex and Claude Code sessions, with app previews beside the conversation.",
-      "Library keeps versioned sources and cited notes; Finances brings accounts, spending and savings into focused views.",
+      "Separate plans, deadlines and reminders.",
+      "Codex and Claude Code with live app previews.",
+      "Cited research notes and personal finances.",
     ],
   },
   {

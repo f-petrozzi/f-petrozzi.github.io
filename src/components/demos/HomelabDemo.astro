@@ -346,12 +346,7 @@ const flows = [
       color: var(--demo-ink);
       background: color-mix(in srgb, var(--demo-accent) 10%, var(--demo-bg));
     }
-    button:focus-visible,
-    input:focus-visible,
-    .map-scroll:focus-visible {
-      box-shadow:
-        0 0 0 3px var(--demo-bg),
-        0 0 0 5px var(--demo-accent);
+    :is(button, .map-scroll):focus-visible {
       position: relative;
       z-index: 3;
     }
@@ -510,9 +505,6 @@ const flows = [
     }
     .node:focus-visible {
       position: absolute;
-      box-shadow:
-        0 0 0 3px var(--demo-bg),
-        0 0 0 5px var(--demo-accent);
     }
     .flow-status {
       color: var(--demo-muted);

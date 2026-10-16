@@ -307,13 +307,7 @@ import {
       border-radius: 10px;
       background: var(--ac-bg);
       color: var(--ac-text);
-      font-family:
-        "Segoe UI",
-        system-ui,
-        -apple-system,
-        "Helvetica Neue",
-        Arial,
-        sans-serif;
+      font-family: inherit;
     }
     .ac-titlebar {
       display: flex;
@@ -423,18 +417,9 @@ import {
       background: var(--ac-blue);
       color: #fff;
     }
-    .ac-segments input:focus-visible + span,
-    & button:focus-visible,
-    .ac-entry input:focus-visible,
-    .ac-key select:focus-visible {
-      box-shadow:
-        0 0 0 2px var(--ac-bg),
-        0 0 0 4px #7cc0f0;
-    }
-    .ac-reset:focus-visible {
-      box-shadow:
-        0 0 0 2px var(--demo-bg),
-        0 0 0 4px var(--demo-accent);
+    .ac-segments input:focus-visible + span {
+      outline: 1px solid color-mix(in srgb, #7cc0f0 65%, transparent);
+      outline-offset: 3px;
     }
     .ac-key {
       display: grid;
