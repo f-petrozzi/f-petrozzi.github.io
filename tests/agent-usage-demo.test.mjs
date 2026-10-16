@@ -22,6 +22,36 @@ const windowOf = (minute, account = "lumen", id = "fiveHour") =>
     .accounts.find((row) => row.id === account)
     .windows.find((window) => window.id === id);
 
+test("notch arms face their flares and use the notch's fixed black ink locally", () => {
+  const component = readFileSync(
+    new URL("../src/components/demos/AgentUsageDemo.astro", import.meta.url),
+    "utf8",
+  );
+  const script = readFileSync(
+    new URL("../src/scripts/demos/agent-usage.ts", import.meta.url),
+    "utf8",
+  );
+  assert.match(component, /<style is:inline>\s*\.demo-agent-usage\s*\{/);
+  assert.match(component, /--au-black:\s*#000;/);
+  assert.match(component, /\.notch\s*\{[^}]*background: var\(--au-black\);/);
+  assert.match(component, /\.arm-rest\s*\{[^}]*stroke: var\(--au-black\);/);
+  // SVG circles start at the right and sweep clockwise: these quarters face
+  // up/right on the left shoulder and up/left on the right, as in shape.js.
+  assert.match(
+    component,
+    /\.arm-leading \.arm-rest\s*\{\s*transform: rotate\(270deg\);/,
+  );
+  assert.match(
+    component,
+    /\.arm-trailing \.arm-rest\s*\{\s*transform: rotate\(180deg\);/,
+  );
+  assert.equal(
+    (component.match(/stroke-dasharray="44\.77 179\.07"/g) ?? []).length,
+    2,
+  );
+  assert.doesNotMatch(component + script, /(?:import|from)[^;\n]*fluid/);
+});
+
 test("clock advances usage continuously and keeps windows independent", () => {
   const first = snapshot(0);
   assert.equal(
