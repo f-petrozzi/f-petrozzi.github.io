@@ -9,7 +9,6 @@ import "../styles/fluid.css";
 import Icon from "../components/Icon.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import { featured as featuredCopy } from "../data/featured";
-import NumeGallery from "../components/NumeGallery.astro";
 import ToolIcon from "../components/ToolIcon.astro";
 import ToolIconSprite from "../components/ToolIconSprite.astro";
 const raw = (await getCollection("projects")).sort(
@@ -271,28 +270,20 @@ const education = [
         </div>
         <div class="bento">
           {
-            featured.map(({ id, project, hook, how, contribution, image }) => (
-              <article
-                class="work-card glass"
-                aria-labelledby={`work-${id}`}
-                data-project={id}
-              >
-                <header class="work-heading">
-                  <p class="work-kind">
-                    <>
-                      <span>{project.data.category}</span>
-                      <span>{project.data.status}</span>
-                    </>
-                  </p>
-                  <h3 id={`work-${id}`}>
-                    <a href={`/projects/${id}/`}>{project.data.title}</a>
-                  </h3>
-                  <p class="work-summary">{project.data.summary}</p>
-                </header>
-                <div class="work-stage">
-                  {id === "nume" ? (
-                    <NumeGallery compact />
-                  ) : (
+            featured.map(
+              ({ id, project, summary, hook, how, contribution, image }) => (
+                <article
+                  class="work-card"
+                  aria-labelledby={`work-${id}`}
+                  data-project={id}
+                >
+                  <header class="work-heading">
+                    <h3 id={`work-${id}`}>
+                      <a href={`/projects/${id}/`}>{project.data.title}</a>
+                    </h3>
+                    <p class="work-summary">{summary}</p>
+                  </header>
+                  <div class="work-stage">
                     <button
                       class="work-media screenshot-open"
                       type="button"
@@ -309,75 +300,69 @@ const education = [
                         decoding="async"
                       />
                     </button>
-                  )}
-                </div>
-                <div class="work-body">
-                  <details class="work-more">
-                    <summary aria-controls={`info-${id}`}>
-                      <span class="more-closed">
-                        <>
-                          <Icon name="info" />
-                          <span class="sr-only">
-                            About {project.data.title}
-                          </span>
-                        </>
-                      </span>
-                      <span class="more-open">
-                        <>
-                          <Icon name="close" />
-                          <span class="sr-only">
-                            Close information about {project.data.title}
-                          </span>
-                        </>
-                      </span>
-                      <svg
-                        class="info-orb fluid-ink fluid-surface"
-                        viewBox="0 0 44 44"
-                        aria-hidden="true"
-                      >
+                  </div>
+                  <div class="work-body">
+                    <details class="work-more">
+                      <summary aria-controls={`info-${id}`}>
+                        <span class="more-closed">
+                          <>
+                            <Icon name="info" />
+                            <span class="sr-only">
+                              About {project.data.title}
+                            </span>
+                          </>
+                        </span>
+                        <span class="more-open">
+                          <>
+                            <Icon name="close" />
+                            <span class="sr-only">
+                              Close information about {project.data.title}
+                            </span>
+                          </>
+                        </span>
+                        <svg
+                          class="info-orb fluid-ink"
+                          viewBox="0 0 44 44"
+                          aria-hidden="true"
+                        >
+                          <g>
+                            <circle cx="22" cy="22" r="20" />
+                          </g>
+                        </svg>
+                      </summary>
+                      <svg class="info-ink fluid-ink" aria-hidden="true">
                         <g>
-                          <circle cx="22" cy="22" r="20" />
+                          <rect rx="18" />
                         </g>
                       </svg>
-                    </summary>
-                    <svg class="info-ink fluid-ink" aria-hidden="true">
-                      <g>
-                        <rect rx="22" />
-                      </g>
-                    </svg>
-                    <div
-                      class="work-more-body"
-                      id={`info-${id}`}
-                      role="region"
-                      aria-labelledby={`info-title-${id}`}
-                    >
-                      <h4 id={`info-title-${id}`}>
-                        Inside {project.data.title}
-                      </h4>
-                      <ul>
-                        {[...how, hook].map((line) => (
-                          <li>{line}</li>
-                        ))}
-                      </ul>
-                      <p class="work-contribution">{contribution}</p>
+                      <div
+                        class="work-more-body"
+                        id={`info-${id}`}
+                        role="region"
+                        tabindex="0"
+                        aria-labelledby={`info-title-${id}`}
+                      >
+                        <h4 id={`info-title-${id}`}>
+                          Inside {project.data.title}
+                        </h4>
+                        <ul>
+                          {[...how, hook].map((line) => (
+                            <li>{line}</li>
+                          ))}
+                        </ul>
+                        <p class="work-contribution">{contribution}</p>
+                      </div>
+                    </details>
+                    <div class="work-foot">
+                      <a class="work-read" href={`/projects/${id}/`}>
+                        Read project
+                        <span class="sr-only"> {project.data.title}</span>
+                      </a>
                     </div>
-                  </details>
-                  <div class="work-foot">
-                    <ul class="work-tools" aria-label="Built with">
-                      {project.data.tools.slice(0, 5).map((tool) => (
-                        <li>
-                          <ToolIcon tool={tool} size={18} />
-                        </li>
-                      ))}
-                    </ul>
-                    <a class="work-read" href={`/projects/${id}/`}>
-                      Read project
-                      <span class="sr-only"> {project.data.title}</span>
-                    </a>
                   </div>
-                </div>
-              </article>
-            ))
+                </article>
+              ),
+            )
           }
         </div>
       </section>

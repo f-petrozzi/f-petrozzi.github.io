@@ -1,11 +1,12 @@
 export const featured = [
   {
     id: "homelab",
+    summary: "A personal cloud for projects, AI tools and everyday services.",
     image: {
       src: "/assets/shots/homelab-featured.webp",
-      width: 1440,
-      height: 574,
-      alt: "Homelab architecture showing private access, hosted projects and monitoring.",
+      width: 1120,
+      height: 630,
+      alt: "Homelab monitoring dashboard with service checks, resource usage and network charts.",
     },
     contribution: "I started my homelab and added services.",
     hook: "It also hosts Nest, the Agent Usage collector, and NüMe’s API and database on their own Docker network.",
@@ -17,7 +18,13 @@ export const featured = [
   },
   {
     id: "nume",
-    image: undefined,
+    summary: "Wellness recommendations from wearable data and check-ins.",
+    image: {
+      src: "/assets/shots/nume-featured.webp",
+      width: 1120,
+      height: 630,
+      alt: "NüMe dashboard showing a daily support plan, recovery signals and risk drivers with sample data.",
+    },
     contribution: "I developed the frontend and backend.",
     hook: "Each recommendation is stored with its reasons, alternatives, and the profile used.",
     how: [
@@ -28,11 +35,12 @@ export const featured = [
   },
   {
     id: "proterra",
+    summary: "Weekly agricultural briefs, from research to publication.",
     image: {
       src: "/assets/shots/proterra-featured.webp",
-      width: 1440,
-      height: 900,
-      alt: "Proterra Intelligence weekly issues and a cattle technology brief on the real site.",
+      width: 1120,
+      height: 630,
+      alt: "Proterra Intelligence archive showing published weekly briefs and sector filters.",
     },
     contribution: "I built Proterra and run Codex to draft the briefs.",
     hook: "Approval applies to the exact version reviewers read.",
@@ -44,10 +52,11 @@ export const featured = [
   },
   {
     id: "nest",
+    summary: "Shared plans, groceries and recipes in one household app.",
     image: {
       src: "/assets/shots/nest-featured.webp",
       width: 1120,
-      height: 636,
+      height: 630,
       alt: "Nest home dashboard with tasks, dinner plans and a synced household phone, using sample data.",
     },
     contribution: "I built Nest with FastAPI and SQLite.",
