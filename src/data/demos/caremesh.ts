@@ -220,11 +220,11 @@ export function ingestDay(day: GarminDay) {
     trace: [
       {
         stage: "Garmin adapter",
-        result: `${day.sleepSeconds}s sleep · ${day.totalSteps} steps · ${day.averageStress} stress`,
+        result: `${day.sleepSeconds}s sleep / ${day.totalSteps} steps / ${day.averageStress} stress`,
       },
       {
         stage: "Pydantic validation",
-        result: `WearableDay accepted · ${model.sleep_hours}h · ${model.steps} steps · ${model.stress_score}/100`,
+        result: `WearableDay accepted / ${model.sleep_hours}h / ${model.steps} steps / ${model.stress_score}/100`,
       },
       { stage: "ADK coordinator", result: `Route → ${specialist}` },
       {
@@ -237,7 +237,7 @@ export function ingestDay(day: GarminDay) {
       },
       {
         stage: "Run record",
-        result: `6 stages recorded · completed · route: ${specialist}`,
+        result: `6 stages recorded / completed / route: ${specialist}`,
       },
     ],
   };

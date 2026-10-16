@@ -87,8 +87,24 @@ function init(root: HTMLElement) {
     if (key) node.textContent = input.key;
     node.style.left = `${x}px`;
     node.style.top = `${y}px`;
-    node.addEventListener("animationend", () => node.remove(), { once: true });
     layer.append(node);
+    const animation = node.animate(
+      key
+        ? [
+            { opacity: 1, transform: "translate(-50%, -50%) scale(0.9)" },
+            { opacity: 0, transform: "translate(-50%, -90%) scale(1.25)" },
+          ]
+        : [
+            { opacity: 1, transform: "scale(0.6)" },
+            { opacity: 0, transform: "scale(4.2)" },
+          ],
+      {
+        duration: 700,
+        easing: "cubic-bezier(0.23, 1, 0.32, 1)",
+        fill: "forwards",
+      },
+    );
+    animation.onfinish = () => node.remove();
     while (layer.children.length > MAX_RIPPLES)
       layer.firstElementChild?.remove();
   }

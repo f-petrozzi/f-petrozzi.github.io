@@ -48,8 +48,8 @@ test("chapters are found, numbered and split into bodies", () => {
   const chapters = step(p, "chapters");
   assert.equal(chapters.matches, 3);
   assert.deepEqual(p.labels, ["Ch. I", "Ch. II", "Ch. III"]);
-  assert.match(chapters.after, /^§ 1 · The Cyclone\n/);
-  assert.match(chapters.after, /§ 3 · How Dorothy Saved the Scarecrow/);
+  assert.match(chapters.after, /^§ 1 \/ The Cyclone\n/);
+  assert.match(chapters.after, /§ 3 \/ How Dorothy Saved the Scarecrow/);
   assert.equal(p.totals.chapters, 3);
   assert.equal(romanToNumber("XIV"), 14);
 });

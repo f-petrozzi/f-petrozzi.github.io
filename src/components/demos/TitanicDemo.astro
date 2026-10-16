@@ -19,7 +19,7 @@ const pct = (n: number) => `${(100 * n).toFixed(1)}%`;
   <h2>Two models, one passenger</h2>
   <div class="columns" aria-live="polite">
     <article class="card">
-      <h3>Naive Bayes · survival</h3><strong class="score" data-bayes
+      <h3>Naive Bayes / survival</h3><strong class="score" data-bayes
         >{pct(naiveBayes(initial).probability)}</strong
       ><div class="scroll">
         <table>
@@ -36,13 +36,20 @@ const pct = (n: number) => `${(100 * n).toFixed(1)}%`;
       </p>
     </article>
     <article class="card">
-      <h3>Decision tree · survival</h3><strong class="score" data-tree-score
+      <h3>Decision tree / survival</h3><strong class="score" data-tree-score
         >{pct(decisionTree(initial).probability)}</strong
-      ><div class="scroll tree" data-tree></div><p data-path></p>
+      ><div
+        class="scroll tree"
+        data-tree
+        tabindex="0"
+        role="region"
+        aria-label="Decision tree diagram"
+      >
+      </div><p data-path></p>
     </article>
   </div>
   <p class="muted" data-accuracy>
-    Held-out accuracy · Naive Bayes {pct(scores.bayes)} · Tree {
+    Held-out accuracy / Naive Bayes {pct(scores.bayes)} / Tree {
       pct(scores.tree)
     }
   </p>
@@ -62,212 +69,242 @@ const pct = (n: number) => `${(100 * n).toFixed(1)}%`;
   </form>
   <button type="button" data-reset>Reset</button>
   <p class="note">
-    Both models train locally on 120 invented passengers with the same held-out
-    split; these are not historical estimates.
+    Both models train locally on 1,000 invented passengers with the same
+    held-out split; these are not historical estimates.
   </p>
 </section>
 <script>
   import "../../scripts/demos/titanic-survival-predictor";
 </script>
-<style>
+<style is:inline>
   .demo-titanic-survival-predictor {
+    --demo-bg: #ffffff;
+    --demo-ink: #182b39;
+    --demo-muted: #526575;
+    --demo-line: #d7e1e8;
+    --demo-accent: #176c82;
+    color-scheme: light;
     margin: 28px 0;
     padding: clamp(14px, 3vw, 28px);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-lg);
-    background: var(--bg);
-    color: var(--ink);
+    border: 1px solid var(--demo-line);
+    border-radius: 16px;
+    background: #f5f8fa;
+    color: var(--demo-ink);
     font-size: 14px;
     line-height: 1.55;
     min-width: 0;
-  }
-  .demo-titanic-survival-predictor .columns {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
-  }
-  .demo-titanic-survival-predictor .card {
-    min-width: 0;
-    padding: 18px;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-  }
-  .demo-titanic-survival-predictor h2 {
-    margin: 0 0 14px;
-    font-size: 22px;
-    letter-spacing: -0.025em;
-  }
-  .demo-titanic-survival-predictor h3 {
-    margin: 0 0 10px;
-    font-size: 16px;
-  }
-  .demo-titanic-survival-predictor p {
-    margin: 12px 0;
-  }
-  .demo-titanic-survival-predictor .muted,
-  .demo-titanic-survival-predictor .note {
-    color: var(--muted);
-  }
-  .demo-titanic-survival-predictor .note {
-    font-size: 12px;
-    margin-bottom: 0;
-  }
-  .demo-titanic-survival-predictor .score {
-    display: block;
-    color: var(--accent);
-    font-size: clamp(28px, 5vw, 42px);
-    line-height: 1.2;
-    margin: 10px 0;
-  }
-  .demo-titanic-survival-predictor .toolbar {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    align-items: center;
-    margin: 18px 0;
-  }
-  .demo-titanic-survival-predictor button,
-  .demo-titanic-survival-predictor select {
-    font: inherit;
-    min-height: 44px;
-    padding: 8px 12px;
-    background: var(--bg);
-    color: var(--ink);
-    border: 1px solid var(--muted);
-    border-radius: 8px;
-    max-width: 100%;
-  }
-  .demo-titanic-survival-predictor button {
-    cursor: pointer;
-    touch-action: manipulation;
-  }
-  .demo-titanic-survival-predictor button[aria-pressed="true"] {
-    border-color: var(--accent);
-    box-shadow: inset 0 0 0 1px var(--accent);
-    color: var(--accent);
-  }
-  .demo-titanic-survival-predictor button:disabled {
-    opacity: 0.5;
-    cursor: default;
-  }
-  .demo-titanic-survival-predictor :is(button, input, select):focus-visible {
-    box-shadow:
-      0 0 0 3px var(--bg),
-      0 0 0 6px var(--accent);
-  }
-  .demo-titanic-survival-predictor label {
-    display: grid;
-    gap: 6px;
-    min-width: 0;
-  }
-  .demo-titanic-survival-predictor .inputs {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px;
-    margin: 18px 0;
-  }
-  .demo-titanic-survival-predictor input,
-  .demo-titanic-survival-predictor select {
-    font-size: 16px;
-    accent-color: var(--accent);
-  }
-  .demo-titanic-survival-predictor input[type="range"] {
-    width: 100%;
-    min-height: 44px;
-    margin: 0;
-  }
-  .demo-titanic-survival-predictor input[type="checkbox"] {
-    width: 22px;
-    height: 22px;
-    margin: 10px;
-  }
-  .demo-titanic-survival-predictor .check {
-    display: flex;
-    align-items: center;
-    min-height: 44px;
-  }
-  .demo-titanic-survival-predictor .scroll {
-    overflow-x: auto;
-    max-width: 100%;
-  }
-  .demo-titanic-survival-predictor :global(table) {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-  }
-  .demo-titanic-survival-predictor :global(th),
-  .demo-titanic-survival-predictor :global(td) {
-    padding: 9px 6px;
-    border-bottom: 1px solid var(--line);
-    text-align: left;
-  }
-  .demo-titanic-survival-predictor :global(th) {
-    font-weight: 500;
-  }
-  .demo-titanic-survival-predictor :global(svg) {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-  .demo-titanic-survival-predictor :global(svg text) {
-    fill: var(--muted);
-    font:
-      12px system-ui,
-      sans-serif;
-  }
-  .demo-titanic-survival-predictor :global(.axis) {
-    fill: none;
-    stroke: var(--muted);
-    stroke-width: 1;
-  }
-  .demo-titanic-survival-predictor :global(.series) {
-    fill: none;
-    stroke: var(--accent);
-    stroke-width: 2.5;
-  }
-  .demo-titanic-survival-predictor :global(.point) {
-    fill: var(--accent);
-  }
-  .demo-titanic-survival-predictor :global(.secondary) {
-    fill: var(--muted);
-  }
-  .demo-titanic-survival-predictor :global(.selected) {
-    stroke: var(--accent);
-    stroke-width: 2.5;
-    fill: none;
-  }
-  .demo-titanic-survival-predictor :global(.branch) {
-    stroke: var(--muted);
-    stroke-width: 1;
-    fill: none;
-  }
-  .demo-titanic-survival-predictor :global(g rect) {
-    fill: var(--bg);
-  }
-  .demo-titanic-survival-predictor :global(g text) {
-    stroke: none;
-    text-anchor: middle;
-    font-size: 10px;
-  }
-  @media (max-width: 680px) {
-    .demo-titanic-survival-predictor .columns {
-      grid-template-columns: 1fr;
+    max-height: 780px;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #a4b5c2 transparent;
+    & * {
+      box-sizing: border-box;
+      scrollbar-width: thin;
+      scrollbar-color: #a4b5c2 transparent;
     }
-    .demo-titanic-survival-predictor .inputs {
-      grid-template-columns: 1fr 1fr;
+    &::-webkit-scrollbar,
+    & ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
     }
-    .demo-titanic-survival-predictor .card {
-      padding: 12px;
+    &::-webkit-scrollbar-thumb,
+    & ::-webkit-scrollbar-thumb {
+      background: #a4b5c2;
+      border-radius: 6px;
     }
-  }
-  @media (max-width: 380px) {
-    .demo-titanic-survival-predictor .inputs {
-      grid-template-columns: 1fr;
+    .columns {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
     }
-  }
-</style>
-<style>
-  .demo-titanic-survival-predictor .tree :global(svg) {
-    min-width: 650px;
+    .card {
+      min-width: 0;
+      padding: 18px;
+      border: 1px solid var(--demo-line);
+      border-radius: 12px;
+      background: var(--demo-bg);
+    }
+    h2 {
+      margin: 0 0 14px;
+      font-size: 22px;
+      letter-spacing: -0.025em;
+    }
+    h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+    }
+    p {
+      margin: 12px 0;
+    }
+    .muted,
+    .note {
+      color: var(--demo-muted);
+    }
+    .note {
+      font-size: 12px;
+      margin-bottom: 0;
+    }
+    .score {
+      display: block;
+      color: var(--demo-accent);
+      font-size: clamp(28px, 5vw, 42px);
+      line-height: 1.2;
+      margin: 10px 0;
+    }
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin: 18px 0;
+    }
+    button,
+    select {
+      font: inherit;
+      min-height: 44px;
+      padding: 8px 12px;
+      background: var(--demo-bg);
+      color: var(--demo-ink);
+      border: 1px solid var(--demo-muted);
+      border-radius: 8px;
+      max-width: 100%;
+    }
+    button,
+    summary {
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    button[aria-pressed="true"] {
+      border-color: var(--demo-accent);
+      box-shadow: inset 0 0 0 1px var(--demo-accent);
+      color: var(--demo-accent);
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+    :is(button, input, select, summary, a, [tabindex]):focus-visible {
+      box-shadow: 0 0 0 2px var(--demo-accent);
+    }
+    label {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+    .inputs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin: 18px 0;
+    }
+    input,
+    select {
+      font-size: 16px;
+      accent-color: var(--demo-accent);
+    }
+    input[type="range"] {
+      width: 100%;
+      min-height: 44px;
+      margin: 0;
+    }
+    input[type="checkbox"] {
+      width: 22px;
+      height: 22px;
+      margin: 10px;
+    }
+    .check {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+    }
+    .scroll {
+      overflow: auto;
+      max-width: 100%;
+      max-height: 240px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    th,
+    td {
+      padding: 9px 6px;
+      border-bottom: 1px solid var(--demo-line);
+      text-align: left;
+    }
+    th {
+      font-weight: 500;
+    }
+    svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    svg text {
+      fill: var(--demo-muted);
+      font-family: inherit;
+      font-size: 12px;
+    }
+    .axis {
+      fill: none;
+      stroke: var(--demo-muted);
+      stroke-width: 1;
+    }
+    .series {
+      fill: none;
+      stroke: var(--demo-accent);
+      stroke-width: 2.5;
+    }
+    .point {
+      fill: var(--demo-accent);
+    }
+    .selected {
+      stroke: var(--demo-accent);
+      stroke-width: 2.5;
+      fill: none;
+    }
+    .branch {
+      stroke: var(--demo-muted);
+      stroke-width: 1;
+      fill: none;
+    }
+    g rect {
+      fill: var(--demo-bg);
+    }
+    g text {
+      stroke: none;
+      text-anchor: middle;
+    }
+
+    .tree {
+      height: 340px;
+      max-height: 340px;
+    }
+    .tree svg {
+      width: max(100%, var(--tree-width));
+      height: auto;
+    }
+    [data-path] {
+      font-size: 12px;
+      min-height: 40px;
+    }
+
+    @media (max-width: 680px) {
+      .columns {
+        grid-template-columns: 1fr;
+      }
+      .inputs {
+        grid-template-columns: 1fr 1fr;
+      }
+      .card {
+        padding: 12px;
+      }
+    }
+    @media (max-width: 380px) {
+      .inputs {
+        grid-template-columns: 1fr;
+      }
+    }
   }
 </style>

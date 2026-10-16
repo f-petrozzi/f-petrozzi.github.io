@@ -133,7 +133,7 @@ function init(root: HTMLElement) {
     const scope =
       [filters.program || "All programs", filters.term]
         .filter(Boolean)
-        .join(" · ") || "All programs";
+        .join(" / ") || "All programs";
     if (!b) {
       bench.innerHTML = `<p class="ei-scope">${esc(scope)}</p><p class="ei-none">No records in this selection.</p>`;
       return;

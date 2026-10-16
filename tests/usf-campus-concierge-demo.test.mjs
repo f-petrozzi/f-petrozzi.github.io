@@ -50,20 +50,32 @@ test("answers cite the exact passages and unsupported questions have no citation
 test("email tool arguments and result reflect editable draft fields", () => {
   const reply = ask(prompts[1]);
   const draft = draftEmail(reply);
-  assert.equal(draft.to, "orientation@example.com");
-  assert.ok(draft.body.includes(reply.question));
+  assert.equal(draft.to, "student@example.com");
+  reply.answer.forEach((part) =>
+    assert.ok(draft.body.includes(`${part.text} [${part.number}]`)),
+  );
+  reply.citations.forEach((passage, i) =>
+    assert.ok(draft.body.includes(`[${i + 1}] ${passage.title}`)),
+  );
+  assert.match(draft.body, /USF Student Support/);
   const edited = {
     ...draft,
-    subject: "My orientation question",
-    body: "I would like a remote session.",
+    subject: "Your orientation registration",
+    body: "Please choose a remote orientation session.",
   };
   const call = emailCall(edited);
   assert.equal(call.tool, "gmail.create_draft");
   assert.deepEqual(call.arguments, edited);
-  assert.deepEqual(call.result.draft, edited);
+  assert.deepEqual(call.result.message, edited);
+  assert.equal(call.result.status, "draft_ready");
+  const sent = emailCall(edited, "send");
+  assert.equal(sent.tool, "gmail.send_email");
+  assert.equal(sent.result.status, "sent");
+  assert.deepEqual(sent.arguments, edited);
+  assert.deepEqual(sent.result.message, edited);
   assert.equal(call.result.status, "draft_ready");
 });
-test("calendar availability and proposed slots use the same dates and times", () => {
+test("calendar availability and booked slots use the same dates and times", () => {
   const reply = ask(prompts[2]);
   const available = meetingCall(reply);
   assert.equal(available.tool, "google_calendar.find_available_slots");
@@ -72,12 +84,13 @@ test("calendar availability and proposed slots use the same dates and times", ()
     date: meetingSlots[1].date,
     time: meetingSlots[1].times[0],
   });
-  assert.equal(proposal.tool, "google_calendar.propose_meeting");
+  assert.equal(proposal.tool, "google_calendar.create_event");
   assert.equal(proposal.arguments.topic, reply.question);
   assert.equal(proposal.arguments.duration_minutes, 30);
   assert.equal(proposal.arguments.start, "2026-04-16T09:30:00-04:00");
-  assert.equal(proposal.result.status, "proposed");
-  assert.match(proposal.result.message, /invitation pending/);
+  assert.equal(proposal.result.status, "confirmed");
+  assert.match(proposal.result.message, /invitation sent/);
+  assert.deepEqual(proposal.arguments.attendees, ["student@example.com"]);
   assert.equal(
     meetingCall(reply, { date: "2026-04-18", time: "04:00" }).result.status,
     "slots_available",

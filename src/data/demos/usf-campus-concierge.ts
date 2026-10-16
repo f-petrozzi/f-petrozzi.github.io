@@ -62,13 +62,13 @@ export const passages = [
 ];
 
 export const prompts = [
-  "What do I need to apply?",
-  "How do I register for orientation?",
-  "Can I meet an advisor?",
-  "How do I request financial aid?",
+  "What does a student need to apply?",
+  "How should a student register for orientation?",
+  "Can a student meet an advisor?",
+  "How should a student request financial aid?",
 ];
 const stop = new Set(
-  "a an and are as at be before by can do does for from how i in is it me my of on or our the their this to what when where which who with you your need want about please could would".split(
+  "a an and are as at be before by can do does for from how i in is it me my of on or our the their this to what when where which who with you your need want about please could would should student students".split(
     " ",
   ),
 );
@@ -176,22 +176,23 @@ export type Reply = ReturnType<typeof ask>;
 export type EmailDraft = { to: string; subject: string; body: string };
 export function draftEmail(reply: Reply): EmailDraft {
   const topic = reply.citations[0]?.title ?? "Admissions question";
-  const to = /orientation/i.test(topic)
-    ? "orientation@example.com"
-    : /advisor/i.test(topic)
-      ? "advising@example.com"
-      : "admissions@example.com";
   return {
-    to,
-    subject: `Question about ${topic.toLowerCase()}`,
-    body: `Hello,\n\n${reply.question}\n\n${reply.citations.length ? `I read the information about ${topic.toLowerCase()}. Could you clarify the next steps for my situation?` : "Could you point me to the appropriate team?"}\n\nThank you,\nA prospective student`,
+    to: "student@example.com",
+    subject: `Your next steps: ${topic.toLowerCase()}`,
+    body: `Hello,\n\nFollowing up on your question, here are the next steps:\n\n${reply.answer.map((part) => `${part.text} [${part.number}]`).join("\n\n")}\n\nUniversity references:\n${reply.citations.map((passage, index) => `[${index + 1}] ${passage.title}`).join("\n")}\n\nPlease reply if you would like help arranging an advising meeting.\n\nUSF Student Support`,
   };
 }
-export function emailCall(draft: EmailDraft) {
+export function emailCall(
+  draft: EmailDraft,
+  action: "draft" | "send" = "draft",
+) {
   return {
-    tool: "gmail.create_draft",
+    tool: action === "send" ? "gmail.send_email" : "gmail.create_draft",
     arguments: { ...draft },
-    result: { status: "draft_ready", draft: { ...draft } },
+    result: {
+      status: action === "send" ? "sent" : "draft_ready",
+      message: { ...draft },
+    },
   };
 }
 export const meetingSlots = [
@@ -210,17 +211,18 @@ export function meetingCall(
     );
   return valid
     ? {
-        tool: "google_calendar.propose_meeting",
+        tool: "google_calendar.create_event",
         arguments: {
           topic: reply.question,
+          attendees: ["student@example.com"],
           start: `${slot.date}T${slot.time}:00-04:00`,
           duration_minutes: 30,
           time_zone: "America/New_York",
         },
         result: {
-          status: "proposed",
+          status: "confirmed",
           start: `${slot.date} ${slot.time}`,
-          message: "Slot proposed; invitation pending.",
+          message: "Meeting scheduled; invitation sent to student@example.com.",
         },
       }
     : {

@@ -39,7 +39,7 @@ function init(root: HTMLElement) {
     root.querySelector("[data-profit]")!.textContent =
       `$${result.profit.toFixed(2)}`;
     root.querySelector("[data-optimum]")!.textContent =
-      `A = ${result.optimum.x.toFixed(2)}, B = ${result.optimum.y.toFixed(2)} · Labor ${result.laborUsed.toFixed(1)} / ${l} · Material ${result.materialUsed.toFixed(1)} / ${m}`;
+      `A = ${result.optimum.x.toFixed(2)}, B = ${result.optimum.y.toFixed(2)}; Labor ${result.laborUsed.toFixed(1)} / ${l}; Material ${result.materialUsed.toFixed(1)} / ${m}`;
     const x = (v: number) => 45 + (v / 60) * 440,
       y = (v: number) => 245 - (v / 60) * 210;
     // Clip each constraint to the visible 60 × 60 plot.
@@ -60,9 +60,18 @@ function init(root: HTMLElement) {
   root
     .querySelectorAll<HTMLInputElement>("[data-predictor]")
     .forEach((el) => el.addEventListener("change", regression));
-  labor.addEventListener("input", production);
-  material.addEventListener("input", production);
+  let redraw: ReturnType<typeof setTimeout> | undefined;
+  const scheduleProduction = () => {
+    root.querySelector("[data-labor]")!.textContent = `${labor.value} hours`;
+    root.querySelector("[data-material]")!.textContent =
+      `${material.value} units`;
+    clearTimeout(redraw);
+    redraw = setTimeout(production, 60);
+  };
+  labor.addEventListener("input", scheduleProduction);
+  material.addEventListener("input", scheduleProduction);
   root.querySelector("[data-reset]")!.addEventListener("click", () => {
+    clearTimeout(redraw);
     root.querySelector<HTMLFormElement>("form")!.reset();
     regression();
     production();

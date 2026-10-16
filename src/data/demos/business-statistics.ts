@@ -1,16 +1,28 @@
 export const predictorNames = ["Age", "BMI", "Smoker (0/1)"];
-export const observations = Array.from({ length: 18 }, (_, i) => {
-  const age = 22 + ((i * 7) % 43),
-    bmi = 21 + ((i * 5) % 16),
-    smoker = i % 4 === 0 ? 1 : 0;
-  const charges =
-    900 +
-    145 * age +
-    210 * bmi +
-    11500 * smoker +
-    [500, -900, 250, -400, 800, -200][i % 6];
-  return { predictors: [age, bmi, smoker], charges };
-});
+export function makeObservations(seed = 2048) {
+  let state = seed >>> 0;
+  const random = () => {
+    state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+    return state / 4294967296;
+  };
+  return Array.from({ length: 60 }, () => {
+    const age = 20 + Math.floor(random() * 45);
+    const bmi = Number((20 + random() * 17).toFixed(1));
+    const smoker = random() < 0.25 ? 1 : 0;
+    // Gaussian variation represents unobserved costs; smokers vary more widely.
+    const noise =
+      Math.sqrt(-2 * Math.log(Math.max(1e-9, random()))) *
+      Math.cos(2 * Math.PI * random()) *
+      2400 *
+      (smoker ? 1.5 : 1);
+    const charges = Math.max(
+      500,
+      Math.round(900 + 145 * age + 210 * bmi + 11500 * smoker + noise),
+    );
+    return { predictors: [age, bmi, smoker], charges };
+  });
+}
+export const observations = makeObservations();
 export type Observation = { predictors: number[]; charges: number };
 export function regress(rows: Observation[], selected: number[]) {
   if (

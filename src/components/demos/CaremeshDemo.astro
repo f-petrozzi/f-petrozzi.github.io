@@ -25,10 +25,10 @@ const run = ingestDay(garminDays[0]);
   </header>
   <nav aria-label="CareMesh flows">
     <button type="button" data-view="recipe" aria-pressed="true"
-      >01 · Recipe parsing</button
+      >01 / Recipe parsing</button
     >
     <button type="button" data-view="wearable" aria-pressed="false"
-      >02 · Wearable ingestion</button
+      >02 / Wearable ingestion</button
     >
   </nav>
   <section data-panel="recipe" aria-label="Recipe parsing">
@@ -90,7 +90,7 @@ const run = ingestDay(garminDays[0]);
       </div>
     </div>
     <p class="status" data-parse-status role="status">
-      Gemini extraction → Recipe validated · 4 ingredients · 3 steps
+      Gemini extraction → Recipe validated / 4 ingredients / 3 steps
     </p>
   </section>
   <section data-panel="wearable" aria-label="Wearable ingestion" hidden>
@@ -119,7 +119,7 @@ const run = ingestDay(garminDays[0]);
               <div>
                 <>
                   <span>
-                    {priority.specialist} · {Math.round(priority.score * 100)}%
+                    {priority.specialist} / {Math.round(priority.score * 100)}%
                   </span>
                   <meter
                     min="0"
@@ -200,271 +200,313 @@ const run = ingestDay(garminDays[0]);
 <script>
   import "../../scripts/demos/caremesh";
 </script>
-<style>
+<style is:inline>
   .demo-caremesh {
-    padding: 24px;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-lg);
-    background: var(--bg);
-    color: var(--ink);
-    font-size: 14px;
-    line-height: 1.6;
-    min-width: 0;
-  }
-  .toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-  }
-  h2 {
-    font-size: clamp(20px, 3vw, 28px);
-    font-weight: 500;
-    letter-spacing: -0.03em;
-    margin: 4px 0;
-  }
-  h3 {
-    font-size: 22px;
-    line-height: 1.3;
-    margin: 12px 0 4px;
-    font-weight: 550;
-    overflow-wrap: anywhere;
-  }
-  h4 {
-    margin: 24px 0 8px;
-    font-size: 14px;
-  }
-  .eyebrow,
-  .kicker {
-    color: var(--accent);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-  nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 20px 0;
-  }
-  button,
-  select,
-  textarea {
-    font: inherit;
-    color: var(--ink);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    background: var(--bg);
-  }
-  button {
-    min-height: 44px;
-    padding: 10px 14px;
-    cursor: pointer;
-    touch-action: manipulation;
-  }
-  button:hover {
-    border-color: var(--accent);
-  }
-  button[aria-pressed="true"],
-  .primary {
-    background: var(--accent);
-    color: var(--accent-ink);
-    border-color: var(--accent);
-  }
-  .demo-caremesh
-    :global(:is(button, input, select, textarea, summary):focus-visible) {
-    box-shadow: 0 0 0 3px var(--accent);
-    outline-offset: 3px;
-  }
-  .columns {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 16px;
-  }
-  .card {
-    border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-    padding: 20px;
-    min-width: 0;
-  }
-  .extracted {
-    background: color-mix(in srgb, var(--accent) 5%, var(--bg));
-  }
-  .input-column {
-    display: grid;
-    gap: 16px;
-    align-content: start;
-    min-width: 0;
-  }
-  .muted,
-  .note,
-  output {
-    color: var(--muted);
-  }
-  .demo-caremesh :global(li) {
-    padding: 4px 0;
-    overflow-wrap: anywhere;
-  }
-  ul,
-  ol {
-    padding-left: 22px;
-    margin: 8px 0;
-  }
-  label {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 6px;
-    margin-bottom: 16px;
-  }
-  select,
-  textarea {
-    width: 100%;
-    min-width: 0;
-    max-width: 100%;
-    padding: 10px;
-    font-size: 16px;
-  }
-  select {
-    min-height: 44px;
-  }
-  textarea {
-    resize: vertical;
-    line-height: 1.55;
-  }
-  input[type="range"] {
-    width: 100%;
-    min-width: 0;
-    min-height: 44px;
-    accent-color: var(--accent);
-    margin: 0;
-  }
-  pre {
-    max-width: 100%;
-    overflow: auto;
-    font-size: 12px;
-    line-height: 1.7;
-    background: color-mix(in srgb, var(--ink) 4%, var(--bg));
-    padding: 14px;
-    border-radius: 8px;
-    tab-size: 2;
-  }
-  .source {
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-  }
-  .demo-caremesh :global(mark) {
-    color: var(--ink);
-    background: color-mix(in srgb, var(--accent) 22%, var(--bg));
-    box-decoration-break: clone;
-  }
-  .demo-caremesh :global(mark[data-field="title"]) {
-    text-decoration: underline;
-    text-decoration-style: double;
-  }
-  .demo-caremesh :global(mark[data-field="servings"]) {
-    font-weight: 700;
-  }
-  .demo-caremesh :global(mark[data-field="step"]) {
-    background: color-mix(in srgb, var(--accent) 9%, var(--bg));
-    border-bottom: 1px dashed var(--accent);
-  }
-  .legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    color: var(--muted);
-    font-size: 11px;
-    margin: 12px 0;
-  }
-  .legend span:first-child {
-    text-decoration: underline double;
-  }
-  .legend span:nth-child(2) {
-    font-weight: 700;
-  }
-  .legend span:last-child {
-    border-bottom: 1px dashed var(--accent);
-  }
-  summary {
-    min-height: 44px;
-    display: list-item;
-    align-content: center;
-    cursor: pointer;
-    color: var(--accent);
-  }
-  .status {
-    margin: 16px 0 0;
-    color: var(--accent);
-    font-size: 12px;
-  }
-  .note {
-    margin: 24px 0 0;
-    font-size: 12px;
-  }
-  .route-banner {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    border-block: 1px solid var(--line);
-    padding: 16px 0;
-    margin-bottom: 16px;
-  }
-  .route-banner span {
-    color: var(--muted);
-  }
-  .priorities {
-    display: grid;
-    gap: 12px;
-  }
-  .priorities :global(div) {
-    display: grid;
-    gap: 4px;
-  }
-  .priorities :global(span) {
-    font-size: 12px;
-    color: var(--muted);
-  }
-  .priorities :global(meter) {
-    width: 100%;
-    accent-color: var(--accent);
-    height: 12px;
-  }
-  .run {
-    margin-top: 16px;
-  }
-  .run ol {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px 32px;
-  }
-  .run :global(li) {
-    padding: 10px 0;
-  }
-  .run :global(strong),
-  .run :global(span) {
-    display: block;
-  }
-  .run :global(span) {
-    color: var(--muted);
-    font-size: 12px;
-  }
-  [hidden] {
-    display: none !important;
-  }
-  @media (max-width: 700px) {
-    .columns {
-      grid-template-columns: minmax(0, 1fr);
+    --demo-bg: #0a0f18;
+    --demo-ink: #eef3f8;
+    --demo-muted: #a9b6c7;
+    --demo-faint: #9aa9bd;
+    --demo-accent: #8fd8f2;
+    --demo-accent-ink: #06121c;
+    --demo-line: rgb(255 255 255 / 0.12);
+    --demo-glass-tint: #101826;
+    color-scheme: dark;
+    background: var(--demo-bg);
+
+    & {
+      padding: 24px;
+      border: 1px solid var(--demo-line);
+      border-radius: var(--radius-lg);
+      background: var(--demo-bg);
+      color: var(--demo-ink);
+      font-size: 14px;
+      line-height: 1.6;
+      min-width: 0;
     }
-    .demo-caremesh {
-      padding: 16px;
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    h2 {
+      font-size: clamp(20px, 3vw, 28px);
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      margin: 4px 0;
+    }
+    h3 {
+      font-size: 22px;
+      line-height: 1.3;
+      margin: 12px 0 4px;
+      font-weight: 550;
+      overflow-wrap: anywhere;
+    }
+    h4 {
+      margin: 24px 0 8px;
+      font-size: 14px;
+    }
+    .eyebrow,
+    .kicker {
+      color: var(--demo-accent);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 20px 0;
+    }
+    button,
+    select,
+    textarea {
+      font: inherit;
+      color: var(--demo-ink);
+      border: 1px solid var(--demo-line);
+      border-radius: 8px;
+      background: var(--demo-bg);
+    }
+    button {
+      min-height: 44px;
+      padding: 10px 14px;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    button:hover {
+      border-color: var(--demo-accent);
+    }
+    button[aria-pressed="true"],
+    .primary {
+      background: var(--demo-accent);
+      color: var(--demo-accent-ink);
+      border-color: var(--demo-accent);
+    }
+    & :is(button, input, select, textarea, summary):focus-visible {
+      box-shadow: 0 0 0 3px var(--demo-accent);
+      outline-offset: 3px;
+    }
+    .columns {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 16px;
     }
     .card {
-      padding: 16px;
+      border: 1px solid var(--demo-line);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      min-width: 0;
+    }
+    .extracted {
+      background: color-mix(in srgb, var(--demo-accent) 5%, var(--demo-bg));
+    }
+    .input-column {
+      display: grid;
+      gap: 16px;
+      align-content: start;
+      min-width: 0;
+    }
+    .muted,
+    .note,
+    output {
+      color: var(--demo-muted);
+    }
+    & li {
+      padding: 4px 0;
+      overflow-wrap: anywhere;
+    }
+    ul,
+    ol {
+      padding-left: 22px;
+      margin: 8px 0;
+    }
+    label {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    select,
+    textarea {
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+      padding: 10px;
+      font-size: 16px;
+    }
+    select {
+      min-height: 44px;
+    }
+    textarea {
+      resize: vertical;
+      line-height: 1.55;
+    }
+    input[type="range"] {
+      width: 100%;
+      min-width: 0;
+      min-height: 44px;
+      accent-color: var(--demo-accent);
+      margin: 0;
+    }
+    pre {
+      max-width: 100%;
+      overflow: auto;
+      font-size: 12px;
+      line-height: 1.7;
+      background: color-mix(in srgb, var(--demo-ink) 4%, var(--demo-bg));
+      padding: 14px;
+      border-radius: 8px;
+      tab-size: 2;
+      max-height: 440px;
+      overscroll-behavior: contain;
+    }
+    .source {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+    & mark {
+      color: var(--demo-ink);
+      background: color-mix(in srgb, var(--demo-accent) 22%, var(--demo-bg));
+      box-decoration-break: clone;
+    }
+    & mark[data-field="title"] {
+      text-decoration: underline;
+      text-decoration-style: double;
+    }
+    & mark[data-field="servings"] {
+      font-weight: 700;
+    }
+    & mark[data-field="step"] {
+      background: color-mix(in srgb, var(--demo-accent) 9%, var(--demo-bg));
+      border-bottom: 1px dashed var(--demo-accent);
+    }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      color: var(--demo-muted);
+      font-size: 11px;
+      margin: 12px 0;
+    }
+    .legend span:first-child {
+      text-decoration: underline double;
+    }
+    .legend span:nth-child(2) {
+      font-weight: 700;
+    }
+    .legend span:last-child {
+      border-bottom: 1px dashed var(--demo-accent);
+    }
+    summary {
+      min-height: 44px;
+      display: list-item;
+      align-content: center;
+      cursor: pointer;
+      color: var(--demo-accent);
+    }
+    .status {
+      margin: 16px 0 0;
+      color: var(--demo-accent);
+      font-size: 12px;
+    }
+    .note {
+      margin: 24px 0 0;
+      font-size: 12px;
+    }
+    .route-banner {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      border-block: 1px solid var(--demo-line);
+      padding: 16px 0;
+      margin-bottom: 16px;
+    }
+    .route-banner span {
+      color: var(--demo-muted);
+    }
+    .priorities {
+      display: grid;
+      gap: 12px;
+    }
+    .priorities div {
+      display: grid;
+      gap: 4px;
+    }
+    .priorities span {
+      font-size: 12px;
+      color: var(--demo-muted);
+    }
+    .priorities meter {
+      width: 100%;
+      accent-color: var(--demo-accent);
+      height: 12px;
+    }
+    .run {
+      margin-top: 16px;
     }
     .run ol {
-      grid-template-columns: minmax(0, 1fr);
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px 32px;
+    }
+    .run li {
+      padding: 10px 0;
+    }
+    .run strong,
+    .run span {
+      display: block;
+    }
+    .run span {
+      color: var(--demo-muted);
+      font-size: 12px;
+    }
+    [hidden] {
+      display: none !important;
+    }
+    @media (max-width: 700px) {
+      .columns {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      & {
+        padding: 16px;
+      }
+      .card {
+        padding: 16px;
+      }
+      .run ol {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    &,
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: #52647a transparent;
+    }
+    &::-webkit-scrollbar,
+    *::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    &::-webkit-scrollbar-thumb,
+    *::-webkit-scrollbar-thumb {
+      background: #52647a;
+      border-radius: 8px;
+    }
+    &::-webkit-scrollbar-track,
+    *::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    [data-panel] {
+      max-height: 580px;
+      overflow: auto;
+      overscroll-behavior: contain;
+    }
+    textarea {
+      max-height: 240px;
     }
   }
 </style>

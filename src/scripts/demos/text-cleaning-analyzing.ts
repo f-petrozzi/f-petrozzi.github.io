@@ -102,7 +102,7 @@ function matrix(p: Pipeline) {
         `<tr><th scope="row">${esc(p.labels[i])}</th>${row
           .map((v) => {
             const a = Math.round(10 + Math.sqrt(v) * 35);
-            return `<td style="background:color-mix(in srgb, var(--accent) ${a}%, transparent)">${v.toFixed(2)}</td>`;
+            return `<td style="background:color-mix(in srgb, var(--demo-accent) ${a}%, transparent)">${v.toFixed(2)}</td>`;
           })
           .join("")}</tr>`,
     )
@@ -179,8 +179,8 @@ function init(root: HTMLElement) {
 
     const t = p.totals;
     summary.textContent =
-      `${t.chapters || 1} ${t.chapters > 1 ? "chapters" : "chapter"} · ` +
-      `${t.units} ${p.lengthUnit}s · ${t.tokens} words · ${t.vocabulary} unique`;
+      `${t.chapters || 1} ${t.chapters > 1 ? "chapters" : "chapter"} / ` +
+      `${t.units} ${p.lengthUnit}s / ${t.tokens} words / ${t.vocabulary} unique`;
     topEl.innerHTML = topWords(p);
     unit.textContent = `Words per ${p.lengthUnit}`;
     chart.innerHTML = lengthChart(p);

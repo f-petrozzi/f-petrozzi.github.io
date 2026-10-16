@@ -17,7 +17,7 @@ const fit = regress(observations, [0, 1, 2]);
   <form>
     <div class="columns">
       <article class="card">
-        <h3>Medical charges · least squares</h3><p aria-live="polite">
+        <h3>Medical charges / least squares</h3><p aria-live="polite">
           R² <strong class="score" data-r2>{fit.r2.toFixed(3)}</strong>
         </p><div data-residuals></div><div class="scroll">
           <table>
@@ -39,7 +39,9 @@ const fit = regress(observations, [0, 1, 2]);
             ))
           }
         </fieldset><details>
-          <summary>18 observations</summary><div class="scroll">
+          <summary>{observations.length} observations</summary><div
+            class="scroll"
+          >
             <table>
               <thead
                 ><tr
@@ -65,7 +67,7 @@ const fit = regress(observations, [0, 1, 2]);
         </details>
       </article>
       <article class="card">
-        <h3>Production · linear programming</h3><p>
+        <h3>Production / linear programming</h3><p>
           Maximum profit <strong class="score" data-profit
             >${solveProduction(70, 80).profit.toFixed(2)}</strong
           >
@@ -105,223 +107,243 @@ const fit = regress(observations, [0, 1, 2]);
 <script>
   import "../../scripts/demos/business-statistics";
 </script>
-<style>
+<style is:inline>
   .demo-business-statistics {
+    --demo-bg: #ffffff;
+    --demo-ink: #182b39;
+    --demo-muted: #526575;
+    --demo-line: #d7e1e8;
+    --demo-accent: #216d58;
+    color-scheme: light;
     margin: 28px 0;
     padding: clamp(14px, 3vw, 28px);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-lg);
-    background: var(--bg);
-    color: var(--ink);
+    border: 1px solid var(--demo-line);
+    border-radius: 16px;
+    background: #f5f8fa;
+    color: var(--demo-ink);
     font-size: 14px;
     line-height: 1.55;
     min-width: 0;
-  }
-  .demo-business-statistics .columns {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
-  }
-  .demo-business-statistics .card {
-    min-width: 0;
-    padding: 18px;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-  }
-  .demo-business-statistics h2 {
-    margin: 0 0 14px;
-    font-size: 22px;
-    letter-spacing: -0.025em;
-  }
-  .demo-business-statistics h3 {
-    margin: 0 0 10px;
-    font-size: 16px;
-  }
-  .demo-business-statistics p {
-    margin: 12px 0;
-  }
-  .demo-business-statistics .muted,
-  .demo-business-statistics .note {
-    color: var(--muted);
-  }
-  .demo-business-statistics .note {
-    font-size: 12px;
-    margin-bottom: 0;
-  }
-  .demo-business-statistics .score {
-    display: block;
-    color: var(--accent);
-    font-size: clamp(28px, 5vw, 42px);
-    line-height: 1.2;
-    margin: 10px 0;
-  }
-  .demo-business-statistics .toolbar {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    align-items: center;
-    margin: 18px 0;
-  }
-  .demo-business-statistics button,
-  .demo-business-statistics select {
-    font: inherit;
-    min-height: 44px;
-    padding: 8px 12px;
-    background: var(--bg);
-    color: var(--ink);
-    border: 1px solid var(--muted);
-    border-radius: 8px;
-    max-width: 100%;
-  }
-  .demo-business-statistics button {
-    cursor: pointer;
-    touch-action: manipulation;
-  }
-  .demo-business-statistics button[aria-pressed="true"] {
-    border-color: var(--accent);
-    box-shadow: inset 0 0 0 1px var(--accent);
-    color: var(--accent);
-  }
-  .demo-business-statistics button:disabled {
-    opacity: 0.5;
-    cursor: default;
-  }
-  .demo-business-statistics :is(button, input, select):focus-visible {
-    box-shadow:
-      0 0 0 3px var(--bg),
-      0 0 0 6px var(--accent);
-  }
-  .demo-business-statistics label {
-    display: grid;
-    gap: 6px;
-    min-width: 0;
-  }
-  .demo-business-statistics .inputs {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px;
-    margin: 18px 0;
-  }
-  .demo-business-statistics input,
-  .demo-business-statistics select {
-    font-size: 16px;
-    accent-color: var(--accent);
-  }
-  .demo-business-statistics input[type="range"] {
-    width: 100%;
-    min-height: 44px;
-    margin: 0;
-  }
-  .demo-business-statistics input[type="checkbox"] {
-    width: 22px;
-    height: 22px;
-    margin: 10px;
-  }
-  .demo-business-statistics .check {
-    display: flex;
-    align-items: center;
-    min-height: 44px;
-  }
-  .demo-business-statistics .scroll {
-    overflow-x: auto;
-    max-width: 100%;
-  }
-  .demo-business-statistics :global(table) {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-  }
-  .demo-business-statistics :global(th),
-  .demo-business-statistics :global(td) {
-    padding: 9px 6px;
-    border-bottom: 1px solid var(--line);
-    text-align: left;
-  }
-  .demo-business-statistics :global(th) {
-    font-weight: 500;
-  }
-  .demo-business-statistics :global(svg) {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-  .demo-business-statistics :global(svg text) {
-    fill: var(--muted);
-    font:
-      12px system-ui,
-      sans-serif;
-  }
-  .demo-business-statistics :global(.axis) {
-    fill: none;
-    stroke: var(--muted);
-    stroke-width: 1;
-  }
-  .demo-business-statistics :global(.series) {
-    fill: none;
-    stroke: var(--accent);
-    stroke-width: 2.5;
-  }
-  .demo-business-statistics :global(.point) {
-    fill: var(--accent);
-  }
-  .demo-business-statistics :global(.secondary) {
-    fill: var(--muted);
-  }
-  .demo-business-statistics :global(.selected) {
-    stroke: var(--accent);
-    stroke-width: 2.5;
-    fill: none;
-  }
-  .demo-business-statistics :global(.branch) {
-    stroke: var(--muted);
-    stroke-width: 1;
-    fill: none;
-  }
-  .demo-business-statistics :global(g rect) {
-    fill: var(--bg);
-  }
-  .demo-business-statistics :global(g text) {
-    stroke: none;
-    text-anchor: middle;
-    font-size: 10px;
-  }
-  @media (max-width: 680px) {
-    .demo-business-statistics .columns {
-      grid-template-columns: 1fr;
+    max-height: 780px;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #a4b5c2 transparent;
+    & * {
+      box-sizing: border-box;
+      scrollbar-width: thin;
+      scrollbar-color: #a4b5c2 transparent;
     }
-    .demo-business-statistics .inputs {
-      grid-template-columns: 1fr 1fr;
+    &::-webkit-scrollbar,
+    & ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
     }
-    .demo-business-statistics .card {
-      padding: 12px;
+    &::-webkit-scrollbar-thumb,
+    & ::-webkit-scrollbar-thumb {
+      background: #a4b5c2;
+      border-radius: 6px;
     }
-  }
-  @media (max-width: 380px) {
-    .demo-business-statistics .inputs {
-      grid-template-columns: 1fr;
+    .columns {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
     }
-  }
-</style>
-<style>
-  .demo-business-statistics fieldset {
-    margin: 16px 0;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-  }
-  .demo-business-statistics summary {
-    min-height: 44px;
-    cursor: pointer;
-  }
-  .demo-business-statistics summary:focus-visible {
-    box-shadow: inset 0 0 0 2px var(--accent);
-  }
-  .demo-business-statistics :global(.region) {
-    fill: var(--accent);
-    fill-opacity: 0.16;
-    stroke: var(--accent);
-  }
-  .demo-business-statistics :global(.material) {
-    stroke-dasharray: 6 4;
-    stroke-width: 2;
+    .card {
+      min-width: 0;
+      padding: 18px;
+      border: 1px solid var(--demo-line);
+      border-radius: 12px;
+      background: var(--demo-bg);
+    }
+    h2 {
+      margin: 0 0 14px;
+      font-size: 22px;
+      letter-spacing: -0.025em;
+    }
+    h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+    }
+    p {
+      margin: 12px 0;
+    }
+    .muted,
+    .note {
+      color: var(--demo-muted);
+    }
+    .note {
+      font-size: 12px;
+      margin-bottom: 0;
+    }
+    .score {
+      display: block;
+      color: var(--demo-accent);
+      font-size: clamp(28px, 5vw, 42px);
+      line-height: 1.2;
+      margin: 10px 0;
+    }
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin: 18px 0;
+    }
+    button,
+    select {
+      font: inherit;
+      min-height: 44px;
+      padding: 8px 12px;
+      background: var(--demo-bg);
+      color: var(--demo-ink);
+      border: 1px solid var(--demo-muted);
+      border-radius: 8px;
+      max-width: 100%;
+    }
+    button,
+    summary {
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    button[aria-pressed="true"] {
+      border-color: var(--demo-accent);
+      box-shadow: inset 0 0 0 1px var(--demo-accent);
+      color: var(--demo-accent);
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+    :is(button, input, select, summary, a, [tabindex]):focus-visible {
+      box-shadow: 0 0 0 2px var(--demo-accent);
+    }
+    label {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+    .inputs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin: 18px 0;
+    }
+    input,
+    select {
+      font-size: 16px;
+      accent-color: var(--demo-accent);
+    }
+    input[type="range"] {
+      width: 100%;
+      min-height: 44px;
+      margin: 0;
+    }
+    input[type="checkbox"] {
+      width: 22px;
+      height: 22px;
+      margin: 10px;
+    }
+    .check {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+    }
+    .scroll {
+      overflow: auto;
+      max-width: 100%;
+      max-height: 240px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    th,
+    td {
+      padding: 9px 6px;
+      border-bottom: 1px solid var(--demo-line);
+      text-align: left;
+    }
+    th {
+      font-weight: 500;
+    }
+    svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    svg text {
+      fill: var(--demo-muted);
+      font-family: inherit;
+      font-size: 12px;
+    }
+    .axis {
+      fill: none;
+      stroke: var(--demo-muted);
+      stroke-width: 1;
+    }
+    .series {
+      fill: none;
+      stroke: var(--demo-accent);
+      stroke-width: 2.5;
+    }
+    .point {
+      fill: var(--demo-accent);
+    }
+    .selected {
+      stroke: var(--demo-accent);
+      stroke-width: 2.5;
+      fill: none;
+    }
+    .branch {
+      stroke: var(--demo-muted);
+      stroke-width: 1;
+      fill: none;
+    }
+    g rect {
+      fill: var(--demo-bg);
+    }
+    g text {
+      stroke: none;
+      text-anchor: middle;
+    }
+
+    fieldset {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin: 16px 0;
+      border: 1px solid var(--demo-line);
+      border-radius: 8px;
+    }
+    summary {
+      min-height: 44px;
+    }
+    .region {
+      fill: var(--demo-accent);
+      fill-opacity: 0.16;
+      stroke: var(--demo-accent);
+    }
+    .material {
+      stroke-dasharray: 6 4;
+      stroke-width: 2;
+    }
+
+    @media (max-width: 680px) {
+      .columns {
+        grid-template-columns: 1fr;
+      }
+      .inputs {
+        grid-template-columns: 1fr 1fr;
+      }
+      .card {
+        padding: 12px;
+      }
+    }
+    @media (max-width: 380px) {
+      .inputs {
+        grid-template-columns: 1fr;
+      }
+    }
   }
 </style>

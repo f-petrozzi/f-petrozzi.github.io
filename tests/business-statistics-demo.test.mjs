@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   regress,
   observations,
+  makeObservations,
   solveProduction,
 } from "../src/data/demos/business-statistics.ts";
 const close = (a, b, tol = 1e-7) =>
@@ -78,4 +79,22 @@ test("feasible polygon and optimum obey all constraints across slider range", ()
           if (2 * x + y <= labor && x + 2 * y <= material)
             assert.ok(40 * x + 30 * y <= result.profit + 1e-9);
     }
+});
+
+test("noisy medical charges have a useful but imperfect fit driven by smoking", () => {
+  assert.deepEqual(observations, makeObservations());
+  assert.notDeepEqual(observations, makeObservations(41));
+  const full = regress(observations, [0, 1, 2]);
+  const withoutSmoking = regress(observations, [0, 1]);
+  assert.equal(observations.length, 60);
+  assert.ok(
+    observations.every(
+      (row) => Number.isFinite(row.charges) && row.charges > 0,
+    ),
+  );
+  assert.ok(full.r2 >= 0.75 && full.r2 <= 0.85, `R² ${full.r2}`);
+  assert.ok(full.r2 - withoutSmoking.r2 > 0.4);
+  assert.ok(withoutSmoking.r2 < 0.4);
+  assert.ok(Math.sqrt(full.sse / observations.length) > 2000);
+  assert.ok(full.coefficients[3] > 8000);
 });

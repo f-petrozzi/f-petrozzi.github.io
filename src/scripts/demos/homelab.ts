@@ -58,7 +58,7 @@ function init(root: HTMLElement) {
     const node = nodes.find((node) => node.id === selected)!;
     get("[data-node-title]").textContent = node.label;
     get("[data-node-copy]").textContent = node.copy;
-    get("[data-connections]").textContent = connections(selected).join(" · ");
+    get("[data-connections]").textContent = connections(selected).join(" / ");
     get("[data-flow-status]").textContent = flows.length
       ? `${flows.map((flow) => ({ private: "Private access: My devices → Tailscale + SSH → VS Code / terminal", public: "Public access: Public web → Cloudflare Tunnel → NüMe", monitoring: "Monitoring: Host → Exporters → Prometheus → Grafana", development: "Development" })[flow]).join(". ")}.`
       : "All paths muted.";
@@ -76,8 +76,8 @@ function init(root: HTMLElement) {
     const alert = get("[data-alert]");
     alert.dataset.firing = String(sample.firing);
     alert.textContent = sample.firing
-      ? `Firing · Host CPU is ${sample.cpu}% (threshold ≥ 80%).`
-      : `Normal · Host CPU is ${sample.cpu}% (threshold ≥ 80%).`;
+      ? `Firing / Host CPU is ${sample.cpu}% (threshold ≥ 80%).`
+      : `Normal / Host CPU is ${sample.cpu}% (threshold ≥ 80%).`;
     get("[data-health-summary]").textContent =
       `${sample.containers.filter((container) => container.health === "Healthy").length} of ${sample.containers.length} healthy`;
     all("[data-container]").forEach((row, index) => {
@@ -109,7 +109,7 @@ function init(root: HTMLElement) {
       row.querySelector("[data-query-reason]")!.textContent = result.reason;
     });
     get("[data-dns-summary]").textContent =
-      `${blocked} blocked · ${queries.length - blocked} allowed`;
+      `${blocked} blocked / ${queries.length - blocked} allowed`;
   }
 
   all<HTMLButtonElement>("[data-view]").forEach((button) =>
