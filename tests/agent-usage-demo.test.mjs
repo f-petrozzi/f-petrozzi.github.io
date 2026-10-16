@@ -22,7 +22,7 @@ const windowOf = (minute, account = "lumen", id = "fiveHour") =>
     .accounts.find((row) => row.id === account)
     .windows.find((window) => window.id === id);
 
-test("notch material has outside flare arms, a local goo filter and one fixed palette", () => {
+test("notch has joined filled concave fillets, a local goo filter and one fixed palette", () => {
   const component = readFileSync(
     new URL("../src/components/demos/AgentUsageDemo.astro", import.meta.url),
     "utf8",
@@ -36,18 +36,27 @@ test("notch material has outside flare arms, a local goo filter and one fixed pa
   assert.equal((component.match(/<style/g) ?? []).length, 1);
   assert.match(css, /--au-black:\s*#000;/);
   assert.match(css, /\.notch-material\s*\{[^}]*fill: var\(--au-black\);/);
-  assert.match(css, /\.arm-rest\s*\{[^}]*stroke: var\(--au-black\);/);
+  assert.doesNotMatch(component + script, /arm-rest/);
+  assert.doesNotMatch(css, /stroke: var\(--au-black\)/);
   assert.doesNotMatch(
     css,
     /:global|var\(--(?:bg|ink|muted|line)\)|backdrop-filter/,
   );
-  // shape.js handleMetrics uses sqrt(90/70): F=43.88 and radius=32.43.
-  // Both pockets sit outside the 0..228 body; the far contour is mirrored.
+  // Reference shape.js partPath, lines 109-114, at width=228 and depth=90.
+  // One closed contour keeps both fillets flush with the top and body sides.
+  // The first arc is centred at (-F,F), the last at (228+F,F): both concave.
+  const filletRadius = Number((38.7 * Math.sqrt(90 / 70)).toFixed(2));
+  assert.equal(filletRadius, 43.88);
+  const notch = component.match(/<path\s+data-notch-ink\s+([^>]+)>/)[1];
+  assert.match(notch, /fill="var\(--au-black\)"\s+stroke="none"/);
+  assert.ok(
+    notch.includes(
+      `d="M-${filletRadius} -40V0A${filletRadius} ${filletRadius} 0 0 1 0 ${filletRadius}V70A20 20 0 0 0 20 90H208A20 20 0 0 0 228 70V${filletRadius}A${filletRadius} ${filletRadius} 0 0 1 ${228 + filletRadius} 0V-40Z"`,
+    ),
+  );
+  // Only hovered control drops occupy these pockets; no stroked rest hooks.
   assert.ok(component.includes("i ? 271.88 : -43.88"));
   assert.ok(component.includes('i ? "scale(-1 1)" : undefined'));
-  assert.ok(
-    component.includes("M-10.2 -32.43H0A32.43 32.43 0 0 1 32.43 0V10.2"),
-  );
   assert.ok(component.includes('transform="translate(114 80)"'));
   assert.doesNotMatch(css, /inset: -80px/);
   assert.ok(component.includes('stdDeviation="4"'));
@@ -57,6 +66,16 @@ test("notch material has outside flare arms, a local goo filter and one fixed pa
     "filter ids are per instance",
   );
   assert.doesNotMatch(component + script, /(?:import|from)[^;\n]*fluid/);
+  assert.ok(
+    component.includes(
+      'd="M6.4 16.6V11a5.6 5.6 0 0 1 11.2 0v5.6l1.7 1.9H4.7z"',
+    ),
+    "use the real notch.html bell outline",
+  );
+  assert.ok(component.includes('<path d="M10 21h4">'));
+  assert.doesNotMatch(css.match(/\.bell-glyph\s*\{([^}]+)\}/)[1], /opacity: 0/);
+  assert.doesNotMatch(css.match(/\.bell-disc\s*\{([^}]+)\}/)[1], /opacity: 0/);
+  assert.match(css, /\.notch-frame\s*\{[^}]*min-height: 125px;/);
 });
 
 test("clock advances usage continuously and keeps windows independent", () => {
@@ -437,6 +456,9 @@ for (const reduced of [false, true]) {
     assert.equal(f.q("[data-frame]").style.transform, "translateY(0px)");
     assert.equal(f.q("[data-frame]").style.opacity, "1");
     assert.equal(f.q("[data-panel-content]").style.opacity, "1");
+    assert.equal(f.q("[data-bell-glyph]").style.opacity, "1");
+    assert.equal(f.q("[data-bell-disc]").style.opacity, "1");
+    assert.equal(f.q("[data-unread]").hidden, false);
     assert.equal(f.q("[data-attached]").inert, false);
     assert.equal(f.q("[data-reveal]").textContent, "Hide notch");
     for (const [id, used] of [
@@ -505,7 +527,7 @@ test("hover icons, hide/reveal and reset work directly from the revealed state",
   f.q("[data-bell]").emit("pointerleave");
   f.advance(2000);
   assert.equal(arm.querySelector("[data-arm-glyph]").style.opacity, "0");
-  assert.equal(f.q("[data-bell-glyph]").style.opacity, "0");
+  assert.equal(f.q("[data-bell-glyph]").style.opacity, "1");
   f.q("[data-reveal]").emit("click");
   f.advance(2000);
   assert.equal(f.q("[data-overlay]").hidden, true);
@@ -521,6 +543,8 @@ test("hover icons, hide/reveal and reset work directly from the revealed state",
   assert.equal(f.q("[data-panel-content]").style.opacity, "1");
   assert.equal(f.q("[data-account-title]").textContent, "Codex Lumen");
   assert.equal(f.q("[data-clock]").textContent, "09:00");
+  assert.equal(f.q("[data-bell-glyph]").style.opacity, "1");
+  assert.equal(f.q("[data-unread]").hidden, false);
   assert.ok(f.idle());
 });
 
@@ -534,15 +558,11 @@ function assertGoo(f) {
   );
 }
 
-test("arm, bell, peek and reveal springs enable goo only until they settle", () => {
+test("arm, peek and reveal springs enable goo only until they settle", () => {
   const f = interactionFixture();
   f.advance(1000);
   assertNoGoo(f);
-  for (const selector of [
-    '[data-arm="pin"]',
-    '[data-arm="move"]',
-    "[data-bell]",
-  ]) {
+  for (const selector of ['[data-arm="pin"]', '[data-arm="move"]']) {
     f.q(selector).emit("pointerenter");
     f.advance(16);
     assertGoo(f);
@@ -580,10 +600,8 @@ test("arm, bell, peek and reveal springs enable goo only until they settle", () 
   assert.ok(f.idle());
 });
 
-test("bell sprouts on the real corner bisector with a four pixel gap", () => {
+test("bell is visible on the real corner bisector with a four pixel gap, even at rest", () => {
   const f = interactionFixture();
-  f.q("[data-bell]").emit("pointerenter");
-  f.advance(2000);
   const transform = f.q("[data-bell-disc]").style.transform;
   const [, x, y] = transform.match(/translate\(([-\d.]+)px, ([-\d.]+)px\)/);
   assert.ok(Number(x) < 0, "bell clears the leading flank");
@@ -593,9 +611,33 @@ test("bell sprouts on the real corner bisector with a four pixel gap", () => {
       0.01,
   );
   assert.equal(f.q("[data-bell-disc]").style.opacity, "1");
+  assert.equal(f.q("[data-bell-glyph]").style.opacity, "1");
+  assert.equal(
+    f.q("[data-bell-glyph]").style.transform,
+    "translate(0px, 0px) scale(1) rotate(0deg)",
+    "glyph centre coincides with the revealed drop and button centre",
+  );
+  assert.equal(
+    f.q("[data-unread]").style.transform,
+    "translate(7.45px, -8.54px)",
+    "badge sits on the shoulder (.34,-.39 glyph sizes in notify.js)",
+  );
+  f.q("[data-bell]").emit("pointerenter");
+  f.advance(2000);
   assert.equal(f.q("[data-attached]").hidden, true, "card gives the bell room");
   f.q("[data-bell]").emit("click");
   assert.equal(f.q("[data-bell]").getAttribute("aria-expanded"), "true");
+  assert.equal(
+    f.q("[data-unread]").hidden,
+    true,
+    "opening the log reads alerts",
+  );
+  f.q("[data-bell]").emit("pointerleave");
+  f.q("[data-bell]").emit("blur");
+  f.advance(2000);
+  assert.equal(f.q("[data-bell-glyph]").style.opacity, "1");
+  assertNoGoo(f);
+  assert.ok(f.idle());
 });
 
 for (const suspend of ["setInViewport", "setHidden", "setReducedMotion"]) {
@@ -621,7 +663,7 @@ test("reduced motion and touch hover keep ink sharp and leave no frame loop", ()
       f.el("arm", "pin").querySelector("[data-arm-glyph]").style.opacity,
       "0",
     );
-    assert.equal(f.q("[data-bell-glyph]").style.opacity, "0");
+    assert.equal(f.q("[data-bell-glyph]").style.opacity, "1");
     assertNoGoo(f);
     assert.ok(f.idle());
     if (reduced) {

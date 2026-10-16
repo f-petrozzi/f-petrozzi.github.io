@@ -83,12 +83,12 @@ function init(root: HTMLElement) {
   // Match the revealed server render before any animation frame or pointer input.
   const opening = channel(1);
   const detail = channel(1);
-  const bell = channel(0);
+  // Keep the reference's revealed bell visible, including without hover/touch.
+  const bell = channel(1);
   const arms = all<HTMLButtonElement>("[data-arm]").map((element) => ({
     element,
     hover: channel(0),
     material: q<SVGElement>(`[data-arm-material="${element.dataset.arm}"]`),
-    rest: q<SVGElement>(`[data-arm-rest="${element.dataset.arm}"]`),
     disc: q<SVGElement>(`[data-arm-disc="${element.dataset.arm}"]`),
     neck: q<SVGElement>(`[data-arm-neck="${element.dataset.arm}"]`),
     icon: element.querySelector<SVGElement>("[data-arm-glyph]")!,
@@ -164,8 +164,9 @@ function init(root: HTMLElement) {
     const t = clamp(value);
     return t * t * (3 - 2 * t);
   };
-  // shape.js handleMetrics for a 90px top notch: sqrt(90 / 70).
-  // F=43.88, stroke=11.56, rest radius=32.43, disc radius=27.21.
+  // notch.js handleMetrics for a 90px top notch: sqrt(90 / 70).
+  // shape.js partPath joins filled flares (F=43.88) directly to the body.
+  // Hover-only handle drops have radius=27.21; no detached resting strokes.
   // Only resize changes SVG geometry. Motion writes transforms and opacity.
   let inkScaleX = 1;
   let materialMoving = false;
@@ -203,7 +204,7 @@ function init(root: HTMLElement) {
     content.style.opacity = String(clamp((d - 0.25) / 0.65));
     if (!panel && detail.value === 0) attached.hidden = true;
     if (!visible && opening.value === 0) overlay.hidden = true;
-    for (const { element, hover, material, rest, disc, neck, icon } of arms) {
+    for (const { element, hover, material, disc, neck, icon } of arms) {
       const h = clamp(hover.value);
       const side = element.dataset.arm === "pin" ? -1 : 1;
       const lift = smooth((h - 0.28) / 0.72);
@@ -214,9 +215,6 @@ function init(root: HTMLElement) {
       material.style.opacity = String(clamp(o * 3));
       element.style.opacity = String(out);
       element.inert = !visible || out < 0.1;
-      rest.style.transformOrigin = "22.93px -22.93px";
-      rest.style.transform = `scale(${1 - 0.95 * smooth(h / 0.42)})`;
-      rest.style.opacity = String(1 - smooth(h / 0.42));
       disc.style.transform = `translate(${x}px, ${y}px) scale(${0.22 + 0.78 * lift})`;
       disc.style.opacity = String(smooth(h / 0.2));
       neck.style.opacity = String(
@@ -241,13 +239,16 @@ function init(root: HTMLElement) {
     );
     bellNeck.style.transformOrigin = "12.93px 77.07px";
     bellNeck.style.transform = `scale(${0.3 + 0.7 * clamp(b)})`;
-    const dx = (bx - 12.93) * inkScaleX;
-    const dy = by - 77.07;
+    // HTML targets are centred on the revealed drop, as in notify.js.
+    const homeX = 20 - Math.SQRT1_2 * 45.77;
+    const homeY = 70 + Math.SQRT1_2 * 45.77;
+    const dx = (bx - homeX) * inkScaleX;
+    const dy = by - homeY;
     q("[data-bell-glyph]").style.transform =
       `translate(${dx}px, ${dy}px) scale(${0.28 + 0.72 * smooth(b)}) rotate(${(1 - b) * -20}deg)`;
     q("[data-bell-glyph]").style.opacity = String(smooth((b - 0.45) / 0.4));
     q("[data-unread]").style.transform =
-      `translate(${dx + 8.71 * inkScaleX * smooth(b)}px, ${dy - 10.89 * smooth(b)}px)`;
+      `translate(${dx + 7.45 * smooth(b)}px, ${dy - 8.54 * smooth(b)}px)`;
   }
   // Invert the renderer's stow cubic-bezier(.55,0,.8,.3).
   function stowEase(t: number) {
@@ -343,6 +344,7 @@ function init(root: HTMLElement) {
     if (visible) {
       stow = null;
       opening.target = 1;
+      bell.target = 1;
       if (reduce.matches) {
         opening.value = 1;
         moveArms(1);
@@ -664,7 +666,7 @@ function init(root: HTMLElement) {
     wake();
   });
   q("[data-bell]").addEventListener("pointerleave", () => {
-    bell.target = 0;
+    bell.target = visible ? 1 : 0;
     wake();
   });
   q("[data-bell]").addEventListener("focus", () => {
@@ -673,7 +675,7 @@ function init(root: HTMLElement) {
     wake();
   });
   q("[data-bell]").addEventListener("blur", () => {
-    bell.target = 0;
+    bell.target = visible ? 1 : 0;
     wake();
   });
   q("[data-bell]").addEventListener("click", () => {

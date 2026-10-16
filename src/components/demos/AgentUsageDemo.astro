@@ -54,8 +54,12 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
                 height="270"
                 rx="24"></rect>
             </g>
+            <!-- shape.js partPath (109-114): filled inverse-radius flares are
+                 part of the body, tangent to y=0 and the x=0 / x=228 sides. -->
             <path
               data-notch-ink
+              fill="var(--au-black)"
+              stroke="none"
               d="M-43.88 -40V0A43.88 43.88 0 0 1 0 43.88V70A20 20 0 0 0 20 90H208A20 20 0 0 0 228 70V43.88A43.88 43.88 0 0 1 271.88 0V-40Z"
             ></path>
             {
@@ -67,11 +71,6 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
                         class="arm-neck"
                         data-arm-neck={arm}
                         d="M37 -42Q24 -16 0 -7V7Q32 -11 43 -36Z"
-                      />
-                      <path
-                        class="arm-rest"
-                        data-arm-rest={arm}
-                        d="M-10.2 -32.43H0A32.43 32.43 0 0 1 32.43 0V10.2"
                       />
                     </g>
                     <circle class="arm-disc" data-arm-disc={arm} r="27.21" />
@@ -155,9 +154,8 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
               data-bell-glyph
               viewBox="0 0 24 24"
               aria-hidden="true"
-              ><path
-                d="M6.4 16.6V11a5.6 5.6 0 0 1 11.2 0v5.6l1.7 1.9H4.7zM10 21h4"
-              ></path></svg
+              ><path d="M6.4 16.6V11a5.6 5.6 0 0 1 11.2 0v5.6l1.7 1.9H4.7z"
+              ></path><path d="M10 21h4"></path></svg
             >
             <span data-unread class="unread" aria-hidden="true"></span>
           </button>
@@ -552,6 +550,7 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
     }
     .notch-frame {
       position: relative;
+      min-height: 125px;
       transform: translateY(0);
       opacity: 1;
       transform-origin: 50% 0;
@@ -662,18 +661,13 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
     .arm-trailing:active {
       cursor: grabbing;
     }
-    .arm-rest {
-      fill: none;
-      stroke: var(--au-black);
-      stroke-width: 11.56;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
     .arm-disc,
     .arm-neck,
-    .bell-disc,
     .bell-neck {
       opacity: 0;
+    }
+    .bell-disc {
+      transform: translate(-12.36px, 102.36px);
     }
     .arm-glyph {
       position: absolute;
@@ -685,28 +679,33 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
       color: var(--au-focus);
     }
     .bell {
-      /* Corner-dot position plus the full 45.77px diagonal sprout's reach. */
-      top: 55.07px;
-      left: calc(5.6706% - 48px);
-      width: 70px;
-      height: 70px;
+      /* C=(20,70), reach=20+4+21.77 along the leading 45-degree bisector. */
+      top: 75.59px;
+      left: calc(-5.4211% - 26.77px);
+      width: 53.54px;
+      height: 53.54px;
       z-index: 3;
+      color: #e8e8ea;
     }
     .bell-glyph {
       position: absolute;
-      top: 12px;
-      left: 38px;
-      opacity: 0;
+      top: 15.815px;
+      left: 15.815px;
+      width: 21.91px;
+      height: 21.91px;
+      stroke-width: 1.6;
       transform-origin: 50% 16%;
     }
     .unread {
       position: absolute;
-      top: 19px;
-      left: 45px;
-      width: 6px;
-      height: 6px;
+      top: 23.27px;
+      left: 23.27px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: #f2ff00;
+      box-shadow: 0 0 0 2px var(--au-black);
+      transform: translate(7.45px, -8.54px);
       pointer-events: none;
     }
     .attached-panel {
