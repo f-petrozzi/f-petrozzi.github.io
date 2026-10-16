@@ -1,0 +1,842 @@
+---
+import { collectItems, issue, publications } from "../../data/demos/proterra";
+const results = collectItems();
+const sources = results.filter((result) => result.accepted);
+const instance = `proterra-${crypto.randomUUID()}`;
+---
+
+<section
+  class="demo demo-proterra"
+  data-demo="proterra"
+  aria-label="Proterra Intelligence interactive sample"
+>
+  <header class="toolbar">
+    <div class="brand">
+      <span aria-hidden="true">P /</span><strong>Proterra Intelligence</strong>
+    </div>
+    <button type="button" data-reset>Reset</button>
+  </header>
+  <nav class="stages" aria-label="Weekly brief pipeline">
+    {
+      ["Collect", "Draft", "Review", "Publish"].map((stage, i) => (
+        <button
+          type="button"
+          data-stage={i}
+          aria-current={i === 0 ? "step" : undefined}
+          disabled={i > 0}
+        >
+          <span>0{i + 1}</span>
+          {stage}
+          <small data-step-status={i}>{i === 0 ? "Ready" : "Pending"}</small>
+        </button>
+      ))
+    }
+  </nav>
+  <div class="workspace">
+    <section data-panel="0" aria-label="Collect sources">
+      <div class="collection-layout">
+        <article class="brief-preview">
+          <p class="kicker">Brief preview · 3 stories</p>
+          <h2>{issue.title}</h2>
+          <p class="muted">Dairy / beef / bovine genetics</p>
+          <ul>
+            {
+              sources.map(({ item }) => (
+                <li>
+                  <strong>{item.sector}</strong>
+                  <p>{item.claim}</p>
+                </li>
+              ))
+            }
+          </ul>
+        </article>
+        <aside class="collection-inputs" aria-label="Collection settings">
+          <p class="kicker">Scheduled collection · 12 October</p>
+          <h3>Reporting window</h3>
+          <p class="muted">5–11 October 2026</p>
+          <div class="allow-list">
+            <p class="kicker">Publication allow-list</p>
+            {
+              publications.map((publisher) => (
+                <div>
+                  <strong>{publisher.name}</strong>
+                  <span>{publisher.host}</span>
+                </div>
+              ))
+            }
+          </div>
+          <button type="button" class="primary" data-collect
+            >Run scheduled collection</button
+          >
+        </aside>
+      </div>
+      <div data-collection hidden>
+        <div class="section-line">
+          <div>
+            <h3>Collection audit</h3><p class="muted">
+              7 discovered · 3 kept · 4 filtered
+            </p>
+          </div>
+          <button type="button" class="primary" data-create>Create draft</button
+          >
+        </div>
+        <ul class="audit">
+          {
+            results.map(({ item, accepted, reason }) => (
+              <li>
+                <span class:list={["decision", { kept: accepted }]}>
+                  {accepted ? "Kept" : "Filtered"}
+                </span>
+                <div>
+                  <>
+                    <strong>{item.title}</strong>
+                    <span>
+                      {item.publication} · {item.date}
+                    </span>
+                    <p>{reason.replace(/^(Kept|Filtered) · /, "")}</p>
+                  </>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <section data-panel="1" hidden aria-label="Draft and evidence">
+      <div class="heading">
+        <div>
+          <p class="kicker">Draft preview</p><h2 data-draft-title>
+            {issue.title}
+          </h2><p class="muted">Dairy / beef / bovine genetics</p>
+        </div><button type="button" class="primary" data-review
+          >Review draft</button
+        >
+      </div>
+      <div class="evidence-layout">
+        <div class="claims">
+          <h3>Reported facts</h3>
+          {
+            sources.map(({ item }, i) => (
+              <article class="claim" data-claim-card={item.id}>
+                <span class="kicker">
+                  0{i + 1} / {item.sector}
+                </span>
+                <button
+                  type="button"
+                  data-claim={item.id}
+                  aria-pressed={i === 0 ? "true" : "false"}
+                  aria-controls={`${instance}-${item.id}`}
+                >
+                  {item.claim}
+                </button>
+                <a href={`#${instance}-${item.id}`} data-source-link={item.id}>
+                  Source passage ↗
+                </a>
+              </article>
+            ))
+          }
+        </div>
+        <aside class="evidence" aria-label="Supporting source passages">
+          <h3>Source passage</h3>
+          {
+            sources.map(({ item }, i) => (
+              <article
+                id={`${instance}-${item.id}`}
+                data-excerpt={item.id}
+                data-selected={i === 0 ? "true" : "false"}
+                hidden={i !== 0}
+              >
+                <>
+                  <p class="kicker">{item.publication}</p>
+                  <h4>{item.title}</h4>
+                </>
+                <blockquote>
+                  <mark>{item.excerpt}</mark>
+                </blockquote>
+                <code>{item.url}</code>
+              </article>
+            ))
+          }
+        </aside>
+      </div>
+    </section>
+
+    <section data-panel="2" hidden aria-label="Review current draft">
+      <div class="heading">
+        <div>
+          <p class="kicker">Review snapshot</p><h2>Approve this version</h2>
+        </div><div class="fingerprint">
+          <span>Version fingerprint</span><code data-fingerprint></code>
+        </div>
+      </div>
+      <div class="review-layout">
+        <div class="review-copy">
+          <label
+            >Brief title<input
+              type="text"
+              value={issue.title}
+              maxlength="120"
+              data-title
+              autocomplete="off"
+            /></label
+          >
+          <ol>
+            {
+              sources.map(({ item }) => (
+                <li>
+                  <>
+                    <strong>{item.sector}</strong>
+                    <p>{item.claim}</p>
+                    <button
+                      type="button"
+                      class="text-button"
+                      data-review-source={item.id}
+                    >
+                      Inspect source passage ↗
+                    </button>
+                  </>
+                </li>
+              ))
+            }
+          </ol>
+          <label
+            >Editorial note<textarea rows="3" maxlength="280" data-note
+              >Public industry sources only.</textarea
+            ></label
+          >
+        </div>
+        <aside class="review-gate">
+          <p class="kicker">Publication checks</p>
+          <p data-validation></p>
+          <div class="approval" data-approval-box>
+            <strong data-approval-label>Awaiting approval</strong><p
+              data-approval-copy
+            >
+            </p>
+          </div>
+          <button type="button" class="primary" data-approve
+            >Approve this version</button
+          >
+          <button type="button" data-open-publish>Continue to publish</button>
+        </aside>
+      </div>
+    </section>
+
+    <section data-panel="3" hidden aria-label="Publish website and email">
+      <div class="heading">
+        <div>
+          <p class="kicker">Website + weekly email</p><h2 data-publish-heading>
+            Ready for publication
+          </h2><p class="muted" data-publish-version></p>
+        </div><button type="button" class="primary" data-publish
+          >Publish brief</button
+        >
+      </div>
+      <p class="publish-gate" data-publish-gate></p>
+      <div class="previews" data-previews hidden>
+        <article class="website-preview">
+          <p class="kicker">Website updated</p><div class="preview-brand">
+            PROTERRA / INTELLIGENCE
+          </div><span class="muted">Weekly Brief · 12 October 2026</span><h3
+            data-website-title
+          >
+          </h3><p data-website-note></p><ul>
+            {
+              sources.map(({ item }) => (
+                <li>
+                  <>
+                    <strong>{item.sector}</strong>
+                    <p data-published-claim={item.id}>{item.claim}</p>
+                  </>
+                </li>
+              ))
+            }
+          </ul><code>https://proterra.example.com/reports/2026-10-12</code>
+        </article>
+        <article class="email-preview">
+          <p class="kicker">Email preview</p><dl>
+            <div><dt>From</dt><dd>Proterra Intelligence</dd></div><div>
+              <dt>To</dt><dd>Weekly brief subscribers</dd>
+            </div><div><dt>Subject</dt><dd data-email-title></dd></div>
+          </dl><div class="email-body">
+            <p class="kicker">Your weekly agricultural brief</p><h3
+              data-email-heading
+            >
+            </h3><p data-email-note></p>{
+              sources.map(({ item }) => (
+                <div class="email-story">
+                  <p class="kicker">{item.sector}</p>
+                  <p data-published-claim={item.id}>{item.claim}</p>
+                </div>
+              ))
+            }<span class="email-cta">Read the full brief ↗</span><code
+              >https://proterra.example.com/reports/2026-10-12</code
+            ><span class="unsubscribe">Unsubscribe</span>
+          </div>
+        </article>
+      </div>
+    </section>
+    <p class="status" role="status" aria-live="polite" data-status>
+      Scheduled run ready.
+    </p>
+    <p class="simulation">
+      Codex drafts the real brief; drafting is simulated here.
+    </p>
+    <noscript><p>JavaScript is needed for this pipeline.</p></noscript>
+  </div>
+</section>
+
+<script>
+  import "../../scripts/demos/proterra";
+</script>
+
+<style>
+  .demo-proterra {
+    margin: 28px 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--bg);
+    color: var(--ink);
+    overflow: hidden;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .demo-proterra [hidden] {
+    display: none !important;
+  }
+  .toolbar,
+  .heading,
+  .section-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .toolbar {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--line);
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+  .brand > span {
+    color: var(--accent);
+    font:
+      italic 30px Georgia,
+      serif;
+  }
+  .brand strong {
+    font-weight: 550;
+  }
+  button,
+  a,
+  input,
+  textarea {
+    touch-action: manipulation;
+  }
+  button {
+    min-height: 44px;
+    padding: 10px 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: default;
+    color: var(--muted);
+    opacity: 0.65;
+  }
+  button:not(:disabled):hover {
+    border-color: var(--accent);
+  }
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible {
+    box-shadow: 0 0 0 3px var(--accent);
+  }
+  h2:focus-visible,
+  [data-excerpt]:focus-visible {
+    box-shadow: 0 0 0 3px var(--accent);
+  }
+  .primary {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+  .primary:disabled {
+    background: transparent;
+    color: var(--muted);
+    border-color: var(--line);
+  }
+  .stages {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-bottom: 1px solid var(--line);
+  }
+  .stages button {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2px 10px;
+    padding: 18px 24px;
+    border: 0;
+    border-right: 1px solid var(--line);
+    border-radius: 0;
+    text-align: left;
+  }
+  .stages button:last-child {
+    border-right: 0;
+  }
+  .stages button[aria-current] {
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    box-shadow: inset 0 -2px var(--accent);
+  }
+  .stages button:focus-visible {
+    box-shadow: inset 0 0 0 3px var(--accent);
+  }
+  .stages span {
+    color: var(--accent);
+    font-size: 11px;
+    align-self: center;
+  }
+  .stages small {
+    grid-column: 2;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .workspace {
+    padding: 28px;
+  }
+  .collection-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: 28px;
+  }
+  .brief-preview {
+    padding: 20px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: color-mix(in srgb, var(--accent) 5%, transparent);
+  }
+  .brief-preview ul {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0 0;
+  }
+  .brief-preview li {
+    border-top: 1px solid var(--line);
+    padding: 14px 0;
+  }
+  .brief-preview li:last-child {
+    padding-bottom: 0;
+  }
+  .brief-preview li strong {
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .collection-inputs {
+    min-width: 0;
+    align-self: center;
+  }
+  .collection-inputs > button {
+    width: 100%;
+    margin-top: 16px;
+  }
+  .collection-inputs h3 {
+    margin: 8px 0;
+  }
+  .heading {
+    margin-bottom: 24px;
+  }
+  h2 {
+    margin: 6px 0;
+    font:
+      500 clamp(23px, 3vw, 30px)/1.2 Georgia,
+      serif;
+    overflow-wrap: anywhere;
+  }
+  h3 {
+    margin: 0 0 14px;
+    font-size: 16px;
+    font-weight: 550;
+  }
+  h4 {
+    margin: 8px 0;
+    font-size: 14px;
+    font-weight: 550;
+  }
+  p {
+    margin: 6px 0;
+  }
+  .muted,
+  .simulation {
+    color: var(--muted);
+  }
+  .kicker {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+  }
+  .allow-list {
+    margin-top: 20px;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+  }
+  .allow-list > div {
+    display: grid;
+    gap: 2px;
+    margin-top: 10px;
+  }
+  .allow-list strong {
+    font-weight: 500;
+  }
+  .allow-list span,
+  .audit span,
+  .section-line p {
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .section-line {
+    margin-top: 24px;
+  }
+  .section-line h3 {
+    margin: 0;
+  }
+  .audit {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 24px;
+    padding: 0;
+    list-style: none;
+    margin: 12px 0 0;
+  }
+  .audit li {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 14px;
+    padding: 12px 0;
+    border-top: 1px solid var(--line);
+  }
+  .audit strong,
+  .audit div > span {
+    display: block;
+  }
+  .audit strong {
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .audit p {
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .audit .decision {
+    padding: 3px 6px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-size: 10px;
+    height: fit-content;
+    text-align: center;
+  }
+  .audit .kept {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .evidence-layout,
+  .review-layout,
+  .previews {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 24px;
+  }
+  .claim {
+    padding: 14px 0;
+    border-top: 1px solid var(--line);
+  }
+  .claim button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    border: 0;
+    padding: 10px;
+    margin: 4px 0;
+    line-height: 1.6;
+  }
+  .claim button[aria-pressed="true"] {
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    box-shadow: inset 3px 0 var(--accent);
+  }
+  .claim button:focus-visible {
+    box-shadow: inset 0 0 0 3px var(--accent);
+  }
+  .claim a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    padding: 0 10px;
+    color: var(--accent);
+    font-size: 12px;
+  }
+  .evidence {
+    align-self: start;
+    padding: 18px;
+    background: color-mix(in srgb, var(--ink) 3%, transparent);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+  }
+  .evidence article {
+    padding: 14px 0;
+    border-top: 1px solid var(--line);
+    scroll-margin-block: 24px;
+  }
+  blockquote {
+    margin: 10px 0;
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  mark {
+    background: transparent;
+    color: var(--muted);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  [data-selected="true"] mark {
+    background: color-mix(in srgb, var(--accent) 20%, transparent);
+    color: var(--ink);
+  }
+  code {
+    font-size: 10px;
+    color: var(--muted);
+    overflow-wrap: anywhere;
+  }
+  .fingerprint {
+    display: grid;
+    gap: 4px;
+    border: 1px solid var(--line);
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: var(--accent);
+    font-size: 12px;
+  }
+  .fingerprint span {
+    color: var(--muted);
+    font-size: 11px;
+  }
+  .fingerprint code {
+    color: var(--accent);
+    font-size: 12px;
+  }
+  label {
+    display: grid;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  input,
+  textarea {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    font: inherit;
+    font-size: 16px;
+    padding: 12px;
+  }
+  textarea {
+    resize: vertical;
+  }
+  .review-copy ol {
+    padding-left: 22px;
+  }
+  .review-copy li {
+    padding: 8px 0;
+  }
+  .review-copy li strong {
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .review-copy li p {
+    font-size: 13px;
+  }
+  .text-button {
+    padding: 4px 0;
+    border: 0;
+    font-size: 12px;
+    color: var(--accent);
+  }
+  .review-gate {
+    align-self: start;
+    padding: 20px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+  }
+  .review-gate > button {
+    width: 100%;
+    margin-top: 12px;
+  }
+  [data-validation] {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .approval {
+    margin: 20px 0;
+    padding: 16px 0;
+    border-block: 1px solid var(--line);
+  }
+  .approval strong {
+    font-size: 16px;
+    font-weight: 500;
+  }
+  .approval p {
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .approval[data-approved="true"] strong {
+    color: var(--accent);
+  }
+  .previews > article {
+    min-width: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 20px;
+  }
+  .preview-brand {
+    margin: 20px 0 6px;
+    font-size: 11px;
+    letter-spacing: 0.13em;
+  }
+  .previews h3 {
+    font:
+      500 24px/1.3 Georgia,
+      serif;
+    margin: 16px 0;
+    overflow-wrap: anywhere;
+  }
+  .previews p {
+    font-size: 12px;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+  .website-preview ul {
+    list-style: none;
+    padding: 0;
+  }
+  .website-preview li {
+    border-top: 1px solid var(--line);
+    padding: 16px 0;
+  }
+  .website-preview li strong {
+    color: var(--accent);
+    font-size: 11px;
+  }
+  .email-preview dl {
+    padding: 12px 0;
+    font-size: 11px;
+    border-bottom: 1px solid var(--line);
+  }
+  .email-preview dl > div {
+    display: grid;
+    grid-template-columns: 50px minmax(0, 1fr);
+    margin: 6px 0;
+  }
+  dt {
+    color: var(--muted);
+  }
+  dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+  .email-body {
+    padding: 16px 0;
+  }
+  .email-body > p,
+  .email-story {
+    margin: 14px 0;
+  }
+  .email-cta {
+    display: block;
+    margin: 20px 0 10px;
+    color: var(--accent);
+  }
+  .unsubscribe {
+    display: block;
+    border-top: 1px solid var(--line);
+    margin-top: 24px;
+    padding-top: 14px;
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .publish-gate {
+    margin-bottom: 20px;
+    color: var(--muted);
+  }
+  .status {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--accent);
+    overflow-wrap: anywhere;
+  }
+  .simulation {
+    font-size: 11px;
+    margin-top: 6px;
+  }
+  @media (max-width: 760px) {
+    .workspace {
+      padding: 18px;
+    }
+    .toolbar {
+      padding: 12px 18px;
+    }
+    .stages button {
+      grid-template-columns: 1fr;
+      gap: 2px;
+      padding: 12px;
+      font-size: 12px;
+    }
+    .stages small {
+      grid-column: 1;
+    }
+    .evidence-layout,
+    .review-layout,
+    .previews,
+    .collection-layout,
+    .audit {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (max-width: 380px) {
+    .toolbar {
+      padding: 12px;
+      gap: 6px;
+    }
+    .brand {
+      gap: 8px;
+      font-size: 12px;
+    }
+    .workspace {
+      padding: 14px;
+    }
+    .stages button {
+      padding: 12px 8px;
+    }
+  }
+</style>

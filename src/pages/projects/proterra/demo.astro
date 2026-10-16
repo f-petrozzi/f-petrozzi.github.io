@@ -1,0 +1,49 @@
+---
+import Base from "../../../layouts/Base.astro";
+import ProterraDemo from "../../../components/demos/ProterraDemo.astro";
+---
+
+<Base
+  title="Proterra Intelligence interactive sample | Fabrizio Petrozzi"
+  description="Operate a sample agricultural brief pipeline, from source collection to version-specific review and publication."
+>
+  <main id="main" class="project-page wrap proterra-sample-page">
+    <a class="back-link" href="/projects/proterra/"
+      >Back to Proterra Intelligence</a
+    >
+    <header class="sample-intro">
+      <div>
+        <p class="eyebrow">Interactive sample</p><h1>
+          Try Proterra Intelligence
+        </h1>
+      </div><p>Sample data. Nothing connects or saves.</p>
+    </header>
+    <ProterraDemo />
+  </main>
+</Base>
+
+<style>
+  .proterra-sample-page {
+    padding-top: 40px;
+    padding-bottom: 72px;
+  }
+  .sample-intro {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: end;
+    gap: 12px 24px;
+    margin: 24px 0;
+  }
+  .sample-intro h1 {
+    margin: 6px 0 0;
+    font-size: clamp(30px, 5vw, 52px);
+    letter-spacing: -0.04em;
+    font-weight: 500;
+    line-height: 1.15;
+  }
+  .sample-intro > p {
+    color: var(--muted);
+    font-size: 14px;
+  }
+</style>
