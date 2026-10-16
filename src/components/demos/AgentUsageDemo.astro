@@ -1,0 +1,952 @@
+---
+import {
+  snapshot,
+  countdown,
+  clockLabel,
+  findSessions,
+  initialPins,
+  accounts,
+} from "../../data/demos/agent-usage";
+const initial = snapshot(0);
+const first = initial.accounts[0];
+---
+
+<section
+  class="demo demo-agent-usage"
+  data-demo="agent-usage"
+  aria-label="Agent Usage interactive sample"
+>
+  <div class="desktop">
+    <div class="desktop-chrome" aria-hidden="true">
+      <span>Workspace</span><span>Agent Usage</span><span data-desktop-clock
+        >09:00</span
+      >
+    </div>
+    <div class="wallpaper" aria-hidden="true">
+      <span>ROOM FOR</span><strong>what’s next.</strong>
+    </div>
+    <div class="overlay" data-overlay>
+      <div class="notch">
+        <div class="account-gauges" role="group" aria-label="Account usage">
+          {
+            initial.accounts.map((account) => {
+              const window = account.windows[0];
+              const remaining = Math.round(100 - window.used);
+              return (
+                <button
+                  type="button"
+                  class="account-gauge"
+                  data-account={account.id}
+                  aria-pressed="false"
+                  aria-expanded={account.id === first.id ? "true" : "false"}
+                  aria-label={`${account.provider} ${account.alias}: ${remaining}% remaining, 5-hour. Resets in ${countdown(window.resetsIn)}`}
+                  style={`--identity:${account.color}`}
+                >
+                  <span class="ring">
+                    <>
+                      <svg viewBox="0 0 56 56" aria-hidden="true">
+                        <>
+                          <circle class="ring-track" cx="28" cy="28" r="23" />
+                          <circle
+                            class="ring-fill"
+                            cx="28"
+                            cy="28"
+                            r="23"
+                            pathLength="100"
+                            stroke-dasharray={`${remaining} 100`}
+                            transform="rotate(-90 28 28)"
+                          />
+                        </>
+                      </svg>
+                      <strong data-gauge-value>{remaining}%</strong>
+                    </>
+                  </span>
+                  <>
+                    <span class="provider">{account.provider}</span>
+                    <span class="alias">{account.alias}</span>
+                    <span class="gauge-reset" data-gauge-reset>
+                      {countdown(window.resetsIn)}
+                    </span>
+                  </>
+                </button>
+              );
+            })
+          }
+        </div>
+        <button
+          type="button"
+          class="bell"
+          data-bell
+          aria-label="Notifications, 2 unread"
+          aria-pressed="false"
+          aria-expanded="false"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true"
+            ><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4l2-2ZM10 21h4"></path></svg
+          ><span data-unread class="unread" aria-hidden="true"></span>
+        </button>
+        <div class="window-switch" role="group" aria-label="Gauge window">
+          <button
+            type="button"
+            data-window-choice="fiveHour"
+            aria-pressed="true">5-hour</button
+          ><button
+            type="button"
+            data-window-choice="weekly"
+            aria-pressed="false">Weekly</button
+          ><span>remaining</span>
+        </div>
+      </div>
+      <div class="attached-panel" data-attached>
+        <div data-panel="usage">
+          <header class="panel-heading">
+            <div>
+              <span class="kicker" data-usage-mode>Usage</span><h3
+                data-account-title
+              >
+                Codex <span>·</span> Lumen
+              </h3>
+            </div><div class="panel-actions">
+              <button
+                type="button"
+                data-account-sessions
+                aria-label="Recent sessions for Codex Lumen"
+                ><svg viewBox="0 0 24 24" aria-hidden="true"
+                  ><path d="M3 11a9 9 0 1 1 2 7M3 4v7h7M12 7v5l3 2"></path></svg
+                ></button
+              ><button type="button" data-close aria-label="Close usage"
+                >×</button
+              >
+            </div>
+          </header>
+          <div class="usage-windows" aria-live="polite">
+            {
+              first.windows.map((window) => (
+                <div class="usage-window" data-usage-window={window.id}>
+                  <div class="window-heading">
+                    <>
+                      <strong>{window.label}</strong>
+                      <span data-left>
+                        {Math.round(100 - window.used)}% left
+                      </span>
+                    </>
+                  </div>
+                  <div
+                    class="usage-track"
+                    role="meter"
+                    aria-label={`${window.label} remaining allowance`}
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    aria-valuenow={100 - window.used}
+                  >
+                    <>
+                      <span
+                        class="usage-fill"
+                        style={`width:${100 - window.used}%`}
+                      />
+                      <i
+                        class="time-marker"
+                        style={`left:${window.timeLeft}%`}
+                      />
+                    </>
+                  </div>
+                  <div class="window-footer">
+                    <>
+                      <span data-reset>
+                        Resets in {countdown(window.resetsIn)}
+                      </span>
+                      <strong data-used>{Math.round(window.used)}% used</strong>
+                    </>
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+          <div class="panel-footer">
+            <span class="marker-key"><i></i> Time remaining</span><span
+              data-hold-status>Peek</span
+            >
+          </div>
+        </div>
+        <div data-panel="sessions" hidden>
+          <header class="panel-heading">
+            <div>
+              <span class="kicker">Recent chats</span><h3>Sessions</h3>
+            </div><div class="panel-actions">
+              <button type="button" data-back aria-label="Back to usage"
+                >←</button
+              ><button type="button" data-close aria-label="Close sessions"
+                >×</button
+              >
+            </div>
+          </header>
+          <div class="session-controls">
+            <label
+              ><span>Search</span><input
+                type="search"
+                data-search
+                placeholder="Title or workspace"
+                autocomplete="off"
+                maxlength="100"
+              /></label
+            ><label
+              ><span>Account</span><select data-session-account
+                ><option value="all">All accounts</option>{
+                  accounts.map((account) => (
+                    <option value={account.id}>
+                      {account.provider} · {account.alias}
+                    </option>
+                  ))
+                }</select
+              ></label
+            >
+          </div>
+          <p class="result-count" data-session-count aria-live="polite">
+            6 chats · 2 pinned
+          </p>
+          <div class="session-list" data-session-list>
+            {
+              findSessions("", "all", initialPins).map((session) => {
+                const account = accounts.find(
+                  (item) => item.id === session.account,
+                )!;
+                const pinned = initialPins.includes(session.id);
+                return (
+                  <article class="session-row">
+                    <>
+                      <div>
+                        <>
+                          <strong>{session.title}</strong>
+                          <span>
+                            {account.provider} · {account.alias} /{" "}
+                            {session.workspace}
+                          </span>
+                          <small>
+                            {session.status} · {session.age}m ago
+                          </small>
+                        </>
+                      </div>
+                      <button
+                        type="button"
+                        data-pin={session.id}
+                        aria-pressed={String(pinned)}
+                        aria-label={`${pinned ? "Unpin" : "Pin"} ${session.title}`}
+                      >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M8 3h8l-1 7 4 4H5l4-4-1-7ZM12 14v7" />
+                        </svg>
+                      </button>
+                    </>
+                  </article>
+                );
+              })
+            }
+          </div>
+        </div>
+        <div data-panel="notifications" hidden>
+          <header class="panel-heading">
+            <div>
+              <span class="kicker">Alert log</span><h3>Notifications</h3>
+            </div><div class="panel-actions">
+              <button type="button" data-clear>Clear</button><button
+                type="button"
+                data-close
+                aria-label="Close notifications">×</button
+              >
+            </div>
+          </header>
+          <div class="notice-list" data-notice-list></div>
+        </div>
+      </div>
+    </div>
+    <div class="alert-sliver" data-alert hidden>
+      <span class="alert-signal" aria-hidden="true"></span><div>
+        <strong data-alert-title></strong><span data-alert-body></span>
+      </div>
+    </div>
+    <div class="desktop-dock" aria-hidden="true">
+      <span></span><span></span><span></span><i></i><span></span>
+    </div>
+  </div>
+  <div class="controls">
+    <div class="clock-heading">
+      <label
+        >Clock <output data-clock>{clockLabel(0)}</output><input
+          type="range"
+          data-clock-input
+          min="0"
+          max="120"
+          value="0"
+          step="1"
+          aria-label="Advance clock in minutes"
+          aria-valuetext="09:00, 0 minutes elapsed"
+        /></label
+      ><button type="button" data-advance>+15 min</button><button
+        type="button"
+        data-reset-demo>Reset</button
+      >
+    </div>
+    <div class="shortcut-controls">
+      <button type="button" data-reveal aria-pressed="true"
+        >Hide notch <kbd>Escape</kbd></button
+      ><button type="button" data-sessions aria-pressed="false"
+        >Sessions <kbd>Ctrl + Scroll Lock</kbd></button
+      >
+    </div>
+    <p class="clock-status" data-status role="status">
+      09:00 · All accounts updated
+    </p>
+    <p class="demo-note">
+      Usage and chat activity are simulated locally. No collector or VS Code is
+      called.
+    </p>
+  </div>
+</section>
+
+<script>
+  import "../../scripts/demos/agent-usage";
+</script>
+
+<style>
+  .demo-agent-usage {
+    margin: 28px 0;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .demo-agent-usage *,
+  .demo-agent-usage :global(*) {
+    box-sizing: border-box;
+  }
+  .demo-agent-usage [hidden] {
+    display: none !important;
+  }
+  .demo-agent-usage button,
+  .demo-agent-usage :global(button),
+  .demo-agent-usage input,
+  .demo-agent-usage select {
+    font: inherit;
+    touch-action: manipulation;
+  }
+  .demo-agent-usage button,
+  .demo-agent-usage :global(button) {
+    min-height: 44px;
+    cursor: pointer;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    padding: 8px 12px;
+    color: inherit;
+    background: transparent;
+  }
+  .demo-agent-usage button:hover,
+  .demo-agent-usage :global(button:hover) {
+    background: color-mix(in srgb, currentColor 9%, transparent);
+  }
+  .demo-agent-usage button:focus-visible,
+  .demo-agent-usage :global(button:focus-visible),
+  .demo-agent-usage input:focus-visible,
+  .demo-agent-usage select:focus-visible {
+    box-shadow: 0 0 0 3px var(--accent);
+  }
+  .demo-agent-usage button:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+  .desktop {
+    position: relative;
+    min-height: 680px;
+    padding: 30px 12px 82px;
+    isolation: isolate;
+    overflow: hidden;
+    color: #eef3f8;
+    background:
+      radial-gradient(ellipse at 12% 65%, #355e6960, transparent 60%),
+      radial-gradient(ellipse at 100% 75%, #68587755, transparent 65%), #19232f;
+  }
+  .desktop::before {
+    content: "";
+    position: absolute;
+    width: 90%;
+    height: 450px;
+    top: 200px;
+    left: 35%;
+    border: 1px solid #c5deed15;
+    border-radius: 50%;
+    transform: rotate(-30deg);
+    z-index: -1;
+  }
+  .desktop-chrome {
+    position: absolute;
+    inset: 0 0 auto;
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 18px;
+    color: #b8c9d6;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+  }
+  .wallpaper {
+    position: absolute;
+    left: 8%;
+    bottom: 100px;
+    display: grid;
+    z-index: -1;
+    color: #bacfdd;
+  }
+  .wallpaper span {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+  }
+  .wallpaper strong {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    color: #d3e3ee;
+  }
+  .overlay {
+    position: relative;
+    width: 440px;
+    max-width: 100%;
+    margin: -30px auto 0;
+    padding-top: 0;
+    --accent: #8fd8f2;
+  }
+  .notch {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: 354px;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 15px 12px 8px;
+    border: 1px solid #ffffff20;
+    border-top: 0;
+    border-radius: 0 0 26px 26px;
+    background: #10151f;
+    box-shadow: 0 12px 32px #0004;
+  }
+  .account-gauges {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    flex: 1;
+    min-width: 0;
+  }
+  .demo-agent-usage .account-gauge {
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    gap: 0;
+    padding: 5px 2px;
+    border-color: transparent;
+    border-radius: 16px;
+    line-height: 1.3;
+  }
+  .demo-agent-usage .account-gauge[aria-pressed="true"] {
+    background: #ffffff0c;
+    border-color: #ffffff30;
+  }
+  .ring {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 5px;
+  }
+  .ring svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke-width: 3;
+  }
+  .ring-track {
+    stroke: #2e3948;
+  }
+  .ring-fill {
+    stroke: var(--identity);
+    stroke-linecap: round;
+  }
+  .ring strong {
+    font-size: 13px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .provider {
+    font-size: 10px;
+    color: var(--identity);
+  }
+  .alias {
+    font-size: 12px;
+    margin-top: 2px;
+  }
+  .gauge-reset {
+    color: #aebdce;
+    font-size: 10px;
+    margin-top: 3px;
+  }
+  .demo-agent-usage .bell {
+    position: relative;
+    border: 0;
+    width: 44px;
+    padding: 12px;
+    margin-left: 5px;
+    color: #b7c4d3;
+  }
+  .bell svg,
+  .panel-actions svg,
+  .demo-agent-usage :global(.session-row svg) {
+    width: 20px;
+    height: 20px;
+    display: block;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .unread {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #f3c765;
+    box-shadow: 0 0 0 3px #10151f;
+  }
+  .window-switch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 3px;
+    gap: 3px;
+    font-size: 11px;
+  }
+  .demo-agent-usage .window-switch button {
+    padding: 4px 10px;
+    min-height: 44px;
+    border: 0;
+    color: #bac9da;
+  }
+  .demo-agent-usage .window-switch button[aria-pressed="true"] {
+    background: #ffffff0c;
+    color: #fff;
+  }
+  .window-switch > span {
+    padding-left: 7px;
+    color: #a3b3c6;
+    font-size: 10px;
+  }
+  .attached-panel {
+    position: relative;
+    margin-top: 7px;
+    padding: 18px;
+    border-radius: 24px;
+    border: 1px solid #ffffff25;
+    background: #141c28;
+    box-shadow: 0 20px 50px #0003;
+  }
+  .attached-panel::before {
+    content: "";
+    position: absolute;
+    width: 48px;
+    height: 10px;
+    left: calc(50% - 24px);
+    top: -9px;
+    background: #141c28;
+  }
+  .panel-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .kicker {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #a5b6ca;
+  }
+  .panel-heading h3 {
+    margin: 3px 0 0;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+  .panel-heading h3 span {
+    color: #8193a8;
+  }
+  .panel-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .demo-agent-usage .panel-actions button {
+    display: grid;
+    place-items: center;
+    padding: 8px;
+    min-width: 44px;
+    border: 0;
+    color: #c0cedd;
+  }
+  .demo-agent-usage [data-close] {
+    font-size: 23px;
+  }
+  .usage-windows {
+    display: grid;
+    gap: 20px;
+  }
+  .window-heading,
+  .window-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+  }
+  .window-heading strong {
+    font-weight: 500;
+  }
+  .window-heading > span {
+    color: #c5d2e2;
+  }
+  .usage-track {
+    height: 10px;
+    position: relative;
+    margin: 10px 0;
+    border-radius: 4px;
+    background: #2a3545;
+  }
+  .usage-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    border-radius: inherit;
+    background: #8ecbff;
+  }
+  .time-marker {
+    position: absolute;
+    width: 2px;
+    height: 16px;
+    top: -3px;
+    background: #fff;
+    box-shadow: 0 0 0 2px #141c28;
+    transform: translateX(-1px);
+  }
+  .window-footer {
+    color: #aebed2;
+    font-size: 11px;
+  }
+  .window-footer strong {
+    font-weight: 500;
+    color: #d3e1ee;
+  }
+  .panel-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 12px;
+    border-top: 1px solid #ffffff14;
+    font-size: 10px;
+    color: #a5b6ca;
+  }
+  .marker-key {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .marker-key i {
+    width: 2px;
+    height: 10px;
+    background: #fff;
+  }
+  .session-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .session-controls label {
+    display: grid;
+    min-width: 0;
+    gap: 5px;
+    font-size: 11px;
+    color: #b7c6d8;
+  }
+  .session-controls input,
+  .session-controls select {
+    min-height: 44px;
+    min-width: 0;
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ffffff25;
+    border-radius: 8px;
+    background: #101722;
+    color: #eef3f8;
+    font-size: 16px;
+  }
+  .session-controls input::placeholder {
+    color: #9baec5;
+  }
+  .result-count {
+    margin: 12px 0 5px;
+    color: #aebed2;
+    font-size: 11px;
+  }
+  .session-list,
+  .notice-list {
+    max-height: 270px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: #596a80 #141c28;
+  }
+  .demo-agent-usage :global(.session-row) {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 2px;
+    border-top: 1px solid #ffffff14;
+  }
+  .demo-agent-usage :global(.session-row > div) {
+    display: grid;
+    gap: 3px;
+    flex: 1;
+    min-width: 0;
+  }
+  .demo-agent-usage :global(.session-row strong),
+  .demo-agent-usage :global(.notice-row strong) {
+    font-size: 12px;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+  }
+  .demo-agent-usage :global(.session-row span),
+  .demo-agent-usage :global(.notice-row p) {
+    font-size: 10px;
+    color: #aebed2;
+    overflow-wrap: anywhere;
+  }
+  .demo-agent-usage :global(.session-row small),
+  .demo-agent-usage :global(.notice-row small) {
+    font-size: 10px;
+    color: #c4d3e5;
+  }
+  .demo-agent-usage :global(.session-row button) {
+    display: grid;
+    place-items: center;
+    flex: 0 0 44px;
+    border: 0;
+    padding: 10px;
+    color: #9aabc1;
+  }
+  .demo-agent-usage :global(.session-row button[aria-pressed="true"]) {
+    color: #a8d5ff;
+    background: #8ecbff12;
+  }
+  .demo-agent-usage :global(.notice-row) {
+    display: grid;
+    gap: 5px;
+    border-top: 1px solid #ffffff14;
+    padding: 14px 0;
+  }
+  .demo-agent-usage :global(.notice-row p) {
+    margin: 0;
+  }
+  .demo-agent-usage :global(.empty-state) {
+    padding: 22px 0;
+    font-size: 12px;
+    color: #aebed2;
+  }
+  .alert-sliver {
+    position: absolute;
+    bottom: 75px;
+    right: 20px;
+    max-width: calc(100% - 40px);
+    width: 340px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: #151d28;
+    border: 1px solid #f3c76555;
+    box-shadow: 0 8px 24px #0002;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .alert-sliver > div {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+  }
+  .alert-sliver strong {
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .alert-sliver span {
+    font-size: 11px;
+    color: #c0cddd;
+  }
+  .alert-sliver .alert-signal {
+    flex: 0 0 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #f3c765;
+  }
+  .desktop-dock {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 10px 20px;
+    border: 1px solid #ffffff18;
+    border-radius: 16px;
+    background: #14202a90;
+  }
+  .desktop-dock span {
+    width: 22px;
+    height: 22px;
+    background: #8195ac55;
+    border-radius: 7px;
+  }
+  .desktop-dock span:nth-child(2) {
+    background: #7fabc780;
+  }
+  .desktop-dock i {
+    width: 1px;
+    height: 24px;
+    background: #ffffff25;
+  }
+  .controls {
+    padding: 20px 24px;
+  }
+  .clock-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .clock-heading label {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4px 12px;
+    flex: 1;
+    min-width: 0;
+    font-size: 12px;
+  }
+  .clock-heading output {
+    font-variant-numeric: tabular-nums;
+    color: var(--accent);
+  }
+  .clock-heading input {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    margin: 0;
+    grid-column: 1 / -1;
+    accent-color: var(--accent);
+  }
+  .clock-heading button {
+    flex-shrink: 0;
+    font-size: 12px;
+  }
+  .demo-agent-usage [data-advance] {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+  .shortcut-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0 14px;
+  }
+  .shortcut-controls button {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .shortcut-controls button[aria-pressed="true"] {
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+  }
+  kbd {
+    font: inherit;
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .clock-status {
+    margin: 0;
+    font-size: 12px;
+    min-height: 18px;
+    color: var(--ink);
+  }
+  .demo-note {
+    color: var(--muted);
+    font-size: 11px;
+    margin: 7px 0 0;
+  }
+  @media (max-width: 540px) {
+    .desktop {
+      min-height: 690px;
+      padding-inline: 8px;
+    }
+    .desktop-chrome {
+      display: none;
+    }
+    .notch {
+      padding-inline: 5px;
+    }
+    .ring {
+      width: 48px;
+      height: 48px;
+    }
+    .demo-agent-usage .bell {
+      margin-left: 0;
+    }
+    .attached-panel {
+      padding: 14px;
+      border-radius: 18px;
+    }
+    .panel-heading h3 {
+      font-size: 16px;
+    }
+    .session-controls {
+      grid-template-columns: 1fr;
+    }
+    .session-list {
+      max-height: 240px;
+    }
+    .controls {
+      padding: 16px;
+    }
+    .clock-heading {
+      flex-wrap: wrap;
+    }
+    .clock-heading label {
+      flex-basis: 100%;
+    }
+    .shortcut-controls {
+      display: grid;
+    }
+    .shortcut-controls button {
+      justify-content: space-between;
+    }
+    .wallpaper {
+      left: 20px;
+    }
+    .alert-sliver {
+      bottom: 75px;
+      right: 12px;
+      max-width: calc(100% - 24px);
+    }
+  }
+</style>

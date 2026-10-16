@@ -1,0 +1,51 @@
+---
+import Base from "../../../layouts/Base.astro";
+import AgentUsageDemo from "../../../components/demos/AgentUsageDemo.astro";
+---
+
+<Base
+  title="Agent Usage interactive sample | Fabrizio Petrozzi"
+  description="Explore Agent Usage's desktop notch, usage windows, notifications and recent sessions with invented accounts."
+>
+  <main id="main" class="project-page wrap demo-page">
+    <a class="back-link" href="/projects/agent-usage/">Back to Agent Usage</a>
+    <header class="demo-intro">
+      <div>
+        <p class="eyebrow">Interactive sample</p><h1>Try Agent Usage</h1>
+      </div><p>Sample data. Nothing connects or saves.</p>
+    </header>
+    <AgentUsageDemo />
+  </main>
+</Base>
+
+<style>
+  .demo-page {
+    padding-top: 40px;
+    padding-bottom: 72px;
+  }
+  .demo-intro {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 24px;
+    margin: 24px 0;
+  }
+  .demo-intro h1 {
+    font-size: clamp(30px, 5vw, 52px);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    margin: 6px 0 0;
+  }
+  .demo-intro > p {
+    color: var(--muted);
+    font-size: 14px;
+  }
+  @media (max-width: 600px) {
+    .demo-intro {
+      display: block;
+    }
+    .demo-intro > p {
+      margin-top: 14px;
+    }
+  }
+</style>
