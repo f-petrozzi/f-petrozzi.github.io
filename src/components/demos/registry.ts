@@ -6,7 +6,9 @@ export const demos: Record<string, () => Promise<{ default: any }>> = {
   nest: () => import("./NestDemo.astro"),
   eduinsight: () => import("./EduinsightDemo.astro"),
   slice: () => import("./SliceDemo.astro"),
+  "text-cleaning-analyzing": () => import("./TextCleaningDemo.astro"),
   "tixly-app-design": () => import("./TixlyDemo.astro"),
   "product-reviews-analysis": () => import("./ProductReviewsDemo.astro"),
   proterra: () => import("./ProterraDemo.astro"),
+  "todoo-app": () => import("./TodooDemo.astro"),
 };
