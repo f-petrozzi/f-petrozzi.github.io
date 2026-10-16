@@ -7,12 +7,38 @@ import {
   createState,
   markMealMade,
   money,
+  navigation,
   proposeStock,
   readReceipt,
   receiptTotal,
   savePurchase,
+  sectionTabs,
   toggleTask,
 } from "../src/data/demos/nest.ts";
+
+test("main navigation follows the source app's active tabs and order", () => {
+  assert.deepEqual(
+    navigation.map(({ id, label }) => [id, label]),
+    [
+      ["dashboard", "Home"],
+      ["calendar", "Calendar"],
+      ["tasks", "Tasks"],
+      ["cats", "Cats"],
+      ["kitchen", "Kitchen"],
+      ["finance", "Finance"],
+      ["health", "Health"],
+    ],
+  );
+});
+
+test("sections retain Nest's real sub-tab structure", () => {
+  assert.deepEqual(sectionTabs, {
+    kitchen: ["Plan", "Nesty", "Recipes", "Shop", "Pantry"],
+    cats: ["Today", "Health", "Pantry", "Gallery"],
+    finance: ["Overview", "Expenses", "Subscriptions", "History"],
+    health: ["Overview", "Activity", "Sleep", "Nutrition", "Trends"],
+  });
+});
 
 test("a dated task appears on its calendar day and completion stays in sync", () => {
   const initial = createState();

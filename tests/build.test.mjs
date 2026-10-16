@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
+import vm from "node:vm";
 const root = resolve("dist");
 const projectCount = readdirSync("src/content/projects").filter((f) =>
   f.endsWith(".md"),
@@ -61,4 +62,61 @@ test("integrated homepage retains main content and retires the PoC route", () =>
   assert.ok(!html.includes("noindex"));
   assert.ok(!html.includes("/preview/"));
   assert.ok(!existsSync(join(root, "preview/index.html")));
+});
+
+test("Portfolio Markdown link opts into the existing era transition", () => {
+  const html = readFileSync(
+    join(root, "projects/portfolio/index.html"),
+    "utf8",
+  );
+  assert.ok(html.includes("data-portfolio-era"));
+  assert.match(html, /href="\/classic\/"[^>]*>original site<\/a>/);
+  assert.equal((html.match(/src="\/era.js"/g) || []).length, 1);
+  assert.equal((html.match(/href="\/era.css"/g) || []).length, 1);
+  const script = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)]
+    .map(([, content]) => content)
+    .find((content) => content.includes("portfolio-collection-departure"));
+  assert.ok(script);
+  const attributes = new Map();
+  vm.runInNewContext(script, {
+    document: {
+      querySelectorAll(selector) {
+        if (selector === '[data-portfolio-era] a[href="/classic/"]')
+          return [{ setAttribute: (key, value) => attributes.set(key, value) }];
+        assert.equal(selector, "[data-collection-return]");
+        return [];
+      },
+    },
+    sessionStorage: { getItem: () => null, removeItem() {} },
+  });
+  assert.equal(attributes.get("data-era-link"), "");
+  for (const id of ["nume", "homelab", "agent-usage"])
+    assert.ok(
+      !readFileSync(join(root, `projects/${id}/index.html`), "utf8").includes(
+        "data-portfolio-era>",
+      ),
+    );
+});
+
+test("home panel and fluid CSS do not load on project or demo pages", () => {
+  function styles(html) {
+    return [...html.matchAll(/<link\b[^>]*>/g)]
+      .map(([tag]) => tag)
+      .filter((tag) => /rel="stylesheet"/.test(tag))
+      .map((tag) => tag.match(/href="([^"]+)"/)[1])
+      .filter((href) => href.startsWith("/"))
+      .map((href) => readFileSync(join(root, href), "utf8"))
+      .join("\n");
+  }
+  const homeStyles = styles(readFileSync(join(root, "index.html"), "utf8"));
+  assert.ok(homeStyles.includes(".work-more"));
+  assert.ok(homeStyles.includes(".fluid-arm"));
+  for (const file of files(join(root, "projects")).filter((file) =>
+    file.endsWith(".html"),
+  )) {
+    const html = readFileSync(file, "utf8"),
+      css = styles(html);
+    assert.ok(!css.includes(".work-more"), `${file} loads home panel CSS`);
+    assert.ok(!css.includes(".fluid-arm"), `${file} loads unused fluid CSS`);
+  }
 });

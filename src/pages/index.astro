@@ -5,6 +5,7 @@ import ScrollControl from "../components/ScrollControl.astro";
 import { getCollection } from "astro:content";
 import "../styles/tokens.css";
 import "../styles/home.css";
+import "../styles/fluid.css";
 import Icon from "../components/Icon.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import { featured as featuredCopy } from "../data/featured";
@@ -348,31 +349,20 @@ const education = [
                         </>
                       </span>
                     </summary>
-                    <svg class="info-ink" aria-hidden="true">
-                      <>
-                        <defs>
-                          <filter
-                            id={`info-goo-${id}`}
-                            x="-10%"
-                            y="-10%"
-                            width="120%"
-                            height="120%"
-                            color-interpolation-filters="sRGB"
-                          >
-                            <>
-                              <feGaussianBlur stdDeviation="0" />
-                              <feColorMatrix values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 20 -9.5" />
-                            </>
-                          </filter>
-                        </defs>
-                        <g>
-                          <>
-                            <rect rx="22" />
-                            <path />
-                            <circle cx="22" cy="22" r="22" />
-                          </>
-                        </g>
-                      </>
+                    <svg class="info-ink fluid-ink" aria-hidden="true">
+                      <g>
+                        <rect rx="22" />
+                      </g>
+                    </svg>
+                    <svg
+                      class="info-arm fluid-ink"
+                      viewBox="0 0 44 44"
+                      aria-hidden="true"
+                    >
+                      <g>
+                        <path class="fluid-neck" />
+                        <path class="fluid-arm" />
+                      </g>
                     </svg>
                     <div
                       class="work-more-body"

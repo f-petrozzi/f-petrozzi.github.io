@@ -23,7 +23,9 @@ export async function getStaticPaths() {
 const { project, previous, next } = Astro.props;
 const { Content } = await render(project);
 const { category, status } = project.data;
-const Demo = demos[project.id] ? (await demos[project.id]()).default : undefined;
+const Demo = demos[project.id]
+  ? (await demos[project.id]()).default
+  : undefined;
 ---
 
 <Base
@@ -85,7 +87,10 @@ const Demo = demos[project.id] ? (await demos[project.id]()).default : undefined
         )
       )
     }
-    <div class:list={["prose", { "visual-story": project.id === "homelab" }]}>
+    <div
+      class:list={["prose", { "visual-story": project.id === "homelab" }]}
+      data-portfolio-era={project.id === "portfolio" ? true : undefined}
+    >
       <Content />
     </div>
     <nav class="case-nav" aria-label="More projects">
@@ -105,6 +110,10 @@ const Demo = demos[project.id] ? (await demos[project.id]()).default : undefined
   </main>
   <script is:inline>
     (() => {
+      // /era.js delegates clicks, including this link rendered from Markdown.
+      document
+        .querySelectorAll('[data-portfolio-era] a[href="/classic/"]')
+        .forEach((link) => link.setAttribute("data-era-link", ""));
       // Only traverse history when this project was opened from this tab's collection.
       try {
         const pending = JSON.parse(

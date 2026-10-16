@@ -3,9 +3,9 @@ import {
   snapshot,
   countdown,
   clockLabel,
-  findSessions,
-  initialPins,
   accounts,
+  providerPaths,
+  usageColor,
 } from "../../data/demos/agent-usage";
 const initial = snapshot(0);
 const first = initial.accounts[0];
@@ -16,256 +16,353 @@ const first = initial.accounts[0];
   data-demo="agent-usage"
   aria-label="Agent Usage interactive sample"
 >
-  <div class="desktop">
-    <div class="desktop-chrome" aria-hidden="true">
-      <span>Workspace</span><span>Agent Usage</span><span data-desktop-clock
-        >09:00</span
-      >
-    </div>
-    <div class="wallpaper" aria-hidden="true">
-      <span>ROOM FOR</span><strong>what’s next.</strong>
-    </div>
+  <div class="notch-stage" data-stage>
     <div class="overlay" data-overlay>
-      <div class="notch">
-        <div class="account-gauges" role="group" aria-label="Account usage">
-          {
-            initial.accounts.map((account) => {
-              const window = account.windows[0];
-              const remaining = Math.round(100 - window.used);
-              return (
+      <div class="notch-frame" data-frame>
+        <div class="notch">
+          <div class="account-gauges" role="group" aria-label="Account usage">
+            {
+              initial.accounts.map((account) => (
                 <button
                   type="button"
                   class="account-gauge"
                   data-account={account.id}
                   aria-pressed="false"
                   aria-expanded={account.id === first.id ? "true" : "false"}
-                  aria-label={`${account.provider} ${account.alias}: ${remaining}% remaining, 5-hour. Resets in ${countdown(window.resetsIn)}`}
-                  style={`--identity:${account.color}`}
+                  aria-label={`${account.provider} ${account.alias}: ${account.windows[0].used}% used, 5-hour`}
                 >
                   <span class="ring">
-                    <>
-                      <svg viewBox="0 0 56 56" aria-hidden="true">
-                        <>
-                          <circle class="ring-track" cx="28" cy="28" r="23" />
-                          <circle
-                            class="ring-fill"
-                            cx="28"
-                            cy="28"
-                            r="23"
-                            pathLength="100"
-                            stroke-dasharray={`${remaining} 100`}
-                            transform="rotate(-90 28 28)"
-                          />
-                        </>
-                      </svg>
-                      <strong data-gauge-value>{remaining}%</strong>
-                    </>
+                    <svg
+                      class="ring-track"
+                      viewBox="0 0 56 56"
+                      aria-hidden="true"
+                    >
+                      <circle cx="28" cy="28" r="22" class="ring-hole" />
+                      <circle cx="28" cy="28" r="25" />
+                    </svg>
+                    <svg
+                      class="ring-reading"
+                      viewBox="0 0 56 56"
+                      aria-hidden="true"
+                    >
+                      <circle
+                        cx="28"
+                        cy="28"
+                        r="25"
+                        pathLength="100"
+                        stroke-dasharray={`${account.windows[0].used} 100`}
+                        transform="rotate(-90 28 28)"
+                        style={`stroke:${usageColor(account.windows[0].used)}`}
+                      />
+                    </svg>
+                    <svg
+                      class="provider-mark"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d={
+                          providerPaths[
+                            account.provider === "Codex" ? "codex" : "claude"
+                          ]
+                        }
+                      />
+                    </svg>
                   </span>
-                  <>
-                    <span class="provider">{account.provider}</span>
-                    <span class="alias">{account.alias}</span>
-                    <span class="gauge-reset" data-gauge-reset>
-                      {countdown(window.resetsIn)}
-                    </span>
-                  </>
+                  <strong data-gauge-value>{account.windows[0].used}%</strong>
                 </button>
-              );
-            })
-          }
-        </div>
-        <button
-          type="button"
-          class="bell"
-          data-bell
-          aria-label="Notifications, 2 unread"
-          aria-pressed="false"
-          aria-expanded="false"
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true"
-            ><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4l2-2ZM10 21h4"></path></svg
-          ><span data-unread class="unread" aria-hidden="true"></span>
-        </button>
-        <div class="window-switch" role="group" aria-label="Gauge window">
-          <button
-            type="button"
-            data-window-choice="fiveHour"
-            aria-pressed="true">5-hour</button
-          ><button
-            type="button"
-            data-window-choice="weekly"
-            aria-pressed="false">Weekly</button
-          ><span>remaining</span>
-        </div>
-      </div>
-      <div class="attached-panel" data-attached>
-        <div data-panel="usage">
-          <header class="panel-heading">
-            <div>
-              <span class="kicker" data-usage-mode>Usage</span><h3
-                data-account-title
-              >
-                Codex <span>·</span> Lumen
-              </h3>
-            </div><div class="panel-actions">
-              <button
-                type="button"
-                data-account-sessions
-                aria-label="Recent sessions for Codex Lumen"
-                ><svg viewBox="0 0 24 24" aria-hidden="true"
-                  ><path d="M3 11a9 9 0 1 1 2 7M3 4v7h7M12 7v5l3 2"></path></svg
-                ></button
-              ><button type="button" data-close aria-label="Close usage"
-                >×</button
-              >
-            </div>
-          </header>
-          <div class="usage-windows" aria-live="polite">
-            {
-              first.windows.map((window) => (
-                <div class="usage-window" data-usage-window={window.id}>
-                  <div class="window-heading">
-                    <>
-                      <strong>{window.label}</strong>
-                      <span data-left>
-                        {Math.round(100 - window.used)}% left
-                      </span>
-                    </>
-                  </div>
-                  <div
-                    class="usage-track"
-                    role="meter"
-                    aria-label={`${window.label} remaining allowance`}
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    aria-valuenow={100 - window.used}
-                  >
-                    <>
-                      <span
-                        class="usage-fill"
-                        style={`width:${100 - window.used}%`}
-                      />
-                      <i
-                        class="time-marker"
-                        style={`left:${window.timeLeft}%`}
-                      />
-                    </>
-                  </div>
-                  <div class="window-footer">
-                    <>
-                      <span data-reset>
-                        Resets in {countdown(window.resetsIn)}
-                      </span>
-                      <strong data-used>{Math.round(window.used)}% used</strong>
-                    </>
-                  </div>
-                </div>
               ))
             }
           </div>
-          <div class="panel-footer">
-            <span class="marker-key"><i></i> Time remaining</span><span
-              data-hold-status>Peek</span
+          <button
+            type="button"
+            class="bell"
+            data-bell
+            aria-label="Notifications, 2 unread"
+            aria-pressed="false"
+            aria-expanded="false"
+          >
+            <span class="bell-disc" data-bell-disc></span>
+            <svg
+              class="bell-glyph"
+              data-bell-glyph
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              ><path
+                d="M6.4 16.6V11a5.6 5.6 0 0 1 11.2 0v5.6l1.7 1.9H4.7zM10 21h4"
+              ></path></svg
             >
-          </div>
+            <span data-unread class="unread" aria-hidden="true"></span>
+          </button>
+          <button
+            type="button"
+            class="arm arm-leading"
+            data-arm="pin"
+            aria-label="Keep notch on screen"
+            aria-pressed="false"
+          >
+            <svg
+              class="arm-rest"
+              data-arm-rest
+              viewBox="-36 -36 72 72"
+              aria-hidden="true"
+              ><circle
+                r="28.5"
+                fill="none"
+                stroke-width="6.8"
+                stroke-linecap="round"
+                stroke-dasharray="44.77 179.07"></circle></svg
+            >
+            <span class="arm-disc" data-arm-disc></span>
+            <svg
+              class="arm-glyph"
+              data-arm-glyph
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              ><path d="M9 3h6l-1 6 4 4v2H6v-2l4-4zM12 15v6"></path></svg
+            >
+          </button>
+          <button
+            type="button"
+            class="arm arm-trailing"
+            data-arm="move"
+            aria-label="Move notch. Drag or use the left and right arrow keys."
+          >
+            <svg
+              class="arm-rest"
+              data-arm-rest
+              viewBox="-36 -36 72 72"
+              aria-hidden="true"
+              ><circle
+                r="28.5"
+                fill="none"
+                stroke-width="6.8"
+                stroke-linecap="round"
+                stroke-dasharray="44.77 179.07"></circle></svg
+            >
+            <span class="arm-disc" data-arm-disc></span>
+            <svg
+              class="arm-glyph move-glyph"
+              data-arm-glyph
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              ><g fill="currentColor" stroke="none"
+                ><circle cx="8" cy="5" r="1.5"></circle><circle
+                  cx="16"
+                  cy="5"
+                  r="1.5"></circle><circle cx="8" cy="12" r="1.5"
+                ></circle><circle cx="16" cy="12" r="1.5"></circle><circle
+                  cx="8"
+                  cy="19"
+                  r="1.5"></circle><circle cx="16" cy="19" r="1.5"></circle></g
+              ></svg
+            >
+          </button>
         </div>
-        <div data-panel="sessions" hidden>
-          <header class="panel-heading">
-            <div>
-              <span class="kicker">Recent chats</span><h3>Sessions</h3>
-            </div><div class="panel-actions">
-              <button type="button" data-back aria-label="Back to usage"
-                >←</button
-              ><button type="button" data-close aria-label="Close sessions"
-                >×</button
-              >
-            </div>
-          </header>
-          <div class="session-controls">
-            <label
-              ><span>Search</span><input
-                type="search"
-                data-search
-                placeholder="Title or workspace"
-                autocomplete="off"
-                maxlength="100"
-              /></label
-            ><label
-              ><span>Account</span><select data-session-account
-                ><option value="all">All accounts</option>{
-                  accounts.map((account) => (
-                    <option value={account.id}>
-                      {account.provider} · {account.alias}
-                    </option>
-                  ))
-                }</select
-              ></label
-            >
-          </div>
-          <p class="result-count" data-session-count aria-live="polite">
-            6 chats · 2 pinned
-          </p>
-          <div class="session-list" data-session-list>
-            {
-              findSessions("", "all", initialPins).map((session) => {
-                const account = accounts.find(
-                  (item) => item.id === session.account,
-                )!;
-                const pinned = initialPins.includes(session.id);
-                return (
-                  <article class="session-row">
-                    <>
-                      <div>
+        <div class="attached-panel" data-attached>
+          <div class="panel-ink" data-panel-ink></div>
+          <div class="panel-content" data-panel-content>
+            <div data-panel="usage">
+              <header class="panel-heading">
+                <div class="account-heading">
+                  <svg class="title-mark" viewBox="0 0 24 24" aria-hidden="true"
+                    ><path data-title-mark d={providerPaths.codex}></path></svg
+                  ><h3 data-account-title>Codex Lumen</h3>
+                </div>
+                <div class="panel-actions hover-actions">
+                  <button
+                    type="button"
+                    data-account-sessions
+                    data-sessions
+                    aria-pressed="false"
+                    aria-label="Recent sessions for Codex Lumen"
+                    ><svg viewBox="0 0 20 20" aria-hidden="true"
+                      ><path d="M3 4h14v10H8l-4 3v-3H3z"></path></svg
+                    ></button
+                  >
+                  <button type="button" data-refresh aria-label="Refresh usage"
+                    ><svg viewBox="0 0 24 24" aria-hidden="true"
+                      ><path d="M20 9V4h-5M20 4a8 8 0 1 0 1 10"></path></svg
+                    ></button
+                  >
+                  <button type="button" data-close aria-label="Close usage"
+                    ><svg viewBox="0 0 20 20" aria-hidden="true"
+                      ><path d="m5 5 10 10M5 15 15 5"></path></svg
+                    ></button
+                  >
+                </div>
+              </header>
+              <p class="account-sub">
+                Usage <span data-hold-status>Peek</span>
+              </p>
+              <div class="usage-windows" aria-live="polite">
+                {
+                  first.windows.map((window) => (
+                    <div class="usage-window" data-usage-window={window.id}>
+                      <div class="window-heading">
                         <>
-                          <strong>{session.title}</strong>
-                          <span>
-                            {account.provider} · {account.alias} /{" "}
-                            {session.workspace}
-                          </span>
-                          <small>
-                            {session.status} · {session.age}m ago
-                          </small>
+                          <strong>{window.label}</strong>
+                          <span data-used>{Math.round(window.used)}% used</span>
                         </>
                       </div>
-                      <button
-                        type="button"
-                        data-pin={session.id}
-                        aria-pressed={String(pinned)}
-                        aria-label={`${pinned ? "Unpin" : "Pin"} ${session.title}`}
+                      <div
+                        class="usage-track"
+                        role="meter"
+                        aria-label={`${window.label} used allowance`}
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                        aria-valuenow={window.used}
                       >
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                          <path d="M8 3h8l-1 7 4 4H5l4-4-1-7ZM12 14v7" />
-                        </svg>
-                      </button>
-                    </>
-                  </article>
-                );
-              })
-            }
-          </div>
-        </div>
-        <div data-panel="notifications" hidden>
-          <header class="panel-heading">
-            <div>
-              <span class="kicker">Alert log</span><h3>Notifications</h3>
-            </div><div class="panel-actions">
-              <button type="button" data-clear>Clear</button><button
-                type="button"
-                data-close
-                aria-label="Close notifications">×</button
+                        <span
+                          class="usage-fill"
+                          style={`transform:scaleX(${window.used / 100});background:${usageColor(window.used)}`}
+                        />
+                        <i
+                          class="time-marker"
+                          style={`left:${100 - window.timeLeft}%`}
+                        />
+                      </div>
+                      <div class="window-footer">
+                        <>
+                          <span data-reset>
+                            Resets in {countdown(window.resetsIn)}
+                          </span>
+                          <span data-left>
+                            {Math.round(100 - window.used)}% left
+                          </span>
+                        </>
+                      </div>
+                    </div>
+                  ))
+                }
+              </div>
+              <div class="panel-footer">
+                <span class="marker-key"><i></i> Time elapsed</span><div
+                  class="window-switch"
+                  role="group"
+                  aria-label="Gauge window"
+                >
+                  <button
+                    type="button"
+                    data-window-choice="fiveHour"
+                    aria-pressed="true">5-hour</button
+                  ><button
+                    type="button"
+                    data-window-choice="weekly"
+                    aria-pressed="false">Weekly</button
+                  >
+                </div>
+              </div>
+              <button type="button" class="session-link" data-current-session
+                ><span class="session-signal"></span><span
+                  data-current-session-title>Refine command palette</span
+                ><span data-current-session-status>Working</span></button
               >
             </div>
-          </header>
-          <div class="notice-list" data-notice-list></div>
+            <div data-panel="sessions" hidden>
+              <header class="panel-heading">
+                <div class="account-heading">
+                  <button type="button" data-back aria-label="Back to usage"
+                    ><svg viewBox="0 0 20 20" aria-hidden="true"
+                      ><path d="m11.5 5-5 5 5 5M7 10h9"></path></svg
+                    ></button
+                  ><h3>Sessions</h3>
+                </div><button
+                  type="button"
+                  data-close
+                  aria-label="Close sessions"
+                  ><svg viewBox="0 0 20 20" aria-hidden="true"
+                    ><path d="m5 5 10 10M5 15 15 5"></path></svg
+                  ></button
+                >
+              </header>
+              <label class="search-field"
+                ><svg viewBox="0 0 20 20" aria-hidden="true"
+                  ><circle cx="8.5" cy="8.5" r="5.5"></circle><path
+                    d="m12.5 12.5 4.2 4.2"></path></svg
+                ><input
+                  type="search"
+                  data-search
+                  placeholder="Find a chat or workspace"
+                  aria-label="Find a chat or workspace"
+                  autocomplete="off"
+                  maxlength="100"
+                /></label
+              >
+              <div class="session-filter">
+                <label
+                  ><span class="sr-only">Filter sessions by account</span
+                  ><select data-session-account
+                    ><option value="all">All agents</option>{
+                      accounts.map((account) => (
+                        <option value={account.id}>
+                          {account.provider} {account.alias}
+                        </option>
+                      ))
+                    }</select
+                  ></label
+                ><span data-session-count aria-live="polite"
+                  >6 chats / 2 pinned</span
+                >
+              </div>
+              <div
+                class="session-list"
+                data-session-list
+                tabindex="0"
+                aria-label="Recent sessions"
+              >
+              </div>
+            </div>
+            <div data-panel="notifications" hidden>
+              <header class="panel-heading">
+                <h3>Notifications</h3><div class="panel-actions">
+                  <button type="button" data-clear>Clear</button><button
+                    type="button"
+                    data-close
+                    aria-label="Close notifications"
+                    ><svg viewBox="0 0 20 20" aria-hidden="true"
+                      ><path d="m5 5 10 10M5 15 15 5"></path></svg
+                    ></button
+                  >
+                </div>
+              </header>
+              <div
+                class="notice-filters"
+                role="group"
+                aria-label="Notification types"
+              >
+                {
+                  ["Usage", "Waiting", "Finished"].map((kind) => (
+                    <button
+                      type="button"
+                      data-notice-filter={kind}
+                      aria-pressed="true"
+                    >
+                      {kind}
+                    </button>
+                  ))
+                }
+              </div>
+              <div
+                class="notice-list"
+                data-notice-list
+                tabindex="0"
+                aria-label="Notification log"
+              >
+              </div>
+            </div>
+          </div>
         </div>
+        <button
+          type="button"
+          class="alert-sliver"
+          data-alert
+          hidden
+          aria-label="Open notification log"
+          ><strong data-alert-title></strong><span data-alert-body
+          ></span></button
+        >
       </div>
-    </div>
-    <div class="alert-sliver" data-alert hidden>
-      <span class="alert-signal" aria-hidden="true"></span><div>
-        <strong data-alert-title></strong><span data-alert-body></span>
-      </div>
-    </div>
-    <div class="desktop-dock" aria-hidden="true">
-      <span></span><span></span><span></span><i></i><span></span>
     </div>
   </div>
   <div class="controls">
@@ -283,23 +380,14 @@ const first = initial.accounts[0];
         /></label
       ><button type="button" data-advance>+15 min</button><button
         type="button"
-        data-reset-demo>Reset</button
-      >
-    </div>
-    <div class="shortcut-controls">
-      <button type="button" data-reveal aria-pressed="true"
-        >Hide notch <kbd>Escape</kbd></button
-      ><button type="button" data-sessions aria-pressed="false"
-        >Sessions <kbd>Ctrl + Scroll Lock</kbd></button
-      >
+        data-reveal
+        aria-pressed="true">Hide notch</button
+      ><button type="button" data-reset-demo>Reset</button>
     </div>
     <p class="clock-status" data-status role="status">
-      09:00 · All accounts updated
+      09:00 / All accounts updated
     </p>
-    <p class="demo-note">
-      Usage and chat activity are simulated locally. No collector or VS Code is
-      called.
-    </p>
+    <p class="demo-note">Usage and chat activity are simulated locally.</p>
   </div>
 </section>
 
@@ -307,646 +395,788 @@ const first = initial.accounts[0];
   import "../../scripts/demos/agent-usage";
 </script>
 
-<style>
+<style is:inline>
   .demo-agent-usage {
+    --au-stage: #161618;
+    --au-black: #000;
+    --au-card: #080808;
+    --au-surface: #181818;
+    --au-line: #303033;
+    --au-track: #303030;
+    --au-ink: #f4f4f4;
+    --au-muted: #b8b8bb;
+    --au-faint: #aaa;
+    --au-focus: #8bafff;
+    --au-thumb: #4c4c50;
     margin: 28px 0;
-    overflow: hidden;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-lg);
-    background: var(--bg);
-    color: var(--ink);
-    font-size: 14px;
-    line-height: 1.5;
-  }
-  .demo-agent-usage *,
-  .demo-agent-usage :global(*) {
-    box-sizing: border-box;
-  }
-  .demo-agent-usage [hidden] {
-    display: none !important;
-  }
-  .demo-agent-usage button,
-  .demo-agent-usage :global(button),
-  .demo-agent-usage input,
-  .demo-agent-usage select {
-    font: inherit;
-    touch-action: manipulation;
-  }
-  .demo-agent-usage button,
-  .demo-agent-usage :global(button) {
-    min-height: 44px;
-    cursor: pointer;
-    border: 1px solid var(--line);
-    border-radius: 9px;
-    padding: 8px 12px;
-    color: inherit;
-    background: transparent;
-  }
-  .demo-agent-usage button:hover,
-  .demo-agent-usage :global(button:hover) {
-    background: color-mix(in srgb, currentColor 9%, transparent);
-  }
-  .demo-agent-usage button:focus-visible,
-  .demo-agent-usage :global(button:focus-visible),
-  .demo-agent-usage input:focus-visible,
-  .demo-agent-usage select:focus-visible {
-    box-shadow: 0 0 0 3px var(--accent);
-  }
-  .demo-agent-usage button:disabled {
-    opacity: 0.45;
-    cursor: default;
-  }
-  .desktop {
-    position: relative;
-    min-height: 680px;
-    padding: 30px 12px 82px;
-    isolation: isolate;
-    overflow: hidden;
-    color: #eef3f8;
-    background:
-      radial-gradient(ellipse at 12% 65%, #355e6960, transparent 60%),
-      radial-gradient(ellipse at 100% 75%, #68587755, transparent 65%), #19232f;
-  }
-  .desktop::before {
-    content: "";
-    position: absolute;
-    width: 90%;
-    height: 450px;
-    top: 200px;
-    left: 35%;
-    border: 1px solid #c5deed15;
-    border-radius: 50%;
-    transform: rotate(-30deg);
-    z-index: -1;
-  }
-  .desktop-chrome {
-    position: absolute;
-    inset: 0 0 auto;
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 18px;
-    color: #b8c9d6;
-    font-size: 10px;
-    letter-spacing: 0.04em;
-  }
-  .wallpaper {
-    position: absolute;
-    left: 8%;
-    bottom: 100px;
-    display: grid;
-    z-index: -1;
-    color: #bacfdd;
-  }
-  .wallpaper span {
-    font-size: 10px;
-    letter-spacing: 0.3em;
-  }
-  .wallpaper strong {
-    font-size: clamp(28px, 5vw, 52px);
-    font-weight: 400;
-    letter-spacing: -0.04em;
-    color: #d3e3ee;
-  }
-  .overlay {
-    position: relative;
-    width: 440px;
-    max-width: 100%;
-    margin: -30px auto 0;
-    padding-top: 0;
-    --accent: #8fd8f2;
-  }
-  .notch {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    width: 354px;
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 15px 12px 8px;
-    border: 1px solid #ffffff20;
-    border-top: 0;
-    border-radius: 0 0 26px 26px;
-    background: #10151f;
-    box-shadow: 0 12px 32px #0004;
-  }
-  .account-gauges {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    flex: 1;
     min-width: 0;
-  }
-  .demo-agent-usage .account-gauge {
-    display: grid;
-    justify-items: center;
-    align-content: start;
-    gap: 0;
-    padding: 5px 2px;
-    border-color: transparent;
-    border-radius: 16px;
-    line-height: 1.3;
-  }
-  .demo-agent-usage .account-gauge[aria-pressed="true"] {
-    background: #ffffff0c;
-    border-color: #ffffff30;
-  }
-  .ring {
-    position: relative;
-    width: 56px;
-    height: 56px;
-    display: grid;
-    place-items: center;
-    margin-bottom: 5px;
-  }
-  .ring svg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    fill: none;
-    stroke-width: 3;
-  }
-  .ring-track {
-    stroke: #2e3948;
-  }
-  .ring-fill {
-    stroke: var(--identity);
-    stroke-linecap: round;
-  }
-  .ring strong {
+    overflow: hidden;
+    border: 1px solid var(--au-line);
+    border-radius: 20px;
+    background: var(--au-stage);
+    color: var(--au-ink);
+    color-scheme: dark;
     font-size: 13px;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-  }
-  .provider {
-    font-size: 10px;
-    color: var(--identity);
-  }
-  .alias {
-    font-size: 12px;
-    margin-top: 2px;
-  }
-  .gauge-reset {
-    color: #aebdce;
-    font-size: 10px;
-    margin-top: 3px;
-  }
-  .demo-agent-usage .bell {
-    position: relative;
-    border: 0;
-    width: 44px;
-    padding: 12px;
-    margin-left: 5px;
-    color: #b7c4d3;
-  }
-  .bell svg,
-  .panel-actions svg,
-  .demo-agent-usage :global(.session-row svg) {
-    width: 20px;
-    height: 20px;
-    display: block;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.6;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  .unread {
-    position: absolute;
-    top: 7px;
-    right: 7px;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #f3c765;
-    box-shadow: 0 0 0 3px #10151f;
-  }
-  .window-switch {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    margin-top: 3px;
-    gap: 3px;
-    font-size: 11px;
-  }
-  .demo-agent-usage .window-switch button {
-    padding: 4px 10px;
-    min-height: 44px;
-    border: 0;
-    color: #bac9da;
-  }
-  .demo-agent-usage .window-switch button[aria-pressed="true"] {
-    background: #ffffff0c;
-    color: #fff;
-  }
-  .window-switch > span {
-    padding-left: 7px;
-    color: #a3b3c6;
-    font-size: 10px;
-  }
-  .attached-panel {
-    position: relative;
-    margin-top: 7px;
-    padding: 18px;
-    border-radius: 24px;
-    border: 1px solid #ffffff25;
-    background: #141c28;
-    box-shadow: 0 20px 50px #0003;
-  }
-  .attached-panel::before {
-    content: "";
-    position: absolute;
-    width: 48px;
-    height: 10px;
-    left: calc(50% - 24px);
-    top: -9px;
-    background: #141c28;
-  }
-  .panel-heading {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-  .kicker {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: #a5b6ca;
-  }
-  .panel-heading h3 {
-    margin: 3px 0 0;
-    font-size: 18px;
-    font-weight: 500;
-    letter-spacing: -0.02em;
-  }
-  .panel-heading h3 span {
-    color: #8193a8;
-  }
-  .panel-actions {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-  }
-  .demo-agent-usage .panel-actions button {
-    display: grid;
-    place-items: center;
-    padding: 8px;
-    min-width: 44px;
-    border: 0;
-    color: #c0cedd;
-  }
-  .demo-agent-usage [data-close] {
-    font-size: 23px;
-  }
-  .usage-windows {
-    display: grid;
-    gap: 20px;
-  }
-  .window-heading,
-  .window-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
-    font-size: 12px;
-  }
-  .window-heading strong {
-    font-weight: 500;
-  }
-  .window-heading > span {
-    color: #c5d2e2;
-  }
-  .usage-track {
-    height: 10px;
-    position: relative;
-    margin: 10px 0;
-    border-radius: 4px;
-    background: #2a3545;
-  }
-  .usage-fill {
-    position: absolute;
-    inset: 0 auto 0 0;
-    border-radius: inherit;
-    background: #8ecbff;
-  }
-  .time-marker {
-    position: absolute;
-    width: 2px;
-    height: 16px;
-    top: -3px;
-    background: #fff;
-    box-shadow: 0 0 0 2px #141c28;
-    transform: translateX(-1px);
-  }
-  .window-footer {
-    color: #aebed2;
-    font-size: 11px;
-  }
-  .window-footer strong {
-    font-weight: 500;
-    color: #d3e1ee;
-  }
-  .panel-footer {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-top: 20px;
-    padding-top: 12px;
-    border-top: 1px solid #ffffff14;
-    font-size: 10px;
-    color: #a5b6ca;
-  }
-  .marker-key {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-  }
-  .marker-key i {
-    width: 2px;
-    height: 10px;
-    background: #fff;
-  }
-  .session-controls {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-  .session-controls label {
-    display: grid;
-    min-width: 0;
-    gap: 5px;
-    font-size: 11px;
-    color: #b7c6d8;
-  }
-  .session-controls input,
-  .session-controls select {
-    min-height: 44px;
-    min-width: 0;
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ffffff25;
-    border-radius: 8px;
-    background: #101722;
-    color: #eef3f8;
-    font-size: 16px;
-  }
-  .session-controls input::placeholder {
-    color: #9baec5;
-  }
-  .result-count {
-    margin: 12px 0 5px;
-    color: #aebed2;
-    font-size: 11px;
-  }
-  .session-list,
-  .notice-list {
-    max-height: 270px;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    scrollbar-width: thin;
-    scrollbar-color: #596a80 #141c28;
-  }
-  .demo-agent-usage :global(.session-row) {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 11px 2px;
-    border-top: 1px solid #ffffff14;
-  }
-  .demo-agent-usage :global(.session-row > div) {
-    display: grid;
-    gap: 3px;
-    flex: 1;
-    min-width: 0;
-  }
-  .demo-agent-usage :global(.session-row strong),
-  .demo-agent-usage :global(.notice-row strong) {
-    font-size: 12px;
-    font-weight: 500;
-    overflow-wrap: anywhere;
-  }
-  .demo-agent-usage :global(.session-row span),
-  .demo-agent-usage :global(.notice-row p) {
-    font-size: 10px;
-    color: #aebed2;
-    overflow-wrap: anywhere;
-  }
-  .demo-agent-usage :global(.session-row small),
-  .demo-agent-usage :global(.notice-row small) {
-    font-size: 10px;
-    color: #c4d3e5;
-  }
-  .demo-agent-usage :global(.session-row button) {
-    display: grid;
-    place-items: center;
-    flex: 0 0 44px;
-    border: 0;
-    padding: 10px;
-    color: #9aabc1;
-  }
-  .demo-agent-usage :global(.session-row button[aria-pressed="true"]) {
-    color: #a8d5ff;
-    background: #8ecbff12;
-  }
-  .demo-agent-usage :global(.notice-row) {
-    display: grid;
-    gap: 5px;
-    border-top: 1px solid #ffffff14;
-    padding: 14px 0;
-  }
-  .demo-agent-usage :global(.notice-row p) {
-    margin: 0;
-  }
-  .demo-agent-usage :global(.empty-state) {
-    padding: 22px 0;
-    font-size: 12px;
-    color: #aebed2;
-  }
-  .alert-sliver {
-    position: absolute;
-    bottom: 75px;
-    right: 20px;
-    max-width: calc(100% - 40px);
-    width: 340px;
-    padding: 14px 16px;
-    border-radius: 16px;
-    background: #151d28;
-    border: 1px solid #f3c76555;
-    box-shadow: 0 8px 24px #0002;
-    display: flex;
-    gap: 12px;
-    align-items: center;
-  }
-  .alert-sliver > div {
-    display: grid;
-    gap: 4px;
-    min-width: 0;
-  }
-  .alert-sliver strong {
-    font-size: 12px;
-    font-weight: 500;
-  }
-  .alert-sliver span {
-    font-size: 11px;
-    color: #c0cddd;
-  }
-  .alert-sliver .alert-signal {
-    flex: 0 0 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #f3c765;
-  }
-  .desktop-dock {
-    position: absolute;
-    bottom: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    gap: 13px;
-    padding: 10px 20px;
-    border: 1px solid #ffffff18;
-    border-radius: 16px;
-    background: #14202a90;
-  }
-  .desktop-dock span {
-    width: 22px;
-    height: 22px;
-    background: #8195ac55;
-    border-radius: 7px;
-  }
-  .desktop-dock span:nth-child(2) {
-    background: #7fabc780;
-  }
-  .desktop-dock i {
-    width: 1px;
-    height: 24px;
-    background: #ffffff25;
-  }
-  .controls {
-    padding: 20px 24px;
-  }
-  .clock-heading {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .clock-heading label {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 4px 12px;
-    flex: 1;
-    min-width: 0;
-    font-size: 12px;
-  }
-  .clock-heading output {
-    font-variant-numeric: tabular-nums;
-    color: var(--accent);
-  }
-  .clock-heading input {
-    width: 100%;
-    min-width: 0;
-    min-height: 44px;
-    margin: 0;
-    grid-column: 1 / -1;
-    accent-color: var(--accent);
-  }
-  .clock-heading button {
-    flex-shrink: 0;
-    font-size: 12px;
-  }
-  .demo-agent-usage [data-advance] {
-    background: var(--accent);
-    color: var(--accent-ink);
-  }
-  .shortcut-controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin: 8px 0 14px;
-  }
-  .shortcut-controls button {
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .shortcut-controls button[aria-pressed="true"] {
-    border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
-  }
-  kbd {
-    font: inherit;
-    font-size: 10px;
-    color: var(--muted);
-  }
-  .clock-status {
-    margin: 0;
-    font-size: 12px;
-    min-height: 18px;
-    color: var(--ink);
-  }
-  .demo-note {
-    color: var(--muted);
-    font-size: 11px;
-    margin: 7px 0 0;
-  }
-  @media (max-width: 540px) {
-    .desktop {
-      min-height: 690px;
-      padding-inline: 8px;
+    line-height: 1.45;
+    isolation: isolate;
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
     }
-    .desktop-chrome {
-      display: none;
+    [hidden] {
+      display: none !important;
+    }
+    button,
+    input,
+    select {
+      font: inherit;
+      color: inherit;
+      touch-action: manipulation;
+    }
+    button {
+      min-height: 44px;
+      min-width: 44px;
+      border: 0;
+      border-radius: 12px;
+      padding: 8px;
+      background: transparent;
+      cursor: pointer;
+    }
+    button:hover {
+      background: var(--au-surface);
+    }
+    button:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+    :is(button, input, select, [tabindex]):focus-visible {
+      outline: 2px solid var(--au-focus);
+      outline-offset: -2px;
+    }
+    svg {
+      display: block;
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .notch-stage {
+      position: relative;
+      height: 528px;
+      padding: 0 12px;
+      overflow: hidden;
+    }
+    .overlay {
+      position: relative;
+      width: 384px;
+      max-width: 100%;
+      height: 100%;
+      margin: 0 auto;
+    }
+    .notch-frame {
+      position: relative;
+      height: 100%;
+      transform-origin: 50% 0;
     }
     .notch {
-      padding-inline: 5px;
+      position: relative;
+      z-index: 2;
+      width: 228px;
+      height: 90px;
+      margin: 0 auto;
+      background: var(--au-black);
+      border-radius: 0 0 20px 20px;
+    }
+    .notch::before,
+    .notch::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      width: 38.7px;
+      height: 38.7px;
+      pointer-events: none;
+    }
+    .notch::before {
+      right: 100%;
+      background: radial-gradient(
+        circle at 0 100%,
+        transparent 38.45px,
+        var(--au-black) 39.45px
+      );
+    }
+    .notch::after {
+      left: 100%;
+      background: radial-gradient(
+        circle at 100% 100%,
+        transparent 38.45px,
+        var(--au-black) 39.45px
+      );
+    }
+    .account-gauges {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      padding: 10px 18px;
+    }
+    .account-gauge {
+      display: grid;
+      justify-items: center;
+      align-content: start;
+      gap: 4px;
+      padding: 0 3px;
+      min-width: 50px;
+      border-radius: 16px;
+    }
+    .account-gauge:hover {
+      background: transparent;
+    }
+    .account-gauge .ring {
+      transition:
+        transform 0.3s cubic-bezier(0.34, 1.4, 0.64, 1),
+        opacity 0.2s ease;
+    }
+    .account-gauge[aria-pressed="true"] .ring {
+      transform: scale(0.93);
+    }
+    .notch[data-focused="true"] .account-gauge[aria-expanded="false"] .ring {
+      transform: scale(0.8);
+      opacity: 0.6;
+    }
+    .account-gauge strong {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      font-variant-numeric: tabular-nums;
     }
     .ring {
-      width: 48px;
-      height: 48px;
+      position: relative;
+      width: 44px;
+      height: 44px;
     }
-    .demo-agent-usage .bell {
-      margin-left: 0;
+    .ring > svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+    .ring-track {
+      stroke: var(--au-track);
+      stroke-width: 5;
+    }
+    .ring-hole {
+      fill: #252525;
+      stroke: none;
+    }
+    .ring-reading {
+      stroke-width: 5;
+    }
+    .ring .provider-mark {
+      width: 20.4px;
+      height: 20.4px;
+      inset: 11.8px;
+      fill: #e8e8ea;
+      fill-rule: evenodd;
+      stroke: none;
+    }
+    .arm,
+    .bell {
+      position: absolute;
+      top: 0;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border-radius: 50%;
+      overflow: visible;
+    }
+    .arm:hover,
+    .bell:hover {
+      background: transparent;
+    }
+    .arm-leading {
+      right: calc(100% - 7px);
+    }
+    .arm-trailing {
+      left: calc(100% - 7px);
+      touch-action: none;
+      cursor: grab;
+    }
+    .arm-trailing:active {
+      cursor: grabbing;
+    }
+    .arm-rest {
+      position: absolute;
+      inset: 0;
+      width: 44px;
+      height: 44px;
+      color: #a8a8aa;
+    }
+    .arm-leading .arm-rest {
+      transform: rotate(180deg);
+    }
+    .arm-disc {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: var(--au-black);
+      transform: scale(0.2);
+      opacity: 0;
+    }
+    .arm-glyph {
+      position: absolute;
+      inset: 12px;
+      transform: scale(0.5);
+      opacity: 0;
+    }
+    .arm[aria-pressed="true"] {
+      color: var(--au-focus);
+    }
+    .bell {
+      top: 48px;
+      left: -18px;
+      z-index: 3;
+    }
+    .bell-disc {
+      position: absolute;
+      inset: 0;
+      background: var(--au-black);
+      border-radius: 50%;
+      opacity: 0;
+      transform: scale(0.1);
+    }
+    .bell-glyph {
+      position: absolute;
+      inset: 12px;
+      opacity: 0;
+      transform: scale(0.1);
+    }
+    .unread {
+      position: absolute;
+      top: 16px;
+      left: 22px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #f2ff00;
+      pointer-events: none;
     }
     .attached-panel {
-      padding: 14px;
-      border-radius: 18px;
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 340px;
+      margin: -10px auto 0;
+      padding: 24px 16px 16px;
+      transform-origin: 50% 0;
+    }
+    .panel-ink {
+      position: absolute;
+      inset: -80px 0 0;
+      border-radius: 0 0 24px 24px;
+      background: var(--au-card);
+      transform-origin: 50% 0;
+    }
+    .panel-content {
+      position: relative;
+    }
+    .panel-heading,
+    .account-heading,
+    .panel-actions {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      gap: 4px;
+    }
+    .panel-heading {
+      justify-content: space-between;
+      min-height: 44px;
+    }
+    .account-heading {
+      gap: 8px;
     }
     .panel-heading h3 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 650;
+      letter-spacing: -0.015em;
+    }
+    .title-mark {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+      stroke: none;
+    }
+    .panel-actions {
+      gap: 0;
+      color: var(--au-muted);
+    }
+    .panel-actions button {
+      min-width: 44px;
+      padding: 12px;
+      font-size: 11px;
+    }
+    .hover-actions {
+      opacity: 0;
+      transition: opacity 0.18s ease;
+    }
+    .attached-panel:hover .hover-actions,
+    .attached-panel:focus-within .hover-actions {
+      opacity: 1;
+    }
+    .account-sub {
+      display: flex;
+      justify-content: space-between;
+      margin: 0 0 14px;
+      font-size: 11px;
+      color: var(--au-faint);
+    }
+    .usage-windows {
+      display: grid;
+      gap: 18px;
+    }
+    .window-heading,
+    .window-footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 4px 8px;
+      align-items: baseline;
+    }
+    .window-heading {
+      font-size: 12px;
+    }
+    .window-heading strong {
+      font-weight: 600;
+    }
+    .window-heading > span {
+      font-size: 13px;
+      font-weight: 650;
+      font-variant-numeric: tabular-nums;
+    }
+    .usage-track {
+      position: relative;
+      height: 4px;
+      margin: 8px 0;
+      border-radius: 2px;
+      background: #292929;
+    }
+    .usage-fill {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      transform-origin: 0 50%;
+      transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .time-marker {
+      position: absolute;
+      top: -2px;
+      width: 2px;
+      height: 8px;
+      background: var(--au-ink);
+      transform: translateX(-1px);
+    }
+    .window-footer {
+      font-size: 11px;
+      color: var(--au-faint);
+    }
+    .panel-footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      margin-top: 8px;
+    }
+    .marker-key {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--au-faint);
+      font-size: 10px;
+    }
+    .marker-key i {
+      width: 2px;
+      height: 8px;
+      background: var(--au-ink);
+    }
+    .window-switch {
+      display: flex;
+      gap: 2px;
+    }
+    .window-switch button {
+      font-size: 11px;
+      padding: 8px;
+      color: var(--au-faint);
+    }
+    .window-switch [aria-pressed="true"] {
+      color: var(--au-ink);
+    }
+    .session-link {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      width: 100%;
+      padding: 8px;
+      text-align: left;
+      border-top: 1px solid #1e1e1e;
+      border-radius: 0 0 10px 10px;
+      font-size: 11px;
+    }
+    .session-link > span:nth-child(2) {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .session-link > span:last-child {
+      color: var(--au-faint);
+      font-size: 10px;
+    }
+    .session-signal {
+      width: 6px;
+      height: 6px;
+      background: #fff;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .search-field {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin: 8px 0;
+      padding: 0 12px;
+      background: var(--au-surface);
+      border-radius: 14px;
+      color: var(--au-muted);
+    }
+    .search-field input {
+      min-height: 44px;
+      min-width: 0;
+      width: 100%;
+      padding: 8px 0;
+      background: transparent;
+      border: 0;
       font-size: 16px;
     }
-    .session-controls {
-      grid-template-columns: 1fr;
+    input::placeholder {
+      color: var(--au-muted);
     }
-    .session-list {
-      max-height: 240px;
-    }
-    .controls {
-      padding: 16px;
-    }
-    .clock-heading {
+    .session-filter {
+      display: flex;
       flex-wrap: wrap;
-    }
-    .clock-heading label {
-      flex-basis: 100%;
-    }
-    .shortcut-controls {
-      display: grid;
-    }
-    .shortcut-controls button {
+      align-items: center;
       justify-content: space-between;
+      gap: 4px 8px;
+      color: var(--au-muted);
+      font-size: 10px;
     }
-    .wallpaper {
-      left: 20px;
+    .session-filter label {
+      min-width: 0;
+    }
+    .session-filter select {
+      min-height: 44px;
+      max-width: 100%;
+      border: 0;
+      background: transparent;
+      border-radius: 10px;
+      padding: 8px;
+      font-size: 12px;
+    }
+    .session-filter option {
+      background: var(--au-surface);
+    }
+    .session-list,
+    .notice-list {
+      height: 228px;
+      overflow: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: var(--au-thumb) transparent;
+    }
+    :is(.session-list, .notice-list)::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+      background: transparent;
+    }
+    :is(.session-list, .notice-list)::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    :is(.session-list, .notice-list)::-webkit-scrollbar-thumb {
+      background: var(--au-thumb);
+      border-radius: 8px;
+    }
+    :is(.session-list, .notice-list)::-webkit-scrollbar-thumb:hover {
+      background: #707075;
+    }
+    :is(.session-list, .notice-list)::-webkit-scrollbar-button {
+      display: none;
+    }
+    .session-section {
+      padding: 8px;
+      font-size: 11px;
+      color: var(--au-muted);
+    }
+    .session-row {
+      display: flex;
+      align-items: center;
+      min-height: 76px;
+      gap: 8px;
+      border-radius: 16px;
+      padding: 8px;
+    }
+    .session-row:hover,
+    .session-row:focus-within {
+      background: var(--au-surface);
+    }
+    .session-row .session-mark {
+      width: 22px;
+      height: 22px;
+      fill: #ccc;
+      stroke: none;
+      flex-shrink: 0;
+    }
+    .session-row > div {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+      flex: 1;
+    }
+    .session-row strong {
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .session-row span,
+    .session-row small {
+      font-size: 11px;
+      color: var(--au-muted);
+    }
+    .session-row :is(strong, span, small) {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .session-row button {
+      padding: 12px;
+      color: var(--au-muted);
+      opacity: 0;
+      transition: opacity 0.18s ease;
+    }
+    .session-row:hover button,
+    .session-row:focus-within button,
+    .session-row button[aria-pressed="true"] {
+      opacity: 1;
+    }
+    .session-row button svg {
+      width: 18px;
+      height: 18px;
+    }
+    .session-row button[aria-pressed="true"] svg {
+      fill: var(--au-focus);
+      stroke: var(--au-focus);
+    }
+    .notice-filters {
+      display: flex;
+      gap: 4px;
+      margin: 4px 0 8px;
+    }
+    .notice-filters button {
+      border-radius: 22px;
+      font-size: 11px;
+      padding: 8px 12px;
+      color: var(--au-faint);
+    }
+    .notice-filters [aria-pressed="true"] {
+      background: var(--au-surface);
+      color: var(--au-ink);
+    }
+    .notice-row {
+      display: grid;
+      grid-template-columns: 16px minmax(0, 1fr) auto;
+      column-gap: 8px;
+      row-gap: 3px;
+      padding: 10px 8px;
+      border-radius: 12px;
+    }
+    .notice-row:hover {
+      background: var(--au-surface);
+    }
+    .notice-row svg {
+      width: 16px;
+      height: 16px;
+      fill: #ccc;
+      stroke: none;
+    }
+    .notice-row strong {
+      font-size: 12px;
+      font-weight: 650;
+    }
+    .notice-row small {
+      color: var(--au-faint);
+      font-size: 10px;
+      white-space: nowrap;
+    }
+    .notice-row p {
+      grid-column: 2 / -1;
+      margin: 0;
+      color: var(--au-faint);
+      font-size: 11px;
+      overflow-wrap: anywhere;
+    }
+    .empty-state {
+      color: var(--au-muted);
+      font-size: 12px;
+      padding: 8px;
     }
     .alert-sliver {
-      bottom: 75px;
-      right: 12px;
-      max-width: calc(100% - 24px);
+      position: absolute;
+      z-index: 4;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 228px;
+      min-height: 76px;
+      background: var(--au-black);
+      border-radius: 0 0 20px 20px;
+      padding: 14px 16px;
+      text-align: center;
+    }
+    .alert-sliver:hover {
+      background: var(--au-black);
+    }
+    .alert-sliver strong,
+    .alert-sliver span {
+      display: block;
+    }
+    .alert-sliver strong {
+      font-size: 12px;
+    }
+    .alert-sliver span {
+      margin-top: 4px;
+      color: var(--au-muted);
+      font-size: 11px;
+    }
+    .controls {
+      border-top: 1px solid var(--au-line);
+      padding: 12px 20px 16px;
+      background: #121214;
+    }
+    .clock-heading {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 8px;
+    }
+    .clock-heading label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1 1 200px;
+      min-width: 0;
+      color: var(--au-muted);
+      font-size: 11px;
+    }
+    .clock-heading output {
+      color: var(--au-ink);
+      font-variant-numeric: tabular-nums;
+    }
+    .clock-heading input {
+      min-width: 60px;
+      width: 100%;
+      min-height: 44px;
+      margin: 0;
+      accent-color: var(--au-focus);
+    }
+    .clock-heading button {
+      padding: 8px 10px;
+      color: var(--au-muted);
+      font-size: 11px;
+    }
+    .clock-status {
+      min-height: 18px;
+      margin: 6px 0;
+      color: var(--au-muted);
+      font-size: 11px;
+      overflow-wrap: anywhere;
+    }
+    .demo-note {
+      margin: 0;
+      color: var(--au-faint);
+      font-size: 11px;
+    }
+    @media (hover: none), (pointer: coarse) {
+      .hover-actions,
+      .session-row button {
+        opacity: 1;
+      }
+    }
+    @media (max-width: 400px) {
+      .notch-stage {
+        padding: 0 6px;
+        height: 528px;
+      }
+      .notch {
+        width: min(228px, calc(100% - 44px));
+      }
+      .account-gauges {
+        gap: 10px;
+        padding-right: 6px;
+        padding-left: 6px;
+      }
+      .arm-leading {
+        right: calc(100% - 22px);
+      }
+      .arm-trailing {
+        left: calc(100% - 22px);
+      }
+      .attached-panel {
+        padding-right: 10px;
+        padding-left: 10px;
+      }
+      .panel-heading h3 {
+        font-size: 12px;
+      }
+      .account-heading {
+        gap: 5px;
+      }
+      .title-mark {
+        display: none;
+      }
+      .panel-actions button {
+        padding: 12px;
+      }
+      .controls {
+        padding: 10px 12px 14px;
+      }
+      .clock-heading label {
+        flex-basis: 100%;
+      }
+      .session-list {
+        height: 216px;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        transition: none !important;
+      }
     }
   }
 </style>
