@@ -1,6 +1,5 @@
 import {
   initialState,
-  collect,
   createDraft,
   editDraft,
   fingerprint,
@@ -33,6 +32,7 @@ function init(root: HTMLElement) {
       if (index === i) button.setAttribute("aria-current", "step");
       else button.removeAttribute("aria-current");
     });
+    query<HTMLElement>(`[data-panel="${index}"]`).scrollTop = 0;
     const heading = query<HTMLElement>(`[data-panel="${index}"] h2`);
     heading.tabIndex = -1;
     heading.focus({ preventScroll: true });
@@ -66,12 +66,9 @@ function init(root: HTMLElement) {
     labels.forEach((label, i) => {
       query<HTMLElement>(`[data-step-status="${i}"]`).textContent = label;
     });
-    query<HTMLElement>("[data-collection]").hidden = !state.collected;
-    query<HTMLButtonElement>("[data-collect]").disabled = state.collected;
-    query<HTMLButtonElement>("[data-collect]").textContent = state.collected
-      ? "Collection complete"
-      : "Run scheduled collection";
-    query<HTMLButtonElement>("[data-create]").disabled = Boolean(state.draft);
+    query<HTMLButtonElement>("[data-create]").textContent = state.draft
+      ? "Open draft ↗"
+      : "Create draft ↗";
     query<HTMLElement>("[data-fingerprint]").textContent = version;
     query<HTMLElement>("[data-draft-title]").textContent =
       state.draft?.title ?? issue.title;
@@ -83,7 +80,7 @@ function init(root: HTMLElement) {
     note.readOnly = published;
     query<HTMLElement>("[data-validation]").textContent = errors.length
       ? errors.join(" ")
-      : "Passed · title present · 3 claims linked to collected evidence. Editorial accuracy requires review.";
+      : "Passed: title present, 3 claims linked to collected evidence. Editorial accuracy requires review.";
     query<HTMLElement>("[data-approval-box]").dataset.approved =
       String(approved);
     query<HTMLElement>("[data-approval-label]").textContent = approved
@@ -146,16 +143,8 @@ function init(root: HTMLElement) {
   stages.forEach((button, i) => {
     button.addEventListener("click", () => show(i));
   });
-  query<HTMLButtonElement>("[data-collect]").addEventListener("click", () => {
-    state = collect(state);
-    render();
-    announce(
-      "Collection complete: 3 items kept, 4 filtered. Source review ready.",
-    );
-    query<HTMLButtonElement>("[data-create]").focus({ preventScroll: true });
-  });
   query<HTMLButtonElement>("[data-create]").addEventListener("click", () => {
-    state = createDraft(state);
+    if (!state.draft) state = createDraft(state);
     render();
     show(1);
     announce("Draft ready: 3 claims with supporting source passages.");
@@ -232,7 +221,12 @@ function init(root: HTMLElement) {
     selectClaim("dairy");
     render();
     show(0);
-    announce("Scheduled run ready.");
+    all<HTMLDetailsElement>("details").forEach(
+      (detail) => (detail.open = false),
+    );
+    announce(
+      "This week’s collection is ready: 3 stories from approved publications.",
+    );
   });
   render();
 }

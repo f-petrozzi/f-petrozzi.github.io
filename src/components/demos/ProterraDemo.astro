@@ -1,5 +1,10 @@
 ---
-import { collectItems, issue, publications } from "../../data/demos/proterra";
+import {
+  collectItems,
+  issue,
+  publications,
+  storyImages,
+} from "../../data/demos/proterra";
 const results = collectItems();
 const sources = results.filter((result) => result.accepted);
 const instance = `proterra-${crypto.randomUUID()}`;
@@ -12,13 +17,23 @@ const instance = `proterra-${crypto.randomUUID()}`;
 >
   <header class="toolbar">
     <div class="brand">
-      <span aria-hidden="true">P /</span><strong>Proterra Intelligence</strong>
+      <img
+        src="/assets/demos/proterra/logo.svg"
+        width="40"
+        height="40"
+        alt=""
+      />
+      <div>
+        <strong>Proterra Intelligence</strong><span
+          >Agricultural intelligence</span
+        >
+      </div>
     </div>
     <button type="button" data-reset>Reset</button>
   </header>
   <nav class="stages" aria-label="Weekly brief pipeline">
     {
-      ["Collect", "Draft", "Review", "Publish"].map((stage, i) => (
+      ["Sources", "Draft", "Review", "Publish"].map((stage, i) => (
         <button
           type="button"
           data-stage={i}
@@ -27,58 +42,86 @@ const instance = `proterra-${crypto.randomUUID()}`;
         >
           <span>0{i + 1}</span>
           {stage}
-          <small data-step-status={i}>{i === 0 ? "Ready" : "Pending"}</small>
+          <small data-step-status={i}>
+            {i === 0 ? "Collected" : "Pending"}
+          </small>
         </button>
       ))
     }
   </nav>
   <div class="workspace">
-    <section data-panel="0" aria-label="Collect sources">
-      <div class="collection-layout">
-        <article class="brief-preview">
-          <p class="kicker">Brief preview · 3 stories</p>
-          <h2>{issue.title}</h2>
-          <p class="muted">Dairy / beef / bovine genetics</p>
-          <ul>
-            {
-              sources.map(({ item }) => (
-                <li>
-                  <strong>{item.sector}</strong>
-                  <p>{item.claim}</p>
-                </li>
-              ))
-            }
-          </ul>
-        </article>
-        <aside class="collection-inputs" aria-label="Collection settings">
-          <p class="kicker">Scheduled collection · 12 October</p>
-          <h3>Reporting window</h3>
-          <p class="muted">5–11 October 2026</p>
-          <div class="allow-list">
-            <p class="kicker">Publication allow-list</p>
-            {
-              publications.map((publisher) => (
-                <div>
+    <section
+      data-panel="0"
+      aria-label="This week’s collected sources"
+      tabindex="0"
+    >
+      <div class="heading">
+        <div>
+          <p class="kicker">Weekly collection / 12 October 2026</p>
+          <h2>This week</h2>
+          <p class="muted">3 stories collected from approved publications</p>
+        </div>
+        <button type="button" class="primary" data-create>Create draft ↗</button
+        >
+      </div>
+      <div class="story-grid">
+        {
+          sources.map(({ item }, i) => {
+            const image = storyImages[item.id as keyof typeof storyImages];
+            return (
+              <article class:list={["story-card", { "lead-story": i === 0 }]}>
+                <figure>
+                  <img
+                    src={image.src}
+                    alt={image.alt}
+                    width="480"
+                    height="270"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <figcaption
+                    title={`${image.alt}. ${image.author}. ${image.license}. ${image.source}. Resized and cropped.`}
+                  >
+                    Photo: {image.author} / {image.license}
+                  </figcaption>
+                </figure>
+                <div class="story-copy">
+                  <div class="news-meta">
+                    <>
+                      <span>{item.publication}</span>
+                      <time datetime={item.date}>
+                        {item.date.slice(8)} October
+                      </time>
+                    </>
+                  </div>
+                  <h3>{item.title}</h3>
+                  <span class="sector">{item.sector}</span>
+                  <details>
+                    <summary>Source passage ↗</summary>
+                    <p>{item.excerpt}</p>
+                    <code>{item.url}</code>
+                  </details>
+                </div>
+              </article>
+            );
+          })
+        }
+      </div>
+      <details class="collection-audit">
+        <summary>Collection record / 7 discovered, 3 kept, 4 filtered</summary>
+        <p class="muted">Coverage: 5 to 11 October 2026</p>
+        <div class="allow-list">
+          <p class="kicker">Approved publications</p>
+          {
+            publications.map((publisher) => (
+              <div>
+                <>
                   <strong>{publisher.name}</strong>
                   <span>{publisher.host}</span>
-                </div>
-              ))
-            }
-          </div>
-          <button type="button" class="primary" data-collect
-            >Run scheduled collection</button
-          >
-        </aside>
-      </div>
-      <div data-collection hidden>
-        <div class="section-line">
-          <div>
-            <h3>Collection audit</h3><p class="muted">
-              7 discovered · 3 kept · 4 filtered
-            </p>
-          </div>
-          <button type="button" class="primary" data-create>Create draft</button
-          >
+                </>
+              </div>
+            ))
+          }
         </div>
         <ul class="audit">
           {
@@ -90,27 +133,25 @@ const instance = `proterra-${crypto.randomUUID()}`;
                 <div>
                   <>
                     <strong>{item.title}</strong>
-                    <span>
-                      {item.publication} · {item.date}
-                    </span>
-                    <p>{reason.replace(/^(Kept|Filtered) · /, "")}</p>
+                    <span>{item.publication}</span>
+                    <p>{reason.replace(/^(Kept|Filtered): /, "")}</p>
                   </>
                 </div>
               </li>
             ))
           }
         </ul>
-      </div>
+      </details>
     </section>
 
-    <section data-panel="1" hidden aria-label="Draft and evidence">
+    <section data-panel="1" hidden tabindex="0" aria-label="Draft and evidence">
       <div class="heading">
         <div>
           <p class="kicker">Draft preview</p><h2 data-draft-title>
             {issue.title}
           </h2><p class="muted">Dairy / beef / bovine genetics</p>
         </div><button type="button" class="primary" data-review
-          >Review draft</button
+          >Review draft ↗</button
         >
       </div>
       <div class="evidence-layout">
@@ -162,7 +203,12 @@ const instance = `proterra-${crypto.randomUUID()}`;
       </div>
     </section>
 
-    <section data-panel="2" hidden aria-label="Review current draft">
+    <section
+      data-panel="2"
+      hidden
+      tabindex="0"
+      aria-label="Review current draft"
+    >
       <div class="heading">
         <div>
           <p class="kicker">Review snapshot</p><h2>Approve this version</h2>
@@ -218,12 +264,17 @@ const instance = `proterra-${crypto.randomUUID()}`;
           <button type="button" class="primary" data-approve
             >Approve this version</button
           >
-          <button type="button" data-open-publish>Continue to publish</button>
+          <button type="button" data-open-publish>Continue to publish ↗</button>
         </aside>
       </div>
     </section>
 
-    <section data-panel="3" hidden aria-label="Publish website and email">
+    <section
+      data-panel="3"
+      hidden
+      tabindex="0"
+      aria-label="Publish website and email"
+    >
       <div class="heading">
         <div>
           <p class="kicker">Website + weekly email</p><h2 data-publish-heading>
@@ -237,8 +288,8 @@ const instance = `proterra-${crypto.randomUUID()}`;
       <div class="previews" data-previews hidden>
         <article class="website-preview">
           <p class="kicker">Website updated</p><div class="preview-brand">
-            PROTERRA / INTELLIGENCE
-          </div><span class="muted">Weekly Brief · 12 October 2026</span><h3
+            Proterra Intelligence
+          </div><span class="muted">Weekly Brief / 12 October 2026</span><h3
             data-website-title
           >
           </h3><p data-website-note></p><ul>
@@ -278,7 +329,7 @@ const instance = `proterra-${crypto.randomUUID()}`;
       </div>
     </section>
     <p class="status" role="status" aria-live="polite" data-status>
-      Scheduled run ready.
+      This week’s collection is ready: 3 stories from approved publications.
     </p>
     <p class="simulation">
       Codex drafts the real brief; drafting is simulated here.
@@ -291,552 +342,611 @@ const instance = `proterra-${crypto.randomUUID()}`;
   import "../../scripts/demos/proterra";
 </script>
 
-<style>
+<style is:inline>
   .demo-proterra {
+    --proterra-paper: #f4f3ed;
+    --proterra-surface: #fafaf6;
+    --proterra-ink: #17201c;
+    --proterra-muted: #5e6963;
+    --proterra-line: #d3d6cd;
+    --proterra-forest: #173f32;
+    --proterra-deep: #0c2c22;
+    --proterra-mint: #b7d7c1;
+    --proterra-soft: #e9e9e1;
+    color-scheme: light;
     margin: 28px 0;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-lg);
-    background: var(--bg);
-    color: var(--ink);
+    border: 1px solid var(--proterra-line);
+    border-radius: 2px;
+    background: var(--proterra-paper);
+    color: var(--proterra-ink);
     overflow: hidden;
     font-size: 14px;
-    line-height: 1.55;
-  }
-  .demo-proterra [hidden] {
-    display: none !important;
-  }
-  .toolbar,
-  .heading,
-  .section-line {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .toolbar {
-    padding: 16px 24px;
-    border-bottom: 1px solid var(--line);
-  }
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-width: 0;
-  }
-  .brand > span {
-    color: var(--accent);
-    font:
-      italic 30px Georgia,
-      serif;
-  }
-  .brand strong {
-    font-weight: 550;
-  }
-  button,
-  a,
-  input,
-  textarea {
-    touch-action: manipulation;
-  }
-  button {
-    min-height: 44px;
-    padding: 10px 14px;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-sm);
-    background: transparent;
-    color: var(--ink);
-    font: inherit;
-    cursor: pointer;
-  }
-  button:disabled {
-    cursor: default;
-    color: var(--muted);
-    opacity: 0.65;
-  }
-  button:not(:disabled):hover {
-    border-color: var(--accent);
-  }
-  button:focus-visible,
-  a:focus-visible,
-  input:focus-visible,
-  textarea:focus-visible {
-    box-shadow: 0 0 0 3px var(--accent);
-  }
-  h2:focus-visible,
-  [data-excerpt]:focus-visible {
-    box-shadow: 0 0 0 3px var(--accent);
-  }
-  .primary {
-    background: var(--accent);
-    color: var(--accent-ink);
-    border-color: var(--accent);
-    font-weight: 600;
-  }
-  .primary:disabled {
-    background: transparent;
-    color: var(--muted);
-    border-color: var(--line);
-  }
-  .stages {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    border-bottom: 1px solid var(--line);
-  }
-  .stages button {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 2px 10px;
-    padding: 18px 24px;
-    border: 0;
-    border-right: 1px solid var(--line);
-    border-radius: 0;
-    text-align: left;
-  }
-  .stages button:last-child {
-    border-right: 0;
-  }
-  .stages button[aria-current] {
-    background: color-mix(in srgb, var(--accent) 10%, transparent);
-    box-shadow: inset 0 -2px var(--accent);
-  }
-  .stages button:focus-visible {
-    box-shadow: inset 0 0 0 3px var(--accent);
-  }
-  .stages span {
-    color: var(--accent);
-    font-size: 11px;
-    align-self: center;
-  }
-  .stages small {
-    grid-column: 2;
-    font-size: 11px;
-    color: var(--muted);
-  }
-  .workspace {
-    padding: 28px;
-  }
-  .collection-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
-    gap: 28px;
-  }
-  .brief-preview {
-    padding: 20px;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-    background: color-mix(in srgb, var(--accent) 5%, transparent);
-  }
-  .brief-preview ul {
-    list-style: none;
-    padding: 0;
-    margin: 20px 0 0;
-  }
-  .brief-preview li {
-    border-top: 1px solid var(--line);
-    padding: 14px 0;
-  }
-  .brief-preview li:last-child {
-    padding-bottom: 0;
-  }
-  .brief-preview li strong {
-    color: var(--accent);
-    font-size: 12px;
-    font-weight: 500;
-  }
-  .collection-inputs {
-    min-width: 0;
-    align-self: center;
-  }
-  .collection-inputs > button {
-    width: 100%;
-    margin-top: 16px;
-  }
-  .collection-inputs h3 {
-    margin: 8px 0;
-  }
-  .heading {
-    margin-bottom: 24px;
-  }
-  h2 {
-    margin: 6px 0;
-    font:
-      500 clamp(23px, 3vw, 30px)/1.2 Georgia,
-      serif;
-    overflow-wrap: anywhere;
-  }
-  h3 {
-    margin: 0 0 14px;
-    font-size: 16px;
-    font-weight: 550;
-  }
-  h4 {
-    margin: 8px 0;
-    font-size: 14px;
-    font-weight: 550;
-  }
-  p {
-    margin: 6px 0;
-  }
-  .muted,
-  .simulation {
-    color: var(--muted);
-  }
-  .kicker {
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--accent);
-  }
-  .allow-list {
-    margin-top: 20px;
-    padding: 18px;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-  }
-  .allow-list > div {
-    display: grid;
-    gap: 2px;
-    margin-top: 10px;
-  }
-  .allow-list strong {
-    font-weight: 500;
-  }
-  .allow-list span,
-  .audit span,
-  .section-line p {
-    color: var(--muted);
-    font-size: 12px;
-  }
-  .section-line {
-    margin-top: 24px;
-  }
-  .section-line h3 {
-    margin: 0;
-  }
-  .audit {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 24px;
-    padding: 0;
-    list-style: none;
-    margin: 12px 0 0;
-  }
-  .audit li {
-    display: grid;
-    grid-template-columns: 64px minmax(0, 1fr);
-    gap: 14px;
-    padding: 12px 0;
-    border-top: 1px solid var(--line);
-  }
-  .audit strong,
-  .audit div > span {
-    display: block;
-  }
-  .audit strong {
-    font-size: 13px;
-    font-weight: 500;
-  }
-  .audit p {
-    color: var(--muted);
-    font-size: 12px;
-  }
-  .audit .decision {
-    padding: 3px 6px;
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    font-size: 10px;
-    height: fit-content;
-    text-align: center;
-  }
-  .audit .kept {
-    color: var(--accent);
-    border-color: var(--accent);
-  }
-  .evidence-layout,
-  .review-layout,
-  .previews {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 24px;
-  }
-  .claim {
-    padding: 14px 0;
-    border-top: 1px solid var(--line);
-  }
-  .claim button {
-    display: block;
-    width: 100%;
-    text-align: left;
-    border: 0;
-    padding: 10px;
-    margin: 4px 0;
-    line-height: 1.6;
-  }
-  .claim button[aria-pressed="true"] {
-    background: color-mix(in srgb, var(--accent) 10%, transparent);
-    box-shadow: inset 3px 0 var(--accent);
-  }
-  .claim button:focus-visible {
-    box-shadow: inset 0 0 0 3px var(--accent);
-  }
-  .claim a {
-    display: inline-flex;
-    min-height: 44px;
-    align-items: center;
-    padding: 0 10px;
-    color: var(--accent);
-    font-size: 12px;
-  }
-  .evidence {
-    align-self: start;
-    padding: 18px;
-    background: color-mix(in srgb, var(--ink) 3%, transparent);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-  }
-  .evidence article {
-    padding: 14px 0;
-    border-top: 1px solid var(--line);
-    scroll-margin-block: 24px;
-  }
-  blockquote {
-    margin: 10px 0;
-    font-size: 12px;
-    line-height: 1.7;
-  }
-  mark {
-    background: transparent;
-    color: var(--muted);
-    box-decoration-break: clone;
-    -webkit-box-decoration-break: clone;
-  }
-  [data-selected="true"] mark {
-    background: color-mix(in srgb, var(--accent) 20%, transparent);
-    color: var(--ink);
-  }
-  code {
-    font-size: 10px;
-    color: var(--muted);
-    overflow-wrap: anywhere;
-  }
-  .fingerprint {
-    display: grid;
-    gap: 4px;
-    border: 1px solid var(--line);
-    padding: 8px 12px;
-    border-radius: 6px;
-    color: var(--accent);
-    font-size: 12px;
-  }
-  .fingerprint span {
-    color: var(--muted);
-    font-size: 11px;
-  }
-  .fingerprint code {
-    color: var(--accent);
-    font-size: 12px;
-  }
-  label {
-    display: grid;
-    gap: 8px;
-    color: var(--muted);
-    font-size: 12px;
-  }
-  input,
-  textarea {
-    box-sizing: border-box;
-    width: 100%;
-    min-width: 0;
-    min-height: 44px;
-    background: transparent;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-sm);
-    color: var(--ink);
-    font: inherit;
-    font-size: 16px;
-    padding: 12px;
-  }
-  textarea {
-    resize: vertical;
-  }
-  .review-copy ol {
-    padding-left: 22px;
-  }
-  .review-copy li {
-    padding: 8px 0;
-  }
-  .review-copy li strong {
-    color: var(--accent);
-    font-size: 11px;
-    font-weight: 500;
-  }
-  .review-copy li p {
-    font-size: 13px;
-  }
-  .text-button {
-    padding: 4px 0;
-    border: 0;
-    font-size: 12px;
-    color: var(--accent);
-  }
-  .review-gate {
-    align-self: start;
-    padding: 20px;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-  }
-  .review-gate > button {
-    width: 100%;
-    margin-top: 12px;
-  }
-  [data-validation] {
-    font-size: 12px;
-    color: var(--muted);
-  }
-  .approval {
-    margin: 20px 0;
-    padding: 16px 0;
-    border-block: 1px solid var(--line);
-  }
-  .approval strong {
-    font-size: 16px;
-    font-weight: 500;
-  }
-  .approval p {
-    color: var(--muted);
-    font-size: 12px;
-  }
-  .approval[data-approved="true"] strong {
-    color: var(--accent);
-  }
-  .previews > article {
-    min-width: 0;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-    padding: 20px;
-  }
-  .preview-brand {
-    margin: 20px 0 6px;
-    font-size: 11px;
-    letter-spacing: 0.13em;
-  }
-  .previews h3 {
-    font:
-      500 24px/1.3 Georgia,
-      serif;
-    margin: 16px 0;
-    overflow-wrap: anywhere;
-  }
-  .previews p {
-    font-size: 12px;
-    overflow-wrap: anywhere;
-    white-space: pre-wrap;
-  }
-  .website-preview ul {
-    list-style: none;
-    padding: 0;
-  }
-  .website-preview li {
-    border-top: 1px solid var(--line);
-    padding: 16px 0;
-  }
-  .website-preview li strong {
-    color: var(--accent);
-    font-size: 11px;
-  }
-  .email-preview dl {
-    padding: 12px 0;
-    font-size: 11px;
-    border-bottom: 1px solid var(--line);
-  }
-  .email-preview dl > div {
-    display: grid;
-    grid-template-columns: 50px minmax(0, 1fr);
-    margin: 6px 0;
-  }
-  dt {
-    color: var(--muted);
-  }
-  dd {
-    margin: 0;
-    overflow-wrap: anywhere;
-  }
-  .email-body {
-    padding: 16px 0;
-  }
-  .email-body > p,
-  .email-story {
-    margin: 14px 0;
-  }
-  .email-cta {
-    display: block;
-    margin: 20px 0 10px;
-    color: var(--accent);
-  }
-  .unsubscribe {
-    display: block;
-    border-top: 1px solid var(--line);
-    margin-top: 24px;
-    padding-top: 14px;
-    font-size: 10px;
-    color: var(--muted);
-  }
-  .publish-gate {
-    margin-bottom: 20px;
-    color: var(--muted);
-  }
-  .status {
-    margin-top: 24px;
-    padding-top: 16px;
-    border-top: 1px solid var(--line);
-    font-size: 12px;
-    color: var(--accent);
-    overflow-wrap: anywhere;
-  }
-  .simulation {
-    font-size: 11px;
-    margin-top: 6px;
-  }
-  @media (max-width: 760px) {
-    .workspace {
-      padding: 18px;
+    line-height: 1.5;
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+    [hidden] {
+      display: none !important;
+    }
+    :is(button, a, input, textarea, summary) {
+      touch-action: manipulation;
+    }
+    :is(
+      button,
+      a,
+      input,
+      textarea,
+      summary,
+      h2,
+      [data-excerpt],
+      [data-panel]
+    ):focus-visible {
+      outline: 2px solid var(--proterra-forest);
+      outline-offset: 3px;
+      box-shadow: none;
+    }
+    button {
+      min-height: 44px;
+      padding: 10px 14px;
+      border: 1px solid var(--proterra-line);
+      border-radius: 2px;
+      background: var(--proterra-surface);
+      color: var(--proterra-forest);
+      font: inherit;
+      cursor: pointer;
+    }
+    button:disabled {
+      color: var(--proterra-muted);
+      cursor: default;
+    }
+    button:not(:disabled):active {
+      transform: scale(0.98);
+    }
+    .primary {
+      background: var(--proterra-forest);
+      color: var(--proterra-surface);
+      border-color: var(--proterra-forest);
+      font-weight: 600;
+    }
+    .primary:disabled {
+      background: var(--proterra-soft);
+      border-color: var(--proterra-line);
+    }
+    :is(.toolbar, .heading, .section-line) {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px 20px;
+      flex-wrap: wrap;
     }
     .toolbar {
-      padding: 12px 18px;
-    }
-    .stages button {
-      grid-template-columns: 1fr;
-      gap: 2px;
-      padding: 12px;
-      font-size: 12px;
-    }
-    .stages small {
-      grid-column: 1;
-    }
-    .evidence-layout,
-    .review-layout,
-    .previews,
-    .collection-layout,
-    .audit {
-      grid-template-columns: minmax(0, 1fr);
-    }
-  }
-  @media (max-width: 380px) {
-    .toolbar {
-      padding: 12px;
-      gap: 6px;
+      padding: 16px 24px;
     }
     .brand {
-      gap: 8px;
-      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
     }
-    .workspace {
-      padding: 14px;
+    .brand img {
+      flex: 0 0 40px;
+    }
+    .brand div {
+      display: grid;
+    }
+    .brand strong {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+    }
+    .brand span {
+      font-size: 10px;
+      color: var(--proterra-muted);
+    }
+    .stages {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 4px;
+      padding: 8px 24px;
+      border-block: 1px solid var(--proterra-line);
     }
     .stages button {
-      padding: 12px 8px;
+      text-align: left;
+      padding: 8px 12px;
+      background: transparent;
+      border-color: transparent;
+    }
+    .stages button[aria-current] {
+      border-color: var(--proterra-forest);
+      background: var(--proterra-surface);
+    }
+    .stages span {
+      font-size: 10px;
+      margin-right: 6px;
+    }
+    .stages small {
+      display: block;
+      color: var(--proterra-muted);
+      font-size: 10px;
+      margin-top: 3px;
+    }
+    [data-panel] {
+      height: 450px;
+      overflow: auto;
+      overscroll-behavior: contain;
+      padding: 24px;
+    }
+    :is([data-panel], textarea) {
+      scrollbar-width: thin;
+      scrollbar-color: var(--proterra-muted) transparent;
+    }
+    :is([data-panel], textarea)::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    :is([data-panel], textarea)::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    :is([data-panel], textarea)::-webkit-scrollbar-thumb {
+      background: var(--proterra-muted);
+      border-radius: 6px;
+    }
+    .heading {
+      margin-bottom: 20px;
+    }
+    :is(h2, h3, h4) {
+      color: inherit;
+      font-family: inherit;
+      letter-spacing: -0.035em;
+      font-weight: 550;
+      overflow-wrap: anywhere;
+    }
+    h2 {
+      margin: 4px 0;
+      font-size: clamp(24px, 3vw, 32px);
+      line-height: 1.1;
+    }
+    h3 {
+      margin: 0 0 12px;
+      font-size: 17px;
+      line-height: 1.2;
+    }
+    h4 {
+      margin: 8px 0;
+      font-size: 16px;
+      line-height: 1.3;
+    }
+    p {
+      margin: 6px 0;
+    }
+    .muted {
+      color: var(--proterra-muted);
+      font-size: 12px;
+    }
+    .kicker {
+      color: var(--proterra-forest);
+      font-size: 10px;
+      font-weight: 650;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+    }
+    .story-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+    }
+    .story-card {
+      min-width: 0;
+      border: 1px solid var(--proterra-line);
+      border-radius: 2px;
+      background: var(--proterra-surface);
+      overflow: hidden;
+    }
+    .story-card:not(.lead-story) {
+      display: grid;
+      grid-template-columns: 32% minmax(0, 1fr);
+    }
+    .lead-story {
+      grid-row: span 2;
+      background: var(--proterra-deep);
+      color: var(--proterra-surface);
+      border-color: var(--proterra-deep);
+    }
+    figure {
+      margin: 0;
+      position: relative;
+      min-width: 0;
+    }
+    figure img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .lead-story figure {
+      height: 150px;
+    }
+    figcaption {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      left: 5px;
+      padding: 3px 5px;
+      background: var(--proterra-deep);
+      color: var(--proterra-surface);
+      font-size: 8px;
+      line-height: 1.4;
+    }
+    .story-copy {
+      padding: 14px;
+      min-width: 0;
+    }
+    .news-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 12px;
+      font-size: 10px;
+      color: var(--proterra-muted);
+    }
+    .news-meta span {
+      font-weight: 650;
+      color: var(--proterra-forest);
+    }
+    .story-copy h3 {
+      margin: 8px 0;
+      font-size: 17px;
+    }
+    .lead-story h3 {
+      font-size: clamp(20px, 2.2vw, 26px);
+    }
+    .lead-story :is(.news-meta, .news-meta span, .sector, summary) {
+      color: var(--proterra-mint);
+    }
+    .sector {
+      display: inline-block;
+      font-size: 10px;
+      color: var(--proterra-forest);
+    }
+    summary {
+      min-height: 44px;
+      align-content: center;
+      cursor: pointer;
+      color: var(--proterra-forest);
+      font-size: 12px;
+      font-weight: 550;
+    }
+    details p {
+      font-size: 12px;
+    }
+    .story-copy details code {
+      color: inherit;
+    }
+    .collection-audit {
+      margin-top: 20px;
+      border-top: 1px solid var(--proterra-line);
+    }
+    .allow-list {
+      padding: 12px 0;
+    }
+    .allow-list > div {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 12px;
+      font-size: 12px;
+    }
+    .allow-list span {
+      color: var(--proterra-muted);
+    }
+    .audit {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .audit li {
+      display: grid;
+      grid-template-columns: 60px minmax(0, 1fr);
+      gap: 14px;
+      padding: 12px 0;
+      border-top: 1px solid var(--proterra-line);
+    }
+    .audit strong,
+    .audit div > span {
+      display: block;
+      font-size: 12px;
+    }
+    .audit p,
+    .audit div > span {
+      font-size: 11px;
+      color: var(--proterra-muted);
+    }
+    .decision {
+      border: 1px solid var(--proterra-line);
+      padding: 3px 6px;
+      font-size: 10px;
+      height: fit-content;
+      text-align: center;
+    }
+    .kept {
+      color: var(--proterra-forest);
+      border-color: var(--proterra-forest);
+    }
+    :is(.evidence-layout, .review-layout, .previews) {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+    :is(.claims, .review-copy, .previews > article) {
+      min-width: 0;
+    }
+    .claim {
+      padding: 12px 0;
+      border-top: 1px solid var(--proterra-line);
+    }
+    .claim button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      margin-top: 6px;
+      background: transparent;
+      border-color: transparent;
+    }
+    .claim button[aria-pressed="true"] {
+      border-color: var(--proterra-forest);
+      background: var(--proterra-surface);
+    }
+    .claim a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0 10px;
+      color: var(--proterra-forest);
+      font-size: 12px;
+    }
+    :is(.evidence, .review-gate) {
+      padding: 18px;
+      border: 1px solid var(--proterra-line);
+      border-radius: 2px;
+      background: var(--proterra-surface);
+      align-self: start;
+      min-width: 0;
+    }
+    blockquote {
+      margin: 12px 0;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    mark {
+      background: var(--proterra-mint);
+      color: var(--proterra-ink);
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    code {
+      color: var(--proterra-muted);
+      font-size: 10px;
+      overflow-wrap: anywhere;
+    }
+    .fingerprint {
+      display: grid;
+      gap: 4px;
+      padding: 8px 12px;
+      border: 1px solid var(--proterra-line);
+      font-size: 11px;
+      color: var(--proterra-muted);
+    }
+    .fingerprint code {
+      color: var(--proterra-forest);
+      font-size: 12px;
+    }
+    label {
+      display: grid;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--proterra-muted);
+    }
+    input,
+    textarea {
+      width: 100%;
+      min-width: 0;
+      min-height: 44px;
+      padding: 10px;
+      background: var(--proterra-surface);
+      color: var(--proterra-ink);
+      border: 1px solid var(--proterra-line);
+      border-radius: 2px;
+      font: inherit;
+      font-size: 16px;
+    }
+    textarea {
+      resize: none;
+    }
+    .review-copy ol {
+      padding-left: 20px;
+    }
+    .review-copy li {
+      padding: 8px 0;
+      font-size: 12px;
+    }
+    .review-copy li strong {
+      color: var(--proterra-forest);
+    }
+    .text-button {
+      border: 0;
+      padding: 4px 0;
+      font-size: 12px;
+      background: transparent;
+    }
+    .review-gate > button {
+      display: block;
+      width: 100%;
+      margin-top: 12px;
+    }
+    [data-validation],
+    .approval p {
+      color: var(--proterra-muted);
+      font-size: 12px;
+    }
+    .approval {
+      margin: 18px 0;
+      padding: 16px 0;
+      border-block: 1px solid var(--proterra-line);
+    }
+    .approval strong {
+      font-weight: 550;
+    }
+    .approval[data-approved="true"] strong {
+      color: var(--proterra-forest);
+    }
+    .publish-gate {
+      color: var(--proterra-muted);
+      font-size: 12px;
+      margin-bottom: 18px;
+    }
+    .previews > article {
+      padding: 18px;
+      border: 1px solid var(--proterra-line);
+      border-radius: 2px;
+      background: var(--proterra-surface);
+    }
+    .preview-brand {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--proterra-forest);
+      letter-spacing: -0.03em;
+    }
+    .website-preview h3 {
+      margin-top: 16px;
+    }
+    .website-preview ul {
+      list-style: none;
+      margin: 14px 0;
+      padding: 0;
+    }
+    .website-preview li {
+      padding: 12px 0;
+      border-top: 1px solid var(--proterra-line);
+      font-size: 12px;
+    }
+    .website-preview li strong {
+      color: var(--proterra-forest);
+      font-size: 11px;
+    }
+    dl {
+      margin: 12px 0;
+      font-size: 11px;
+    }
+    dl > div {
+      display: grid;
+      grid-template-columns: 50px minmax(0, 1fr);
+      gap: 8px;
+      margin: 6px 0;
+    }
+    dt {
+      color: var(--proterra-muted);
+    }
+    dd {
+      margin: 0;
+      overflow-wrap: anywhere;
+    }
+    .email-body {
+      padding-top: 14px;
+      border-top: 1px solid var(--proterra-line);
+    }
+    .email-story {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--proterra-line);
+      font-size: 12px;
+    }
+    .email-cta {
+      display: block;
+      padding: 12px;
+      margin: 16px 0 8px;
+      background: var(--proterra-forest);
+      color: var(--proterra-surface);
+      font-size: 12px;
+    }
+    .unsubscribe {
+      display: block;
+      margin-top: 16px;
+      color: var(--proterra-muted);
+      font-size: 10px;
+    }
+    .status {
+      padding: 12px 24px 0;
+      margin: 0;
+      border-top: 1px solid var(--proterra-line);
+      font-size: 12px;
+      color: var(--proterra-forest);
+    }
+    .simulation {
+      margin: 0;
+      padding: 6px 24px 14px;
+      font-size: 11px;
+      color: var(--proterra-muted);
+    }
+    noscript p {
+      padding: 0 24px;
+    }
+    @media (hover: hover) {
+      button:not(:disabled):hover {
+        border-color: var(--proterra-forest);
+      }
+      :is(a, summary):hover {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+    }
+    @media (max-width: 700px) {
+      :is(.evidence-layout, .review-layout, .previews, .story-grid) {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .lead-story {
+        grid-row: auto;
+      }
+      .story-card:not(.lead-story) {
+        grid-template-columns: 32% minmax(0, 1fr);
+      }
+      .lead-story figure {
+        height: 160px;
+      }
+      .stages {
+        padding: 8px 12px;
+      }
+      .stages button {
+        padding: 8px 5px;
+        font-size: 12px;
+      }
+      .stages span {
+        display: none;
+      }
+      .toolbar {
+        padding: 12px;
+        gap: 8px;
+      }
+      .brand strong {
+        font-size: 13px;
+      }
+      .brand span {
+        font-size: 9px;
+      }
+      .toolbar button {
+        padding: 8px;
+        font-size: 12px;
+      }
+      [data-panel] {
+        padding: 18px 14px;
+        height: 430px;
+      }
+      .status {
+        padding: 12px 14px 0;
+      }
+      .simulation {
+        padding: 6px 14px 14px;
+      }
     }
   }
 </style>

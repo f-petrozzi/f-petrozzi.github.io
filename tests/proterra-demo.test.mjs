@@ -1,10 +1,11 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import {
   items,
+  storyImages,
   collectItems,
   initialState,
-  collect,
   createDraft,
   editDraft,
   fingerprint,
@@ -14,7 +15,25 @@ import {
   publishDraft,
 } from "../src/data/demos/proterra.ts";
 
-const draft = () => createDraft(collect(initialState()));
+const draft = () => createDraft(initialState());
+
+test("every collected story has a credited local WebP thumbnail within 30 KB", () => {
+  const kept = collectItems().filter((row) => row.accepted);
+  assert.equal(kept.length, 3);
+  for (const { item } of kept) {
+    const image = storyImages[item.id];
+    assert.ok(image.alt && image.author);
+    assert.equal(image.license, "Public domain");
+    assert.equal(new URL(image.source).hostname, "commons.wikimedia.org");
+    assert.match(image.src, /^\/assets\/demos\/proterra\/[a-z-]+\.webp$/);
+    const bytes = readFileSync(
+      new URL(`../public${image.src}`, import.meta.url),
+    );
+    assert.ok(bytes.length <= 30_000, `${image.src} exceeds 30 KB`);
+    assert.equal(bytes.toString("ascii", 0, 4), "RIFF");
+    assert.equal(bytes.toString("ascii", 8, 12), "WEBP");
+  }
+});
 
 test("collection explains allow-list, date, scope and canonical duplicate decisions", () => {
   const results = collectItems();
@@ -25,7 +44,7 @@ test("collection explains allow-list, date, scope and canonical duplicate decisi
   );
   for (const [id, reason] of [
     ["host", /allow-list/],
-    ["old", /outside 5–11/],
+    ["old", /outside 5 to 11/],
     ["scope", /outside dairy/],
     ["duplicate", /duplicate canonical/],
   ]) {
@@ -43,8 +62,21 @@ test("collection explains allow-list, date, scope and canonical duplicate decisi
   assert.equal(collectItems([spoof])[0].accepted, false);
 });
 
+test("the weekly source set is ready on arrival and after reset", () => {
+  const state = initialState();
+  assert.equal(state.collected, true);
+  assert.equal(state.draft, null);
+  const prepared = createDraft(state);
+  assert.equal(prepared.draft.claims.length, 3);
+  assert.equal(state.draft, null);
+  assert.deepEqual(initialState(), state);
+});
+
 test("drafting requires collection and each claim retains its exact evidence reference", () => {
-  assert.throws(() => createDraft(initialState()), /Collect sources/);
+  assert.throws(
+    () => createDraft({ ...initialState(), collected: false }),
+    /Collect sources/,
+  );
   const state = draft();
   assert.deepEqual(validateDraft(state), []);
   for (const claim of state.draft.claims) {
@@ -135,7 +167,7 @@ test("validation blocks blank titles and unsupported or duplicate claims", () =>
 
 test("reapproval publishes an independent copy of the exact reviewed snapshot", () => {
   const approved = approveDraft(
-    editDraft(approveDraft(draft()), "title", "Agricultural signals · October"),
+    editDraft(approveDraft(draft()), "title", "Agricultural signals / October"),
   );
   const published = publishDraft(approved);
   assert.equal(published.published.fingerprint, approved.approval.fingerprint);
@@ -151,7 +183,7 @@ test("reapproval publishes an independent copy of the exact reviewed snapshot", 
   assert.notEqual(published.published.draft.claims[0].text, "A later mutation");
   assert.throws(() => publishDraft(published), /source passage/);
   const reset = initialState();
-  assert.equal(reset.collected, false);
+  assert.equal(reset.collected, true);
   assert.equal(reset.draft, null);
   assert.equal(reset.approval, null);
   assert.equal(reset.published, null);

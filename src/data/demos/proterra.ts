@@ -14,7 +14,35 @@ export const issue = {
   date: "2026-10-12",
   start: "2026-10-05",
   end: "2026-10-11",
-  title: "Weekly Brief · 12 October 2026",
+  title: "Weekly Brief / 12 October 2026",
+};
+
+// Public-domain editorial imagery, credited in the reference image library.
+// Local derivatives are resized and cropped to 480 x 270. Story data is invented.
+export const storyImages = {
+  dairy: {
+    src: "/assets/demos/proterra/dairy-parlor.webp",
+    alt: "Dairy cows in a rotary milking parlor",
+    author: "USDA Rural Development",
+    license: "Public domain",
+    source:
+      "https://commons.wikimedia.org/wiki/File:20250813-USDA-RD-VA-JGP-0001_(54721557540).jpg",
+  },
+  beef: {
+    src: "/assets/demos/proterra/cattle-market.webp",
+    alt: "A commercial cattle herd gathered in an open pasture",
+    author: "Keith Weller, USDA Agricultural Research Service",
+    license: "Public domain",
+    source: "https://commons.wikimedia.org/wiki/File:Cattle_herd.jpg",
+  },
+  genetics: {
+    src: "/assets/demos/proterra/genetics-lab.webp",
+    alt: "Laboratory technician pipetting a DNA sample",
+    author: "National Institute of Standards and Technology",
+    license: "Public domain",
+    source:
+      "https://commons.wikimedia.org/wiki/File:Laboratory_Technician_Pipettes_Dirt_(10714910404).jpg",
+  },
 };
 
 export const publications = [
@@ -129,30 +157,30 @@ export function collectItems(input: Item[] = items) {
   const seen = new Set<string>();
   return input.map((item) => {
     const url = canonicalUrl(item.url);
-    let reason = "Kept · approved publication, in window, in scope";
+    let reason = "Kept: approved publication, in window, in scope";
     let accepted = true;
     if (
       !url ||
       url.protocol !== "https:" ||
       !publications.some((publisher) => publisher.host === url.hostname)
     ) {
-      reason = "Filtered · host is not on the allow-list";
+      reason = "Filtered: host is not on the allow-list";
       accepted = false;
     } else if (
       !/^\d{4}-\d{2}-\d{2}$/.test(item.date) ||
       !Number.isFinite(Date.parse(item.date)) ||
       new Date(item.date).toISOString().slice(0, 10) !== item.date
     ) {
-      reason = "Filtered · unparsable publication date";
+      reason = "Filtered: unparsable publication date";
       accepted = false;
     } else if (item.date < issue.start || item.date > issue.end) {
-      reason = "Filtered · outside 5–11 October";
+      reason = "Filtered: outside 5 to 11 October";
       accepted = false;
     } else if (item.sector === "Other") {
-      reason = "Filtered · outside dairy, beef and bovine genetics";
+      reason = "Filtered: outside dairy, beef and bovine genetics";
       accepted = false;
     } else if (seen.has(url.href)) {
-      reason = "Filtered · duplicate canonical URL";
+      reason = "Filtered: duplicate canonical URL";
       accepted = false;
     }
     if (accepted && url) seen.add(url.href);
@@ -174,9 +202,10 @@ export type Pipeline = {
   published: { draft: Draft; fingerprint: string } | null;
 };
 
+// The scheduled collection has already completed when the editor opens this issue.
 export function initialState(): Pipeline {
   return {
-    collected: false,
+    collected: true,
     draft: null,
     version: 0,
     approval: null,
