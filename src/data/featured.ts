@@ -6,7 +6,7 @@ export const featured = [
       src: "/assets/shots/orbit-featured.webp",
       width: 1120,
       height: 650,
-      alt: "Orbit task planner with a week strip, day cards and navigation for Chat, Library and Finances, using invented data.",
+      alt: "Orbit chat workspace with three connected agent accounts, delegated sessions and a running app preview, using invented data.",
     },
     contribution:
       "I built Orbit with Python, SQLite and native web interfaces.",
