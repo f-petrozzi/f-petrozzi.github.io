@@ -110,13 +110,13 @@ test("home panel and fluid CSS do not load on project or demo pages", () => {
   }
   const homeStyles = styles(readFileSync(join(root, "index.html"), "utf8"));
   assert.ok(homeStyles.includes(".work-more"));
-  assert.ok(homeStyles.includes(".fluid-arm"));
+  assert.ok(homeStyles.includes(".fluid-ink"));
   for (const file of files(join(root, "projects")).filter((file) =>
     file.endsWith(".html"),
   )) {
     const html = readFileSync(file, "utf8"),
       css = styles(html);
     assert.ok(!css.includes(".work-more"), `${file} loads home panel CSS`);
-    assert.ok(!css.includes(".fluid-arm"), `${file} loads unused fluid CSS`);
+    assert.ok(!css.includes(".fluid-ink"), `${file} loads unused fluid CSS`);
   }
 });

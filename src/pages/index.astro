@@ -10,7 +10,6 @@ import Icon from "../components/Icon.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import { featured as featuredCopy } from "../data/featured";
 import NumeGallery from "../components/NumeGallery.astro";
-import ProjectVisual from "../components/ProjectVisual.astro";
 import ToolIcon from "../components/ToolIcon.astro";
 import ToolIconSprite from "../components/ToolIconSprite.astro";
 const raw = (await getCollection("projects")).sort(
@@ -21,12 +20,6 @@ const featured = featuredCopy.map((copy) => ({
   ...copy,
   project: byId[copy.id],
 }));
-const featureLayout = {
-  homelab: "wide",
-  nume: "narrow",
-  proterra: "half",
-  nest: "half",
-};
 const recent = raw.filter((p) => p.data.category !== "Earlier work");
 const earlier = raw.filter((p) => p.data.category === "Earlier work");
 const capabilities = {
@@ -278,10 +271,11 @@ const education = [
         </div>
         <div class="bento">
           {
-            featured.map(({ id, project, hook, how, contribution }) => (
+            featured.map(({ id, project, hook, how, contribution, image }) => (
               <article
-                class:list={["work-card", "glass", `is-${featureLayout[id]}`]}
+                class="work-card glass"
                 aria-labelledby={`work-${id}`}
+                data-project={id}
               >
                 <header class="work-heading">
                   <p class="work-kind">
@@ -300,32 +294,20 @@ const education = [
                     <NumeGallery compact />
                   ) : (
                     <button
-                      class:list={[
-                        "work-media",
-                        id === "homelab"
-                          ? "screenshot-open"
-                          : "visual-preview-open",
-                      ]}
+                      class="work-media screenshot-open"
                       type="button"
                       disabled
                       aria-label={`Preview ${project.data.title}`}
-                      data-preview-title={project.data.title}
                     >
-                      {id === "homelab" ? (
-                        <img
-                          src="/assets/shots/homelab.webp"
-                          width="1808"
-                          height="721"
-                          alt=""
-                          fetchpriority="high"
-                        />
-                      ) : (
-                        <ProjectVisual
-                          kind={project.data.visual}
-                          title={project.data.title}
-                          compact
-                        />
-                      )}
+                      <img
+                        src={image?.src}
+                        width={image?.width}
+                        height={image?.height}
+                        alt={image?.alt}
+                        loading={id === "homelab" ? "eager" : "lazy"}
+                        fetchpriority={id === "homelab" ? "high" : "auto"}
+                        decoding="async"
+                      />
                     </button>
                   )}
                 </div>
@@ -348,20 +330,19 @@ const education = [
                           </span>
                         </>
                       </span>
+                      <svg
+                        class="info-orb fluid-ink fluid-surface"
+                        viewBox="0 0 44 44"
+                        aria-hidden="true"
+                      >
+                        <g>
+                          <circle cx="22" cy="22" r="20" />
+                        </g>
+                      </svg>
                     </summary>
                     <svg class="info-ink fluid-ink" aria-hidden="true">
                       <g>
                         <rect rx="22" />
-                      </g>
-                    </svg>
-                    <svg
-                      class="info-arm fluid-ink"
-                      viewBox="0 0 44 44"
-                      aria-hidden="true"
-                    >
-                      <g>
-                        <path class="fluid-neck" />
-                        <path class="fluid-arm" />
                       </g>
                     </svg>
                     <div

@@ -1,20 +1,10 @@
 /* Opt in per surface. No site palette or always-on filters. */
 .fluid-surface {
-  --fluid-origin: center;
-  transform-origin: var(--fluid-origin);
+  transform-origin: center;
 }
 .fluid-ink {
   overflow: visible;
   pointer-events: none;
-}
-.fluid-arm {
-  fill: none;
-  stroke: var(--fluid-fill, currentColor);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.fluid-neck {
-  fill: var(--fluid-fill, currentColor);
 }
 @media (prefers-reduced-motion: reduce) {
   .fluid-surface {

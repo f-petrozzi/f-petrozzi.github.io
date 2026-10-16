@@ -28,13 +28,13 @@ test("critical spring is exact across frame rates and does not overshoot", () =>
   );
 });
 
-test("notch presets retain their timing, soft overshoot and reversal velocity", () => {
-  assert.deepEqual(fluid.ARM_APPROACH, { response: 0.74, damping: 0.86 });
-  assert.deepEqual(fluid.ARM_RETURN, { response: 0.82, damping: 0.9 });
-  assert.deepEqual(fluid.PANEL_OPEN, { response: 0.62, damping: 0.72 });
+test("liquid springs preserve velocity on reversal at different frame rates", () => {
+  assert.deepEqual(fluid.APPROACH, { response: 0.34, damping: 0.82 });
+  assert.deepEqual(fluid.RETURN, { response: 0.38, damping: 0.86 });
+  assert.deepEqual(fluid.PANEL_OPEN, { response: 0.42, damping: 0.84 });
   for (const preset of [
-    fluid.ARM_APPROACH,
-    fluid.ARM_RETURN,
+    fluid.APPROACH,
+    fluid.RETURN,
     fluid.PANEL_OPEN,
     { response: 0.7, damping: 1.4 },
   ]) {
@@ -50,59 +50,52 @@ test("notch presets retain their timing, soft overshoot and reversal velocity", 
     [x, v] = fluid.springStep(x, v, 1, 1 / 120, fluid.PANEL_OPEN);
     peak = Math.max(peak, x);
   }
-  assert.ok(peak > 1.03 && peak < 1.05);
-  const approaching = fluid.springStep(0, 0, 1, 0.1, fluid.ARM_APPROACH);
-  const reversing = fluid.springStep(
-    ...approaching,
-    0,
-    0.001,
-    fluid.ARM_RETURN,
-  );
+  assert.ok(peak > 1.005 && peak < 1.01);
+  const approaching = fluid.springStep(0, 0, 1, 0.1, fluid.APPROACH);
+  const reversing = fluid.springStep(...approaching, 0, 0.001, fluid.RETURN);
   assert.ok(reversing[0] > approaching[0]);
 });
 
-test("proximity ramps smoothly outside the icon with the notch's square reach", () => {
+test("proximity uses circular falloff with bounded directional displacement", () => {
   const rect = { left: 100, top: 100, width: 44, height: 44 };
-  assert.equal(fluid.proximityAt(122, 122, rect), 1);
-  assert.equal(fluid.proximityAt(144, 144, rect), 1);
-  assert.equal(fluid.proximityAt(192, 122, rect), 0);
-  const ramp = [191, 180, 170, 160, 150].map((x) =>
-    fluid.proximityAt(x, 122, rect),
-  );
-  ramp.forEach((value, i) => {
-    assert.ok(value > 0 && value < 1);
-    if (i) assert.ok(value > ramp[i - 1]);
+  assert.deepEqual(fluid.proximityAt(122, 122, rect), {
+    x: 0,
+    y: 0,
+    strength: 1,
   });
-  near(fluid.proximityAt(170, 122, rect), fluid.proximityAt(122, 74, rect));
+  assert.deepEqual(fluid.proximityAt(222, 122, rect), {
+    x: 0,
+    y: 0,
+    strength: 0,
+  });
+  const right = fluid.proximityAt(160, 122, rect);
+  const above = fluid.proximityAt(122, 84, rect);
+  near(right.strength, above.strength);
+  near(right.x, -above.y);
+  assert.ok(right.x > 0 && right.x < 3);
+  assert.equal(right.y, 0);
+  const diagonal = fluid.proximityAt(160, 160, rect);
+  assert.ok(diagonal.strength < right.strength);
+  assert.ok(diagonal.x > 0 && diagonal.y > 0);
+  assert.equal(fluid.proximityAt(214, 214, rect).strength, 0);
 });
 
-test("arm gathers along the inset contour, lifts on a bow and pinches before release", () => {
-  const rest = fluid.armGeometry(0);
-  near(rest.x, 0);
-  near(rest.y, 0);
-  assert.equal((rest.arm.match(/L/g) || []).length, 40);
-  assert.equal(rest.neck, "");
-  assert.equal(rest.strokeWidth, 10.2);
-  const gather = fluid.armGeometry(0.2),
-    lift = fluid.armGeometry(0.65),
-    pocket = fluid.armGeometry(1);
-  assert.equal(gather.lift, 0);
-  assert.ok(gather.strokeWidth > rest.strokeWidth);
-  assert.ok(lift.x < 0 && lift.y > 0 && lift.blur > 0);
-  assert.ok(lift.neck.startsWith("M") && lift.neck.endsWith("Z"));
-  assert.equal(pocket.neck, "");
-  assert.equal(pocket.strokeWidth, 48);
-  assert.ok(pocket.blur < 1e-6);
-  near(
-    pocket.originX + pocket.x,
-    22 - (38.7 - 10.2 / 2 - 5) * Math.SQRT1_2 * 2,
+test("the round surface stays intact at rest and swells gently toward the pointer", () => {
+  assert.equal(
+    fluid.dropletTransform({ x: 0, y: 0, strength: 0 }),
+    "translate(0px, 0px) rotate(0deg) scale(1, 1) rotate(0deg)",
   );
-  for (const value of [-0.02, 0, 0.4, 0.8, 1, 1.03]) {
-    const shape = fluid.armGeometry(value, 0.52);
-    assert.ok(!/NaN|Infinity/.test(shape.arm + shape.neck));
+  const right = fluid.dropletTransform({ x: 2.6, y: 0, strength: 1 });
+  assert.match(right, /scale\(1.13, 0.95\)/);
+  for (let angle = -Math.PI; angle < Math.PI; angle += 0.1) {
+    const transform = fluid.dropletTransform({
+      x: 3 * Math.cos(angle),
+      y: 3 * Math.sin(angle),
+      strength: 1.01,
+    });
+    assert.ok(!/NaN|Infinity/.test(transform));
   }
-  near(fluid.armSway(0.095), 14 * Math.exp(-0.095 / 0.26));
-  assert.equal(fluid.armSway(1.2), 0);
+  assert.equal(fluid.armGeometry, undefined);
 });
 
 class Node extends EventTarget {
@@ -146,18 +139,21 @@ function fixture() {
     },
     clock: () => now,
   };
+  function step() {
+    now += 1000 / 60;
+    const batch = [...frames.values()];
+    frames.clear();
+    batch.forEach((fn) => fn(now));
+  }
   function drain() {
     let count = 0;
     while (frames.size && count++ < 500) {
-      now += 1000 / 60;
-      const batch = [...frames.values()];
-      frames.clear();
-      batch.forEach((fn) => fn(now));
+      step();
     }
     assert.equal(frames.size, 0, "animation must become idle");
     return count;
   }
-  return { options, frames, reduced, drain };
+  return { options, frames, reduced, drain, step };
 }
 function pointer(target, x, y, type = "mouse") {
   const event = new Event("pointermove");
@@ -174,8 +170,12 @@ test("tracker is idle far away, coalesces events, settles near and returns home"
   const card = new Node(),
     f = fixture(),
     paints = [];
+  let reads = 0;
   const anchor = {
-    getBoundingClientRect: () => ({ left: 0, top: 0, width: 44, height: 44 }),
+    getBoundingClientRect() {
+      reads++;
+      return { left: 0, top: 0, width: 44, height: 44 };
+    },
   };
   const tracker = fluid.trackProximity(
     card,
@@ -190,7 +190,11 @@ test("tracker is idle far away, coalesces events, settles near and returns home"
   for (let i = 0; i < 30; i++) pointer(card, 30, 30);
   assert.equal(f.frames.size, 1);
   assert.ok(f.drain() < 200);
-  assert.deepEqual(paints.at(-1), [1, false, 0]);
+  assert.deepEqual(paints.at(-1), [
+    fluid.proximityAt(30, 30, anchor.getBoundingClientRect()),
+    false,
+  ]);
+  assert.equal(reads, 2, "pointer events share one cached geometry read");
   pointer(card, 30, 30);
   assert.equal(
     f.frames.size,
@@ -199,7 +203,7 @@ test("tracker is idle far away, coalesces events, settles near and returns home"
   );
   card.dispatchEvent(new Event("pointerleave"));
   f.drain();
-  assert.deepEqual(paints.at(-1), [0, false, 0]);
+  assert.deepEqual(paints.at(-1), [{ x: 0, y: 0, strength: 0 }, false]);
   pointer(card, 60, 22);
   globalThis.window.dispatchEvent(new Event("scroll"));
   assert.equal(f.frames.size, 0);
@@ -213,7 +217,7 @@ test("tracker is idle far away, coalesces events, settles near and returns home"
   assert.equal(f.frames.size, 0);
 });
 
-test("goo uses the notch's half-alpha cut-back and detaches at rest/reduced motion", (t) => {
+test("goo uses a bounded half-alpha cut-back and detaches at rest/reduced motion", (t) => {
   const saved = {
     document: globalThis.document,
     matchMedia: globalThis.matchMedia,
@@ -245,7 +249,7 @@ test("goo uses the notch's half-alpha cut-back and detaches at rest/reduced moti
   assert.equal(svg.children[0].removed, true);
 });
 
-test("first info open measures the laid-out width, matches later opens and resizes", () => {
+function panelFixture() {
   const home = readFileSync(
     new URL("../src/scripts/home.ts", import.meta.url),
     "utf8",
@@ -256,7 +260,6 @@ test("first info open measures the laid-out width, matches later opens and resiz
   const details = new Node(),
     summary = new Node(),
     body = new Node(),
-    foot = new Node(),
     card = new Node(),
     glyph = new Node();
   const ink = () => {
@@ -268,46 +271,41 @@ test("first info open measures the laid-out width, matches later opens and resiz
     };
     return svg;
   };
+  const panel = ink(),
+    orb = ink();
   const nodes = new Map([
     ["summary", summary],
     [".work-more-body", body],
-    [".info-ink", ink()],
-    [".info-arm", ink()],
+    [".info-ink", panel],
+    [".info-orb", orb],
   ]);
   details.querySelector = (name) => nodes.get(name);
   details.closest = () => card;
+  details.contains = () => false;
   summary.querySelector = () => glyph;
-  summary.getBoundingClientRect = () => ({
-    left: 0,
-    top: 0,
-    width: 44,
-    height: 44,
-  });
-  details.parentElement = { clientWidth: 520, querySelector: () => foot };
+  details.parentElement = { clientWidth: 520 };
   let measures = 0;
-  body.getBoundingClientRect = () => {
-    // Native disclosure layout must be open at the body's final width before
-    // its wrapped content can be measured. A closed/stale width would be taller.
-    assert.equal(details.open, true);
-    assert.equal(details.style.width, body.style.width);
-    measures++;
-    return { height: Math.ceil(120000 / parseFloat(body.style.width)) };
-  };
+  Object.defineProperty(body, "offsetHeight", {
+    get() {
+      assert.equal(details.open, true);
+      measures++;
+      return Math.min(420, Math.ceil(120000 / parseFloat(body.style.width)));
+    },
+  });
   const f = fixture();
-  let resize;
+  let resize, intersection;
+  const doc = new Node();
+  doc.querySelectorAll = () => [details];
+  doc.fonts = { ready: { then() {} } };
   const context = vm.createContext({
     ...fluid,
-    document: {
-      querySelectorAll: () => [details],
-      fonts: { ready: { then() {} } },
-    },
+    document: doc,
     reducedMotion: f.reduced,
-    matchMedia: () => f.reduced,
+    matchMedia: () => ({ matches: true }),
     getComputedStyle: () => ({ paddingLeft: "10", paddingRight: "10" }),
     requestAnimationFrame: f.options.request,
     cancelAnimationFrame: f.options.cancel,
     performance: { now: f.options.clock },
-    scheduleScroll() {},
     setTimeout,
     clearTimeout,
     ResizeObserver: class {
@@ -317,33 +315,87 @@ test("first info open measures the laid-out width, matches later opens and resiz
       observe() {}
     },
     IntersectionObserver: class {
+      constructor(fn) {
+        intersection = fn;
+      }
       observe() {}
     },
-    // Proximity and filters are tested above; this exercises the real panel code.
     trackProximity: () => ({ stop() {}, reset() {} }),
     applyGooFilter: () => ({ update() {} }),
   });
   vm.runInContext(source, context);
-  const click = () =>
-    summary.dispatchEvent(new Event("click", { cancelable: true }));
-  click();
-  f.drain();
-  const firstHeight = details.style.height;
-  assert.equal(firstHeight, "240px");
-  click();
-  f.drain();
-  assert.equal(details.open, false);
-  click();
-  f.drain();
-  assert.equal(details.style.height, firstHeight);
-  details.parentElement.clientWidth = 340;
-  resize();
-  f.drain();
-  assert.equal(details.style.height, "375px");
-  f.reduced.matches = true;
-  f.reduced.dispatchEvent(new Event("change"));
-  click();
-  assert.equal(details.open, false);
-  assert.equal(f.frames.size, 0);
-  assert.ok(measures >= 4);
+  const click = (detail = 1) => {
+    const event = new Event("click", { cancelable: true });
+    Object.assign(event, { detail });
+    summary.dispatchEvent(event);
+  };
+  return {
+    details,
+    summary,
+    body,
+    panel,
+    orb,
+    doc,
+    click,
+    f,
+    measures: () => measures,
+    resize: () => resize(),
+    hide: () => intersection([{ isIntersecting: false }]),
+  };
+}
+
+test("info panel measures once, keeps card geometry fixed during animation and resizes", () => {
+  const p = panelFixture();
+  p.click();
+  assert.equal(p.body.style.width, "500px");
+  p.f.drain();
+  assert.equal(p.panel.style.height, "240px");
+  assert.equal(p.body.style.opacity, "1");
+  assert.equal(p.measures(), 1, "frames must not measure layout");
+  assert.equal(p.details.style.width, undefined);
+  assert.equal(p.details.style.height, undefined);
+  p.click();
+  p.f.drain();
+  assert.equal(p.details.open, false);
+  assert.equal(p.orb.style.opacity, "1");
+  p.click();
+  p.f.drain();
+  assert.equal(p.panel.style.height, "240px");
+  p.details.parentElement.clientWidth = 340;
+  p.resize();
+  assert.equal(p.panel.style.height, "375px");
+  assert.equal(p.body.style.width, "320px");
+  assert.equal(p.f.frames.size, 0);
+});
+
+test("rapid panel reversals settle, keyboard/reduced motion are instant, hidden panels stop", () => {
+  const p = panelFixture();
+  p.click();
+  p.f.step();
+  p.click();
+  p.f.step();
+  p.click();
+  p.f.drain();
+  assert.equal(p.body.style.opacity, "1");
+  assert.equal(p.summary.getAttribute("aria-expanded"), "true");
+  p.click(0);
+  assert.equal(p.f.frames.size, 0);
+  assert.equal(p.details.open, false);
+  assert.equal(p.body.inert, true);
+  p.f.reduced.matches = true;
+  p.f.reduced.dispatchEvent(new Event("change"));
+  p.click();
+  assert.equal(p.details.open, true);
+  assert.equal(p.f.frames.size, 0);
+  p.f.reduced.matches = false;
+  p.click();
+  assert.equal(p.f.frames.size, 1);
+  p.hide();
+  assert.equal(p.f.frames.size, 0);
+  assert.equal(p.details.open, false);
+  p.click();
+  p.doc.hidden = true;
+  p.doc.dispatchEvent(new Event("visibilitychange"));
+  assert.equal(p.f.frames.size, 0);
+  assert.equal(p.details.open, false);
 });
