@@ -12,11 +12,14 @@ function init(root: HTMLElement) {
   const get = <T extends HTMLElement>(selector: string) =>
     root.querySelector<T>(selector)!;
   const question = get<HTMLInputElement>("[data-question]");
-  let reply: Reply = ask(prompts[0]);
+  let reply: Reply = ask(prompts[1]);
+  const chat = get<HTMLElement>("[data-chat]");
+  const send = get<HTMLButtonElement>("[data-send]");
   const draftTo = get<HTMLInputElement>("[data-email-to]");
   const draftSubject = get<HTMLInputElement>("[data-email-subject]");
   const draftBody = get<HTMLTextAreaElement>("[data-email-body]");
   function selectPassage(id: number) {
+    get<HTMLDetailsElement>("[data-details]").open = true;
     root.querySelectorAll<HTMLElement>("[data-passage]").forEach((item) => {
       const selected = Number(item.dataset.passage) === id;
       item.classList.toggle("selected", selected);
@@ -69,7 +72,7 @@ function init(root: HTMLElement) {
       .querySelectorAll<HTMLButtonElement>("[data-slot]")
       .forEach((button) => button.setAttribute("aria-pressed", "false"));
     get("[data-slot-status]").textContent =
-      "6 available slots · 30 minutes · Eastern time";
+      "Choose an available appointment for the student.";
   }
   function render() {
     get("[data-last-question]").textContent = reply.question;
@@ -102,7 +105,7 @@ function init(root: HTMLElement) {
         title.textContent = `${citation === -1 ? `${index + 1}.` : `[${citation + 1}]`} ${passage.title}`;
         const score = document.createElement("span");
         score.className = "score";
-        score.textContent = `Similarity ${(passage.score * 100).toFixed(1)}%${citation !== -1 ? " · cited" : ""}`;
+        score.textContent = `Similarity ${(passage.score * 100).toFixed(1)}%${citation !== -1 ? " / cited" : ""}`;
         const text = document.createElement("p");
         text.textContent = passage.text;
         article.append(title, score, text);
@@ -120,6 +123,14 @@ function init(root: HTMLElement) {
         ),
       );
     action("");
+    root
+      .querySelectorAll<HTMLButtonElement>("[data-action]")
+      .forEach((button) => {
+        button.disabled = !reply.citations.length;
+      });
+    get("[data-email-status]").textContent = "Draft ready for review";
+    send.disabled = false;
+    chat.scrollTop = 0;
     get("[data-tool]").hidden = true;
     get("[data-tool-name]").textContent = "";
     get("[data-tool-args]").textContent = "";
@@ -145,6 +156,7 @@ function init(root: HTMLElement) {
   );
   root.querySelectorAll<HTMLButtonElement>("[data-action]").forEach((button) =>
     button.addEventListener("click", () => {
+      if (!reply.citations.length) return;
       const name = button.dataset.action!;
       action(name);
       if (name === "email") {
@@ -152,6 +164,8 @@ function init(root: HTMLElement) {
         draftTo.value = draft.to;
         draftSubject.value = draft.subject;
         draftBody.value = draft.body;
+        send.disabled = false;
+        get("[data-email-status]").textContent = "Draft ready for review";
         showCall(emailCall(draft));
         showLatency("email");
       } else {
@@ -159,18 +173,37 @@ function init(root: HTMLElement) {
         showCall(meetingCall(reply));
         showLatency("calendar");
       }
+      const panel = get<HTMLElement>(`[data-action-panel="${name}"]`);
+      chat.scrollTop +=
+        panel.getBoundingClientRect().top -
+        chat.getBoundingClientRect().top -
+        12;
     }),
   );
+  const currentDraft = () => ({
+    to: draftTo.value,
+    subject: draftSubject.value,
+    body: draftBody.value,
+  });
   [draftTo, draftSubject, draftBody].forEach((input) =>
-    input.addEventListener("input", () =>
-      showCall(
-        emailCall({
-          to: draftTo.value,
-          subject: draftSubject.value,
-          body: draftBody.value,
-        }),
-      ),
-    ),
+    input.addEventListener("input", () => {
+      send.disabled = false;
+      get("[data-email-status]").textContent = "Draft updated";
+      showCall(emailCall(currentDraft()));
+    }),
+  );
+  get<HTMLFormElement>("[data-email-form]").addEventListener(
+    "submit",
+    (event) => {
+      event.preventDefault();
+      if (send.disabled || !reply.citations.length) return;
+      const call = emailCall(currentDraft(), "send");
+      showCall(call);
+      get("[data-email-status]").textContent =
+        `Sent to ${call.arguments.to} via MCP Gmail`;
+      send.disabled = true;
+      showLatency("email");
+    },
   );
   root.querySelectorAll<HTMLButtonElement>("[data-slot]").forEach((button) =>
     button.addEventListener("click", () => {
@@ -186,15 +219,15 @@ function init(root: HTMLElement) {
         }),
       );
       get("[data-slot-status]").textContent =
-        `Proposed: ${button.dataset.date} at ${button.dataset.time} Eastern · invitation pending`;
+        `Scheduled: ${button.dataset.date} at ${button.dataset.time} Eastern. Student invitation sent via MCP Calendar.`;
       showLatency("calendar");
     }),
   );
   get("[data-reset]").addEventListener("click", () => {
-    question.value = prompts[0];
-    reply = ask(prompts[0]);
+    question.value = prompts[1];
+    reply = ask(prompts[1]);
     render();
-    get("[data-passages]").scrollTop = 0;
+    get("[data-details] .diagnostics").scrollTop = 0;
     root
       .querySelectorAll<HTMLDetailsElement>("details")
       .forEach((detail) => (detail.open = false));

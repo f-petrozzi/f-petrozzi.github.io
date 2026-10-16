@@ -1,6 +1,6 @@
 ---
 import { trials, bestTrial } from "../../data/demos/optuna";
-const best = bestTrial(trials.slice(0, 6))!;
+const best = bestTrial(trials)!;
 ---
 
 <section
@@ -8,12 +8,23 @@ const best = bestTrial(trials.slice(0, 6))!;
   data-demo="optuna"
   aria-label="Optuna interactive sample"
 >
-  <h2>Churn model · tuning study</h2>
+  <header class="study-heading">
+    <h2>Churn model tuning study</h2><a
+      href="https://www.youtube.com/watch?v=nWm1OeqH004"
+      target="_blank"
+      rel="noopener noreferrer"
+      >Recorded presentation<svg viewBox="0 0 16 16" aria-hidden="true"
+        ><path d="M4 12 12 4M4 4h8v8"></path></svg
+      ></a
+    >
+  </header>
   <div class="columns">
     <article class="card">
-      <h3>Optimization history</h3><div data-history></div><p class="muted">
-        ● Completed · × Pruned · Line: best completed loss
-      </p>
+      <h3>Optimization history</h3><div data-history></div><div class="legend">
+        <span>● Completed</span><span>× Pruned</span><span
+          >Line: best completed loss</span
+        >
+      </div>
     </article>
     <article class="card">
       <h3>Parameter importance</h3><div data-importance></div><p>
@@ -30,210 +41,303 @@ const best = bestTrial(trials.slice(0, 6))!;
     ><button type="button" data-reset>Reset</button>
   </div>
   <div aria-live="polite">
-    <p data-status>6 / 30 trials</p><p class="muted" data-latest></p>
+    <p data-status>30 / 30 trials</p><p class="muted" data-latest></p>
   </div>
   <p class="note">
     A seeded local replay, not an Optuna or PyTorch run. Importance uses
-    relative grouped loss variance, not Optuna’s fANOVA estimator.
+    relative grouped loss variance, not Optuna's fANOVA estimator.
   </p>
 </section>
 <script>
   import "../../scripts/demos/optuna";
 </script>
-<style>
+<style is:inline>
   .demo-optuna {
+    --demo-bg: #ffffff;
+    --demo-ink: #182b39;
+    --demo-muted: #526575;
+    --demo-line: #d7e1e8;
+    --demo-accent: #4059ad;
+    color-scheme: light;
     margin: 28px 0;
     padding: clamp(14px, 3vw, 28px);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-lg);
-    background: var(--bg);
-    color: var(--ink);
+    border: 1px solid var(--demo-line);
+    border-radius: 16px;
+    background: #f5f8fa;
+    color: var(--demo-ink);
     font-size: 14px;
     line-height: 1.55;
     min-width: 0;
-  }
-  .demo-optuna .columns {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
-  }
-  .demo-optuna .card {
-    min-width: 0;
-    padding: 18px;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-  }
-  .demo-optuna h2 {
-    margin: 0 0 14px;
-    font-size: 22px;
-    letter-spacing: -0.025em;
-  }
-  .demo-optuna h3 {
-    margin: 0 0 10px;
-    font-size: 16px;
-  }
-  .demo-optuna p {
-    margin: 12px 0;
-  }
-  .demo-optuna .muted,
-  .demo-optuna .note {
-    color: var(--muted);
-  }
-  .demo-optuna .note {
-    font-size: 12px;
-    margin-bottom: 0;
-  }
-  .demo-optuna .score {
-    display: block;
-    color: var(--accent);
-    font-size: clamp(28px, 5vw, 42px);
-    line-height: 1.2;
-    margin: 10px 0;
-  }
-  .demo-optuna .toolbar {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    align-items: center;
-    margin: 18px 0;
-  }
-  .demo-optuna button,
-  .demo-optuna select {
-    font: inherit;
-    min-height: 44px;
-    padding: 8px 12px;
-    background: var(--bg);
-    color: var(--ink);
-    border: 1px solid var(--muted);
-    border-radius: 8px;
-    max-width: 100%;
-  }
-  .demo-optuna button {
-    cursor: pointer;
-    touch-action: manipulation;
-  }
-  .demo-optuna button[aria-pressed="true"] {
-    border-color: var(--accent);
-    box-shadow: inset 0 0 0 1px var(--accent);
-    color: var(--accent);
-  }
-  .demo-optuna button:disabled {
-    opacity: 0.5;
-    cursor: default;
-  }
-  .demo-optuna :is(button, input, select):focus-visible {
-    box-shadow:
-      0 0 0 3px var(--bg),
-      0 0 0 6px var(--accent);
-  }
-  .demo-optuna label {
-    display: grid;
-    gap: 6px;
-    min-width: 0;
-  }
-  .demo-optuna .inputs {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px;
-    margin: 18px 0;
-  }
-  .demo-optuna input,
-  .demo-optuna select {
-    font-size: 16px;
-    accent-color: var(--accent);
-  }
-  .demo-optuna input[type="range"] {
-    width: 100%;
-    min-height: 44px;
-    margin: 0;
-  }
-  .demo-optuna input[type="checkbox"] {
-    width: 22px;
-    height: 22px;
-    margin: 10px;
-  }
-  .demo-optuna .check {
-    display: flex;
-    align-items: center;
-    min-height: 44px;
-  }
-  .demo-optuna .scroll {
-    overflow-x: auto;
-    max-width: 100%;
-  }
-  .demo-optuna :global(table) {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-  }
-  .demo-optuna :global(th),
-  .demo-optuna :global(td) {
-    padding: 9px 6px;
-    border-bottom: 1px solid var(--line);
-    text-align: left;
-  }
-  .demo-optuna :global(th) {
-    font-weight: 500;
-  }
-  .demo-optuna :global(svg) {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-  .demo-optuna :global(svg text) {
-    fill: var(--muted);
-    font:
-      12px system-ui,
-      sans-serif;
-  }
-  .demo-optuna :global(.axis) {
-    fill: none;
-    stroke: var(--muted);
-    stroke-width: 1;
-  }
-  .demo-optuna :global(.series) {
-    fill: none;
-    stroke: var(--accent);
-    stroke-width: 2.5;
-  }
-  .demo-optuna :global(.point) {
-    fill: var(--accent);
-  }
-  .demo-optuna :global(.secondary) {
-    fill: var(--muted);
-  }
-  .demo-optuna :global(.selected) {
-    stroke: var(--accent);
-    stroke-width: 2.5;
-    fill: none;
-  }
-  .demo-optuna :global(.branch) {
-    stroke: var(--muted);
-    stroke-width: 1;
-    fill: none;
-  }
-  .demo-optuna :global(g rect) {
-    fill: var(--bg);
-  }
-  .demo-optuna :global(g text) {
-    stroke: none;
-    text-anchor: middle;
-    font-size: 10px;
-  }
-  @media (max-width: 680px) {
-    .demo-optuna .columns {
-      grid-template-columns: 1fr;
+    max-height: 780px;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #a4b5c2 transparent;
+    & * {
+      box-sizing: border-box;
+      scrollbar-width: thin;
+      scrollbar-color: #a4b5c2 transparent;
     }
-    .demo-optuna .inputs {
+    &::-webkit-scrollbar,
+    & ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    &::-webkit-scrollbar-thumb,
+    & ::-webkit-scrollbar-thumb {
+      background: #a4b5c2;
+      border-radius: 6px;
+    }
+    .columns {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .card {
+      min-width: 0;
+      padding: 18px;
+      border: 1px solid var(--demo-line);
+      border-radius: 12px;
+      background: var(--demo-bg);
+    }
+    h2 {
+      margin: 0 0 14px;
+      font-size: 22px;
+      letter-spacing: -0.025em;
+    }
+    h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+    }
+    p {
+      margin: 12px 0;
+    }
+    .muted,
+    .note {
+      color: var(--demo-muted);
+    }
+    .note {
+      font-size: 12px;
+      margin-bottom: 0;
+    }
+    .score {
+      display: block;
+      color: var(--demo-accent);
+      font-size: clamp(28px, 5vw, 42px);
+      line-height: 1.2;
+      margin: 10px 0;
+    }
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin: 18px 0;
+    }
+    button,
+    select {
+      font: inherit;
+      min-height: 44px;
+      padding: 8px 12px;
+      background: var(--demo-bg);
+      color: var(--demo-ink);
+      border: 1px solid var(--demo-muted);
+      border-radius: 8px;
+      max-width: 100%;
+    }
+    button,
+    summary {
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    button[aria-pressed="true"] {
+      border-color: var(--demo-accent);
+      box-shadow: inset 0 0 0 1px var(--demo-accent);
+      color: var(--demo-accent);
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+    :is(button, input, select, summary, a, [tabindex]):focus-visible {
+      box-shadow: 0 0 0 2px var(--demo-accent);
+    }
+    label {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+    .inputs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin: 18px 0;
+    }
+    input,
+    select {
+      font-size: 16px;
+      accent-color: var(--demo-accent);
+    }
+    input[type="range"] {
+      width: 100%;
+      min-height: 44px;
+      margin: 0;
+    }
+    input[type="checkbox"] {
+      width: 22px;
+      height: 22px;
+      margin: 10px;
+    }
+    .check {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+    }
+    .scroll {
+      overflow: auto;
+      max-width: 100%;
+      max-height: 240px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    th,
+    td {
+      padding: 9px 6px;
+      border-bottom: 1px solid var(--demo-line);
+      text-align: left;
+    }
+    th {
+      font-weight: 500;
+    }
+    svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    svg text {
+      fill: var(--demo-muted);
+      font-family: inherit;
+      font-size: 12px;
+    }
+    .axis {
+      fill: none;
+      stroke: var(--demo-muted);
+      stroke-width: 1;
+    }
+    .series {
+      fill: none;
+      stroke: var(--demo-accent);
+      stroke-width: 2.5;
+    }
+    .point {
+      fill: var(--demo-accent);
+    }
+    .selected {
+      stroke: var(--demo-accent);
+      stroke-width: 2.5;
+      fill: none;
+    }
+    .branch {
+      stroke: var(--demo-muted);
+      stroke-width: 1;
+      fill: none;
+    }
+    g rect {
+      fill: var(--demo-bg);
+    }
+    g text {
+      stroke: none;
+      text-anchor: middle;
+    }
+
+    .columns {
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    }
+    .card:first-child {
+      display: grid;
+      grid-template-rows: auto minmax(250px, 1fr) auto;
+    }
+    .card:first-child [data-history] {
+      height: 100%;
+      position: relative;
+    }
+    [data-history] svg {
+      position: absolute;
+      inset: 0;
+    }
+    .study-heading {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .study-heading h2 {
+      margin: 0;
+    }
+    .study-heading a {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+      color: var(--demo-accent);
+      min-height: 44px;
+    }
+    .study-heading a svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+    }
+    [data-history],
+    [data-importance] {
+      height: 250px;
+      min-width: 0;
+    }
+    [data-history] svg,
+    [data-importance] svg {
+      height: 100%;
+    }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 16px;
+      color: var(--demo-muted);
+      font-size: 12px;
+    }
+    [data-config] {
+      display: grid;
       grid-template-columns: 1fr 1fr;
+      gap: 4px 12px;
+      color: var(--demo-muted);
+      font-size: 12px;
     }
-    .demo-optuna .card {
-      padding: 12px;
+    [data-config] span {
+      display: block;
     }
-  }
-  @media (max-width: 380px) {
-    .demo-optuna .inputs {
-      grid-template-columns: 1fr;
+    [data-latest] {
+      min-height: 44px;
+      font-size: 12px;
+    }
+
+    @media (max-width: 680px) {
+      .columns {
+        grid-template-columns: 1fr;
+      }
+      .inputs {
+        grid-template-columns: 1fr 1fr;
+      }
+      .card {
+        padding: 12px;
+      }
+    }
+    @media (max-width: 380px) {
+      .inputs {
+        grid-template-columns: 1fr;
+      }
     }
   }
 </style>

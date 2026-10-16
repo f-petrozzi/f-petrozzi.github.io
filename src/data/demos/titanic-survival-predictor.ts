@@ -1,10 +1,10 @@
 export const features = {
   class: ["1st", "2nd", "3rd"],
   sex: ["Female", "Male"],
-  age: ["Child (<16)", "Adult (16–59)", "Older (60+)"],
-  fare: ["Low (<£15)", "Mid (£15–50)", "High (>£50)"],
+  age: ["Child (<16)", "Adult (16-59)", "Older (60+)"],
+  fare: ["Low (<£15)", "Mid (£15-50)", "High (>£50)"],
   embarked: ["Southampton", "Cherbourg", "Queenstown"],
-  family: ["Alone", "1–3 relatives", "4+ relatives"],
+  family: ["Alone", "1-3 relatives", "4+ relatives"],
 };
 export type Feature = keyof typeof features;
 export type Passenger = Record<Feature, string>;
@@ -30,24 +30,26 @@ function randomSource(seed: number) {
 }
 export function makePassengers(seed = 1912): Row[] {
   const random = randomSource(seed);
-  return Array.from({ length: 120 }, (_, id) => {
-    const cls = random() < 0.24 ? 0 : random() < 0.35 ? 1 : 2;
+  return Array.from({ length: 1000 }, (_, id) => {
+    const classDraw = random();
+    const cls = classDraw < 0.24 ? 0 : classDraw < 0.44 ? 1 : 2;
     const sex = random() < 0.36 ? 0 : 1;
-    const age = random() < 0.17 ? 0 : random() < 0.91 ? 1 : 2;
+    const ageDraw = random();
+    const age = ageDraw < 0.12 ? 0 : ageDraw < 0.95 ? 1 : 2;
     const fare = random() < 0.72 ? 2 - cls : Math.floor(random() * 3);
-    const port = random() < 0.7 ? 0 : random() < 0.65 ? 1 : 2;
-    const family = random() < 0.6 ? 0 : random() < 0.8 ? 1 : 2;
+    const portDraw = random();
+    const port = portDraw < 0.72 ? 0 : portDraw < 0.9 ? 1 : 2;
+    const familyDraw = random();
+    const family = familyDraw < 0.6 ? 0 : familyDraw < 0.9 ? 1 : 2;
+    // Sex and class dominate; children and small families have an advantage.
+    // Outcomes remain stochastic, including within each demographic group.
     const probability = Math.max(
       0.04,
       Math.min(
         0.96,
-        0.22 +
-          (sex === 0 ? 0.47 : 0) +
-          (age === 0 ? 0.2 : age === 2 ? -0.12 : 0) +
-          (2 - cls) * 0.1 +
-          (fare - 1) * 0.03 +
-          (family === 1 ? 0.05 : family === 2 ? -0.18 : 0) +
-          (port === 1 ? 0.03 : 0),
+        (sex === 0 ? [0.94, 0.88, 0.5][cls] : [0.35, 0.16, 0.1][cls]) +
+          (age === 0 ? 0.25 : age === 2 ? -0.1 : 0) +
+          (family === 1 ? 0.04 : family === 2 ? -0.16 : 0),
       ),
     );
     return {
@@ -128,6 +130,40 @@ export function trainTree(rows: Row[], depth = 0, id = "r"): Tree {
   };
 }
 export const tree = trainTree(training);
+export function layoutTree(model: Tree) {
+  const nodeWidth = 132;
+  const nodeHeight = 48;
+  const gap = 16;
+  const padding = 16;
+  const nodes: { node: Tree; x: number; y: number }[] = [];
+  const edges: { from: Tree; to: Tree; label: string }[] = [];
+  let leaves = 0;
+  function visit(node: Tree, depth: number): number {
+    let x: number;
+    if (node.yes && node.no) {
+      const left = visit(node.yes, depth + 1);
+      const right = visit(node.no, depth + 1);
+      x = (left + right) / 2;
+      edges.push(
+        { from: node, to: node.yes, label: "Yes" },
+        { from: node, to: node.no, label: "No" },
+      );
+    } else {
+      x = padding + nodeWidth / 2 + leaves++ * (nodeWidth + gap);
+    }
+    nodes.push({ node, x, y: padding + nodeHeight / 2 + depth * 96 });
+    return x;
+  }
+  visit(model, 0);
+  return {
+    nodes,
+    edges,
+    nodeWidth,
+    nodeHeight,
+    width: leaves * (nodeWidth + gap) - gap + padding * 2,
+    height: Math.max(...nodes.map(({ y }) => y)) + nodeHeight / 2 + padding,
+  };
+}
 export function decisionTree(input: Passenger, model = tree) {
   const path: Tree[] = [];
   let node = model;

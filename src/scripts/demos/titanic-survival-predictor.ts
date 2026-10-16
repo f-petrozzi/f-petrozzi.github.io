@@ -6,7 +6,7 @@ import {
   tree,
   scores,
   type Passenger,
-  type Tree,
+  layoutTree,
 } from "../../data/demos/titanic-survival-predictor";
 const pct = (n: number) => `${(100 * n).toFixed(1)}%`;
 function init(root: HTMLElement) {
@@ -33,28 +33,16 @@ function init(root: HTMLElement) {
         )
         .join("");
     const active = new Set(result.path.map((n) => n.id));
-    const nodes: { node: Tree; x: number; y: number }[] = [],
-      edges: string[] = [];
-    function visit(node: Tree, lo: number, hi: number, depth: number) {
-      const x = (lo + hi) / 2,
-        y = 30 + depth * 85;
-      nodes.push({ node, x, y });
-      for (const [child, a, b, label] of [
-        [node.yes, lo, x, "Yes"],
-        [node.no, x, hi, "No"],
-      ] as const) {
-        if (!child) continue;
-        const cx = (a + b) / 2,
-          cy = y + 85;
-        edges.push(
-          `<path class="${active.has(child.id) ? "selected" : "branch"}" d="M${x},${y + 15} L${cx},${cy - 20}"/><text x="${(x + cx) / 2}" y="${(y + cy) / 2}">${label}</text>`,
-        );
-        visit(child, a, b, depth + 1);
-      }
-    }
-    visit(tree, 0, 800, 0);
-    root.querySelector("[data-tree]")!.innerHTML =
-      `<svg viewBox="0 0 800 325" role="img" aria-label="Decision tree. Highlighted route: ${result.path.map((n) => (n.key ? `${labels[n.key]} equals ${n.value}: ${input[n.key] === n.value ? "yes" : "no"}` : `survival ${pct(n.probability)}`)).join("; ")}">${edges.join("")}${nodes.map(({ node, x, y }) => `<g class="${active.has(node.id) ? "selected" : "branch"}"><rect x="${x - 47}" y="${y - 20}" width="94" height="40" rx="6"/><text x="${x}" y="${y - 3}">${node.key ? labels[node.key] : pct(node.probability)}</text><text x="${x}" y="${y + 11}">${node.key ? node.value : `${node.count} passengers`}</text></g>`).join("")}</svg>`;
+    const layout = layoutTree(tree);
+    const positions = new Map(layout.nodes.map((item) => [item.node.id, item]));
+    const edges = layout.edges.map(({ from, to, label }) => {
+      const a = positions.get(from.id)!;
+      const b = positions.get(to.id)!;
+      return `<path class="${active.has(to.id) ? "selected" : "branch"}" d="M${a.x},${a.y + layout.nodeHeight / 2}L${b.x},${b.y - layout.nodeHeight / 2}"/><text x="${(a.x + b.x) / 2}" y="${(a.y + b.y) / 2}">${label}</text>`;
+    });
+    const diagram = root.querySelector<HTMLElement>("[data-tree]")!;
+    diagram.style.setProperty("--tree-width", `${layout.width}px`);
+    diagram.innerHTML = `<svg viewBox="0 0 ${layout.width} ${layout.height}" role="img" aria-label="Decision tree. Highlighted route: ${result.path.map((n) => (n.key ? `${labels[n.key]} equals ${n.value}: ${input[n.key] === n.value ? "yes" : "no"}` : `survival ${pct(n.probability)}`)).join("; ")}">${edges.join("")}${layout.nodes.map(({ node, x, y }) => `<g class="${active.has(node.id) ? "selected" : "branch"}"><rect x="${x - layout.nodeWidth / 2}" y="${y - layout.nodeHeight / 2}" width="${layout.nodeWidth}" height="${layout.nodeHeight}" rx="6"/><text x="${x}" y="${y - 4}">${node.key ? labels[node.key] : pct(node.probability)}</text><text x="${x}" y="${y + 13}">${node.key ? node.value : `${node.count} passengers`}</text></g>`).join("")}</svg>`;
     root.querySelector("[data-path]")!.textContent = result.path
       .map((n) =>
         n.key
@@ -69,7 +57,7 @@ function init(root: HTMLElement) {
     update();
   });
   root.querySelector("[data-accuracy]")!.textContent =
-    `Held-out accuracy · Naive Bayes ${pct(scores.bayes)} · Tree ${pct(scores.tree)} · 96 training / 24 test rows`;
+    `Held-out accuracy; Naive Bayes ${pct(scores.bayes)}; Tree ${pct(scores.tree)}; 800 training / 200 test rows`;
   update();
 }
 document
