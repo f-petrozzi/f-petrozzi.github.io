@@ -1,3 +1,4 @@
+import { initChat } from "./chat.js";
 /* Static portfolio replica. All state is local to this document and discarded on reload.
  * Orbit source patterns: preview/app.js navigation, tasks.js capture/checks,
  * library.js pane switching, codex.js conversation structure, project-preview.js. */
@@ -7,6 +8,7 @@ const $$ = (selector, scope = root) => [...scope.querySelectorAll(selector)];
 const reduced = matchMedia("(prefers-reduced-motion: reduce)");
 const phone = matchMedia("(max-width: 760px)");
 const compactLibrary = matchMedia("(max-width: 1199px)");
+const compactPreview = matchMedia("(max-width: 1000px)");
 const dialog = $(".replica-sheet");
 const status = $("[data-status]");
 const nav = $(".main-nav");
@@ -31,7 +33,7 @@ const accountDetails = {
   "Everyday card": ["Cedar Credit", "$246.80", "$4,000 credit limit"],
   "Learning loan": ["Juniper Lending", "$4,200.00", "$120 monthly payment"],
 };
-let activeView = "tasks";
+let activeView = "chat";
 let taskView = "plan";
 let taskList = "all";
 let captureDay = "today";
@@ -83,6 +85,11 @@ function moveHighlight(pointer = false) {
 function view(id, pointer = false) {
   if (!["tasks", "chat", "library", "finance"].includes(id)) return;
   activeView = id;
+  root.classList.toggle("is-chat", id === "chat");
+  if (id !== "chat") {
+    chat.stop();
+    chat.setFocus(false, false);
+  }
   $$("[data-view]").forEach((button) => {
     button.classList.toggle("active", button.dataset.view === id);
     if (button.dataset.view === id) button.setAttribute("aria-current", "page");
@@ -201,10 +208,6 @@ function sheet(title, html) {
 }
 function openSheet(id) {
   const content = {
-    style: [
-      "Style guide",
-      '<div class="replica-swatches"><span style="background:#edf1f3">Cloud</span><span style="background:#ffffff80">Glass</span><span style="background:#29313a;color:white">Ink</span><span style="background:#4e766e;color:white">Sage</span><span style="background:#577994;color:white">Blue</span></div><div class="inset-list"><p>Soft surfaces</p><p>Quiet, compact controls</p><p>Motion that follows a change</p></div>',
-    ],
     "task-settings": [
       "Task settings",
       '<h3>Lists</h3><div class="inset-list"><p>Work</p><p>Personal</p><p>Learning</p></div><h3>Reminders</h3><p>Off</p>',
@@ -290,11 +293,15 @@ function preview(open) {
   $(".has-project-preview").classList.toggle("preview-closed", !open);
   $(".pj-preview-toggle").setAttribute("aria-pressed", String(open));
   syncPreview();
-  if (open && compactLibrary.matches) $("[data-preview-close]").focus();
+  if (open && compactPreview.matches) $("[data-preview-close]").focus();
   if (!open) $(".pj-preview-toggle").focus();
 }
 function syncPreview() {
-  const modal = !$("[data-preview]").hidden && compactLibrary.matches;
+  const modal =
+    !$("[data-preview]").hidden &&
+    compactPreview.matches &&
+    !$("#reader-main").hidden &&
+    activeView === "chat";
   if (modal) {
     $("[data-preview]").setAttribute("role", "dialog");
     $("[data-preview]").setAttribute("aria-modal", "true");
@@ -303,7 +310,7 @@ function syncPreview() {
     $("[data-preview]").removeAttribute("aria-modal");
   }
   $$(
-    ".cx-rail, #view-chat > .page-head, #view-chat .cx-thread-body, #view-chat .cx-thread-head",
+    ".cx-rail, #view-chat > .page-head, #view-chat .cx-thread-body, #view-chat .cx-thread-head, .replica-tabs, .replica-reader",
   ).forEach((el) => {
     el.inert = modal;
   });
@@ -341,9 +348,20 @@ function appendMessage(target, text, user) {
   target.closest(".cx-scroll").scrollTop =
     target.closest(".cx-scroll").scrollHeight;
 }
+const chat = initChat(root, {
+  preview,
+  sheet,
+  announce,
+  appendMessage,
+  reduced,
+  phone,
+  syncPreview,
+  closeSheet: () => dialog.close(),
+});
 root.addEventListener("click", (event) => {
   const button = event.target.closest("button");
   if (!button) return;
+  if (chat.click(button, event)) return;
   const pointer = event.detail > 0;
   if (button.hasAttribute("data-local-submit"))
     submitForm(button.closest("form"));
@@ -362,7 +380,7 @@ root.addEventListener("click", (event) => {
     }[button.dataset.usage];
     sheet(
       usage[0] + " usage",
-      `<div class="inset-list"><p>5 hour window <strong>${usage[1]}%</strong></p><p>Weekly window <strong>${usage[2]}%</strong></p></div>`,
+      `<div class="inset-list"><p>Connection <strong>Connected</strong></p><p>5 hour window <strong>${usage[1]}%</strong></p><p>Weekly window <strong>${usage[2]}%</strong></p></div>`,
     );
   }
 
@@ -502,40 +520,13 @@ root.addEventListener("click", (event) => {
     dialog.close();
     financeView(id, pointer);
   }
-  if (button.hasAttribute("data-attach-sketch")) {
-    dialog.close();
-    preview(true);
-  }
-  if (button.dataset.account)
-    $$("[data-account]").forEach((item) =>
-      item.setAttribute("aria-pressed", String(item === button)),
-    );
-  if (button.dataset.scope)
-    $$("[data-scope]").forEach((item) =>
-      item.setAttribute("aria-pressed", String(item === button)),
-    );
-  if (button.hasAttribute("data-session")) {
-    $$("[data-session]").forEach((item) =>
-      item.classList.toggle("is-selected", item === button),
-    );
-    $("[data-conversation-title]").textContent = $(
-      ".cx-session-title",
-      button,
-    ).textContent;
-    $("#view-chat").classList.add("is-phone-chat");
-    syncPreview();
-  }
-  if (button.hasAttribute("data-new-conversation")) {
-    $("[data-conversation-title]").textContent = "New conversation";
-    $("[data-transcript]").replaceChildren();
-    $("#view-chat").classList.add("is-phone-chat");
-    syncPreview();
-    $("#main-message").focus();
-  }
   if (button.hasAttribute("data-conversations-back")) {
+    chat.setFocus(false, false);
     $("#view-chat").classList.remove("is-phone-chat");
     syncPreview();
-    $('[data-session="0"]').focus();
+    $$("[data-session]")
+      .find((button) => !button.hidden)
+      ?.focus();
   }
 });
 function filterBooks() {
@@ -555,12 +546,7 @@ function filterBooks() {
 root.addEventListener("input", (event) => {
   if (event.target.matches("[data-task-search]")) paintTasks();
   if (event.target.matches("[data-book-search]")) filterBooks();
-  if (event.target.matches("[data-session-search]"))
-    $$("[data-session]").forEach((row) => {
-      row.hidden = !row.textContent
-        .toLowerCase()
-        .includes(event.target.value.toLowerCase());
-    });
+  if (event.target.matches("[data-session-search]")) chat.input();
   if (event.target.matches("[data-notebook-search]"))
     $(".lib-card").hidden = !"the reading room".includes(
       event.target.value.toLowerCase(),
@@ -573,10 +559,7 @@ root.addEventListener("change", (event) => {
     });
   if (event.target.matches("[data-source-use], [data-source-all]"))
     updateSources();
-  if (event.target.matches("[data-coding]"))
-    $$(".replica-composer").forEach((composer) =>
-      composer.classList.toggle("coding-off", !event.target.checked),
-    );
+  if (event.target.matches("[data-coding]")) chat.coding(event.target.checked);
 });
 // The iframe omits allow-forms. Click and Enter run local actions directly.
 const localForms =
@@ -590,8 +573,12 @@ function submitForm(form) {
   if (form.matches("[data-chat-form]")) {
     const input = $('[name="message"]', form);
     const text = input.value.trim();
-    if (!text) return;
     const library = form.closest("#lib-chat");
+    if (!library) {
+      chat.submit(form);
+      return;
+    }
+    if (!text) return;
     const transcript = library
       ? $("[data-library-transcript]")
       : $("[data-transcript]");
@@ -653,6 +640,10 @@ dialog.addEventListener("click", (event) => {
   }
 });
 root.addEventListener("keydown", (event) => {
+  if (chat.keydown(event)) {
+    event.preventDefault();
+    return;
+  }
   if (
     event.key === "Enter" &&
     !event.isComposing &&
@@ -690,7 +681,7 @@ root.addEventListener("keydown", (event) => {
   if (
     event.key === "Tab" &&
     activeView === "chat" &&
-    compactLibrary.matches &&
+    compactPreview.matches &&
     !$("[data-preview]").hidden &&
     !dialog.open
   ) {
@@ -716,6 +707,9 @@ compactLibrary.addEventListener("change", () => {
   syncPreview();
 });
 phone.addEventListener("change", syncPreview);
+compactPreview.addEventListener("change", () => {
+  preview(!compactPreview.matches);
+});
 reduced.addEventListener("change", () => {
   navigationAnimation?.cancel();
   paneAnimation?.cancel();
@@ -731,7 +725,11 @@ window.addEventListener(
   { once: true },
 );
 $("#view-chat").classList.add("is-phone-chat");
-$("[data-preview]").hidden = compactLibrary.matches;
-view(location.hash.slice(1) || "tasks");
+$("[data-preview]").hidden = compactPreview.matches;
+$(".has-project-preview").classList.toggle(
+  "preview-closed",
+  compactPreview.matches,
+);
+view(location.hash.slice(1) || "chat");
 syncLibrary();
 moveHighlight();

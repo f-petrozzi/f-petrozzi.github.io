@@ -6116,11 +6116,676 @@
           display: block;
           height: 5px;
         }
+        /* Chat workspace: static Orbit Cloud/Glass surfaces, retained readers and finite replays. */
+        .replica-agent {
+          display: inline-flex;
+          width: 20px;
+          height: 20px;
+          flex: none;
+          align-items: center;
+          justify-content: center;
+          color: #fff;
+          --agent-edge: #74a9ff;
+          &[data-agent="B"] {
+            --agent-edge: #be99ff;
+          }
+          &[data-agent="C"] {
+            --agent-edge: #d97757;
+          }
+          svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            stroke: var(--agent-edge);
+            stroke-width: 0.55;
+            paint-order: stroke fill;
+          }
+        }
+        #view-chat {
+          position: relative;
+        }
+        #view-chat .cx-head {
+          flex-wrap: nowrap;
+          gap: 16px;
+          margin-bottom: 18px;
+        }
+        .replica-accounts .cx-account-id b {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+        .replica-accounts .cx-account-id b .replica-agent {
+          width: 17px;
+          height: 17px;
+        }
+        #view-chat .cx-switch {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 3px;
+        }
+        #view-chat .cx-switch button {
+          min-height: 38px;
+          padding: 6px;
+        }
+        .replica-browse {
+          font-size: 11px;
+          color: var(--muted);
+          margin: -4px 4px 12px;
+        }
+        .replica-workspace {
+          display: flex;
+          flex-direction: column;
+          min-width: 0;
+          min-height: 0;
+          height: 100%;
+        }
+        .replica-tabs {
+          display: flex;
+          flex: none;
+          gap: 4px;
+          min-height: 32px;
+          margin-bottom: 6px;
+          overflow-x: auto;
+        }
+        .replica-tabs button {
+          flex: none;
+          border-radius: 8px;
+          background: #ffffff40;
+          padding: 4px 10px;
+          font-size: 11px;
+          white-space: nowrap;
+          max-width: 210px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .replica-tabs [aria-selected="true"] {
+          background: var(--selected-fill);
+          box-shadow: inset 0 1px 0 #fff;
+        }
+        .replica-tabs [data-job-count] {
+          margin-left: 5px;
+          font-variant-numeric: tabular-nums;
+          color: var(--muted);
+        }
+        .replica-readers {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr);
+          flex: 1;
+          height: auto;
+          min-height: 0;
+          overflow: hidden;
+          border-radius: 22px;
+          border: 1px solid #ffffffda;
+          background: #ffffff30;
+        }
+        .replica-reader {
+          display: flex;
+          flex-direction: column;
+          min-height: 0;
+          min-width: 0;
+          overflow: hidden;
+        }
+        .replica-readers .cw-primary {
+          display: flex;
+          height: 100%;
+          min-height: 0;
+        }
+        .replica-readers .cx-thread {
+          width: 100%;
+          border-radius: 0;
+          border: 0;
+          box-shadow: none;
+        }
+        .replica-readers .cx-thread-head {
+          min-height: 58px;
+          padding: 8px 12px;
+          gap: 6px;
+          background: #ffffff35;
+        }
+        .replica-readers .cx-thread-head .cx-act {
+          flex: none;
+        }
+        .replica-readers .cx-thread-head h2 {
+          font-size: 13px;
+        }
+        .replica-readers .cx-thread-body {
+          min-height: 0;
+        }
+        .replica-readers .cx-bubble {
+          padding: 12px;
+        }
+        .replica-readers .cx-transcript {
+          gap: 16px;
+          padding: 16px 0;
+        }
+        .replica-readers .cx-scroll {
+          padding: 0 14px;
+        }
+        .replica-readers .cx-meta {
+          flex-wrap: wrap;
+          gap: 6px;
+        }
+        .replica-readers .cx-chip {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+        }
+        .replica-readers .cx-chip .replica-agent {
+          width: 15px;
+          height: 15px;
+        }
+        .replica-workspace[data-layout="split"] .replica-readers {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .replica-workspace[data-layout="split"] .replica-reader {
+          border-left: 1px solid var(--line);
+        }
+        .replica-workspace[data-layout="below"] .replica-readers {
+          grid-template-rows: repeat(2, minmax(0, 1fr));
+        }
+        .replica-workspace[data-layout="below"] .replica-reader {
+          border-top: 1px solid var(--line);
+        }
+        .replica-dispatch {
+          display: grid;
+          margin-top: 10px;
+          border-radius: 12px;
+          background: #edf2f580;
+          overflow: hidden;
+        }
+        .replica-dispatch button {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 10px;
+          background: none;
+          padding: 9px 10px;
+          text-align: left;
+          font-size: 12px;
+        }
+        .replica-dispatch button + button {
+          border-top: 1px solid var(--line);
+        }
+        .replica-dispatch small,
+        .replica-job-list small {
+          display: block;
+          font-size: 10px;
+          color: var(--muted);
+        }
+        [data-job-status] {
+          font-size: 10px;
+          color: var(--muted);
+          white-space: nowrap;
+        }
+        [data-job-status][data-status="completed"] {
+          color: #3c6b5f;
+        }
+        [data-job-status][data-status="working"] {
+          color: #3b617f;
+        }
+        .replica-replay-row {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 8px;
+          padding-top: 8px;
+        }
+        .replica-replay-row .cx-act {
+          background: #ffffff90;
+          font-size: 11px;
+        }
+        [data-replay-summary] {
+          font-size: 10px;
+          color: var(--muted);
+        }
+        .replica-activity {
+          margin-top: 10px;
+          font-size: 11px;
+          color: var(--muted);
+        }
+        .replica-activity summary,
+        .replica-job-detail summary {
+          cursor: pointer;
+          padding: 6px 0;
+        }
+        .replica-activity > div {
+          max-height: 90px;
+          overflow: auto;
+        }
+        .replica-activity p {
+          margin: 5px 0;
+        }
+        .replica-attachment {
+          display: flex;
+          gap: 8px;
+          align-items: center;
+          padding: 2px 0 9px;
+        }
+        .replica-attachment img {
+          border-radius: 6px;
+          object-fit: cover;
+          border: 1px solid #cbd6dc;
+        }
+        .replica-attachment > span {
+          font-size: 11px;
+        }
+        .replica-attachment small {
+          display: block;
+          font-size: 10px;
+          color: var(--muted);
+        }
+        .replica-attachment button {
+          background: none;
+          border-radius: 9px;
+          min-width: 32px;
+          min-height: 32px;
+          font-size: 18px;
+          margin-left: auto;
+        }
+        .replica-sent-image {
+          display: block;
+          max-width: 100%;
+          height: auto;
+          margin-top: 8px;
+          border-radius: 8px;
+        }
+        .replica-reader-account {
+          margin-right: auto;
+          font-size: 11px;
+          color: var(--muted);
+        }
+        .replica-job-list {
+          flex: none;
+          padding: 8px;
+          display: grid;
+          gap: 4px;
+        }
+        .replica-job-list button {
+          display: flex;
+          align-items: center;
+          gap: 9px;
+          background: transparent;
+          border-radius: 10px;
+          padding: 10px;
+          text-align: left;
+        }
+        .replica-job-list button > span:nth-child(2) {
+          flex: 1;
+          font-size: 12px;
+        }
+        .replica-job-list button[aria-pressed="true"] {
+          background: var(--selected-fill);
+        }
+        .replica-job-detail {
+          overflow: auto;
+          min-height: 0;
+          flex: 1;
+          padding: 8px 18px;
+          font-size: 13px;
+        }
+        .replica-job-detail h3 {
+          font-weight: 550;
+          font-size: 16px;
+          margin: 8px 0;
+        }
+        .replica-job-state {
+          color: var(--muted);
+          font-size: 11px;
+        }
+        .replica-job-detail .cx-who {
+          margin-top: 24px;
+        }
+        .replica-job-footer,
+        .replica-preview-foot {
+          display: flex;
+          flex: none;
+          gap: 8px;
+          align-items: center;
+          justify-content: space-between;
+          padding: 8px 12px;
+          font-size: 10px;
+          color: var(--muted);
+          border-top: 1px solid var(--line);
+        }
+        .replica-preview-foot .cx-act {
+          font-size: 11px;
+        }
+        .reading-app[data-density="compact"] .reading-content {
+          padding: 20px 16px;
+        }
+        .reading-app[data-density="compact"] .reading-books {
+          gap: 10px;
+        }
+        .reading-app[data-density="compact"] .book-cover {
+          height: 130px;
+        }
+        .replica-menu-actions {
+          display: grid;
+          gap: 4px;
+        }
+        .replica-menu-actions button {
+          padding: 12px;
+          text-align: left;
+          background: #ffffff70;
+          border-radius: 10px;
+          min-height: 44px;
+        }
+        .replica-menu-actions small {
+          display: block;
+          color: var(--muted);
+          margin-top: 3px;
+        }
+        .replica-focus-exit {
+          position: absolute;
+          top: -35px;
+          right: 0;
+          min-height: 30px;
+          padding: 4px 12px;
+          border-radius: 10px;
+          background: #ffffffb0;
+          font-size: 12px;
+        }
+        &.chat-focus .sidebar,
+        &.chat-focus #view-chat > .cx-head,
+        &.chat-focus .cx-rail {
+          display: none;
+        }
+        &.chat-focus .shell {
+          display: block;
+          padding: 44px 12px 12px;
+        }
+        &.chat-focus #workspace,
+        &.chat-focus #view-chat {
+          height: 100%;
+        }
+        &.chat-focus .cx-frame {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .replica-phone {
+          width: min(290px, 100%);
+          margin: auto;
+          border: 6px solid #d5dfe5;
+          border-radius: 28px;
+          background: #edf1f3;
+          overflow: hidden;
+          box-shadow: inset 0 1px #fff;
+        }
+        .replica-phone > header {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 6px;
+          align-items: center;
+          padding: 14px;
+          font-size: 12px;
+        }
+        .replica-phone > header > span:last-child {
+          display: block;
+          width: 100%;
+          color: var(--muted);
+          font-size: 10px;
+          padding-left: 28px;
+        }
+        .replica-phone-history {
+          padding: 0 12px;
+          max-height: 200px;
+          overflow: auto;
+          font-size: 12px;
+        }
+        .replica-phone-history p {
+          background: #ffffff90;
+          border-radius: 12px;
+          padding: 10px;
+        }
+        .replica-phone-compose {
+          padding: 10px;
+          margin: 10px;
+          background: #e3ebef;
+          border: 1px solid #9fb3c3;
+          border-radius: 15px;
+          font-size: 12px;
+        }
+        .replica-phone-compose p {
+          margin-top: 0;
+        }
+        .replica-device-label {
+          text-align: center;
+          font-size: 11px;
+          color: var(--muted);
+        }
+        @media (min-width: 761px) {
+          &.is-chat .shell {
+            grid-template-columns: 72px minmax(0, 1fr);
+            gap: 16px;
+            padding: 20px;
+          }
+          &.is-chat .sidebar {
+            padding: 20px 8px 12px;
+            border-radius: 24px;
+          }
+          &.is-chat .brand {
+            justify-content: center;
+          }
+          &.is-chat .brand > span:last-child,
+          &.is-chat .main-nav .glass-label,
+          &.is-chat .tk-global-add > span {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip-path: inset(50%);
+            white-space: nowrap;
+          }
+          &.is-chat .main-nav button {
+            justify-content: center;
+            padding: 12px;
+          }
+          &.is-chat .tk-global-add {
+            padding: 12px;
+          }
+          #view-chat .cx-frame {
+            grid-template-columns: 190px minmax(0, 1fr);
+            gap: 12px;
+          }
+          #view-chat .cx-rail {
+            padding: 12px 8px;
+          }
+        }
+        @media (min-width: 1001px) {
+          #view-chat .has-project-preview:not(.preview-closed) {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            grid-template-rows: auto minmax(0, 1fr);
+          }
+          #view-chat .has-project-preview > .cx-thread-head {
+            grid-column: 1 / -1;
+          }
+          #view-chat .has-project-preview > .cx-thread-body {
+            grid-column: 1;
+            grid-row: 2;
+          }
+          #view-chat .pj-preview {
+            position: static;
+            inset: auto;
+            border: 0;
+            border-left: 1px solid var(--line);
+            border-radius: 0;
+            background: #ffffff20;
+            box-shadow: none;
+          }
+          .replica-accounts .cx-account:last-child {
+            display: flex;
+          }
+        }
+        @media (max-width: 1000px) and (min-width: 761px) {
+          #view-chat .cx-head {
+            flex-wrap: wrap;
+            gap: 8px;
+          }
+          #view-chat .cx-head h1 {
+            font-size: 26px;
+          }
+          .replica-accounts {
+            flex: 1;
+          }
+          .replica-accounts .cx-account {
+            width: auto;
+            min-width: 0;
+            flex: 1;
+            height: 54px;
+            padding: 0 10px;
+          }
+          .replica-accounts .cx-account-id {
+            height: 52px;
+          }
+          .replica-accounts .cx-account:last-child {
+            display: flex;
+          }
+          .replica-accounts .cx-tile-art,
+          .replica-accounts .cx-tile-space {
+            display: none;
+          }
+        }
+        @media (max-width: 760px) {
+          #view-chat .cx-head {
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+          }
+          #view-chat .cx-frame {
+            display: flex;
+            flex-direction: column;
+          }
+          #view-chat .replica-workspace {
+            display: none;
+          }
+          #view-chat.is-phone-chat .replica-workspace {
+            display: flex;
+            position: fixed;
+            inset: 0;
+            z-index: 40;
+            padding: 6px 0 8px;
+            background: #edf1f3;
+            height: 100dvh;
+          }
+          #view-chat.is-phone-chat .replica-readers {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            grid-template-rows: minmax(0, 1fr);
+            border-radius: 0;
+            border: 0;
+          }
+          #view-chat.is-phone-chat .cw-layout {
+            position: static;
+            height: auto;
+          }
+          #view-chat.is-phone-chat .cx-thread {
+            position: static;
+            height: 100%;
+            padding: 0;
+            background: #edf1f3;
+          }
+          #view-chat.is-phone-chat .cx-thread-head {
+            position: static;
+            border-radius: 0;
+            min-height: 60px;
+          }
+          #view-chat.is-phone-chat .cx-scroll {
+            padding: 0 12px;
+          }
+          .replica-readers .replica-reader {
+            border: 0;
+          }
+          .replica-tabs {
+            min-height: 44px;
+            margin-bottom: 4px;
+            padding-inline: 6px;
+          }
+          .replica-tabs button {
+            min-height: 44px;
+            max-width: 168px;
+            font-size: 12px;
+          }
+          .replica-readers .cx-act,
+          .replica-attachment button,
+          .replica-dispatch button {
+            min-height: 44px;
+          }
+          #view-chat .cx-switch button {
+            min-height: 44px;
+          }
+          .replica-attachment {
+            padding-bottom: 6px;
+          }
+          .replica-attachment img {
+            width: 48px;
+            height: 28px;
+          }
+          .replica-accounts .cx-account-id b {
+            font-size: 11px;
+            gap: 4px;
+          }
+          .replica-accounts .cx-account-id b .replica-agent {
+            width: 15px;
+            height: 15px;
+          }
+          .replica-readers .cx-thread-head .cx-title {
+            min-width: 0;
+          }
+          .replica-readers .cx-thread-head .cx-meta .cx-where {
+            display: none;
+          }
+          &.chat-focus #view-chat.is-phone-chat .replica-workspace {
+            top: 44px;
+            height: calc(100dvh - 44px);
+          }
+          &.chat-focus .replica-focus-exit {
+            position: fixed;
+            top: 5px;
+            right: 8px;
+            z-index: 65;
+            min-height: 36px;
+          }
+          .replica-phone-history {
+            max-height: 130px;
+          }
+        }
+        .replica-child-sessions {
+          margin: 4px 0 8px 14px;
+          display: grid;
+          gap: 2px;
+        }
+        .replica-child-sessions button {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) auto;
+          text-align: left;
+          gap: 3px 5px;
+          font-size: 11px;
+          padding: 8px;
+          background: #ffffff30;
+          border-radius: 9px;
+        }
+        .replica-child-sessions button > span:first-child {
+          grid-column: 1 / -1;
+        }
+        .replica-child-sessions small {
+          color: var(--muted);
+          font-size: 10px;
+        }
+        @media (max-width: 760px) {
+          .replica-child-sessions button {
+            min-height: 44px;
+          }
+        }
+        &.is-chat.chat-focus .shell {
+          padding: 44px 12px 12px;
+        }
+        &.chat-focus #view-chat .cx-frame {
+          grid-template-columns: minmax(0, 1fr);
+        }
       }
     </style>
-    <script src="orbit.js" defer></script>
+    <script src="orbit.js" type="module"></script>
   </head>
-  <body class="demo-orbit-app">
+  <body class="demo-orbit-app is-chat">
     <a class="replica-skip" href="#workspace">Skip to workspace</a
     ><svg
       class="icon-defs"
@@ -6248,6 +6913,16 @@
           <rect x="2" y="4" width="20" height="16" rx="3" />
           <path d="M2 10h20M6 16h3" />
         </symbol>
+        <symbol id="agent-codex" viewBox="0 0 24 24">
+          <path
+            d="M9.205 8.658v-2.26c0-.19.072-.333.238-.428l4.543-2.616c.619-.357 1.356-.523 2.117-.523 2.854 0 4.662 2.212 4.662 4.566 0 .167 0 .357-.024.547l-4.71-2.759a.797.797 0 00-.856 0l-5.97 3.473zm10.609 8.8V12.06c0-.333-.143-.57-.429-.737l-5.97-3.473 1.95-1.118a.433.433 0 01.476 0l4.543 2.617c1.309.76 2.189 2.378 2.189 3.948 0 1.808-1.07 3.473-2.76 4.163zM7.802 12.703l-1.95-1.142c-.167-.095-.239-.238-.239-.428V5.899c0-2.545 1.95-4.472 4.591-4.472 1 0 1.927.333 2.712.928L8.23 5.067c-.285.166-.428.404-.428.737v6.898zM12 15.128l-2.795-1.57v-3.33L12 8.658l2.795 1.57v3.33L12 15.128zm1.796 7.23c-1 0-1.927-.332-2.712-.927l4.686-2.712c.285-.166.428-.404.428-.737v-6.898l1.974 1.142c.167.095.238.238.238.428v5.233c0 2.545-1.974 4.472-4.614 4.472zm-5.637-5.303l-4.544-2.617c-1.308-.761-2.188-2.378-2.188-3.948A4.482 4.482 0 014.21 6.327v5.423c0 .333.143.571.428.738l5.947 3.449-1.95 1.118a.432.432 0 01-.476 0zm-.262 3.9c-2.688 0-4.662-2.021-4.662-4.519 0-.19.024-.38.047-.57l4.686 2.71c.286.167.571.167.856 0l5.97-3.448v2.26c0 .19-.07.333-.237.428l-4.543 2.616c-.619.357-1.356.523-2.117.523zm5.899 2.83a5.947 5.947 0 005.827-4.756C22.287 18.339 24 15.84 24 13.296c0-1.665-.713-3.282-1.998-4.448.119-.5.19-.999.19-1.498 0-3.401-2.759-5.947-5.946-5.947-.642 0-1.26.095-1.88.31A5.962 5.962 0 0010.205 0a5.947 5.947 0 00-5.827 4.757C1.713 5.447 0 7.945 0 10.49c0 1.666.713 3.283 1.998 4.448-.119.5-.19 1-.19 1.499 0 3.401 2.759 5.946 5.946 5.946.642 0 1.26-.095 1.88-.309a5.96 5.96 0 004.162 1.713z"
+          />
+        </symbol>
+        <symbol id="agent-claude" viewBox="0 0 24 24">
+          <path
+            d="M4.709 15.955l4.72-2.647.08-.23-.08-.128H9.2l-.79-.048-2.698-.073-2.339-.097-2.266-.122-.571-.121L0 11.784l.055-.352.48-.321.686.06 1.52.103 2.278.158 1.652.097 2.449.255h.389l.055-.157-.134-.098-.103-.097-2.358-1.596-2.552-1.688-1.336-.972-.724-.491-.364-.462-.158-1.008.656-.722.881.06.225.061.893.686 1.908 1.476 2.491 1.833.365.304.145-.103.019-.073-.164-.274-1.355-2.446-1.446-2.49-.644-1.032-.17-.619a2.97 2.97 0 01-.104-.729L6.283.134 6.696 0l.996.134.42.364.62 1.414 1.002 2.229 1.555 3.03.456.898.243.832.091.255h.158V9.01l.128-1.706.237-2.095.23-2.695.08-.76.376-.91.747-.492.584.28.48.685-.067.444-.286 1.851-.559 2.903-.364 1.942h.212l.243-.242.985-1.306 1.652-2.064.73-.82.85-.904.547-.431h1.033l.76 1.129-.34 1.166-1.064 1.347-.881 1.142-1.264 1.7-.79 1.36.073.11.188-.02 2.856-.606 1.543-.28 1.841-.315.833.388.091.395-.328.807-1.969.486-2.309.462-3.439.813-.042.03.049.061 1.549.146.662.036h1.622l3.02.225.79.522.474.638-.079.485-1.215.62-1.64-.389-3.829-.91-1.312-.329h-.182v.11l1.093 1.068 2.006 1.81 2.509 2.33.127.578-.322.455-.34-.049-2.205-1.657-.851-.747-1.926-1.62h-.128v.17l.444.649 2.345 3.521.122 1.08-.17.353-.608.213-.668-.122-1.374-1.925-1.415-2.167-1.143-1.943-.14.08-.674 7.254-.316.37-.729.28-.607-.461-.322-.747.322-1.476.389-1.924.315-1.53.286-1.9.17-.632-.012-.042-.14.018-1.434 1.967-2.18 2.945-1.726 1.845-.414.164-.717-.37.067-.662.401-.589 2.388-3.036 1.44-1.882.93-1.086-.006-.158h-.055L4.132 18.56l-1.13.146-.487-.456.061-.746.231-.243 1.908-1.312-.006.006z"
+          />
+        </symbol>
         <symbol id="i-arrow" viewBox="0 0 24 24">
           <path d="M7 7h10v10M7 17 17 7" />
         </symbol>
@@ -6256,13 +6931,19 @@
     <div class="ambient" aria-hidden="true"></div>
     <div class="shell">
       <aside class="sidebar glass">
-        <a class="brand" href="#tasks"
+        <a class="brand" href="#chat"
           ><span class="orb brand-orb" aria-hidden="true"></span
           ><span>Orbit</span></a
         >
         <nav class="main-nav" aria-label="Main navigation">
           <span class="nav-highlight" aria-hidden="true"></span
-          ><button type="button" data-view="chat" aria-controls="view-chat">
+          ><button
+            type="button"
+            data-view="chat"
+            aria-controls="view-chat"
+            class="active"
+            aria-current="page"
+          >
             <svg
               class="icon"
               width="20"
@@ -6278,13 +6959,7 @@
             >
               <use href="#i-chat" /></svg
             ><span class="glass-label">Chat</span></button
-          ><button
-            type="button"
-            data-view="tasks"
-            aria-controls="view-tasks"
-            class="active"
-            aria-current="page"
-          >
+          ><button type="button" data-view="tasks" aria-controls="view-tasks">
             <svg
               class="icon"
               width="20"
@@ -6358,23 +7033,7 @@
               focusable="false"
             >
               <use href="#i-plus" /></svg
-            ><span>Add task</span></button
-          ><button type="button" class="style-link" data-open-sheet="style">
-            <svg
-              class="icon"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.75"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <use href="#i-palette" /></svg
-            ><span>Style guide</span>
+            ><span>Add task</span>
           </button>
         </div>
       </aside>
@@ -6387,6 +7046,7 @@
           id="view-tasks"
           data-panel="tasks"
           aria-label="Tasks"
+          hidden
         >
           <div class="page-head tk-head">
             <h1>Tasks</h1>
@@ -7442,7 +8102,6 @@
           id="view-chat"
           data-panel="chat"
           aria-label="Chat"
-          hidden
         >
           <header class="page-head cx-head">
             <h1>Chat</h1>
@@ -7454,7 +8113,15 @@
                 aria-label="Account A usage: 5 hour 24 percent, weekly 41 percent"
               >
                 <span class="cx-account-id"
-                  ><b>Account A</b><span>Usage</span></span
+                  ><b
+                    ><span
+                      class="replica-agent"
+                      data-agent="A"
+                      aria-hidden="true"
+                      ><svg viewBox="0 0 24 24">
+                        <use href="#agent-codex" /></svg></span
+                    >Codex A</b
+                  ><span>Connected</span></span
                 ><span class="cx-tile-space"></span
                 ><span class="cx-tile-art" aria-hidden="true"
                   ><svg class="cx-tile-svg" viewBox="0 0 212 72">
@@ -7551,7 +8218,15 @@
                 aria-label="Account B usage: 5 hour 8 percent, weekly 16 percent"
               >
                 <span class="cx-account-id"
-                  ><b>Account B</b><span>Usage</span></span
+                  ><b
+                    ><span
+                      class="replica-agent"
+                      data-agent="B"
+                      aria-hidden="true"
+                      ><svg viewBox="0 0 24 24">
+                        <use href="#agent-codex" /></svg></span
+                    >Codex B</b
+                  ><span>Connected</span></span
                 ><span class="cx-tile-space"></span
                 ><span class="cx-tile-art" aria-hidden="true"
                   ><svg class="cx-tile-svg" viewBox="0 0 212 72">
@@ -7648,7 +8323,15 @@
                 aria-label="Claude usage: 5 hour 12 percent, weekly 28 percent"
               >
                 <span class="cx-account-id"
-                  ><b>Claude</b><span>Usage</span></span
+                  ><b
+                    ><span
+                      class="replica-agent"
+                      data-agent="C"
+                      aria-hidden="true"
+                      ><svg viewBox="0 0 24 24">
+                        <use href="#agent-claude" /></svg></span
+                    >Claude</b
+                  ><span>Connected</span></span
                 ><span class="cx-tile-space"></span
                 ><span class="cx-tile-art" aria-hidden="true"
                   ><svg class="cx-tile-svg" viewBox="0 0 212 72">
@@ -7744,15 +8427,56 @@
           <div class="cx-frame">
             <aside class="panel cx-rail">
               <div class="cx-rail-in">
-                <div class="cx-switch" role="group" aria-label="Chat account">
-                  <button type="button" data-account="A" aria-pressed="true">
-                    <span class="orb chat-orb" aria-hidden="true"></span
-                    ><span>A</span></button
-                  ><button type="button" data-account="B" aria-pressed="false">
-                    <span class="orb chat-orb" aria-hidden="true"></span
-                    ><span>B</span>
+                <div
+                  class="cx-switch"
+                  role="group"
+                  aria-label="Connected chat accounts"
+                >
+                  <button
+                    type="button"
+                    data-account="A"
+                    aria-pressed="true"
+                    aria-label="Browse Codex account A"
+                    title="Codex account A"
+                  >
+                    <span
+                      class="replica-agent"
+                      data-agent="A"
+                      aria-hidden="true"
+                      ><svg viewBox="0 0 24 24"><use href="#agent-codex" /></svg
+                    ></span></button
+                  ><button
+                    type="button"
+                    data-account="B"
+                    aria-pressed="false"
+                    aria-label="Browse Codex account B"
+                    title="Codex account B"
+                  >
+                    <span
+                      class="replica-agent"
+                      data-agent="B"
+                      aria-hidden="true"
+                      ><svg viewBox="0 0 24 24"><use href="#agent-codex" /></svg
+                    ></span></button
+                  ><button
+                    type="button"
+                    data-account="C"
+                    aria-pressed="false"
+                    aria-label="Browse Claude Code"
+                    title="Claude Code"
+                  >
+                    <span
+                      class="replica-agent"
+                      data-agent="C"
+                      aria-hidden="true"
+                      ><svg viewBox="0 0 24 24">
+                        <use href="#agent-claude" /></svg
+                    ></span>
                   </button>
                 </div>
+                <p class="replica-browse" data-browse-label>
+                  Codex A connected
+                </p>
                 <button
                   type="button"
                   class="secondary cx-new"
@@ -7772,7 +8496,7 @@
                     focusable="false"
                   >
                     <use href="#i-plus" /></svg
-                  >New conversation</button
+                  >Chats</button
                 ><label class="cx-search"
                   ><svg
                     class="icon"
@@ -7835,6 +8559,7 @@
                     type="button"
                     class="cx-session is-selected"
                     data-session="0"
+                    data-session-account="A"
                   >
                     <span class="cx-session-title">Build the reading room</span
                     ><time>11:42 AM</time
@@ -7854,8 +8579,28 @@
                       >
                         <use href="#i-folder" /></svg
                       ><span>reading-room</span></span
-                    ></button
-                  ><button type="button" class="cx-session" data-session="1">
+                    >
+                  </button>
+                  <div
+                    class="replica-child-sessions"
+                    data-parent-jobs
+                    aria-label="Delegated sessions"
+                  >
+                    <button type="button" data-job="0">
+                      <span>Build the collection</span><small>Codex B</small
+                      ><span data-job-status="0">Queued</span></button
+                    ><button type="button" data-job="1">
+                      <span>Review keyboard access</span
+                      ><small>Claude Code</small
+                      ><span data-job-status="1">Queued</span>
+                    </button>
+                  </div>
+                  <button
+                    type="button"
+                    class="cx-session"
+                    data-session="1"
+                    data-session-account="B"
+                  >
                     <span class="cx-session-title"
                       >A calmer collection page</span
                     ><time>Yesterday</time
@@ -7876,8 +8621,13 @@
                         <use href="#i-folder" /></svg
                       ><span>reading-room</span></span
                     ></button
-                  ><button type="button" class="cx-session" data-session="2">
-                    <span class="cx-session-title">Plan a weekend walk</span
+                  ><button
+                    type="button"
+                    class="cx-session"
+                    data-session="2"
+                    data-session-account="C"
+                  >
+                    <span class="cx-session-title">Review keyboard access</span
                     ><time>Wed</time
                     ><span class="cx-session-meta"
                       ><svg
@@ -7894,9 +8644,14 @@
                         focusable="false"
                       >
                         <use href="#i-folder" /></svg
-                      ><span>Orbit</span></span
+                      ><span>reading-room</span></span
                     ></button
-                  ><button type="button" class="cx-session" data-session="3">
+                  ><button
+                    type="button"
+                    class="cx-session"
+                    data-session="3"
+                    data-session-account="B"
+                  >
                     <span class="cx-session-title">Notes on native CSS</span
                     ><time>Tue</time
                     ><span class="cx-session-meta"
@@ -7918,301 +8673,68 @@
                     >
                   </button>
                 </div>
+                <p class="cx-list-empty" data-session-empty hidden>
+                  No conversations
+                </p>
               </div>
             </aside>
-            <div class="cw-layout">
-              <div class="cw-primary">
-                <section
-                  class="panel cx-thread has-project-preview"
-                  aria-label="Conversation"
+            <div class="replica-workspace" data-layout="tabs">
+              <div
+                class="replica-tabs"
+                role="tablist"
+                aria-label="Open workspace readers"
+              >
+                <button
+                  type="button"
+                  role="tab"
+                  id="tab-main"
+                  aria-controls="reader-main"
+                  aria-selected="true"
+                  data-reader="main"
                 >
-                  <header class="cx-thread-head">
-                    <button
-                      type="button"
-                      class="icon-button cx-back"
-                      aria-label="All conversations"
-                      data-conversations-back
-                    >
-                      <svg
-                        class="icon"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.75"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true"
-                        focusable="false"
-                      >
-                        <use href="#i-back" />
-                      </svg>
-                    </button>
-                    <div class="cx-title">
-                      <h2 data-conversation-title>Build the reading room</h2>
-                      <div class="cx-meta">
-                        <span class="cx-chip">Account A</span
-                        ><span class="cx-where"
-                          ><svg
-                            class="icon"
-                            width="20"
-                            height="20"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.75"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            aria-hidden="true"
-                            focusable="false"
-                          >
-                            <use href="#i-folder" /></svg
-                          >reading-room</span
-                        >
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      class="cx-act pj-preview-toggle"
-                      data-preview-open
-                      aria-pressed="true"
-                    >
-                      <svg
-                        class="icon"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.75"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true"
-                        focusable="false"
-                      >
-                        <use href="#i-preview" /></svg
-                      ><span>Preview</span>
-                    </button>
-                  </header>
-                  <div class="cx-thread-body">
-                    <div class="cx-scroll">
-                      <div class="cx-transcript" data-transcript>
-                        <article class="cx-msg user">
-                          <div class="cx-who">You</div>
-                          <div class="cx-bubble">
-                            <div class="cx-md">
-                              <p>
-                                Can you turn this sketch into a small book
-                                lending app?
-                              </p>
-                              <button
-                                type="button"
-                                class="cx-chat-image"
-                                data-preview-open
-                                aria-label="Open reading room preview"
-                              >
-                                <img
-                                  src="reading-room.svg"
-                                  width="600"
-                                  height="340"
-                                  alt="An invented book lending app sketch"
-                                /><span class="cx-image-caption"
-                                  >reading-room.svg</span
-                                >
-                              </button>
-                            </div>
-                          </div>
-                        </article>
-                        <article class="cx-msg assistant">
-                          <div class="cx-who">
-                            <span class="orb chat-orb" aria-hidden="true"></span
-                            >Orbit
-                          </div>
-                          <div class="cx-bubble">
-                            <div class="cx-md">
-                              <p>
-                                The reading room is ready. It has a searchable
-                                shelf, availability filters and a quiet, warm
-                                palette.
-                              </p>
-                              <p>
-                                I kept the book covers at the center of the
-                                page, with a simple reservation action beside
-                                each title.
-                              </p>
-                              <button
-                                type="button"
-                                class="cx-artifact-open"
-                                data-preview-open
-                              >
-                                <svg
-                                  class="icon"
-                                  width="20"
-                                  height="20"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  stroke-width="1.75"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  aria-hidden="true"
-                                  focusable="false"
-                                >
-                                  <use href="#i-preview" /></svg
-                                ><span>The Reading Room</span>
-                              </button>
-                            </div>
-                          </div>
-                        </article>
-                        <article class="cx-msg user">
-                          <div class="cx-who">You</div>
-                          <div class="cx-bubble">
-                            <div class="cx-md">
-                              <p>
-                                Keep the spacing generous, and make the covers
-                                feel like real books.
-                              </p>
-                            </div>
-                          </div>
-                        </article>
-                        <article class="cx-msg assistant">
-                          <div class="cx-who">
-                            <span class="orb chat-orb" aria-hidden="true"></span
-                            >Orbit
-                          </div>
-                          <div class="cx-bubble">
-                            <div class="cx-md">
-                              <p>
-                                Done. The shelf now has more breathing room,
-                                softer corners and a subtle paper texture.
-                              </p>
-                            </div>
-                          </div>
-                        </article>
-                      </div>
-                    </div>
-                    <div class="cx-dock">
-                      <form class="cx-compose" data-chat-form>
-                        <div class="replica-composer">
-                          <label class="sr-only" for="main-message"
-                            >Message Orbit…</label
-                          ><textarea
-                            id="main-message"
-                            name="message"
-                            placeholder="Message Orbit…"
-                            rows="2"
-                            maxlength="400"
-                            autocomplete="off"
-                          ></textarea>
-                          <div class="cx-controls">
-                            <button
-                              type="button"
-                              class="cx-add"
-                              aria-label="Attachments"
-                              data-open-sheet="attachments"
-                            >
-                              <svg
-                                class="icon"
-                                width="20"
-                                height="20"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="1.75"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                aria-hidden="true"
-                                focusable="false"
-                              >
-                                <use href="#i-plus" />
-                              </svg></button
-                            ><button
-                              type="button"
-                              class="cx-add cx-settings"
-                              aria-label="Chat settings"
-                              data-open-sheet="chat-settings"
-                            >
-                              <svg
-                                class="icon"
-                                width="20"
-                                height="20"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="1.75"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                aria-hidden="true"
-                                focusable="false"
-                              >
-                                <use href="#i-settings" />
-                              </svg></button
-                            ><label class="cx-pick"
-                              ><span class="sr-only">Model</span
-                              ><select name="model">
-                                <option>GPT-6</option>
-                              </select></label
-                            ><label class="cx-pick"
-                              ><span class="sr-only">Reasoning</span
-                              ><select name="reasoning">
-                                <option>High</option>
-                                <option>Medium</option>
-                              </select></label
-                            ><button
-                              type="button"
-                              data-local-submit
-                              class="cx-send"
-                              aria-label="Send message"
-                            >
-                              <svg
-                                class="icon"
-                                width="20"
-                                height="20"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="1.75"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                aria-hidden="true"
-                                focusable="false"
-                              >
-                                <use href="#i-up" />
-                              </svg>
-                            </button>
-                          </div>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                  <aside
-                    class="pj-preview"
-                    data-preview
-                    aria-label="App preview"
+                  Build the reading room
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  id="tab-review"
+                  aria-controls="reader-review"
+                  aria-selected="false"
+                  tabindex="-1"
+                  data-reader="review"
+                >
+                  Collection review
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  id="tab-orchestrator"
+                  aria-controls="reader-orchestrator"
+                  aria-selected="false"
+                  tabindex="-1"
+                  data-reader="orchestrator"
+                >
+                  Orchestrator <span data-job-count>2</span>
+                </button>
+              </div>
+              <div class="cw-layout replica-readers">
+                <div
+                  class="cw-primary"
+                  id="reader-main"
+                  role="tabpanel"
+                  aria-labelledby="tab-main"
+                  data-chat-reader="main"
+                >
+                  <section
+                    class="panel cx-thread has-project-preview"
+                    aria-label="Conversation"
                   >
-                    <header class="pj-preview-head">
-                      <svg
-                        class="icon"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.75"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true"
-                        focusable="false"
-                      >
-                        <use href="#i-preview" /></svg
-                      ><strong>Preview</strong
-                      ><span class="pj-preview-project">The Reading Room</span
-                      ><button
+                    <header class="cx-thread-head">
+                      <button
                         type="button"
-                        class="cx-act"
-                        aria-label="Close preview"
-                        data-preview-close
+                        class="icon-button cx-back"
+                        aria-label="All conversations"
+                        data-conversations-back
                       >
                         <svg
                           class="icon"
@@ -8227,133 +8749,573 @@
                           aria-hidden="true"
                           focusable="false"
                         >
-                          <use href="#i-close" />
+                          <use href="#i-back" />
                         </svg>
                       </button>
-                    </header>
-                    <div class="pj-preview-tools">
-                      <div role="group" aria-label="Preview size">
-                        <button
-                          type="button"
-                          class="cx-act"
-                          data-preview-size="fit"
-                          aria-pressed="true"
+                      <div class="cx-title">
+                        <h2 data-conversation-title>Build the reading room</h2>
+                        <div class="cx-meta">
+                          <span class="cx-chip">Account A</span
+                          ><span class="cx-where"
+                            ><svg
+                              class="icon"
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.75"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              aria-hidden="true"
+                              focusable="false"
+                            >
+                              <use href="#i-folder" /></svg
+                            >reading-room</span
+                          >
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        class="cx-act pj-preview-toggle"
+                        data-preview-open
+                        aria-pressed="true"
+                      >
+                        <svg
+                          class="icon"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.75"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true"
+                          focusable="false"
                         >
-                          Fit</button
+                          <use href="#i-preview" /></svg
+                        ><span>Preview</span>
+                      </button>
+                      <button
+                        type="button"
+                        class="cx-act"
+                        data-chat-menu
+                        aria-label="Conversation menu"
+                        aria-haspopup="dialog"
+                      >
+                        ⋯
+                      </button>
+                    </header>
+                    <div class="cx-thread-body">
+                      <div class="cx-scroll">
+                        <div class="cx-transcript" data-transcript>
+                          <article class="cx-msg user">
+                            <div class="cx-who">You</div>
+                            <div class="cx-bubble">
+                              <p>
+                                Build a small book lending app from this sketch.
+                                Delegate the collection and a keyboard review.
+                              </p>
+                            </div>
+                          </article>
+                          <article class="cx-msg assistant">
+                            <div class="cx-who">
+                              <span
+                                class="orb chat-orb"
+                                aria-hidden="true"
+                              ></span
+                              >Orbit
+                            </div>
+                            <div class="cx-bubble">
+                              <p>
+                                The running app is beside our chat. I’ve
+                                prepared two independent sessions for the next
+                                pass.
+                              </p>
+                              <div
+                                class="replica-dispatch"
+                                aria-label="Delegated work"
+                              >
+                                <button type="button" data-job="0">
+                                  <span
+                                    >Build the collection<small
+                                      >Codex B</small
+                                    ></span
+                                  ><span data-job-status="0">Queued</span>
+                                </button>
+                                <button type="button" data-job="1">
+                                  <span
+                                    >Review keyboard access<small
+                                      >Claude Code</small
+                                    ></span
+                                  ><span data-job-status="1">Queued</span>
+                                </button>
+                              </div>
+                              <div class="replica-replay-row">
+                                <button
+                                  type="button"
+                                  class="cx-act"
+                                  data-replay
+                                >
+                                  Replay delegation</button
+                                ><span data-replay-summary
+                                  >2 sessions ready</span
+                                >
+                              </div>
+                              <details
+                                class="replica-activity"
+                                data-coding-activity
+                              >
+                                <summary>Coding activity</summary>
+                                <div>
+                                  <p>
+                                    Changed <code>src/Collection.astro</code>
+                                  </p>
+                                  <p>Ran <code>npm run build</code></p>
+                                  <p>Build passed</p>
+                                </div>
+                              </details>
+                            </div>
+                          </article>
+                        </div>
+                      </div>
+                      <div class="cx-dock">
+                        <form class="cx-compose" data-chat-form>
+                          <div class="replica-composer">
+                            <div class="replica-attachment" data-attachment>
+                              <img
+                                src="reading-room.svg"
+                                alt="Invented Reading Room sketch"
+                                width="66"
+                                height="38"
+                              /><span
+                                >Pasted image<small
+                                  >reading-room.svg</small
+                                ></span
+                              ><button
+                                type="button"
+                                data-remove-image
+                                aria-label="Remove pasted image"
+                              >
+                                ×
+                              </button>
+                            </div>
+                            <label class="sr-only" for="main-message"
+                              >Message Orbit…</label
+                            ><textarea
+                              id="main-message"
+                              name="message"
+                              placeholder="Message Orbit…"
+                              rows="2"
+                              maxlength="400"
+                              autocomplete="off"
+                            >
+Make the cards more compact.</textarea>
+                            <div class="cx-controls">
+                              <button
+                                type="button"
+                                class="cx-add"
+                                aria-label="Attachments"
+                                data-open-sheet="attachments"
+                              >
+                                <svg
+                                  class="icon"
+                                  width="20"
+                                  height="20"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-width="1.75"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  aria-hidden="true"
+                                  focusable="false"
+                                >
+                                  <use href="#i-plus" />
+                                </svg></button
+                              ><button
+                                type="button"
+                                class="cx-add cx-settings"
+                                aria-label="Chat settings"
+                                data-open-sheet="chat-settings"
+                              >
+                                <svg
+                                  class="icon"
+                                  width="20"
+                                  height="20"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-width="1.75"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  aria-hidden="true"
+                                  focusable="false"
+                                >
+                                  <use href="#i-settings" />
+                                </svg></button
+                              ><label class="cx-pick"
+                                ><span class="sr-only">Model</span
+                                ><select name="model">
+                                  <option>GPT-6</option>
+                                </select></label
+                              ><label class="cx-pick"
+                                ><span class="sr-only">Reasoning</span
+                                ><select name="reasoning">
+                                  <option>High</option>
+                                  <option>Medium</option>
+                                </select></label
+                              ><button
+                                type="button"
+                                data-local-submit
+                                class="cx-send"
+                                aria-label="Send message"
+                              >
+                                <svg
+                                  class="icon"
+                                  width="20"
+                                  height="20"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-width="1.75"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  aria-hidden="true"
+                                  focusable="false"
+                                >
+                                  <use href="#i-up" />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                    <aside
+                      class="pj-preview"
+                      data-preview
+                      aria-label="App preview"
+                    >
+                      <header class="pj-preview-head">
+                        <svg
+                          class="icon"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.75"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true"
+                          focusable="false"
+                        >
+                          <use href="#i-preview" /></svg
+                        ><strong>Preview</strong
+                        ><span class="pj-preview-project">The Reading Room</span
                         ><button
                           type="button"
                           class="cx-act"
-                          data-preview-size="phone"
-                          aria-pressed="false"
+                          aria-label="Close preview"
+                          data-preview-close
                         >
-                          Phone
+                          <svg
+                            class="icon"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.75"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                            focusable="false"
+                          >
+                            <use href="#i-close" />
+                          </svg>
                         </button>
+                      </header>
+                      <div class="pj-preview-tools">
+                        <div role="group" aria-label="Preview size">
+                          <button
+                            type="button"
+                            class="cx-act"
+                            data-preview-size="fit"
+                            aria-pressed="true"
+                          >
+                            Fit</button
+                          ><button
+                            type="button"
+                            class="cx-act"
+                            data-preview-size="phone"
+                            aria-pressed="false"
+                          >
+                            Phone
+                          </button>
+                        </div>
+                        <span class="pj-preview-address">Running app</span>
                       </div>
-                      <span class="pj-preview-address">reading-room</span>
-                    </div>
-                    <div class="pj-preview-stage">
-                      <div class="pj-preview-surface">
-                        <div class="reading-app">
-                          <header>
-                            <strong>The Reading Room</strong
-                            ><span>Library</span>
-                          </header>
-                          <div class="reading-content">
-                            <span class="reading-eyebrow"
-                              >YOUR NEIGHBORHOOD BOOKSHELF</span
-                            >
-                            <h2>A little room for your next good book.</h2>
-                            <p>Borrow something wonderful.</p>
-                            <label class="reading-search"
-                              ><svg
-                                class="icon"
-                                width="20"
-                                height="20"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="1.75"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                aria-hidden="true"
-                                focusable="false"
+                      <div class="pj-preview-stage">
+                        <div class="pj-preview-surface">
+                          <div class="reading-app">
+                            <header>
+                              <strong>The Reading Room</strong
+                              ><span>Library</span>
+                            </header>
+                            <div class="reading-content">
+                              <span class="reading-eyebrow"
+                                >YOUR NEIGHBORHOOD BOOKSHELF</span
                               >
-                                <use href="#i-search" /></svg
-                              ><input
-                                name="book-search"
-                                data-book-search
-                                aria-label="Find a book"
-                                placeholder="Find your next read…"
-                                autocomplete="off"
-                            /></label>
-                            <div class="reading-tabs">
-                              <button
-                                type="button"
-                                data-book-filter="all"
-                                aria-pressed="true"
-                              >
-                                All books</button
-                              ><button
-                                type="button"
-                                data-book-filter="available"
-                                aria-pressed="false"
-                              >
-                                Available
-                              </button>
+                              <h2>A little room for your next good book.</h2>
+                              <p>Borrow something wonderful.</p>
+                              <label class="reading-search"
+                                ><svg
+                                  class="icon"
+                                  width="20"
+                                  height="20"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-width="1.75"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  aria-hidden="true"
+                                  focusable="false"
+                                >
+                                  <use href="#i-search" /></svg
+                                ><input
+                                  name="book-search"
+                                  data-book-search
+                                  aria-label="Find a book"
+                                  placeholder="Find your next read…"
+                                  autocomplete="off"
+                              /></label>
+                              <div class="reading-tabs">
+                                <button
+                                  type="button"
+                                  data-book-filter="all"
+                                  aria-pressed="true"
+                                >
+                                  All books</button
+                                ><button
+                                  type="button"
+                                  data-book-filter="available"
+                                  aria-pressed="false"
+                                >
+                                  Available
+                                </button>
+                              </div>
+                              <div class="reading-books">
+                                <article data-book="the quiet garden">
+                                  <div class="book-cover cover-0">
+                                    <small>Avery Field</small
+                                    ><strong>The Quiet Garden</strong>
+                                  </div>
+                                  <h3>The Quiet Garden</h3>
+                                  <p>Avery Field</p>
+                                  <button
+                                    type="button"
+                                    data-reserve
+                                    aria-pressed="false"
+                                  >
+                                    Reserve
+                                  </button>
+                                </article>
+                                <article data-book="a map of small things">
+                                  <div class="book-cover cover-1">
+                                    <small>Jules Reed</small
+                                    ><strong>A Map of Small Things</strong>
+                                  </div>
+                                  <h3>A Map of Small Things</h3>
+                                  <p>Jules Reed</p>
+                                  <button
+                                    type="button"
+                                    data-reserve
+                                    aria-pressed="false"
+                                  >
+                                    Reserve
+                                  </button>
+                                </article>
+                                <article data-book="light on the coast">
+                                  <div class="book-cover cover-2">
+                                    <small>Robin Vale</small
+                                    ><strong>Light on the Coast</strong>
+                                  </div>
+                                  <h3>Light on the Coast</h3>
+                                  <p>Robin Vale</p>
+                                  <button
+                                    type="button"
+                                    data-reserve
+                                    aria-pressed="false"
+                                  >
+                                    Reserve
+                                  </button>
+                                </article>
+                              </div>
+                              <p data-book-empty hidden>No books found</p>
                             </div>
-                            <div class="reading-books">
-                              <article data-book="the quiet garden">
-                                <div class="book-cover cover-0">
-                                  <small>Avery Field</small
-                                  ><strong>The Quiet Garden</strong>
-                                </div>
-                                <h3>The Quiet Garden</h3>
-                                <p>Avery Field</p>
-                                <button
-                                  type="button"
-                                  data-reserve
-                                  aria-pressed="false"
-                                >
-                                  Reserve
-                                </button>
-                              </article>
-                              <article data-book="a map of small things">
-                                <div class="book-cover cover-1">
-                                  <small>Jules Reed</small
-                                  ><strong>A Map of Small Things</strong>
-                                </div>
-                                <h3>A Map of Small Things</h3>
-                                <p>Jules Reed</p>
-                                <button
-                                  type="button"
-                                  data-reserve
-                                  aria-pressed="false"
-                                >
-                                  Reserve
-                                </button>
-                              </article>
-                              <article data-book="light on the coast">
-                                <div class="book-cover cover-2">
-                                  <small>Robin Vale</small
-                                  ><strong>Light on the Coast</strong>
-                                </div>
-                                <h3>Light on the Coast</h3>
-                                <p>Robin Vale</p>
-                                <button
-                                  type="button"
-                                  data-reserve
-                                  aria-pressed="false"
-                                >
-                                  Reserve
-                                </button>
-                              </article>
-                            </div>
-                            <p data-book-empty hidden>No books found</p>
                           </div>
                         </div>
                       </div>
+                      <footer class="replica-preview-foot">
+                        <span>reading-room</span
+                        ><button type="button" class="cx-act" data-guide>
+                          Guide in Chat
+                        </button>
+                      </footer>
+                    </aside>
+                  </section>
+                </div>
+                <section
+                  class="replica-reader"
+                  id="reader-review"
+                  role="tabpanel"
+                  aria-labelledby="tab-review"
+                  data-chat-reader="review"
+                  hidden
+                >
+                  <header class="cx-thread-head">
+                    <div class="cx-title">
+                      <h2>Collection review</h2>
+                      <div class="cx-meta">
+                        <span
+                          class="replica-agent"
+                          data-agent="B"
+                          aria-hidden="true"
+                          ><svg viewBox="0 0 24 24">
+                            <use href="#agent-codex" /></svg></span
+                        ><span>Codex B</span><span>reading-room</span>
+                      </div>
                     </div>
-                  </aside>
+                    <button
+                      type="button"
+                      class="cx-act"
+                      data-chat-menu
+                      aria-label="Conversation menu"
+                      aria-haspopup="dialog"
+                    >
+                      ⋯
+                    </button>
+                  </header>
+                  <div class="cx-scroll">
+                    <div class="cx-transcript">
+                      <article class="cx-msg user">
+                        <div class="cx-who">You</div>
+                        <div class="cx-bubble">
+                          <p>
+                            Review the book cards while the main session builds
+                            the app.
+                          </p>
+                        </div>
+                      </article>
+                      <article class="cx-msg assistant">
+                        <div class="cx-who">
+                          <span class="orb chat-orb" aria-hidden="true"></span
+                          >Orbit
+                        </div>
+                        <div class="cx-bubble">
+                          <p>
+                            The title, author and Reserve action now stay
+                            together. Search and availability work with the same
+                            collection.
+                          </p>
+                          <p>
+                            The main conversation can continue independently.
+                          </p>
+                        </div>
+                      </article>
+                    </div>
+                  </div>
+                  <div class="cx-dock">
+                    <form class="cx-compose" data-review-form>
+                      <div class="replica-composer">
+                        <label class="sr-only" for="review-message"
+                          >Message collection review</label
+                        ><textarea
+                          id="review-message"
+                          rows="2"
+                          maxlength="400"
+                          placeholder="Message Orbit…"
+                        >
+Check the small screen layout too.</textarea>
+                        <div class="cx-controls">
+                          <span class="replica-reader-account">Codex B</span
+                          ><button
+                            type="button"
+                            class="cx-send"
+                            data-review-send
+                            aria-label="Send to collection review"
+                          >
+                            ↑
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </section>
+                <section
+                  class="replica-reader"
+                  id="reader-orchestrator"
+                  role="tabpanel"
+                  aria-labelledby="tab-orchestrator"
+                  data-chat-reader="orchestrator"
+                  hidden
+                >
+                  <header class="cx-thread-head">
+                    <div class="cx-title">
+                      <h2>Orchestrator</h2>
+                      <div class="cx-meta">
+                        <span>Build the reading room</span
+                        ><span>2 workers</span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      class="cx-act"
+                      data-chat-menu
+                      aria-label="Conversation menu"
+                      aria-haspopup="dialog"
+                    >
+                      ⋯
+                    </button>
+                  </header>
+                  <div class="replica-job-list" aria-label="Worker sessions">
+                    <button type="button" data-job="0" aria-pressed="true">
+                      <span
+                        class="replica-agent"
+                        data-agent="B"
+                        aria-hidden="true"
+                        ><svg viewBox="0 0 24 24">
+                          <use href="#agent-codex" /></svg></span
+                      ><span>Build the collection<small>Codex B</small></span
+                      ><span data-job-status="0">Queued</span>
+                    </button>
+                    <button type="button" data-job="1" aria-pressed="false">
+                      <span
+                        class="replica-agent"
+                        data-agent="C"
+                        aria-hidden="true"
+                        ><svg viewBox="0 0 24 24">
+                          <use href="#agent-claude" /></svg></span
+                      ><span
+                        >Review keyboard access<small>Claude Code</small></span
+                      ><span data-job-status="1">Queued</span>
+                    </button>
+                  </div>
+                  <div
+                    class="replica-job-detail"
+                    data-job-detail
+                    tabindex="0"
+                  ></div>
+                  <footer class="replica-job-footer">
+                    <span>Read-only worker session</span
+                    ><button type="button" class="cx-act" data-replay>
+                      Replay delegation
+                    </button>
+                  </footer>
                 </section>
               </div>
             </div>

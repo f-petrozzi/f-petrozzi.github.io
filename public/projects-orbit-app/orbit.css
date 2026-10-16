@@ -6081,4 +6081,669 @@
     display: block;
     height: 5px;
   }
+  /* Chat workspace: static Orbit Cloud/Glass surfaces, retained readers and finite replays. */
+  .replica-agent {
+    display: inline-flex;
+    width: 20px;
+    height: 20px;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    --agent-edge: #74a9ff;
+    &[data-agent="B"] {
+      --agent-edge: #be99ff;
+    }
+    &[data-agent="C"] {
+      --agent-edge: #d97757;
+    }
+    svg {
+      width: 100%;
+      height: 100%;
+      fill: currentColor;
+      stroke: var(--agent-edge);
+      stroke-width: 0.55;
+      paint-order: stroke fill;
+    }
+  }
+  #view-chat {
+    position: relative;
+  }
+  #view-chat .cx-head {
+    flex-wrap: nowrap;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+  .replica-accounts .cx-account-id b {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .replica-accounts .cx-account-id b .replica-agent {
+    width: 17px;
+    height: 17px;
+  }
+  #view-chat .cx-switch {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 3px;
+  }
+  #view-chat .cx-switch button {
+    min-height: 38px;
+    padding: 6px;
+  }
+  .replica-browse {
+    font-size: 11px;
+    color: var(--muted);
+    margin: -4px 4px 12px;
+  }
+  .replica-workspace {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+  }
+  .replica-tabs {
+    display: flex;
+    flex: none;
+    gap: 4px;
+    min-height: 32px;
+    margin-bottom: 6px;
+    overflow-x: auto;
+  }
+  .replica-tabs button {
+    flex: none;
+    border-radius: 8px;
+    background: #ffffff40;
+    padding: 4px 10px;
+    font-size: 11px;
+    white-space: nowrap;
+    max-width: 210px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .replica-tabs [aria-selected="true"] {
+    background: var(--selected-fill);
+    box-shadow: inset 0 1px 0 #fff;
+  }
+  .replica-tabs [data-job-count] {
+    margin-left: 5px;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+  }
+  .replica-readers {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    flex: 1;
+    height: auto;
+    min-height: 0;
+    overflow: hidden;
+    border-radius: 22px;
+    border: 1px solid #ffffffda;
+    background: #ffffff30;
+  }
+  .replica-reader {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .replica-readers .cw-primary {
+    display: flex;
+    height: 100%;
+    min-height: 0;
+  }
+  .replica-readers .cx-thread {
+    width: 100%;
+    border-radius: 0;
+    border: 0;
+    box-shadow: none;
+  }
+  .replica-readers .cx-thread-head {
+    min-height: 58px;
+    padding: 8px 12px;
+    gap: 6px;
+    background: #ffffff35;
+  }
+  .replica-readers .cx-thread-head .cx-act {
+    flex: none;
+  }
+  .replica-readers .cx-thread-head h2 {
+    font-size: 13px;
+  }
+  .replica-readers .cx-thread-body {
+    min-height: 0;
+  }
+  .replica-readers .cx-bubble {
+    padding: 12px;
+  }
+  .replica-readers .cx-transcript {
+    gap: 16px;
+    padding: 16px 0;
+  }
+  .replica-readers .cx-scroll {
+    padding: 0 14px;
+  }
+  .replica-readers .cx-meta {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .replica-readers .cx-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .replica-readers .cx-chip .replica-agent {
+    width: 15px;
+    height: 15px;
+  }
+  .replica-workspace[data-layout="split"] .replica-readers {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .replica-workspace[data-layout="split"] .replica-reader {
+    border-left: 1px solid var(--line);
+  }
+  .replica-workspace[data-layout="below"] .replica-readers {
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
+  .replica-workspace[data-layout="below"] .replica-reader {
+    border-top: 1px solid var(--line);
+  }
+  .replica-dispatch {
+    display: grid;
+    margin-top: 10px;
+    border-radius: 12px;
+    background: #edf2f580;
+    overflow: hidden;
+  }
+  .replica-dispatch button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    background: none;
+    padding: 9px 10px;
+    text-align: left;
+    font-size: 12px;
+  }
+  .replica-dispatch button + button {
+    border-top: 1px solid var(--line);
+  }
+  .replica-dispatch small,
+  .replica-job-list small {
+    display: block;
+    font-size: 10px;
+    color: var(--muted);
+  }
+  [data-job-status] {
+    font-size: 10px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  [data-job-status][data-status="completed"] {
+    color: #3c6b5f;
+  }
+  [data-job-status][data-status="working"] {
+    color: #3b617f;
+  }
+  .replica-replay-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding-top: 8px;
+  }
+  .replica-replay-row .cx-act {
+    background: #ffffff90;
+    font-size: 11px;
+  }
+  [data-replay-summary] {
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .replica-activity {
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .replica-activity summary,
+  .replica-job-detail summary {
+    cursor: pointer;
+    padding: 6px 0;
+  }
+  .replica-activity > div {
+    max-height: 90px;
+    overflow: auto;
+  }
+  .replica-activity p {
+    margin: 5px 0;
+  }
+  .replica-attachment {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 2px 0 9px;
+  }
+  .replica-attachment img {
+    border-radius: 6px;
+    object-fit: cover;
+    border: 1px solid #cbd6dc;
+  }
+  .replica-attachment > span {
+    font-size: 11px;
+  }
+  .replica-attachment small {
+    display: block;
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .replica-attachment button {
+    background: none;
+    border-radius: 9px;
+    min-width: 32px;
+    min-height: 32px;
+    font-size: 18px;
+    margin-left: auto;
+  }
+  .replica-sent-image {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin-top: 8px;
+    border-radius: 8px;
+  }
+  .replica-reader-account {
+    margin-right: auto;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .replica-job-list {
+    flex: none;
+    padding: 8px;
+    display: grid;
+    gap: 4px;
+  }
+  .replica-job-list button {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    background: transparent;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: left;
+  }
+  .replica-job-list button > span:nth-child(2) {
+    flex: 1;
+    font-size: 12px;
+  }
+  .replica-job-list button[aria-pressed="true"] {
+    background: var(--selected-fill);
+  }
+  .replica-job-detail {
+    overflow: auto;
+    min-height: 0;
+    flex: 1;
+    padding: 8px 18px;
+    font-size: 13px;
+  }
+  .replica-job-detail h3 {
+    font-weight: 550;
+    font-size: 16px;
+    margin: 8px 0;
+  }
+  .replica-job-state {
+    color: var(--muted);
+    font-size: 11px;
+  }
+  .replica-job-detail .cx-who {
+    margin-top: 24px;
+  }
+  .replica-job-footer,
+  .replica-preview-foot {
+    display: flex;
+    flex: none;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    font-size: 10px;
+    color: var(--muted);
+    border-top: 1px solid var(--line);
+  }
+  .replica-preview-foot .cx-act {
+    font-size: 11px;
+  }
+  .reading-app[data-density="compact"] .reading-content {
+    padding: 20px 16px;
+  }
+  .reading-app[data-density="compact"] .reading-books {
+    gap: 10px;
+  }
+  .reading-app[data-density="compact"] .book-cover {
+    height: 130px;
+  }
+  .replica-menu-actions {
+    display: grid;
+    gap: 4px;
+  }
+  .replica-menu-actions button {
+    padding: 12px;
+    text-align: left;
+    background: #ffffff70;
+    border-radius: 10px;
+    min-height: 44px;
+  }
+  .replica-menu-actions small {
+    display: block;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+  .replica-focus-exit {
+    position: absolute;
+    top: -35px;
+    right: 0;
+    min-height: 30px;
+    padding: 4px 12px;
+    border-radius: 10px;
+    background: #ffffffb0;
+    font-size: 12px;
+  }
+  &.chat-focus .sidebar,
+  &.chat-focus #view-chat > .cx-head,
+  &.chat-focus .cx-rail {
+    display: none;
+  }
+  &.chat-focus .shell {
+    display: block;
+    padding: 44px 12px 12px;
+  }
+  &.chat-focus #workspace,
+  &.chat-focus #view-chat {
+    height: 100%;
+  }
+  &.chat-focus .cx-frame {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .replica-phone {
+    width: min(290px, 100%);
+    margin: auto;
+    border: 6px solid #d5dfe5;
+    border-radius: 28px;
+    background: #edf1f3;
+    overflow: hidden;
+    box-shadow: inset 0 1px #fff;
+  }
+  .replica-phone > header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    padding: 14px;
+    font-size: 12px;
+  }
+  .replica-phone > header > span:last-child {
+    display: block;
+    width: 100%;
+    color: var(--muted);
+    font-size: 10px;
+    padding-left: 28px;
+  }
+  .replica-phone-history {
+    padding: 0 12px;
+    max-height: 200px;
+    overflow: auto;
+    font-size: 12px;
+  }
+  .replica-phone-history p {
+    background: #ffffff90;
+    border-radius: 12px;
+    padding: 10px;
+  }
+  .replica-phone-compose {
+    padding: 10px;
+    margin: 10px;
+    background: #e3ebef;
+    border: 1px solid #9fb3c3;
+    border-radius: 15px;
+    font-size: 12px;
+  }
+  .replica-phone-compose p {
+    margin-top: 0;
+  }
+  .replica-device-label {
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  @media (min-width: 761px) {
+    &.is-chat .shell {
+      grid-template-columns: 72px minmax(0, 1fr);
+      gap: 16px;
+      padding: 20px;
+    }
+    &.is-chat .sidebar {
+      padding: 20px 8px 12px;
+      border-radius: 24px;
+    }
+    &.is-chat .brand {
+      justify-content: center;
+    }
+    &.is-chat .brand > span:last-child,
+    &.is-chat .main-nav .glass-label,
+    &.is-chat .tk-global-add > span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    &.is-chat .main-nav button {
+      justify-content: center;
+      padding: 12px;
+    }
+    &.is-chat .tk-global-add {
+      padding: 12px;
+    }
+    #view-chat .cx-frame {
+      grid-template-columns: 190px minmax(0, 1fr);
+      gap: 12px;
+    }
+    #view-chat .cx-rail {
+      padding: 12px 8px;
+    }
+  }
+  @media (min-width: 1001px) {
+    #view-chat .has-project-preview:not(.preview-closed) {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+    #view-chat .has-project-preview > .cx-thread-head {
+      grid-column: 1 / -1;
+    }
+    #view-chat .has-project-preview > .cx-thread-body {
+      grid-column: 1;
+      grid-row: 2;
+    }
+    #view-chat .pj-preview {
+      position: static;
+      inset: auto;
+      border: 0;
+      border-left: 1px solid var(--line);
+      border-radius: 0;
+      background: #ffffff20;
+      box-shadow: none;
+    }
+    .replica-accounts .cx-account:last-child {
+      display: flex;
+    }
+  }
+  @media (max-width: 1000px) and (min-width: 761px) {
+    #view-chat .cx-head {
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    #view-chat .cx-head h1 {
+      font-size: 26px;
+    }
+    .replica-accounts {
+      flex: 1;
+    }
+    .replica-accounts .cx-account {
+      width: auto;
+      min-width: 0;
+      flex: 1;
+      height: 54px;
+      padding: 0 10px;
+    }
+    .replica-accounts .cx-account-id {
+      height: 52px;
+    }
+    .replica-accounts .cx-account:last-child {
+      display: flex;
+    }
+    .replica-accounts .cx-tile-art,
+    .replica-accounts .cx-tile-space {
+      display: none;
+    }
+  }
+  @media (max-width: 760px) {
+    #view-chat .cx-head {
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    #view-chat .cx-frame {
+      display: flex;
+      flex-direction: column;
+    }
+    #view-chat .replica-workspace {
+      display: none;
+    }
+    #view-chat.is-phone-chat .replica-workspace {
+      display: flex;
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      padding: 6px 0 8px;
+      background: #edf1f3;
+      height: 100dvh;
+    }
+    #view-chat.is-phone-chat .replica-readers {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: minmax(0, 1fr);
+      border-radius: 0;
+      border: 0;
+    }
+    #view-chat.is-phone-chat .cw-layout {
+      position: static;
+      height: auto;
+    }
+    #view-chat.is-phone-chat .cx-thread {
+      position: static;
+      height: 100%;
+      padding: 0;
+      background: #edf1f3;
+    }
+    #view-chat.is-phone-chat .cx-thread-head {
+      position: static;
+      border-radius: 0;
+      min-height: 60px;
+    }
+    #view-chat.is-phone-chat .cx-scroll {
+      padding: 0 12px;
+    }
+    .replica-readers .replica-reader {
+      border: 0;
+    }
+    .replica-tabs {
+      min-height: 44px;
+      margin-bottom: 4px;
+      padding-inline: 6px;
+    }
+    .replica-tabs button {
+      min-height: 44px;
+      max-width: 168px;
+      font-size: 12px;
+    }
+    .replica-readers .cx-act,
+    .replica-attachment button,
+    .replica-dispatch button {
+      min-height: 44px;
+    }
+    #view-chat .cx-switch button {
+      min-height: 44px;
+    }
+    .replica-attachment {
+      padding-bottom: 6px;
+    }
+    .replica-attachment img {
+      width: 48px;
+      height: 28px;
+    }
+    .replica-accounts .cx-account-id b {
+      font-size: 11px;
+      gap: 4px;
+    }
+    .replica-accounts .cx-account-id b .replica-agent {
+      width: 15px;
+      height: 15px;
+    }
+    .replica-readers .cx-thread-head .cx-title {
+      min-width: 0;
+    }
+    .replica-readers .cx-thread-head .cx-meta .cx-where {
+      display: none;
+    }
+    &.chat-focus #view-chat.is-phone-chat .replica-workspace {
+      top: 44px;
+      height: calc(100dvh - 44px);
+    }
+    &.chat-focus .replica-focus-exit {
+      position: fixed;
+      top: 5px;
+      right: 8px;
+      z-index: 65;
+      min-height: 36px;
+    }
+    .replica-phone-history {
+      max-height: 130px;
+    }
+  }
+  .replica-child-sessions {
+    margin: 4px 0 8px 14px;
+    display: grid;
+    gap: 2px;
+  }
+  .replica-child-sessions button {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    text-align: left;
+    gap: 3px 5px;
+    font-size: 11px;
+    padding: 8px;
+    background: #ffffff30;
+    border-radius: 9px;
+  }
+  .replica-child-sessions button > span:first-child {
+    grid-column: 1 / -1;
+  }
+  .replica-child-sessions small {
+    color: var(--muted);
+    font-size: 10px;
+  }
+  @media (max-width: 760px) {
+    .replica-child-sessions button {
+      min-height: 44px;
+    }
+  }
+  &.is-chat.chat-focus .shell {
+    padding: 44px 12px 12px;
+  }
+  &.chat-focus #view-chat .cx-frame {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

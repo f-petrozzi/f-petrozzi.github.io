@@ -1,6 +1,16 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { parse } from "parse5";
+import {
+  chatAccounts,
+  chatSessions,
+  delegatedJobs,
+  createChatState,
+  changeChat,
+  jobStatus,
+  previewReply,
+} from "../public/projects-orbit-app/chat-state.js";
 import {
   accounts,
   addTask,
@@ -194,4 +204,156 @@ test("demo stays local and styles render inside its own fixed-palette root", asy
     script,
     /document\.querySelectorAll<HTMLElement>\('\[data-demo="orbit"\]'\)\.forEach\(init\)/,
   );
+});
+
+test("browsing connected accounts preserves the mounted conversation and its provider", () => {
+  const initial = createChatState();
+  const claude = changeChat(initial, { type: "browse", account: "C" });
+  assert.equal(claude.browse, "C");
+  assert.equal(claude.session, 0);
+  assert.equal(chatSessions[claude.session].account, "A");
+  const opened = changeChat(claude, { type: "session", id: 2 });
+  assert.equal(
+    chatAccounts[chatSessions[opened.session].account].label,
+    "Claude Code",
+  );
+  assert.equal(initial.browse, "A");
+  assert.equal(
+    changeChat(initial, { type: "browse", account: "invalid" }),
+    initial,
+  );
+  assert.equal(changeChat(initial, { type: "session", id: 99 }), initial);
+});
+
+test("tabs, splits, coding and focus preserve session identity and other workspace choices", () => {
+  const initial = createChatState();
+  let state = changeChat(initial, { type: "reader", reader: "review" });
+  state = changeChat(state, { type: "layout", layout: "split" });
+  assert.equal(state.secondary, "review");
+  assert.equal(state.reader, "main");
+  state = changeChat(state, { type: "focus", value: true });
+  state = changeChat(state, { type: "coding", value: false });
+  assert.equal(state.session, initial.session);
+  assert.equal(state.attached, true);
+  assert.equal(state.focus, true);
+  assert.equal(state.coding, false);
+  state = changeChat(state, { type: "layout", layout: "tabs" });
+  assert.equal(state.secondary, "review");
+  assert.equal(changeChat(state, { type: "layout", layout: "invalid" }), state);
+});
+
+test("delegation advances each independent worker to completion without account handoff", () => {
+  let state = createChatState();
+  assert.deepEqual(
+    delegatedJobs.map((job) => job.account),
+    ["B", "C"],
+  );
+  const timeline = [];
+  for (const phase of [0, 1, 2, 3]) {
+    state = changeChat(state, { type: "phase", phase });
+    timeline.push(delegatedJobs.map((_, i) => jobStatus(state.phase, i)));
+    assert.equal(chatSessions[state.session].account, "A");
+  }
+  assert.deepEqual(timeline, [
+    ["Queued", "Queued"],
+    ["Working", "Queued"],
+    ["Completed", "Working"],
+    ["Completed", "Completed"],
+  ]);
+});
+
+test("phone continuation and desktop feedback update the same preview state and consume only the sent image", () => {
+  const initial = createChatState();
+  const compact = previewReply(initial, "Make the cards compact");
+  assert.equal(compact.state.density, "compact");
+  assert.equal(compact.state.attached, false);
+  const phone = previewReply(
+    compact.state,
+    "I checked the shelf on my phone. Use comfortable spacing.",
+  );
+  assert.equal(phone.state.session, initial.session);
+  assert.equal(phone.state.density, "comfortable");
+  assert.equal(initial.attached, true);
+  assert.equal(
+    previewReply(initial, "uncompacted").state.density,
+    "comfortable",
+  );
+});
+
+test("static replica has a valid document, connected account controls and retained reader panels", async () => {
+  const html = await readFile(
+    new URL("../public/projects-orbit-app/index.html", import.meta.url),
+    "utf8",
+  );
+  const errors = [];
+  const document = parse(html, {
+    onParseError: (error) => errors.push(error.code),
+  });
+  assert.deepEqual(errors, []);
+  const nodes = [];
+  const walk = (node) => {
+    nodes.push(node);
+    for (const child of node.childNodes || []) walk(child);
+  };
+  walk(document);
+  const attr = (node, name) => node.attrs?.find((a) => a.name === name)?.value;
+  const ids = nodes.map((node) => attr(node, "id")).filter(Boolean);
+  assert.equal(ids.length, new Set(ids).size);
+  const readers = nodes.filter((node) => attr(node, "data-chat-reader"));
+  assert.equal(readers.length, 3);
+  for (const reader of readers)
+    assert.ok(ids.includes(attr(reader, "aria-labelledby")));
+  assert.deepEqual(
+    nodes.map((node) => attr(node, "data-account")).filter(Boolean),
+    ["A", "B", "C"],
+  );
+  assert.ok(
+    nodes.some(
+      (node) =>
+        attr(node, "data-panel") === "chat" &&
+        attr(node, "hidden") === undefined,
+    ),
+  );
+  assert.ok(
+    nodes.some(
+      (node) =>
+        attr(node, "data-panel") === "tasks" &&
+        attr(node, "hidden") !== undefined,
+    ),
+  );
+  const visibleCopy = nodes
+    .filter(
+      (node) =>
+        node.nodeName === "#text" &&
+        !["script", "style"].includes(node.parentNode?.tagName),
+    )
+    .map((node) => node.value)
+    .join("");
+  assert.doesNotMatch(visibleCopy, /Style guide|[·—–]/);
+});
+
+test("replica stylesheet stays inline, fixed and mirrored without network, storage or idle work", async () => {
+  const base = new URL("../public/projects-orbit-app/", import.meta.url);
+  const [html, css, ...scripts] = await Promise.all(
+    ["index.html", "orbit.css", "orbit.js", "chat.js", "chat-state.js"].map(
+      (name) => readFile(new URL(name, base), "utf8"),
+    ),
+  );
+  const blocks = [...html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/g)];
+  assert.equal(blocks.length, 1);
+  assert.equal(blocks[0][1].replace(/\s+/g, ""), css.replace(/\s+/g, ""));
+  assert.match(css, /\.demo-orbit-app\s*\{/);
+  assert.match(css, /color-scheme: light/);
+  assert.match(css, /scrollbar-width: thin/);
+  assert.doesNotMatch(
+    css,
+    /:global\(|backdrop-filter|transition:\s*all|@keyframes/,
+  );
+  assert.doesNotMatch(
+    scripts.join("\n"),
+    /\bfetch\s*\(|\bWebSocket\b|\blocalStorage\b|\bsessionStorage\b|document\.cookie|\bsetInterval\s*\(|\brequestAnimationFrame\s*\(/,
+  );
+  assert.match(scripts[1], /visibilitychange/);
+  assert.match(scripts[1], /IntersectionObserver/);
+  assert.match(scripts[1], /timers\.forEach\(clearTimeout\)/);
 });
