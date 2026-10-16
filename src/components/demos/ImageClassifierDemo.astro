@@ -1,0 +1,325 @@
+---
+import {
+  conditions,
+  models,
+  examples,
+} from "../../data/demos/image-classifier";
+---
+
+<section
+  class="demo demo-image-classifier"
+  data-demo="image-classifier"
+  aria-label="Image Classifier interactive sample"
+>
+  <h2>Chest X-ray · multi-label comparison</h2>
+  <div class="columns" aria-live="polite">
+    {
+      models.map((model, i) => (
+        <article class="card" data-model={i}>
+          <>
+            <h3>{model}</h3>
+            <div data-probabilities />
+            <div class="scroll" data-matrix />
+            <p data-metrics />
+          </>
+        </article>
+      ))
+    }
+  </div>
+  <div class="thumbnails" role="group" aria-label="Illustrative chest diagrams">
+    {
+      examples.map((example, i) => (
+        <button
+          type="button"
+          data-image={i}
+          aria-pressed={i === 0 ? "true" : "false"}
+          aria-label={`Select ${example.title}`}
+        >
+          <>
+            <svg viewBox="0 0 100 110" aria-hidden="true">
+              <>
+                <rect
+                  x="2"
+                  y="2"
+                  width="96"
+                  height="106"
+                  rx="12"
+                  fill="var(--bg)"
+                  stroke="var(--muted)"
+                />
+                <path
+                  d="M47 20C27 10 14 36 19 74Q26 98 44 83ZM53 20C73 10 86 36 81 74Q74 98 56 83Z"
+                  fill="var(--muted)"
+                  opacity=".35"
+                />
+                <path
+                  d="M50 12V90M23 35Q50 44 77 35M19 48Q50 58 81 48M19 63Q50 74 81 63"
+                  fill="none"
+                  stroke="var(--muted)"
+                />
+                <ellipse
+                  cx="32"
+                  cy="76"
+                  rx="13"
+                  ry="9"
+                  fill="var(--ink)"
+                  opacity={example.opacity[0]}
+                />
+                <path
+                  d="M62 74L78 65L78 86L62 88Z"
+                  fill="var(--ink)"
+                  opacity={example.opacity[1]}
+                />
+                <ellipse
+                  cx="66"
+                  cy="45"
+                  rx="12"
+                  ry="18"
+                  fill="var(--ink)"
+                  opacity={example.opacity[2]}
+                />
+              </>
+            </svg>
+            <span>{example.title}</span>
+          </>
+        </button>
+      ))
+    }
+  </div>
+  <p data-selected aria-live="polite">Clear fields</p>
+  <div class="toolbar">
+    <label
+      >Evaluation condition<select
+        >{conditions.map((c, i) => <option value={i}>{c}</option>)}</select
+      ></label
+    ><button type="button" data-reset>Reset</button>
+  </div>
+  <p class="note">
+    Illustrative diagrams, fixed model scores, and invented evaluation counts;
+    no neural network runs here. Probabilities are independent, not a diagnosis.
+  </p>
+</section>
+<script>
+  import "../../scripts/demos/image-classifier";
+</script>
+<style>
+  .demo-image-classifier {
+    margin: 28px 0;
+    padding: clamp(14px, 3vw, 28px);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.55;
+    min-width: 0;
+  }
+  .demo-image-classifier .columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+  .demo-image-classifier .card {
+    min-width: 0;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+  }
+  .demo-image-classifier h2 {
+    margin: 0 0 14px;
+    font-size: 22px;
+    letter-spacing: -0.025em;
+  }
+  .demo-image-classifier h3 {
+    margin: 0 0 10px;
+    font-size: 16px;
+  }
+  .demo-image-classifier p {
+    margin: 12px 0;
+  }
+  .demo-image-classifier .muted,
+  .demo-image-classifier .note {
+    color: var(--muted);
+  }
+  .demo-image-classifier .note {
+    font-size: 12px;
+    margin-bottom: 0;
+  }
+  .demo-image-classifier .score {
+    display: block;
+    color: var(--accent);
+    font-size: clamp(28px, 5vw, 42px);
+    line-height: 1.2;
+    margin: 10px 0;
+  }
+  .demo-image-classifier .toolbar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 18px 0;
+  }
+  .demo-image-classifier button,
+  .demo-image-classifier select {
+    font: inherit;
+    min-height: 44px;
+    padding: 8px 12px;
+    background: var(--bg);
+    color: var(--ink);
+    border: 1px solid var(--muted);
+    border-radius: 8px;
+    max-width: 100%;
+  }
+  .demo-image-classifier button {
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  .demo-image-classifier button[aria-pressed="true"] {
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 1px var(--accent);
+    color: var(--accent);
+  }
+  .demo-image-classifier button:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  .demo-image-classifier :is(button, input, select):focus-visible {
+    box-shadow:
+      0 0 0 3px var(--bg),
+      0 0 0 6px var(--accent);
+  }
+  .demo-image-classifier label {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+  }
+  .demo-image-classifier .inputs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin: 18px 0;
+  }
+  .demo-image-classifier input,
+  .demo-image-classifier select {
+    font-size: 16px;
+    accent-color: var(--accent);
+  }
+  .demo-image-classifier input[type="range"] {
+    width: 100%;
+    min-height: 44px;
+    margin: 0;
+  }
+  .demo-image-classifier input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    margin: 10px;
+  }
+  .demo-image-classifier .check {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .demo-image-classifier .scroll {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+  .demo-image-classifier :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .demo-image-classifier :global(th),
+  .demo-image-classifier :global(td) {
+    padding: 9px 6px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+  }
+  .demo-image-classifier :global(th) {
+    font-weight: 500;
+  }
+  .demo-image-classifier :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .demo-image-classifier :global(svg text) {
+    fill: var(--muted);
+    font:
+      12px system-ui,
+      sans-serif;
+  }
+  .demo-image-classifier :global(.axis) {
+    fill: none;
+    stroke: var(--muted);
+    stroke-width: 1;
+  }
+  .demo-image-classifier :global(.series) {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2.5;
+  }
+  .demo-image-classifier :global(.point) {
+    fill: var(--accent);
+  }
+  .demo-image-classifier :global(.secondary) {
+    fill: var(--muted);
+  }
+  .demo-image-classifier :global(.selected) {
+    stroke: var(--accent);
+    stroke-width: 2.5;
+    fill: none;
+  }
+  .demo-image-classifier :global(.branch) {
+    stroke: var(--muted);
+    stroke-width: 1;
+    fill: none;
+  }
+  .demo-image-classifier :global(g rect) {
+    fill: var(--bg);
+  }
+  .demo-image-classifier :global(g text) {
+    stroke: none;
+    text-anchor: middle;
+    font-size: 10px;
+  }
+  @media (max-width: 680px) {
+    .demo-image-classifier .columns {
+      grid-template-columns: 1fr;
+    }
+    .demo-image-classifier .inputs {
+      grid-template-columns: 1fr 1fr;
+    }
+    .demo-image-classifier .card {
+      padding: 12px;
+    }
+  }
+  @media (max-width: 380px) {
+    .demo-image-classifier .inputs {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+<style>
+  .demo-image-classifier .thumbnails {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 18px;
+  }
+  .demo-image-classifier .thumbnails button {
+    padding: 8px;
+    font-size: 12px;
+  }
+  .demo-image-classifier .thumbnails svg {
+    max-height: 110px;
+  }
+  .demo-image-classifier .thumbnails span {
+    display: block;
+    margin-top: 6px;
+  }
+  @media (max-width: 680px) {
+    .demo-image-classifier .thumbnails {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>
