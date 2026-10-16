@@ -1,0 +1,1165 @@
+---
+import { createState, stockLabels, week } from "../../data/demos/nest";
+const id = `nest-${crypto.randomUUID()}`;
+const initial = createState();
+---
+
+<section
+  class="demo demo-nest"
+  data-demo="nest"
+  aria-label="Nest interactive sample"
+>
+  <header class="nest-header">
+    <div class="nest-brand">
+      <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"
+        ><path d="m5 14 11-9 11 9v12H5V14Z"></path><path
+          d="M12 26v-9h8v9M10 10V6"></path></svg
+      >
+      <strong>Nest<span>Sam &amp; Riley’s home</span></strong>
+    </div>
+    <button type="button" class="nest-reset" data-reset>Reset</button>
+  </header>
+  <nav class="nest-nav" aria-label="Nest views">
+    <button type="button" data-view="kitchen" aria-pressed="true"
+      >Kitchen</button
+    >
+    <button type="button" data-view="tasks" aria-pressed="false"
+      >Tasks <span data-task-count>1</span></button
+    >
+    <button type="button" data-view="calendar" aria-pressed="false"
+      >Calendar</button
+    >
+  </nav>
+  <div class="nest-layout">
+    <div class="nest-main">
+      <section data-panel="kitchen" aria-label="Kitchen">
+        <div class="nest-heading">
+          <div>
+            <p class="nest-eyebrow">12–18 October 2026</p><h2>Our kitchen</h2>
+          </div><span class="nest-person">S <span>Sam</span></span>
+        </div>
+        <nav class="nest-subnav" aria-label="Kitchen sections">
+          <a href={`#${id}-plan`}>Plan</a><a
+            href={`#${id}-recipes`}
+            data-recipe-link>Recipes</a
+          ><a href={`#${id}-shop`}>Shop</a><a href={`#${id}-pantry`}>Pantry</a>
+        </nav>
+        <div class="nest-kitchen-grid">
+          <section
+            class="nest-card nest-meal"
+            id={`${id}-plan`}
+            aria-label="Meal plan"
+          >
+            <div class="nest-card-top">
+              <h3>Plan</h3><span>Wed 14 · Dinner</span>
+            </div>
+            <div class="nest-meal-art" aria-hidden="true">
+              <svg viewBox="0 0 260 110" fill="none"
+                ><ellipse
+                  cx="130"
+                  cy="57"
+                  rx="94"
+                  ry="43"
+                  class="nest-plate-rim"></ellipse><ellipse
+                  cx="130"
+                  cy="57"
+                  rx="76"
+                  ry="33"
+                  class="nest-plate"></ellipse><g class="nest-leaves"
+                  ><path d="M96 59c-24-22-5-38 11-19 20-16 35 3 11 19Z"
+                  ></path><path d="M148 74c-25-10-17-31 3-23 12-23 33-10 15 12Z"
+                  ></path><path d="M129 44c-13-19 6-28 15-13 16-4 21 15 0 20Z"
+                  ></path></g
+                ><g class="nest-beans"
+                  ><circle cx="104" cy="70" r="7"></circle><circle
+                    cx="126"
+                    cy="63"
+                    r="7"></circle><circle cx="163" cy="45" r="7"
+                  ></circle><circle cx="143" cy="76" r="6"></circle><circle
+                    cx="84"
+                    cy="51"
+                    r="6"></circle><circle cx="132" cy="45" r="6"
+                  ></circle><circle cx="177" cy="64" r="6"></circle></g
+                ></svg
+              >
+            </div>
+            <h4>Chickpea &amp; spinach skillet</h4>
+            <p class="nest-muted">20 min · For two · Sam’s cooking</p>
+            <details id={`${id}-recipes`} class="nest-recipe">
+              <summary>Recipes <span>View recipe</span></summary>
+              <p>
+                Chickpeas, spinach, olive oil. Warm the chickpeas in oil, fold
+                in the spinach and cook until wilted.
+              </p>
+            </details>
+            <button type="button" class="nest-primary" data-made
+              >Mark as made</button
+            >
+            <p class="nest-small" data-meal-status>Planned for Wednesday</p>
+          </section>
+          <section
+            class="nest-card nest-shop"
+            id={`${id}-shop`}
+            aria-label="Shop"
+          >
+            <div class="nest-card-top">
+              <h3>Shop</h3><span>Log a trip</span>
+            </div>
+            <div data-receipt-start>
+              <div class="nest-receipt-stage">
+                <svg
+                  class="nest-receipt"
+                  viewBox="0 0 190 210"
+                  role="img"
+                  aria-label="Maple Market receipt: chickpeas $2.40, spinach $3.20, lemons $1.60, total $7.20"
+                >
+                  <path
+                    d="M15 7h160v192l-10-6-10 6-10-6-10 6-10-6-10 6-10-6-10 6-10-6-10 6-10-6-10 6-10-6-10 6-10-6-10 6Z"
+                    fill="#f6f4ee"></path>
+                  <g fill="#273348" font-family="monospace"
+                    ><text
+                      x="95"
+                      y="35"
+                      text-anchor="middle"
+                      font-size="14"
+                      font-weight="bold">MAPLE MARKET</text
+                    ><text x="95" y="53" text-anchor="middle" font-size="9"
+                      >14 OCT 2026</text
+                    ><text x="28" y="89" font-size="10">CHICKPEAS</text><text
+                      x="161"
+                      y="89"
+                      text-anchor="end"
+                      font-size="10">2.40</text
+                    ><text x="28" y="111" font-size="10">SPINACH</text><text
+                      x="161"
+                      y="111"
+                      text-anchor="end"
+                      font-size="10">3.20</text
+                    ><text x="28" y="133" font-size="10">LEMONS</text><text
+                      x="161"
+                      y="133"
+                      text-anchor="end"
+                      font-size="10">1.60</text
+                    ><text x="28" y="168" font-size="12" font-weight="bold"
+                      >TOTAL</text
+                    ><text
+                      x="161"
+                      y="168"
+                      text-anchor="end"
+                      font-size="12"
+                      font-weight="bold">$7.20</text
+                    ></g
+                  ><path
+                    d="M28 65h133M28 145h133"
+                    stroke="#a2a6ae"
+                    stroke-dasharray="3 3"></path>
+                </svg>
+              </div>
+              <button type="button" class="nest-primary" data-read
+                >Read receipt</button
+              >
+              <p class="nest-small">Maple Market · 14 October</p>
+            </div>
+            <form data-receipt-review hidden>
+              <h4 tabindex="-1" data-review-title>Review receipt</h4>
+              <div data-receipt-items class="nest-review-items"></div>
+              <div class="nest-total">
+                <span>Selected items</span><strong aria-live="polite" data-total
+                  >$7.20</strong
+                >
+              </div>
+              <p class="nest-error" data-receipt-error role="alert" hidden></p>
+              <button type="submit" class="nest-primary" data-save
+                >Save &amp; restock pantry</button
+              >
+              <button type="button" class="nest-text-button" data-cancel-receipt
+                >Cancel</button
+              >
+            </form>
+            <div data-receipt-saved hidden>
+              <div class="nest-saved-mark" aria-hidden="true">✓</div><h4>
+                Trip saved
+              </h4><p class="nest-muted">Maple Market · Sam</p><p
+                class="nest-purchase"
+                data-purchase
+              >
+              </p><p class="nest-small">
+                Selected items restocked in the pantry
+              </p>
+            </div>
+          </section>
+        </div>
+        <section
+          class="nest-card nest-pantry"
+          id={`${id}-pantry`}
+          aria-label="Pantry"
+        >
+          <div class="nest-card-top">
+            <h3>Pantry</h3><span>What’s on hand</span>
+          </div>
+          <ul class="nest-pantry-list" data-pantry>
+            {
+              initial.pantry.map((item) => (
+                <li>
+                  <>
+                    <strong>{item.name}</strong>
+                    <span data-stock={item.stock}>
+                      {stockLabels[item.stock]}
+                    </span>
+                  </>
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+      </section>
+      <section data-panel="tasks" aria-label="Tasks" hidden>
+        <div class="nest-heading">
+          <div>
+            <p class="nest-eyebrow">Our household</p><h2>Tasks</h2>
+          </div><span class="nest-person">S <span>Sam</span></span>
+        </div>
+        <ul class="nest-tasks" data-tasks aria-label="Household tasks"></ul>
+        <div class="nest-week-heading">
+          <h3>On the calendar</h3><span>12–18 Oct</span>
+        </div>
+        <div
+          class="nest-week-scroll"
+          role="region"
+          aria-label="Task week preview"
+          tabindex="0"
+        >
+          <div class="nest-week" data-week></div>
+        </div>
+        <form class="nest-card nest-task-form" data-task-form>
+          <label
+            >Task<input
+              name="title"
+              type="text"
+              value="Pick up the parcel"
+              required
+              maxlength="80"
+              autocomplete="off"
+            /></label
+          >
+          <div class="nest-task-fields">
+            <label
+              >Date<select name="date"
+                >{
+                  week.map((day) => (
+                    <option value={day.date} selected={day.number === 16}>
+                      {day.day} {day.number} Oct
+                    </option>
+                  ))
+                }</select
+              ></label
+            ><label
+              >For<select name="person"
+                ><option>Both</option><option>Sam</option><option>Riley</option
+                ></select
+              ></label
+            >
+          </div>
+          <button class="nest-primary" type="submit">Add task</button>
+        </form>
+      </section>
+      <section data-panel="calendar" aria-label="Calendar" hidden>
+        <div class="nest-heading">
+          <div>
+            <p class="nest-eyebrow">Sam &amp; Riley</p><h2>Calendar</h2>
+          </div><span class="nest-date-range">12–18 Oct 2026</span>
+        </div>
+        <div
+          class="nest-week-scroll"
+          role="region"
+          aria-label="Household week"
+          tabindex="0"
+        >
+          <div class="nest-week" data-week></div>
+        </div>
+        <div class="nest-week-heading">
+          <h3>This week’s tasks</h3><button
+            type="button"
+            class="nest-text-button"
+            data-open-tasks>Add a task</button
+          >
+        </div>
+        <ul class="nest-tasks" data-tasks aria-label="Calendar tasks"></ul>
+      </section>
+      <p class="nest-status" role="status" aria-live="polite" data-status>
+        Home is up to date.
+      </p>
+    </div>
+    <aside class="nest-other" aria-label="Riley’s phone preview">
+      <div class="nest-phone-label">
+        <span class="nest-avatar">R</span><div>
+          <strong>Riley’s phone</strong><span>Same household</span>
+        </div>
+      </div>
+      <div class="nest-phone">
+        <div class="nest-phone-bar" aria-hidden="true"></div>
+        <div class="nest-phone-title">
+          <strong>Nest</strong><span>Up to date <i aria-hidden="true"></i></span
+          >
+        </div>
+        <p class="nest-phone-update" data-device-update>All caught up.</p>
+        <div class="nest-phone-section">
+          <span class="nest-eyebrow">Our week</span><strong data-device-tasks
+            >1 task · 0 done</strong
+          ><p data-device-task>Water the plants · Wed 14</p>
+        </div>
+        <div class="nest-phone-section">
+          <span class="nest-eyebrow">Dinner · Wed 14</span><strong
+            >Chickpea &amp; spinach skillet</strong
+          ><p data-device-meal>Planned · Sam</p>
+        </div>
+        <div class="nest-phone-section nest-phone-pantry">
+          <span class="nest-eyebrow">Pantry</span><ul data-device-pantry></ul>
+        </div>
+        <div class="nest-phone-section" data-device-purchase hidden>
+          <span class="nest-eyebrow">Latest trip</span><strong data-device-total
+          ></strong>
+        </div>
+        <div class="nest-phone-home" aria-hidden="true"></div>
+      </div>
+    </aside>
+  </div>
+  <p class="nest-note">
+    This sample simulates AI receipt reading, stock suggestions and device
+    updates locally.
+  </p>
+  <dialog class="nest-sheet" aria-label="Update pantry?" data-consume>
+    <form method="dialog" data-stock-form>
+      <span class="nest-sheet-handle" aria-hidden="true"></span><p
+        class="nest-eyebrow"
+      >
+        Meal made
+      </p><h3>Update pantry?</h3><p class="nest-muted">
+        You cooked the skillet. What’s left?
+      </p>
+      <div class="nest-stock-rows" data-stock-rows></div>
+      <div class="nest-sheet-actions">
+        <button type="button" data-skip>Skip</button><button
+          type="submit"
+          class="nest-primary">Confirm pantry</button
+        >
+      </div>
+    </form>
+  </dialog>
+</section>
+<script>
+  import "../../scripts/demos/nest";
+</script>
+<style>
+  .demo-nest {
+    --nest-surface: color-mix(in srgb, var(--bg) 94%, var(--ink));
+    --nest-tint: color-mix(in srgb, var(--accent) 10%, var(--bg));
+    margin: 28px 0;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .demo-nest :global(*) {
+    box-sizing: border-box;
+  }
+  .demo-nest :global(.nest-sr) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+  .demo-nest :global([hidden]) {
+    display: none !important;
+  }
+  .demo-nest :global(button),
+  .demo-nest :global(input),
+  .demo-nest :global(select) {
+    font: inherit;
+    color: inherit;
+  }
+  .demo-nest :global(button),
+  .demo-nest :global(summary),
+  .demo-nest :global(a) {
+    touch-action: manipulation;
+  }
+  .demo-nest :global(button) {
+    min-height: 44px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: var(--nest-surface);
+    padding: 9px 14px;
+    cursor: pointer;
+  }
+  .demo-nest :global(button:hover:not(:disabled)),
+  .nest-subnav a:hover {
+    border-color: var(--accent);
+  }
+  .demo-nest :global(button:disabled) {
+    opacity: 0.6;
+    cursor: default;
+  }
+  .demo-nest
+    :global(:is(button, a, input, select, summary, [tabindex]):focus-visible) {
+    box-shadow: 0 0 0 3px var(--accent);
+  }
+  .demo-nest :global(input:not([type="checkbox"])),
+  .demo-nest :global(select) {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 9px 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg);
+    font-size: 16px;
+  }
+  .demo-nest :global(input[type="checkbox"]) {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    accent-color: var(--accent);
+    flex-shrink: 0;
+  }
+  .demo-nest :global(h2),
+  .demo-nest :global(h3),
+  .demo-nest :global(h4),
+  .demo-nest :global(p),
+  .demo-nest :global(ul) {
+    margin: 0;
+  }
+  .demo-nest :global(h2) {
+    font-size: clamp(23px, 4vw, 29px);
+    font-weight: 550;
+    letter-spacing: -0.035em;
+  }
+  .demo-nest :global(h3) {
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .demo-nest :global(h4) {
+    font-size: 18px;
+    font-weight: 550;
+    line-height: 1.35;
+  }
+  .demo-nest :global(ul) {
+    list-style: none;
+    padding: 0;
+  }
+  .nest-header,
+  .nest-heading,
+  .nest-card-top,
+  .nest-week-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .nest-header {
+    padding: 20px 26px;
+  }
+  .nest-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .nest-brand svg {
+    width: 34px;
+    height: 34px;
+    stroke: var(--accent);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .nest-brand strong {
+    font-size: 24px;
+    font-weight: 550;
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+  }
+  .nest-brand strong span {
+    display: block;
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+  .demo-nest .nest-reset,
+  .demo-nest .nest-text-button {
+    border-color: transparent;
+    background: transparent;
+    color: var(--accent);
+    font-size: 12px;
+  }
+  .nest-nav {
+    display: flex;
+    gap: 4px;
+    padding: 0 26px 13px;
+    border-bottom: 1px solid var(--line);
+  }
+  .nest-nav button {
+    background: transparent;
+    border-color: transparent;
+    padding-inline: 18px;
+  }
+  .nest-nav button[aria-pressed="true"] {
+    background: var(--nest-tint);
+    color: var(--accent);
+  }
+  .nest-nav button span {
+    display: inline-block;
+    margin-left: 5px;
+    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 20px;
+    background: var(--nest-surface);
+  }
+  .nest-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 230px;
+  }
+  .nest-main {
+    min-width: 0;
+    padding: 26px;
+  }
+  .nest-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .nest-person {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    color: var(--accent);
+    background: var(--nest-tint);
+    font-size: 13px;
+  }
+  .nest-person span {
+    display: none;
+  }
+  .nest-subnav {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 12px 0 20px;
+  }
+  .nest-subnav a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 7px 12px;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 12px;
+  }
+  .nest-kitchen-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .nest-card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--nest-surface);
+    padding: 18px;
+    min-width: 0;
+    scroll-margin-block: 30px;
+  }
+  .nest-card-top {
+    margin-bottom: 14px;
+  }
+  .nest-card-top > span,
+  .nest-week-heading > span {
+    color: var(--muted);
+    font-size: 11px;
+    text-align: right;
+  }
+  .nest-meal-art {
+    display: grid;
+    place-items: center;
+    height: 142px;
+    margin: 0 -6px 14px;
+    background: var(--nest-tint);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .nest-meal-art svg {
+    width: 100%;
+    max-width: 280px;
+  }
+  .nest-plate-rim {
+    fill: var(--bg);
+    stroke: var(--line);
+    stroke-width: 1.5;
+  }
+  .nest-plate {
+    fill: var(--nest-surface);
+    stroke: var(--line);
+  }
+  .nest-leaves {
+    fill: var(--accent);
+    opacity: 0.65;
+  }
+  .nest-beans {
+    fill: var(--ink);
+    opacity: 0.65;
+  }
+  .nest-muted {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 7px !important;
+  }
+  .nest-small {
+    color: var(--muted);
+    font-size: 10px;
+    margin-top: 8px !important;
+  }
+  .nest-recipe {
+    margin: 15px 0;
+    font-size: 12px;
+  }
+  .nest-recipe summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    color: var(--accent);
+    cursor: pointer;
+  }
+  .nest-recipe summary span {
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .nest-recipe p {
+    color: var(--muted);
+    padding: 8px 0;
+  }
+  .demo-nest .nest-primary {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: var(--accent);
+    font-weight: 550;
+    width: 100%;
+    font-size: 12px;
+  }
+  .nest-receipt-stage {
+    display: grid;
+    place-items: center;
+    padding: 8px;
+    background: var(--nest-tint);
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+  .nest-receipt {
+    height: 222px;
+    max-width: 100%;
+    transform: rotate(-4deg);
+    filter: drop-shadow(0 6px 5px rgb(0 0 0 / 0.12));
+  }
+  .nest-shop form h4 {
+    font-size: 17px;
+    margin-bottom: 12px;
+  }
+  .demo-nest :global(.nest-receipt-row) {
+    padding-block: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .demo-nest :global(.nest-item-line) {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    gap: 6px;
+    align-items: center;
+  }
+  .demo-nest :global(.nest-include) {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  .demo-nest :global(.nest-item-amount) {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    align-items: center;
+    gap: 6px;
+    margin-left: 50px;
+    margin-top: 5px;
+    color: var(--muted);
+    font-size: 10px;
+  }
+  .demo-nest :global(.nest-item-price) {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .nest-total {
+    display: flex;
+    justify-content: space-between;
+    margin-block: 16px;
+    font-size: 12px;
+  }
+  .nest-error {
+    color: var(--ink);
+    font-size: 12px;
+    margin-bottom: 12px !important;
+  }
+  .nest-shop .nest-text-button {
+    width: 100%;
+  }
+  .nest-saved-mark {
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    color: var(--accent);
+    background: var(--nest-tint);
+    font-size: 30px;
+    margin: 34px auto 24px;
+  }
+  [data-receipt-saved] {
+    text-align: center;
+  }
+  .nest-purchase {
+    font-size: 20px;
+    margin-block: 16px !important;
+  }
+  .nest-pantry {
+    margin-top: 14px;
+  }
+  .demo-nest :global(.nest-pantry-list) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 22px;
+  }
+  .demo-nest :global(.nest-pantry-list li) {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .demo-nest :global(.nest-pantry-list strong) {
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .demo-nest :global([data-stock]) {
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .demo-nest :global([data-stock="in"]) {
+    color: var(--accent);
+  }
+  .demo-nest :global([data-stock="out"]) {
+    text-decoration: underline dotted;
+    text-underline-offset: 4px;
+  }
+  .nest-other {
+    padding: 26px 20px;
+    border-left: 1px solid var(--line);
+    background: var(--nest-tint);
+    min-width: 0;
+  }
+  .nest-phone-label {
+    display: flex;
+    gap: 9px;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .nest-avatar {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    color: var(--accent);
+  }
+  .nest-phone-label strong {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .nest-phone-label div > span {
+    display: block;
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .nest-phone {
+    padding: 12px;
+    border: 3px solid color-mix(in srgb, var(--muted) 30%, var(--bg));
+    border-radius: 25px;
+    background: var(--bg);
+  }
+  .nest-phone-bar {
+    width: 44px;
+    height: 5px;
+    border-radius: 10px;
+    background: var(--line);
+    margin: 0 auto 18px;
+  }
+  .nest-phone-title {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 4px;
+    align-items: center;
+  }
+  .nest-phone-title strong {
+    font-size: 16px;
+    font-weight: 500;
+  }
+  .nest-phone-title span {
+    color: var(--muted);
+    font-size: 8px;
+  }
+  .nest-phone-title i {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-left: 3px;
+  }
+  .nest-phone-update {
+    padding: 10px;
+    margin-top: 14px !important;
+    background: var(--nest-tint);
+    border-radius: 8px;
+    color: var(--accent);
+    font-size: 10px;
+    overflow-wrap: anywhere;
+  }
+  .nest-phone-section {
+    border-bottom: 1px solid var(--line);
+    padding-block: 15px;
+  }
+  .nest-phone-section .nest-eyebrow {
+    font-size: 8px;
+  }
+  .nest-phone-section > strong {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    margin-top: 4px;
+  }
+  .nest-phone-section p {
+    font-size: 9px;
+    color: var(--muted);
+    margin-top: 4px;
+    overflow-wrap: anywhere;
+  }
+  .demo-nest :global(.nest-phone-pantry li) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 2px 8px;
+    padding-top: 6px;
+    font-size: 9px;
+    overflow-wrap: anywhere;
+  }
+  .demo-nest :global(.nest-phone-pantry [data-stock]) {
+    font-size: 8px;
+  }
+  .nest-phone-home {
+    height: 3px;
+    width: 60px;
+    background: var(--line);
+    border-radius: 3px;
+    margin: 20px auto 0;
+  }
+  .nest-status {
+    color: var(--accent);
+    border-top: 1px solid var(--line);
+    padding-top: 14px;
+    margin-top: 20px !important;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+  }
+  .nest-note {
+    border-top: 1px solid var(--line);
+    padding: 15px 26px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .nest-task-form {
+    display: grid;
+    gap: 14px;
+    margin-top: 20px;
+  }
+  .nest-task-form label {
+    display: grid;
+    gap: 5px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .nest-task-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .demo-nest :global(.nest-tasks) {
+    display: grid;
+    gap: 8px;
+    margin-top: 18px;
+  }
+  .demo-nest :global(.nest-task) {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--nest-surface);
+  }
+  .demo-nest :global(.nest-task button) {
+    display: grid;
+    place-items: center;
+    flex: 0 0 44px;
+    padding: 8px;
+    color: var(--accent);
+  }
+  .demo-nest :global(.nest-task-copy) {
+    display: grid;
+    min-width: 0;
+    gap: 2px;
+    overflow-wrap: anywhere;
+  }
+  .demo-nest :global(.nest-task-copy strong) {
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .demo-nest :global(.nest-task-copy span) {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .demo-nest :global(.is-done strong) {
+    text-decoration: line-through;
+    color: var(--muted);
+  }
+  .nest-week-heading {
+    margin-block: 24px 14px;
+  }
+  .nest-date-range {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+  }
+  .nest-week-scroll {
+    overflow-x: auto;
+    padding: 3px 3px 10px;
+    margin: 18px -3px 0;
+    border-radius: 8px;
+  }
+  .demo-nest :global(.nest-week) {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(78px, 1fr));
+    gap: 5px;
+    min-width: 580px;
+  }
+  .demo-nest :global(.nest-day) {
+    min-height: 155px;
+    padding: 9px 6px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  .demo-nest :global(.nest-day-heading) {
+    display: grid;
+    font-size: 10px;
+    color: var(--muted);
+    gap: 3px;
+    margin-bottom: 10px;
+  }
+  .demo-nest :global(.nest-day-heading strong) {
+    font-size: 18px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .demo-nest :global(.nest-calendar-item) {
+    display: grid;
+    gap: 4px;
+    padding: 7px;
+    border-left: 2px solid var(--accent);
+    background: var(--nest-tint);
+    border-radius: 4px;
+    overflow-wrap: anywhere;
+    margin-top: 5px;
+  }
+  .demo-nest :global(.nest-calendar-item strong) {
+    font-size: 10px;
+    line-height: 1.4;
+    font-weight: 500;
+  }
+  .demo-nest :global(.nest-calendar-item span) {
+    font-size: 8px;
+    color: var(--muted);
+  }
+  .nest-sheet {
+    width: min(440px, calc(100% - 28px));
+    max-height: calc(100dvh - 40px);
+    overflow-y: auto;
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    background: var(--bg);
+    color: var(--ink);
+    padding: 24px;
+  }
+  .nest-sheet::backdrop {
+    background: rgb(0 0 0 / 0.65);
+  }
+  .nest-sheet h3 {
+    font-size: 24px;
+    font-weight: 500;
+    margin-top: 6px;
+  }
+  .nest-sheet-handle {
+    display: block;
+    height: 4px;
+    width: 40px;
+    margin: -9px auto 18px;
+    background: var(--line);
+    border-radius: 4px;
+  }
+  .nest-stock-rows {
+    display: grid;
+    gap: 14px;
+    margin-block: 22px;
+  }
+  .demo-nest :global(.nest-stock-row) {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+  }
+  .demo-nest :global(.nest-stock-row legend) {
+    font-size: 13px;
+    margin-bottom: 7px;
+  }
+  .demo-nest :global(.nest-stock-options) {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .demo-nest :global(.nest-stock-options button) {
+    font-size: 12px;
+    padding-inline: 6px;
+  }
+  .demo-nest :global(.nest-stock-options [aria-pressed="true"]) {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: var(--accent);
+  }
+  .nest-sheet-actions {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 10px;
+  }
+  @media (max-width: 1050px) {
+    .nest-layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .nest-other {
+      display: grid;
+      grid-template-columns: 150px minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+      border-left: 0;
+      border-top: 1px solid var(--line);
+      padding: 20px 26px;
+    }
+    .nest-phone {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .nest-phone-bar,
+    .nest-phone-home,
+    .nest-phone-pantry,
+    .nest-phone-section,
+    .nest-phone-title {
+      display: none;
+    }
+    .nest-phone-update {
+      margin: 0 !important;
+    }
+    .nest-phone-label {
+      margin-bottom: 0;
+    }
+  }
+  @media (max-width: 580px) {
+    .nest-header {
+      padding: 16px 14px;
+      gap: 4px;
+    }
+    .nest-brand {
+      gap: 6px;
+    }
+    .nest-brand svg {
+      width: 28px;
+    }
+    .nest-brand strong {
+      font-size: 22px;
+    }
+    .nest-brand strong span {
+      font-size: 9px;
+    }
+    .demo-nest .nest-reset {
+      font-size: 10px;
+      padding-inline: 8px;
+    }
+    .nest-nav {
+      padding: 0 14px 12px;
+      gap: 2px;
+    }
+    .nest-nav button {
+      flex: 1;
+      padding-inline: 8px;
+      font-size: 12px;
+    }
+    .nest-main {
+      padding: 20px 14px;
+    }
+    .nest-kitchen-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .nest-card {
+      padding: 16px;
+    }
+    .nest-other {
+      grid-template-columns: minmax(0, 1fr);
+      padding: 18px 14px;
+      gap: 10px;
+    }
+    .nest-note {
+      padding-inline: 14px;
+    }
+    .nest-subnav {
+      gap: 4px;
+    }
+    .nest-subnav a {
+      padding-inline: 10px;
+    }
+    .nest-pantry-list {
+      gap: 12px;
+    }
+    .nest-sheet {
+      margin-top: auto;
+      margin-bottom: 14px;
+      padding: 20px;
+    }
+  }
+</style>
