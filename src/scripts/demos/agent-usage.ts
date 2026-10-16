@@ -26,7 +26,7 @@ const channel = (value: number): SpringState => ({
 });
 
 function init(root: HTMLElement) {
-  const q = <T extends HTMLElement = HTMLElement>(selector: string) =>
+  const q = <T extends Element = HTMLElement>(selector: string) =>
     root.querySelector<T>(selector)!;
   const all = <T extends HTMLElement = HTMLElement>(selector: string) => [
     ...root.querySelectorAll<T>(selector),
@@ -37,7 +37,12 @@ function init(root: HTMLElement) {
   const overlay = q("[data-overlay]");
   const frame = q("[data-frame]");
   const attached = q("[data-attached]");
-  const ink = q("[data-panel-ink]");
+  const ink = q<SVGElement>("[data-panel-ink]");
+  const liquid = q<SVGElement>("[data-liquid]");
+  const goo = q<SVGElement>("[data-goo]");
+  const notchInk = q<SVGElement>("[data-notch-ink]");
+  const bellDisc = q<SVGElement>("[data-bell-disc]");
+  const bellNeck = q<SVGElement>("[data-bell-neck]");
   const content = q("[data-panel-content]");
   const reduce = matchMedia("(prefers-reduced-motion: reduce)");
   const escape = (text: string) =>
@@ -82,6 +87,11 @@ function init(root: HTMLElement) {
   const arms = all<HTMLButtonElement>("[data-arm]").map((element) => ({
     element,
     hover: channel(0),
+    material: q<SVGElement>(`[data-arm-material="${element.dataset.arm}"]`),
+    rest: q<SVGElement>(`[data-arm-rest="${element.dataset.arm}"]`),
+    disc: q<SVGElement>(`[data-arm-disc="${element.dataset.arm}"]`),
+    neck: q<SVGElement>(`[data-arm-neck="${element.dataset.arm}"]`),
+    icon: element.querySelector<SVGElement>("[data-arm-glyph]")!,
   }));
   let armsOut = 1;
   let armTween: {
@@ -149,38 +159,95 @@ function init(root: HTMLElement) {
       };
     wake();
   }
-  function paintMotion() {
-    frame.style.transform = `translateY(${(opening.value - 1) * 96}px)`;
-    frame.style.opacity = String(Math.max(0, Math.min(1, opening.value * 3)));
+  const clamp = (value: number) => Math.max(0, Math.min(1, value));
+  const smooth = (value: number) => {
+    const t = clamp(value);
+    return t * t * (3 - 2 * t);
+  };
+  // shape.js handleMetrics for a 90px top notch: sqrt(90 / 70).
+  // F=43.88, stroke=11.56, rest radius=32.43, disc radius=27.21.
+  // Only resize changes SVG geometry. Motion writes transforms and opacity.
+  let inkScaleX = 1;
+  let materialMoving = false;
+  function attr(element: Element, name: string, value: string) {
+    if (element.getAttribute(name) !== value) element.setAttribute(name, value);
+  }
+  function sizeMaterial() {
+    const width = q(".notch").clientWidth || 228;
+    const panelWidth = attached.offsetWidth || 340;
+    const panelHeight = attached.offsetHeight || 270;
+    inkScaleX = width / 228;
+    attr(ink, "x", String(-panelWidth / inkScaleX / 2));
+    attr(ink, "width", String(panelWidth / inkScaleX));
+    attr(ink, "height", String(panelHeight));
+    paintMotion(materialMoving);
+  }
+  function paintMotion(moving = false) {
+    materialMoving = moving;
+    // The source's half-alpha cutback (sigma=4, k=sigma*2.6) merges
+    // only the black material. Text, glyphs and focus rings stay sharp.
+    if (moving && !reduce.matches && !suspended)
+      attr(liquid, "filter", `url(#${goo.id})`);
+    else liquid.removeAttribute("filter");
+    // Reveal wells out from the edge; stow slides the joined body away.
+    frame.style.transform = `translateY(${visible ? 0 : (opening.value - 1) * 96}px)`;
+    frame.style.opacity = String(clamp(opening.value * 3));
+    const o = Math.max(0, opening.value);
+    notchInk.style.transformOrigin = "114px 0";
+    notchInk.style.transform = `scale(${0.75 + 0.25 * o}, ${visible ? o : 1})`;
     q(".account-gauges").style.transform =
       `translateY(${(opening.value - 1) * 35}px)`;
     const d = Math.max(0, detail.value);
     ink.style.transform = `scale(${0.67 + 0.33 * d}, ${d})`;
     content.style.transform = `translateY(${(1 - d) * -12}px)`;
-    content.style.opacity = String(Math.max(0, Math.min(1, (d - 0.25) / 0.65)));
+    content.style.opacity = String(clamp((d - 0.25) / 0.65));
     if (!panel && detail.value === 0) attached.hidden = true;
     if (!visible && opening.value === 0) overlay.hidden = true;
-    for (const { element, hover } of arms) {
-      const h = Math.max(0, hover.value);
+    for (const { element, hover, material, rest, disc, neck, icon } of arms) {
+      const h = clamp(hover.value);
       const side = element.dataset.arm === "pin" ? -1 : 1;
-      element.style.transform = `translate(${side * (h * 8 - (1 - armsOut) * 28)}px, ${(1 - armsOut) * -14}px)`;
-      element.style.opacity = String(armsOut);
-      const rest = element.querySelector<SVGElement>("[data-arm-rest]")!;
-      rest.style.opacity = String(1 - Math.min(1, h));
-      const disc = element.querySelector<HTMLElement>("[data-arm-disc]")!;
-      disc.style.transform = `scale(${0.2 + 0.8 * h})`;
-      disc.style.opacity = String(Math.min(1, h * 2));
-      const icon = element.querySelector<SVGElement>("[data-arm-glyph]")!;
-      icon.style.transform = `scale(${0.5 + 0.5 * h}) rotate(${side * (1 - h) * -25}deg)`;
-      icon.style.opacity = String(Math.max(0, Math.min(1, (h - 0.35) / 0.65)));
+      const lift = smooth((h - 0.28) / 0.72);
+      const x = -side * 22.93 * (1 - lift);
+      const y = -22.93 * (1 - lift) + 6 * Math.sin(Math.PI * lift);
+      const out = armsOut * smooth((o - 0.6) / 0.4);
+      material.style.transform = `translate(${-side * (1 - out) * 21}px, ${-(1 - out) * 21}px)`;
+      material.style.opacity = String(clamp(o * 3));
+      element.style.opacity = String(out);
+      element.inert = !visible || out < 0.1;
+      rest.style.transformOrigin = "22.93px -22.93px";
+      rest.style.transform = `scale(${1 - 0.95 * smooth(h / 0.42)})`;
+      rest.style.opacity = String(1 - smooth(h / 0.42));
+      disc.style.transform = `translate(${x}px, ${y}px) scale(${0.22 + 0.78 * lift})`;
+      disc.style.opacity = String(smooth(h / 0.2));
+      neck.style.opacity = String(
+        smooth(lift / 0.15) * (1 - smooth((lift - 0.82) / 0.18)),
+      );
+      neck.style.transformOrigin = "40px -39px";
+      neck.style.transform = `scale(${0.3 + 0.7 * lift})`;
+      icon.style.transform = `translate(${x * inkScaleX}px, ${y}px) scale(${0.5 + 0.5 * lift}) rotate(${side * (1 - lift) * -25}deg)`;
+      icon.style.opacity = String(smooth((lift - 0.45) / 0.4) * out);
     }
+    // shape.js drawSprout: the bell leaves C=(20,70) on the corner's
+    // bisector, with a 4px gap and a 21.77px radius, rather than sitting
+    // against the notch. The unread dot rides onto its shoulder.
     const b = Math.max(0, bell.value);
-    q("[data-bell-disc]").style.transform = `scale(${0.1 + 0.9 * b})`;
-    q("[data-bell-disc]").style.opacity = String(Math.min(1, b * 2));
+    const k = 12.9 + (45.77 - 12.9) * b;
+    const bx = 20 - Math.SQRT1_2 * k;
+    const by = 70 + Math.SQRT1_2 * k;
+    bellDisc.style.transform = `translate(${bx}px, ${by}px) scale(${0.28 + 0.72 * smooth(b)})`;
+    bellDisc.style.opacity = b > 0.004 ? "1" : "0";
+    bellNeck.style.opacity = String(
+      smooth(b / 0.15) * (1 - smooth((b - 0.72) / 0.16)),
+    );
+    bellNeck.style.transformOrigin = "12.93px 77.07px";
+    bellNeck.style.transform = `scale(${0.3 + 0.7 * clamp(b)})`;
+    const dx = (bx - 12.93) * inkScaleX;
+    const dy = by - 77.07;
     q("[data-bell-glyph]").style.transform =
-      `scale(${0.1 + 0.9 * b}) rotate(${(1 - b) * -20}deg)`;
-    q("[data-bell-glyph]").style.opacity = String(Math.max(0, Math.min(1, b)));
-    q("[data-unread]").style.transform = `scale(${1 - Math.min(1, b)})`;
+      `translate(${dx}px, ${dy}px) scale(${0.28 + 0.72 * smooth(b)}) rotate(${(1 - b) * -20}deg)`;
+    q("[data-bell-glyph]").style.opacity = String(smooth((b - 0.45) / 0.4));
+    q("[data-unread]").style.transform =
+      `translate(${dx + 8.71 * inkScaleX * smooth(b)}px, ${dy - 10.89 * smooth(b)}px)`;
   }
   // Invert the renderer's stow cubic-bezier(.55,0,.8,.3).
   function stowEase(t: number) {
@@ -233,7 +300,7 @@ function init(root: HTMLElement) {
       if (t === 1) armTween = null;
       else moving = true;
     }
-    paintMotion();
+    paintMotion(moving);
     if (moving) wake();
     else last = 0;
   }
@@ -585,7 +652,14 @@ function init(root: HTMLElement) {
     setPanel("notifications", hold);
     paintNotices();
   }
-  q("[data-bell]").addEventListener("pointerenter", () => {
+  function giveWayToHandle(isBell = false) {
+    // notch.js retracts the card under a handle so the drop can detach.
+    if (panel && panel !== "sessions" && !(isBell && panel === "notifications"))
+      closePanel();
+  }
+  q("[data-bell]").addEventListener("pointerenter", (event) => {
+    if (event.pointerType === "touch") return;
+    giveWayToHandle(true);
     bell.target = 1;
     wake();
   });
@@ -594,6 +668,7 @@ function init(root: HTMLElement) {
     wake();
   });
   q("[data-bell]").addEventListener("focus", () => {
+    giveWayToHandle(true);
     bell.target = 1;
     wake();
   });
@@ -672,7 +747,9 @@ function init(root: HTMLElement) {
       `${clockLabel(state.minute)} / Notification log cleared`;
   });
   for (const { element, hover } of arms) {
-    element.addEventListener("pointerenter", () => {
+    element.addEventListener("pointerenter", (event) => {
+      if (event.pointerType === "touch") return;
+      giveWayToHandle();
       hover.target = 1;
       wake();
     });
@@ -681,6 +758,7 @@ function init(root: HTMLElement) {
       wake();
     });
     element.addEventListener("focus", () => {
+      giveWayToHandle();
       hover.target = 1;
       wake();
     });
@@ -852,10 +930,13 @@ function init(root: HTMLElement) {
   reduce.addEventListener("change", () => {
     if (reduce.matches) settle();
   });
+  const materialObserver = new ResizeObserver(sizeMaterial);
+  materialObserver.observe(q(".notch"));
+  materialObserver.observe(attached);
   paintSessions();
   paintNotices();
   paint();
-  paintMotion();
+  sizeMaterial();
 }
 
 document

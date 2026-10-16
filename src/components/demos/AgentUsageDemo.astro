@@ -9,6 +9,7 @@ import {
 } from "../../data/demos/agent-usage";
 const initial = snapshot(0);
 const first = initial.accounts[0];
+const gooId = `au-goo-${crypto.randomUUID()}`;
 ---
 
 <section
@@ -19,6 +20,73 @@ const first = initial.accounts[0];
   <div class="notch-stage" data-stage>
     <div class="overlay" data-overlay>
       <div class="notch-frame" data-frame>
+        <svg
+          class="notch-material"
+          data-material
+          viewBox="0 0 228 90"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <defs>
+            <filter
+              id={gooId}
+              x="-35%"
+              y="-50%"
+              width="170%"
+              height="200%"
+              color-interpolation-filters="sRGB"
+              data-goo
+            >
+              <feGaussianBlur in="SourceGraphic" stdDeviation="4"
+              ></feGaussianBlur>
+              <feColorMatrix
+                values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 10.4 -4.7"
+              ></feColorMatrix>
+            </filter>
+          </defs>
+          <g data-liquid>
+            <g transform="translate(114 80)">
+              <rect
+                class="panel-ink"
+                data-panel-ink
+                x="-170"
+                width="340"
+                height="270"
+                rx="24"></rect>
+            </g>
+            <path
+              data-notch-ink
+              d="M-43.88 -40V0A43.88 43.88 0 0 1 0 43.88V70A20 20 0 0 0 20 90H208A20 20 0 0 0 228 70V43.88A43.88 43.88 0 0 1 271.88 0V-40Z"
+            ></path>
+            {
+              ["pin", "move"].map((arm, i) => (
+                <g transform={`translate(${i ? 271.88 : -43.88} 43.88)`}>
+                  <g data-arm-material={arm}>
+                    <g transform={i ? "scale(-1 1)" : undefined}>
+                      <path
+                        class="arm-neck"
+                        data-arm-neck={arm}
+                        d="M37 -42Q24 -16 0 -7V7Q32 -11 43 -36Z"
+                      />
+                      <path
+                        class="arm-rest"
+                        data-arm-rest={arm}
+                        d="M-10.2 -32.43H0A32.43 32.43 0 0 1 32.43 0V10.2"
+                      />
+                    </g>
+                    <circle class="arm-disc" data-arm-disc={arm} r="27.21" />
+                  </g>
+                </g>
+              ))
+            }
+            <path
+              class="bell-neck"
+              data-bell-neck
+              d="M5 77Q-1 91 -17 97L-7 107Q13 95 19 83Z"></path>
+            <circle class="bell-disc" data-bell-disc cx="0" cy="0" r="21.77"
+            ></circle>
+          </g>
+        </svg>
         <div class="notch" data-focused="true">
           <div class="account-gauges" role="group" aria-label="Account usage">
             {
@@ -82,7 +150,6 @@ const first = initial.accounts[0];
             aria-pressed="false"
             aria-expanded="false"
           >
-            <span class="bell-disc" data-bell-disc></span>
             <svg
               class="bell-glyph"
               data-bell-glyph
@@ -102,19 +169,6 @@ const first = initial.accounts[0];
             aria-pressed="false"
           >
             <svg
-              class="arm-rest"
-              data-arm-rest
-              viewBox="-36 -36 72 72"
-              aria-hidden="true"
-              ><circle
-                r="28.5"
-                fill="none"
-                stroke-width="6.8"
-                stroke-linecap="round"
-                stroke-dasharray="44.77 179.07"></circle></svg
-            >
-            <span class="arm-disc" data-arm-disc></span>
-            <svg
               class="arm-glyph"
               data-arm-glyph
               viewBox="0 0 24 24"
@@ -128,19 +182,6 @@ const first = initial.accounts[0];
             data-arm="move"
             aria-label="Move notch. Drag or use the left and right arrow keys."
           >
-            <svg
-              class="arm-rest"
-              data-arm-rest
-              viewBox="-36 -36 72 72"
-              aria-hidden="true"
-              ><circle
-                r="28.5"
-                fill="none"
-                stroke-width="6.8"
-                stroke-linecap="round"
-                stroke-dasharray="44.77 179.07"></circle></svg
-            >
-            <span class="arm-disc" data-arm-disc></span>
             <svg
               class="arm-glyph move-glyph"
               data-arm-glyph
@@ -160,7 +201,6 @@ const first = initial.accounts[0];
           </button>
         </div>
         <div class="attached-panel" data-attached>
-          <div class="panel-ink" data-panel-ink></div>
           <div class="panel-content" data-panel-content>
             <div data-panel="usage">
               <header class="panel-heading">
@@ -443,9 +483,32 @@ const first = initial.accounts[0];
       padding: 8px;
       background: transparent;
       cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
-    button:hover {
-      background: var(--au-surface);
+    button:active {
+      transform: scale(0.97);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      button:hover {
+        background: var(--au-surface);
+      }
+      .account-gauge:hover,
+      .arm:hover,
+      .bell:hover {
+        background: transparent;
+      }
+      .attached-panel:hover .hover-actions,
+      .session-row:hover button {
+        opacity: 1;
+      }
+      .session-row:hover,
+      .notice-row:hover {
+        background: var(--au-surface);
+      }
+      .alert-sliver:hover {
+        background: var(--au-black);
+      }
     }
     button:disabled {
       opacity: 0.45;
@@ -496,36 +559,23 @@ const first = initial.accounts[0];
     .notch {
       position: relative;
       z-index: 2;
-      width: 228px;
+      width: min(228px, 65.5%);
       height: 90px;
       margin: 0 auto;
-      background: var(--au-black);
       border-radius: 0 0 20px 20px;
     }
-    .notch::before,
-    .notch::after {
-      content: "";
+    .notch-material {
       position: absolute;
       top: 0;
-      width: 38.7px;
-      height: 38.7px;
+      left: 50%;
+      width: min(228px, 65.5%);
+      height: 90px;
+      transform: translateX(-50%);
+      overflow: visible;
+      fill: var(--au-black);
+      stroke: none;
       pointer-events: none;
-    }
-    .notch::before {
-      right: 100%;
-      background: radial-gradient(
-        circle at 0 100%,
-        transparent 38.45px,
-        var(--au-black) 39.45px
-      );
-    }
-    .notch::after {
-      left: 100%;
-      background: radial-gradient(
-        circle at 100% 100%,
-        transparent 38.45px,
-        var(--au-black) 39.45px
-      );
+      z-index: 0;
     }
     .account-gauges {
       display: flex;
@@ -541,9 +591,6 @@ const first = initial.accounts[0];
       padding: 0 3px;
       min-width: 50px;
       border-radius: 16px;
-    }
-    .account-gauge:hover {
-      background: transparent;
     }
     .account-gauge .ring {
       transition:
@@ -597,22 +644,18 @@ const first = initial.accounts[0];
     .arm,
     .bell {
       position: absolute;
-      top: 0;
+      top: 21.88px;
       width: 44px;
       height: 44px;
       padding: 0;
       border-radius: 50%;
       overflow: visible;
     }
-    .arm:hover,
-    .bell:hover {
-      background: transparent;
-    }
     .arm-leading {
-      right: calc(100% - 7px);
+      right: calc(119.2456% - 22px);
     }
     .arm-trailing {
-      left: calc(100% - 7px);
+      left: calc(119.2456% - 22px);
       touch-action: none;
       cursor: grab;
     }
@@ -620,24 +663,16 @@ const first = initial.accounts[0];
       cursor: grabbing;
     }
     .arm-rest {
-      position: absolute;
-      inset: 0;
-      width: 44px;
-      height: 44px;
+      fill: none;
       stroke: var(--au-black);
+      stroke-width: 11.56;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
-    .arm-leading .arm-rest {
-      transform: rotate(270deg);
-    }
-    .arm-trailing .arm-rest {
-      transform: rotate(180deg);
-    }
-    .arm-disc {
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      background: var(--au-black);
-      transform: scale(0.2);
+    .arm-disc,
+    .arm-neck,
+    .bell-disc,
+    .bell-neck {
       opacity: 0;
     }
     .arm-glyph {
@@ -650,28 +685,24 @@ const first = initial.accounts[0];
       color: var(--au-focus);
     }
     .bell {
-      top: 48px;
-      left: -18px;
+      /* Corner-dot position plus the full 45.77px diagonal sprout's reach. */
+      top: 55.07px;
+      left: calc(5.6706% - 48px);
+      width: 70px;
+      height: 70px;
       z-index: 3;
-    }
-    .bell-disc {
-      position: absolute;
-      inset: 0;
-      background: var(--au-black);
-      border-radius: 50%;
-      opacity: 0;
-      transform: scale(0.1);
     }
     .bell-glyph {
       position: absolute;
-      inset: 12px;
+      top: 12px;
+      left: 38px;
       opacity: 0;
-      transform: scale(0.1);
+      transform-origin: 50% 16%;
     }
     .unread {
       position: absolute;
-      top: 16px;
-      left: 22px;
+      top: 19px;
+      left: 45px;
       width: 6px;
       height: 6px;
       border-radius: 50%;
@@ -688,12 +719,8 @@ const first = initial.accounts[0];
       transform-origin: 50% 0;
     }
     .panel-ink {
-      position: absolute;
-      inset: -80px 0 0;
-      border-radius: 0 0 24px 24px;
-      background: var(--au-card);
       transform: scale(1);
-      transform-origin: 50% 0;
+      transform-origin: 0 0;
     }
     .panel-content {
       position: relative;
@@ -740,7 +767,6 @@ const first = initial.accounts[0];
       opacity: 0;
       transition: opacity 0.18s ease;
     }
-    .attached-panel:hover .hover-actions,
     .attached-panel:focus-within .hover-actions {
       opacity: 1;
     }
@@ -946,7 +972,6 @@ const first = initial.accounts[0];
       border-radius: 16px;
       padding: 8px;
     }
-    .session-row:hover,
     .session-row:focus-within {
       background: var(--au-surface);
     }
@@ -983,7 +1008,6 @@ const first = initial.accounts[0];
       opacity: 0;
       transition: opacity 0.18s ease;
     }
-    .session-row:hover button,
     .session-row:focus-within button,
     .session-row button[aria-pressed="true"] {
       opacity: 1;
@@ -1018,9 +1042,6 @@ const first = initial.accounts[0];
       row-gap: 3px;
       padding: 10px 8px;
       border-radius: 12px;
-    }
-    .notice-row:hover {
-      background: var(--au-surface);
     }
     .notice-row svg {
       width: 16px;
@@ -1060,9 +1081,6 @@ const first = initial.accounts[0];
       border-radius: 0 0 20px 20px;
       padding: 14px 16px;
       text-align: center;
-    }
-    .alert-sliver:hover {
-      background: var(--au-black);
     }
     .alert-sliver strong,
     .alert-sliver span {
@@ -1145,9 +1163,6 @@ const first = initial.accounts[0];
         padding-right: 6px;
         padding-left: 6px;
       }
-      .notch {
-        width: min(228px, calc(100% - 60px));
-      }
       .account-gauges {
         gap: 6px;
         padding-right: 6px;
@@ -1157,12 +1172,6 @@ const first = initial.accounts[0];
         min-width: 44px;
         padding-right: 0;
         padding-left: 0;
-      }
-      .arm-leading {
-        right: calc(100% - 22px);
-      }
-      .arm-trailing {
-        left: calc(100% - 22px);
       }
       .attached-panel {
         padding-right: 10px;
