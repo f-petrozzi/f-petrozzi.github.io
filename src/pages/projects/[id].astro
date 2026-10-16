@@ -6,6 +6,7 @@ import ImageViewer from "../../components/ImageViewer.astro";
 import ProjectVisual from "../../components/ProjectVisual.astro";
 import ToolIcon from "../../components/ToolIcon.astro";
 import ToolIconSprite from "../../components/ToolIconSprite.astro";
+import { demos } from "../../components/demos/registry";
 export async function getStaticPaths() {
   const all = (await getCollection("projects")).sort(
     (a, b) => a.data.order - b.data.order,
@@ -22,6 +23,7 @@ export async function getStaticPaths() {
 const { project, previous, next } = Astro.props;
 const { Content } = await render(project);
 const { category, status } = project.data;
+const Demo = demos[project.id] ? (await demos[project.id]()).default : undefined;
 ---
 
 <Base
@@ -72,6 +74,8 @@ const { category, status } = project.data;
     {
       project.id === "nume" ? (
         <NumeDemo />
+      ) : Demo ? (
+        <Demo />
       ) : (
         project.data.featured && (
           <ProjectVisual

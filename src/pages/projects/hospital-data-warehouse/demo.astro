@@ -1,0 +1,49 @@
+---
+import Base from "../../../layouts/Base.astro";
+import HospitalWarehouseDemo from "../../../components/demos/HospitalWarehouseDemo.astro";
+---
+
+<Base
+  title="Hospital Data Warehouse interactive sample | Fabrizio Petrozzi"
+  description="A disconnected interactive sample of the Hospital Data Warehouse star schema and queries, using synthetic data."
+>
+  <main id="main" class="project-page wrap demo-page">
+    <a class="back-link" href="/projects/hospital-data-warehouse/"
+      >Back to Hospital Data Warehouse</a
+    >
+    <header class="demo-intro">
+      <div>
+        <p class="eyebrow">Interactive sample</p>
+        <h1>Try Hospital Data Warehouse</h1>
+      </div>
+      <p>Sample data. Nothing connects or saves.</p>
+    </header>
+    <HospitalWarehouseDemo />
+  </main>
+</Base>
+
+<style>
+  .demo-page {
+    padding-top: 40px;
+    padding-bottom: 72px;
+  }
+  .demo-intro {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: end;
+    gap: 12px 24px;
+    margin: 24px 0;
+  }
+  .demo-intro h1 {
+    margin: 6px 0 0;
+    font-size: clamp(32px, 5vw, 52px);
+    letter-spacing: -0.04em;
+    font-weight: 500;
+  }
+  .demo-intro > p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+  }
+</style>

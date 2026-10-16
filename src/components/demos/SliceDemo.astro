@@ -1,0 +1,761 @@
+---
+import { PERIODS, QUADRANTS } from "../../data/demos/slice";
+---
+
+<section
+  class="demo demo-slice"
+  data-demo="slice"
+  aria-label="Slice of the Burg interactive sample"
+>
+  <div class="sl-bar">
+    <div class="sl-views" role="group" aria-label="Sample views">
+      <button type="button" data-view="menu" aria-pressed="true"
+        >Menu as data</button
+      >
+      <button type="button" data-view="analysis" aria-pressed="false"
+        >Menu analysis</button
+      >
+    </div>
+    <button type="button" class="sl-reset" data-reset>Reset</button>
+  </div>
+
+  <div class="sl-panel" data-panel="menu">
+    <div class="sl-menu-grid">
+      <div class="sl-site" data-site>
+        <div class="sl-site-head">
+          <strong>Slice of The Burg</strong>
+          <span>Menu</span>
+        </div>
+        <p class="sl-site-note" data-site-note></p>
+        <p class="sl-stale" data-stale hidden>Showing the last valid menu</p>
+        <div class="sl-tabs" data-site-tabs></div>
+        <div class="sl-site-body" data-site-body></div>
+      </div>
+      <div class="sl-editor">
+        <label for="slice-menu-json">menu.json</label>
+        <textarea
+          id="slice-menu-json"
+          data-editor
+          spellcheck="false"
+          autocapitalize="off"
+          autocomplete="off"
+          wrap="off"></textarea>
+        <p class="sl-status" data-status aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sl-panel" data-panel="analysis" hidden>
+    <div class="sl-toolbar">
+      <div class="sl-periods" role="group" aria-label="Period">
+        {
+          PERIODS.map((period) => (
+            <button
+              type="button"
+              data-period={period.id}
+              aria-pressed={period.id === "month" ? "true" : "false"}
+            >
+              {period.label}
+            </button>
+          ))
+        }
+      </div>
+      <dl class="sl-totals">
+        <div>
+          <dt>Units</dt>
+          <dd data-total-units></dd>
+        </div>
+        <div>
+          <dt>Revenue</dt>
+          <dd data-total-revenue></dd>
+        </div>
+        <div>
+          <dt>Contribution</dt>
+          <dd data-total-contribution></dd>
+        </div>
+      </dl>
+    </div>
+    <div class="sl-legend" role="group" aria-label="Quadrants">
+      {
+        QUADRANTS.map((quadrant) => (
+          <button
+            type="button"
+            data-quadrant={quadrant.id}
+            aria-pressed="false"
+          >
+            <svg
+              class={`sl-glyph is-${quadrant.id}`}
+              viewBox="-8 -8 16 16"
+              aria-hidden="true"
+            >
+              <path data-glyph={quadrant.id} />
+            </svg>
+            {quadrant.label}
+            <b data-count>0</b>
+          </button>
+        ))
+      }
+    </div>
+    <div class="sl-analysis-grid">
+      <div class="sl-plot-wrap">
+        <div class="sl-plot" data-plot></div>
+        <p class="sl-thresholds" data-thresholds></p>
+        <p class="sl-detail" data-detail aria-live="polite"></p>
+      </div>
+      <div
+        class="sl-table-scroll"
+        data-table-scroll
+        tabindex="0"
+        role="region"
+        aria-label="Menu analysis items"
+      >
+        <table class="sl-table">
+          <caption class="sl-sr">Items by popularity and margin</caption>
+          <thead>
+            <tr>
+              <th scope="col" aria-sort="none"
+                ><button type="button" data-sort="name">Item</button></th
+              >
+              <th scope="col" aria-sort="none" class="sl-num"
+                ><button type="button" data-sort="units">Sold</button></th
+              >
+              <th scope="col" aria-sort="none" class="sl-num"
+                ><button type="button" data-sort="margin">Margin</button></th
+              >
+              <th scope="col" aria-sort="none" class="sl-num"
+                ><button type="button" data-sort="contribution">Total</button
+                ></th
+              >
+              <th scope="col">Class</th>
+            </tr>
+          </thead>
+          <tbody data-rows></tbody>
+        </table>
+      </div>
+    </div>
+    <p class="sl-note">
+      Invented sales and costs. The menu items match the site's structure.
+    </p>
+  </div>
+</section>
+
+<script>
+  import "../../scripts/demos/slice";
+</script>
+
+<style>
+  .demo-slice {
+    --sl-red: #a4221e;
+    --sl-star: #2a78d6;
+    --sl-plowhorse: #eb6834;
+    --sl-puzzle: #1baf7a;
+    --sl-dog: #6b7280;
+    --sl-panel: color-mix(in srgb, var(--ink) 5%, transparent);
+    container-type: inline-size;
+    display: block;
+    min-width: 0;
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  :root[data-theme="light"] .demo-slice {
+    --sl-plowhorse: #d4521f;
+    --sl-puzzle: #12805a;
+  }
+  :root:not([data-theme="light"]) .demo-slice {
+    --sl-star: #3987e5;
+    --sl-plowhorse: #e0632f;
+    --sl-puzzle: #1fb584;
+    --sl-dog: #98a3b3;
+  }
+  .demo-slice button {
+    font: inherit;
+    touch-action: manipulation;
+    cursor: pointer;
+  }
+  .demo-slice button:focus-visible,
+  .demo-slice textarea:focus-visible,
+  .sl-table-scroll:focus-visible {
+    box-shadow:
+      0 0 0 2px var(--bg),
+      0 0 0 4px var(--accent);
+  }
+  .sl-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* Bar */
+  .sl-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .sl-views,
+  .sl-periods {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 4px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--sl-panel);
+  }
+  .sl-views button,
+  .sl-periods button,
+  .sl-reset,
+  .sl-legend button,
+  .sl-table th button {
+    min-height: 44px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--muted);
+    transition:
+      background 0.2s var(--ease),
+      color 0.2s var(--ease);
+  }
+  .sl-views button[aria-pressed="true"],
+  .sl-periods button[aria-pressed="true"] {
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 600;
+  }
+  .sl-reset {
+    border: 1px solid var(--line);
+    color: var(--ink);
+  }
+  @media (hover: hover) {
+    .sl-views button:hover,
+    .sl-periods button:hover,
+    .sl-reset:hover,
+    .sl-legend button:hover {
+      color: var(--ink);
+    }
+    .sl-views button[aria-pressed="true"]:hover,
+    .sl-periods button[aria-pressed="true"]:hover {
+      color: var(--accent-ink);
+    }
+  }
+
+  /* Menu as data */
+  .sl-menu-grid {
+    display: grid;
+    gap: 16px;
+  }
+  @container (min-width: 780px) {
+    .sl-menu-grid {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      align-items: stretch;
+    }
+  }
+  .sl-site {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: #fff;
+    color: #1b1b1b;
+  }
+  .sl-site.is-stale .sl-site-body,
+  .sl-site.is-stale .sl-tabs {
+    opacity: 0.55;
+  }
+  .sl-site-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 18px;
+    background: #a4221e;
+    color: #fff;
+  }
+  .sl-site-head strong {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 19px;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .sl-site-head span {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .sl-site-note {
+    margin: 0;
+    padding: 12px 18px;
+    background: #f7f1e6;
+    color: #595959;
+    font-size: 13px;
+    text-align: center;
+  }
+  .sl-stale {
+    margin: 0;
+    padding: 6px 18px;
+    background: #f4d9d8;
+    color: #7c1a17;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+  }
+  .sl-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 10px 14px;
+    overflow-x: auto;
+    border-bottom: 1px solid #e2e2e2;
+    scrollbar-width: none;
+  }
+  .sl-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .demo-slice :global(.sl-tab) {
+    flex: none;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1px solid #e2e2e2;
+    border-radius: 999px;
+    background: #fff;
+    color: #1b1b1b;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+      background 0.16s ease,
+      color 0.16s ease,
+      border-color 0.16s ease;
+  }
+  .demo-slice :global(.sl-tab[aria-pressed="true"]) {
+    border-color: #a4221e;
+    background: #a4221e;
+    color: #fff;
+  }
+  .demo-slice :global(.sl-tab:focus-visible) {
+    box-shadow:
+      0 0 0 2px #fff,
+      0 0 0 4px #a4221e;
+  }
+  .sl-site-body {
+    flex: 1;
+    min-height: 0;
+    max-height: 440px;
+    padding: 4px 18px 18px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .demo-slice :global(.sl-section) {
+    padding: 22px 0 8px;
+    border-top: 1px solid #e2e2e2;
+  }
+  .demo-slice :global(.sl-section:first-child) {
+    border-top: 0;
+  }
+  .demo-slice :global(.sl-section-title) {
+    margin: 0 0 8px;
+    color: #a4221e;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 25px;
+    font-weight: 900;
+    line-height: 1.15;
+    text-align: center;
+  }
+  .demo-slice :global(.sl-section-note) {
+    margin: 0 auto 14px;
+    max-width: 440px;
+    color: #595959;
+    font-size: 13px;
+    text-align: center;
+  }
+  .demo-slice :global(.sl-items) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 14px 28px;
+    margin-top: 14px;
+  }
+  .demo-slice :global(.sl-item) {
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #d4d4d4;
+  }
+  .demo-slice :global(.sl-item-head) {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .demo-slice :global(.sl-item h4) {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+  }
+  .demo-slice :global(.sl-item-head span) {
+    flex: none;
+    color: #a4221e;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .demo-slice :global(.sl-item p) {
+    margin: 3px 0 0;
+    color: #595959;
+    font-size: 13px;
+  }
+
+  .sl-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+  .sl-editor label {
+    color: var(--muted);
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size: 12px;
+  }
+  .sl-editor textarea {
+    flex: 1;
+    width: 100%;
+    min-height: 320px;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--sl-panel);
+    color: var(--ink);
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size: 16px;
+    line-height: 1.5;
+    tab-size: 2;
+    resize: vertical;
+    overflow: auto;
+  }
+  @container (min-width: 780px) {
+    .sl-editor textarea {
+      font-size: 13px;
+      min-height: 480px;
+    }
+  }
+  .sl-editor textarea[aria-invalid="true"] {
+    border-color: #d94a43;
+  }
+  .sl-status {
+    margin: 0;
+    min-height: 1.5em;
+    color: var(--muted);
+    font-size: 13px;
+    overflow-wrap: anywhere;
+  }
+  .sl-status.is-error {
+    color: #d94a43;
+    font-weight: 600;
+  }
+  :root[data-theme="light"] .sl-status.is-error {
+    color: #b3261e;
+  }
+
+  /* Analysis */
+  .sl-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px 24px;
+  }
+  .sl-totals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 22px;
+    margin: 0;
+  }
+  .sl-totals div {
+    display: grid;
+    gap: 0;
+  }
+  .sl-totals dt {
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .sl-totals dd {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .sl-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 14px 0 12px;
+  }
+  .sl-legend button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--line);
+  }
+  .sl-legend button b {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+  .sl-legend button[aria-pressed="true"] {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+  .demo-slice :global(.sl-glyph) {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    vertical-align: -3px;
+    fill: var(--sl-dog);
+  }
+  .demo-slice :global(.sl-class .sl-glyph) {
+    margin-right: 6px;
+  }
+  .demo-slice :global(.sl-glyph.is-star) {
+    fill: var(--sl-star);
+  }
+  .demo-slice :global(.sl-glyph.is-plowhorse) {
+    fill: var(--sl-plowhorse);
+  }
+  .demo-slice :global(.sl-glyph.is-puzzle) {
+    fill: var(--sl-puzzle);
+  }
+  .demo-slice :global(.sl-glyph.is-dog) {
+    fill: var(--sl-dog);
+  }
+  .sl-analysis-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  @container (min-width: 860px) {
+    .sl-analysis-grid {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      align-items: start;
+    }
+  }
+  .sl-plot-wrap {
+    min-width: 0;
+    padding: 12px 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--sl-panel);
+  }
+  .sl-plot {
+    min-height: 280px;
+  }
+  .sl-thresholds,
+  .sl-detail {
+    margin: 8px 8px 0;
+    font-size: 13px;
+  }
+  .sl-thresholds {
+    color: var(--muted);
+  }
+  .sl-detail {
+    min-height: 3em;
+    color: var(--ink);
+  }
+  .demo-slice :global(.sl-chart) {
+    display: block;
+    max-width: 100%;
+    overflow: visible;
+  }
+  .demo-slice :global(.sl-band) {
+    opacity: 0.09;
+  }
+  .demo-slice :global(.sl-band.is-star) {
+    fill: var(--sl-star);
+  }
+  .demo-slice :global(.sl-band.is-plowhorse) {
+    fill: var(--sl-plowhorse);
+  }
+  .demo-slice :global(.sl-band.is-puzzle) {
+    fill: var(--sl-puzzle);
+  }
+  .demo-slice :global(.sl-band.is-dog) {
+    fill: var(--sl-dog);
+  }
+  .demo-slice :global(.sl-grid) {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .demo-slice :global(.sl-threshold) {
+    stroke: var(--muted);
+    stroke-width: 1.25;
+    stroke-dasharray: 5 4;
+  }
+  .demo-slice :global(.sl-tick),
+  .demo-slice :global(.sl-axis-title) {
+    fill: var(--muted);
+    font-size: 11px;
+  }
+  .demo-slice :global(.sl-point) {
+    cursor: pointer;
+    transition: opacity 0.2s var(--ease);
+  }
+  .demo-slice :global(.sl-point:focus) {
+    outline: none;
+  }
+  .demo-slice :global(.sl-hit) {
+    fill: transparent;
+  }
+  .demo-slice :global(.sl-ring) {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 2;
+    opacity: 0;
+  }
+  .demo-slice :global(.sl-point.is-selected .sl-ring),
+  .demo-slice :global(.sl-point:focus-visible .sl-ring) {
+    opacity: 1;
+  }
+  .demo-slice :global(.sl-mark) {
+    stroke: var(--bg);
+    stroke-width: 1.5;
+    paint-order: stroke;
+  }
+  .demo-slice :global(.sl-point.is-star .sl-mark) {
+    fill: var(--sl-star);
+  }
+  .demo-slice :global(.sl-point.is-plowhorse .sl-mark) {
+    fill: var(--sl-plowhorse);
+  }
+  .demo-slice :global(.sl-point.is-puzzle .sl-mark) {
+    fill: var(--sl-puzzle);
+  }
+  .demo-slice :global(.sl-point.is-dog .sl-mark) {
+    fill: var(--sl-dog);
+  }
+  .demo-slice :global(.sl-chart[data-focus="star"] .sl-point:not(.is-star)),
+  .demo-slice
+    :global(.sl-chart[data-focus="plowhorse"] .sl-point:not(.is-plowhorse)),
+  .demo-slice :global(.sl-chart[data-focus="puzzle"] .sl-point:not(.is-puzzle)),
+  .demo-slice :global(.sl-chart[data-focus="dog"] .sl-point:not(.is-dog)) {
+    opacity: 0.2;
+  }
+  .sl-table-scroll {
+    min-width: 0;
+    max-height: 520px;
+    overflow: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+  }
+  .sl-table {
+    width: 100%;
+    min-width: 520px;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .sl-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 0 6px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+    text-align: left;
+  }
+  .sl-table thead th.sl-num {
+    text-align: right;
+  }
+  .sl-table th button {
+    padding: 0 8px;
+    border-radius: var(--radius-sm);
+    color: inherit;
+    font-weight: 600;
+  }
+  .sl-table th[aria-sort="ascending"] button::after {
+    content: " \2191";
+  }
+  .sl-table th[aria-sort="descending"] button::after {
+    content: " \2193";
+  }
+  .sl-table th:not([aria-sort="none"]) button {
+    color: var(--ink);
+  }
+  .demo-slice :global(.sl-table td) {
+    height: 46px;
+    padding: 0 12px;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  .demo-slice :global(.sl-table td.sl-num) {
+    text-align: right;
+  }
+  .demo-slice :global(.sl-table tr:last-child td) {
+    border-bottom: 0;
+  }
+  .demo-slice :global(.sl-table tr.is-selected td) {
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+  }
+  .demo-slice :global(.sl-name button) {
+    display: block;
+    min-height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--ink);
+    font-weight: 600;
+    text-align: left;
+    line-height: 1.2;
+  }
+  .demo-slice :global(.sl-name small) {
+    display: block;
+    margin-top: -8px;
+    padding-bottom: 6px;
+    color: var(--muted);
+    font-size: 11px;
+  }
+  .demo-slice :global(.sl-class) {
+    color: var(--ink);
+  }
+  [data-focus="star"] > :global(tr:not([data-quadrant="star"])),
+  [data-focus="plowhorse"] > :global(tr:not([data-quadrant="plowhorse"])),
+  [data-focus="puzzle"] > :global(tr:not([data-quadrant="puzzle"])),
+  [data-focus="dog"] > :global(tr:not([data-quadrant="dog"])) {
+    opacity: 0.35;
+  }
+  .sl-note {
+    margin: 14px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  @media (max-width: 480px) {
+    .sl-views {
+      width: 100%;
+    }
+    .sl-views button {
+      flex: 1;
+      padding: 0 10px;
+    }
+    .sl-bar {
+      gap: 8px;
+    }
+    .sl-site-body {
+      max-height: 380px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .demo-slice * {
+      transition: none !important;
+    }
+  }
+</style>

@@ -1,0 +1,452 @@
+---
+import {
+  CHANGE_DATES,
+  DIAGRAM,
+  EDGES,
+  QUARTERS,
+  QUERY_LIST,
+} from "../../data/demos/hospital-data-warehouse";
+
+const byName = new Map(DIAGRAM.map((n) => [n.name, n]));
+const lines = EDGES.map(([factName, dimName], index) => {
+  const fact = byName.get(factName)!;
+  const dim = byName.get(dimName)!;
+  const left = dim.x < fact.x;
+  const siblings = EDGES.filter(
+    ([f, d]) => f === factName && byName.get(d)!.x < fact.x === left,
+  );
+  const slot = siblings.findIndex(([, d]) => d === dimName) + 1;
+  const fy = fact.y + (fact.h * slot) / (siblings.length + 1);
+  return {
+    key: `${factName}|${dimName}`,
+    x1: left ? fact.x : fact.x + fact.w,
+    y1: fy,
+    x2: left ? dim.x + dim.w : dim.x,
+    y2: dim.y + dim.h / 2,
+    index,
+  };
+});
+---
+
+<section
+  class="demo demo-hospital-data-warehouse"
+  data-demo="hospital-data-warehouse"
+  aria-label="Hospital Data Warehouse interactive sample"
+>
+  <div class="hw-top">
+    <div class="hw-queries" role="group" aria-label="Preset queries">
+      {
+        QUERY_LIST.map((q, i) => (
+          <button
+            type="button"
+            data-query={q.id}
+            aria-pressed={i === 0 ? "true" : "false"}
+          >
+            {q.label}
+          </button>
+        ))
+      }
+    </div>
+    <button type="button" class="hw-reset">Reset</button>
+  </div>
+
+  <div class="hw-options">
+    <label data-option="states" hidden>
+      <span>Quarter</span>
+      <select class="hw-quarter">
+        {
+          QUARTERS.map((q) => (
+            <option value={q}>{q === "all" ? "All of 2025" : q}</option>
+          ))
+        }
+      </select>
+    </label>
+    <div class="hw-option-row" data-option="scd" hidden>
+      <label>
+        <span>Dr. Okafor moves to Cardiology on</span>
+        <select class="hw-change">
+          {CHANGE_DATES.map((d) => <option value={d}>{d}</option>)}
+        </select>
+      </label>
+      <div class="hw-mode" role="group" aria-label="History handling">
+        <button type="button" data-mode="type2" aria-pressed="true"
+          >Keep history (type 2)</button
+        >
+        <button type="button" data-mode="type1" aria-pressed="false"
+          >Overwrite (type 1)</button
+        >
+      </div>
+    </div>
+  </div>
+
+  <div class="hw-grid">
+    <div class="hw-result" aria-live="polite">
+      <h2 class="hw-title"></h2>
+      <div
+        class="hw-table"
+        tabindex="0"
+        role="region"
+        aria-label="Query result"
+      >
+      </div>
+      <div class="hw-metrics" role="group" aria-label="Chart measure">
+        <button type="button" data-metric="0" aria-pressed="true"></button>
+        <button type="button" data-metric="1" aria-pressed="false"></button>
+      </div>
+      <div class="hw-chart"></div>
+    </div>
+
+    <figure class="hw-diagram">
+      <div
+        class="hw-scroll"
+        tabindex="0"
+        role="region"
+        aria-label="Star schema"
+      >
+        <svg
+          viewBox={`0 0 ${Math.max(...DIAGRAM.map((n) => n.x + n.w)) + 24} ${Math.max(...DIAGRAM.map((n) => n.y + n.h)) + 14}`}
+          role="img"
+          aria-label="Star schema: two fact tables joined to dimension tables"
+        >
+          {
+            lines.map((l) => (
+              <line
+                class="hw-edge"
+                data-edge={l.key}
+                x1={l.x1}
+                y1={l.y1}
+                x2={l.x2}
+                y2={l.y2}
+              />
+            ))
+          }
+          {
+            DIAGRAM.map((n) => (
+              <g
+                class:list={["hw-node", n.kind]}
+                data-table={n.name}
+                transform={`translate(${n.x} ${n.y})`}
+              >
+                <rect width={n.w} height={n.h} rx="9" />
+                <text class="hw-n-title" x="10" y="19">
+                  {n.name}
+                </text>
+                {n.columns.map((c, i) => (
+                  <text class="hw-n-col" x="10" y={36 + i * 14}>
+                    {c}
+                  </text>
+                ))}
+              </g>
+            ))
+          }
+        </svg>
+      </div>
+    </figure>
+
+    <pre class="hw-sql" tabindex="0"><code /></pre>
+  </div>
+
+  <p class="hw-note">
+    Queries run against in-memory sample tables. No database is connected.
+  </p>
+</section>
+
+<script>
+  import "../../scripts/demos/hospital-data-warehouse";
+</script>
+
+<style>
+  .demo-hospital-data-warehouse {
+    --hw-fact: #d98a2b;
+    --hw-surface: color-mix(in srgb, var(--ink) 5%, transparent);
+    --hw-surface-2: color-mix(in srgb, var(--ink) 9%, transparent);
+    margin: 28px 0;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--hw-surface);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.5;
+    min-width: 0;
+  }
+  :global(:root[data-theme="light"]) .demo-hospital-data-warehouse {
+    --hw-fact: #a85d00;
+  }
+  [hidden] {
+    display: none !important;
+  }
+  button,
+  select {
+    font: inherit;
+    touch-action: manipulation;
+  }
+  .hw-top {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  .hw-queries {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+  }
+  button {
+    min-height: 44px;
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition:
+      background 0.2s var(--ease),
+      color 0.2s var(--ease),
+      border-color 0.2s var(--ease);
+  }
+  button:hover {
+    color: var(--ink);
+    border-color: var(--accent);
+  }
+  button[aria-pressed="true"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+  .hw-reset {
+    color: var(--accent);
+  }
+  button:focus-visible,
+  select:focus-visible,
+  [tabindex]:focus-visible {
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  .hw-options:not(:empty) {
+    margin-top: 12px;
+  }
+  .hw-options label {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    color: var(--muted);
+  }
+  .hw-option-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    align-items: center;
+  }
+  .hw-mode {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  select {
+    min-height: 44px;
+    padding: 6px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--hw-surface-2);
+    color: var(--ink);
+    max-width: 100%;
+  }
+  select option {
+    background: var(--bg);
+    color: var(--ink);
+  }
+  .hw-grid {
+    display: grid;
+    gap: 18px;
+    margin-top: 16px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  @media (min-width: 1000px) {
+    .hw-grid {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      grid-template-areas:
+        "diagram result"
+        "sql result";
+      grid-template-rows: auto 1fr;
+      align-items: start;
+    }
+    .hw-diagram {
+      grid-area: diagram;
+    }
+    .hw-sql {
+      grid-area: sql;
+    }
+    .hw-result {
+      grid-area: result;
+    }
+  }
+  .hw-result {
+    min-width: 0;
+  }
+  .hw-title {
+    margin: 0 0 10px;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .hw-table,
+  .hw-scroll {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+  }
+  .hw-table :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  .hw-table :global(th),
+  .hw-table :global(td) {
+    padding: 9px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--line);
+  }
+  .hw-table :global(tbody tr:last-child td) {
+    border-bottom: 0;
+  }
+  .hw-table :global(th) {
+    color: var(--muted);
+    font-weight: 500;
+    background: var(--hw-surface);
+  }
+  .hw-table :global(.is-num) {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .hw-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 14px 0 8px;
+  }
+  .hw-chart {
+    max-width: 440px;
+  }
+  .hw-chart :global(.hw-c-row) {
+    display: grid;
+    gap: 5px;
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
+  .hw-chart :global(.hw-c-heading) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 4px 12px;
+  }
+  .hw-chart :global(.hw-c-label) {
+    overflow-wrap: anywhere;
+  }
+  .hw-chart :global(.hw-c-value) {
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .hw-chart :global(.hw-c-track) {
+    height: 12px;
+    border-radius: 6px;
+    background: var(--hw-surface-2);
+  }
+  .hw-chart :global(.hw-c-bar) {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--accent);
+  }
+  .hw-diagram {
+    margin: 0;
+    min-width: 0;
+  }
+  .hw-scroll svg {
+    display: block;
+    min-width: 600px;
+    width: 100%;
+    height: auto;
+  }
+  .hw-edge {
+    stroke: var(--faint);
+    stroke-width: 1;
+    opacity: 0.45;
+    transition:
+      stroke 0.2s var(--ease),
+      opacity 0.2s var(--ease);
+  }
+  .hw-edge.is-on {
+    stroke: var(--accent);
+    stroke-width: 2.5;
+    opacity: 1;
+  }
+  .hw-node rect {
+    fill: var(--hw-surface);
+    stroke: var(--line);
+    stroke-width: 1;
+    transition:
+      fill 0.2s var(--ease),
+      stroke 0.2s var(--ease);
+  }
+  .hw-node.fact rect {
+    stroke: var(--hw-fact);
+    stroke-opacity: 0.55;
+  }
+  .hw-node.is-on rect {
+    fill: color-mix(in srgb, var(--accent) 18%, transparent);
+    stroke: var(--accent);
+    stroke-opacity: 1;
+    stroke-width: 2;
+  }
+  .hw-n-title {
+    font-size: 13px;
+    font-weight: 600;
+    fill: var(--ink);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .hw-node.fact .hw-n-title {
+    fill: var(--hw-fact);
+  }
+  .hw-node.fact.is-on .hw-n-title {
+    fill: var(--ink);
+  }
+  .hw-n-col {
+    font-size: 10.5px;
+    fill: var(--muted);
+  }
+  .hw-sql {
+    margin: 0;
+    padding: 14px 16px;
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--hw-surface-2);
+    font-size: 12.5px;
+    line-height: 1.6;
+    min-width: 0;
+  }
+  .hw-sql code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    color: var(--ink);
+  }
+  .hw-sql :global(.hw-kw) {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .hw-note {
+    margin: 16px 0 0;
+    color: var(--faint);
+    font-size: 12px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    button,
+    .hw-edge,
+    .hw-node rect {
+      transition: none;
+    }
+  }
+</style>

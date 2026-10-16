@@ -1,0 +1,44 @@
+---
+import Base from "../../../layouts/Base.astro";
+import EduinsightDemo from "../../../components/demos/EduinsightDemo.astro";
+---
+
+<Base
+  title="EduInsight interactive sample | Fabrizio Petrozzi"
+  description="A disconnected interactive sample of EduInsight's enrollment records, forms and charts, using synthetic data."
+>
+  <main id="main" class="project-page wrap eduinsight-demo-page">
+    <a class="back-link" href="/projects/eduinsight/">Back to EduInsight</a>
+    <header class="eduinsight-demo-intro">
+      <div>
+        <p class="eyebrow">Interactive sample</p><h1>Try EduInsight</h1>
+      </div><p>Sample data. Nothing connects or saves.</p>
+    </header>
+    <EduinsightDemo />
+  </main>
+</Base>
+
+<style>
+  .eduinsight-demo-page {
+    padding-top: 40px;
+    padding-bottom: 72px;
+  }
+  .eduinsight-demo-intro {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+    margin: 24px 0;
+  }
+  .eduinsight-demo-intro h1 {
+    margin: 6px 0 0;
+    font-size: clamp(32px, 5vw, 52px);
+    letter-spacing: -0.04em;
+    font-weight: 500;
+  }
+  .eduinsight-demo-intro > p {
+    color: var(--muted);
+    font-size: 14px;
+  }
+</style>

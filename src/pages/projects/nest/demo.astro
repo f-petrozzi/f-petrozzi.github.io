@@ -1,0 +1,47 @@
+---
+import Base from "../../../layouts/Base.astro";
+import NestDemo from "../../../components/demos/NestDemo.astro";
+---
+
+<Base
+  title="Nest interactive sample | Fabrizio Petrozzi"
+  description="Explore Nest’s connected household tasks, receipt review and pantry with invented data."
+>
+  <main id="main" class="project-page wrap nest-demo-page">
+    <a class="back-link" href="/projects/nest/">Back to Nest</a>
+    <header class="nest-demo-intro">
+      <div><p class="eyebrow">Interactive sample</p><h1>Try Nest</h1></div>
+      <p>Sample data. Nothing connects or saves.</p>
+    </header>
+    <NestDemo />
+  </main>
+</Base>
+
+<style>
+  .nest-demo-page {
+    padding-block: 40px 72px;
+  }
+  .nest-demo-intro {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: end;
+    gap: 12px 24px;
+    margin-block: 24px;
+  }
+  .nest-demo-intro h1 {
+    margin: 6px 0 0;
+    font-size: clamp(32px, 5vw, 52px);
+    letter-spacing: -0.04em;
+    font-weight: 500;
+  }
+  .nest-demo-intro > p {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0;
+  }
+  .nest-demo-page .back-link:focus-visible {
+    box-shadow: 0 0 0 3px var(--accent);
+    border-radius: 4px;
+  }
+</style>
