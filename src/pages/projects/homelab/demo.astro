@@ -1,0 +1,50 @@
+---
+import Base from "../../../layouts/Base.astro";
+import HomelabDemo from "../../../components/demos/HomelabDemo.astro";
+---
+
+<Base
+  title="Homelab interactive sample | Fabrizio Petrozzi"
+  description="Explore a homelab architecture, host monitoring and DNS filtering with synthetic data."
+>
+  <main id="main" class="project-page wrap homelab-page">
+    <a class="back-link" href="/projects/homelab/">Back to Homelab</a>
+    <header class="homelab-intro">
+      <div><p class="eyebrow">Interactive sample</p><h1>Try Homelab</h1></div>
+      <p>Sample data. Nothing connects or saves.</p>
+    </header>
+    <HomelabDemo />
+  </main>
+</Base>
+
+<style>
+  .homelab-page {
+    padding-top: 40px;
+    padding-bottom: 72px;
+    min-width: 0;
+  }
+  .homelab-intro {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: end;
+    gap: 16px 24px;
+    margin: 24px 0;
+  }
+  .homelab-intro h1 {
+    margin: 6px 0 0;
+    font-size: clamp(32px, 5vw, 52px);
+    letter-spacing: -0.04em;
+    font-weight: 500;
+  }
+  .homelab-intro > p {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0;
+  }
+  .back-link:focus-visible {
+    box-shadow:
+      0 0 0 3px var(--bg),
+      0 0 0 5px var(--accent);
+  }
+</style>
