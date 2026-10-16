@@ -1,0 +1,38 @@
+<section class="demo demo-orbit" aria-label="Orbit interactive sample">
+  <iframe
+    src="/projects-orbit-app/"
+    title="Orbit workspace with invented tasks, chat, library and finances"
+    loading="lazy"
+    width="1280"
+    height="720"
+    sandbox="allow-scripts allow-same-origin"></iframe>
+</section>
+
+<style is:inline>
+  .demo-orbit {
+    --orbit-frame-surface: #e9edf0;
+    --orbit-frame-rim: #d1dce2;
+    margin: 28px 0;
+    overflow: hidden;
+    border: 1px solid var(--orbit-frame-rim);
+    border-radius: 24px;
+    background: var(--orbit-frame-surface);
+    color-scheme: light;
+
+    iframe {
+      display: block;
+      width: 100%;
+      height: 720px;
+      border: 0;
+      background: var(--orbit-frame-surface);
+    }
+
+    @media (max-width: 760px) {
+      border-radius: 20px;
+
+      iframe {
+        height: 640px;
+      }
+    }
+  }
+</style>
