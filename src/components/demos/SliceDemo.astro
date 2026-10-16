@@ -102,7 +102,13 @@ import { PERIODS, QUADRANTS } from "../../data/demos/slice";
         <p class="sl-thresholds" data-thresholds></p>
         <p class="sl-detail" data-detail aria-live="polite"></p>
       </div>
-      <div class="sl-table-scroll" data-table-scroll>
+      <div
+        class="sl-table-scroll"
+        data-table-scroll
+        tabindex="0"
+        role="region"
+        aria-label="Menu analysis items"
+      >
         <table class="sl-table">
           <caption class="sl-sr">Items by popularity and margin</caption>
           <thead>
@@ -147,6 +153,7 @@ import { PERIODS, QUADRANTS } from "../../data/demos/slice";
     --sl-panel: color-mix(in srgb, var(--ink) 5%, transparent);
     container-type: inline-size;
     display: block;
+    min-width: 0;
     color: var(--ink);
     font-size: 14px;
     line-height: 1.5;
@@ -167,7 +174,8 @@ import { PERIODS, QUADRANTS } from "../../data/demos/slice";
     cursor: pointer;
   }
   .demo-slice button:focus-visible,
-  .demo-slice textarea:focus-visible {
+  .demo-slice textarea:focus-visible,
+  .sl-table-scroll:focus-visible {
     box-shadow:
       0 0 0 2px var(--bg),
       0 0 0 4px var(--accent);
@@ -467,6 +475,7 @@ import { PERIODS, QUADRANTS } from "../../data/demos/slice";
   }
   .sl-totals {
     display: flex;
+    flex-wrap: wrap;
     gap: 22px;
     margin: 0;
   }
@@ -529,6 +538,7 @@ import { PERIODS, QUADRANTS } from "../../data/demos/slice";
   }
   .sl-analysis-grid {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 16px;
   }
   @container (min-width: 860px) {
@@ -593,14 +603,6 @@ import { PERIODS, QUADRANTS } from "../../data/demos/slice";
     fill: var(--muted);
     font-size: 11px;
   }
-  .demo-slice :global(.sl-corner) {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    fill: var(--muted);
-    pointer-events: none;
-  }
   .demo-slice :global(.sl-point) {
     cursor: pointer;
     transition: opacity 0.2s var(--ease);
@@ -645,16 +647,6 @@ import { PERIODS, QUADRANTS } from "../../data/demos/slice";
   .demo-slice :global(.sl-chart[data-focus="dog"] .sl-point:not(.is-dog)) {
     opacity: 0.2;
   }
-  .demo-slice :global(.sl-label) {
-    fill: var(--ink);
-    font-size: 12px;
-    font-weight: 600;
-    stroke: var(--bg);
-    stroke-width: 3.5px;
-    paint-order: stroke;
-    pointer-events: none;
-  }
-
   .sl-table-scroll {
     min-width: 0;
     max-height: 520px;

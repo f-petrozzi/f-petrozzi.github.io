@@ -591,7 +591,9 @@ import { SERVICES } from "../../data/demos/tixly-app-design";
   }
   .tx-phone :global(.tx-seats) {
     display: grid;
-    grid-template-columns: 14px repeat(var(--cols), minmax(0, 1fr));
+    grid-template-columns: 14px repeat(var(--cols), 44px);
+    overflow-x: auto;
+    padding: 4px;
     gap: 6px;
     align-items: center;
     margin-bottom: 8px;
@@ -601,7 +603,8 @@ import { SERVICES } from "../../data/demos/tixly-app-design";
     font-size: 11px;
   }
   .tx-phone :global(.tx-seat) {
-    height: 32px;
+    width: 44px;
+    height: 44px;
     padding: 0;
     border: 1px var(--p-bs) var(--p-line);
     border-radius: calc(var(--p-radius) - 6px) calc(var(--p-radius) - 6px) 4px

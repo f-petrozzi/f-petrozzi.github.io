@@ -23,29 +23,18 @@ function highlight(sql: string) {
   return escapeHtml(sql).replace(KEYWORDS, '<span class="hw-kw">$1</span>');
 }
 
-function chartSvg(result: QueryResult, metricKey: string) {
+function chartHtml(result: QueryResult, metricKey: string) {
   const metric = result.metrics.find((m) => m.key === metricKey)!;
-  const width = 320;
-  const row = 40;
   const values = result.rows.map((r) => Number(r[metric.key]));
   const max = Math.max(...values, 1);
-  const bars = result.rows
+  return result.rows
     .map((r, i) => {
-      const y = i * row;
-      const value = values[i];
-      const w = Math.max(2, (value / max) * width);
+      const width = Math.max(0, (values[i] / max) * 100);
       const label = escapeHtml(String(r[result.labelKey]));
-      const text = escapeHtml(formatValue(value, metric.format));
-      return `<g><text class="hw-c-label" x="0" y="${y + 13}">${label}</text><text class="hw-c-value" x="${width}" y="${y + 13}" text-anchor="end">${text}</text><rect class="hw-c-track" x="0" y="${y + 19}" width="${width}" height="12" rx="6"/><rect class="hw-c-bar" x="0" y="${y + 19}" width="${w.toFixed(1)}" height="12" rx="6"/></g>`;
+      const value = escapeHtml(formatValue(values[i], metric.format));
+      return `<div class="hw-c-row"><div class="hw-c-heading"><span class="hw-c-label">${label}</span><span class="hw-c-value">${value}</span></div><div class="hw-c-track" aria-hidden="true"><i class="hw-c-bar" style="width:${width.toFixed(2)}%"></i></div></div>`;
     })
     .join("");
-  const summary = result.rows
-    .map(
-      (r, i) =>
-        `${r[result.labelKey]} ${formatValue(values[i], metric.format)}`,
-    )
-    .join(", ");
-  return `<svg viewBox="0 0 ${width} ${result.rows.length * row}" role="img" aria-label="${escapeHtml(metric.label)}: ${escapeHtml(summary)}">${bars}</svg>`;
 }
 
 function init(root: HTMLElement) {
@@ -129,7 +118,7 @@ function init(root: HTMLElement) {
     sqlBox.innerHTML = highlight(result.sql);
     renderTable(result);
     renderMetrics(result);
-    chartWrap.innerHTML = chartSvg(result, metric);
+    chartWrap.innerHTML = chartHtml(result, metric);
     root.querySelectorAll<SVGGElement>("[data-table]").forEach((node) => {
       node.classList.toggle(
         "is-on",

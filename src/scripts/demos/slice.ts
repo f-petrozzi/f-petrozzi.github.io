@@ -179,7 +179,6 @@ function init(root: HTMLElement) {
   const sortButtons = qa<HTMLButtonElement>("[data-sort]");
   const pointRefs = new Map<string, SVGGElement>();
   const rowRefs = new Map<string, HTMLTableRowElement>();
-  let label: SVGTextElement | null = null;
   let chart: SVGSVGElement | null = null;
 
   qa<SVGPathElement>("[data-glyph]").forEach((path) => {
@@ -193,18 +192,6 @@ function init(root: HTMLElement) {
 
   function rowById(id: string): AnalysisRow | undefined {
     return analysis.rows.find((row) => row.id === id);
-  }
-
-  function placeLabel() {
-    const row = rowById(selectedId);
-    if (!label || !scale || !row) return;
-    const x = scale.x(row.mix);
-    const y = scale.y(row.margin);
-    label.textContent = row.name;
-    const flip = x > drawnWidth * 0.58;
-    label.setAttribute("text-anchor", flip ? "end" : "start");
-    label.setAttribute("x", String(x + (flip ? -11 : 11)));
-    label.setAttribute("y", String(y < 30 ? y + 20 : y - 11));
   }
 
   function select(id: string, scrollRow = false) {
@@ -236,7 +223,6 @@ function init(root: HTMLElement) {
       }
     }
     detail.textContent = `${row.name}, ${singular(row.quadrant)}. ${percent(row.mix)} of units, ${money(row.margin)} margin per unit, ${money(row.contribution)} contribution.`;
-    placeLabel();
   }
 
   function drawChart() {
@@ -244,7 +230,7 @@ function init(root: HTMLElement) {
     if (width < 120) return;
     drawnWidth = width;
     const height = Math.min(400, Math.max(280, Math.round(width * 0.78)));
-    const pad = { top: 12, right: 14, bottom: 40, left: 46 };
+    const pad = { top: 12, right: 22, bottom: 40, left: 46 };
     const plot = { width, height, pad };
     scale = plotScale(analysis, plot);
     const sc = scale;
@@ -283,7 +269,8 @@ function init(root: HTMLElement) {
       ),
     );
 
-    for (let t = 0; t <= sc.xMax + 1e-9; t += 0.02) {
+    const tickStep = width < 360 ? 0.04 : 0.02;
+    for (let t = 0; t <= sc.xMax + 1e-9; t += tickStep) {
       const x = sc.x(t);
       svg.append(
         s("line", { class: "sl-grid", x1: x, x2: x, y1: top, y2: bottom }),
@@ -331,25 +318,6 @@ function init(root: HTMLElement) {
       s("line", { class: "sl-threshold", x1: left, x2: right, y1: ty, y2: ty }),
     );
 
-    const corners: [Quadrant, number, number, string][] = [
-      ["puzzle", left + 8, top + 15, "start"],
-      ["star", right - 8, top + 15, "end"],
-      ["dog", left + 8, bottom - 8, "start"],
-      ["plowhorse", right - 8, bottom - 8, "end"],
-    ];
-    corners.forEach(([quadrant, x, y, anchor]) => {
-      const text = s("text", {
-        class: `sl-corner is-${quadrant}`,
-        x,
-        y,
-        "text-anchor": anchor,
-      });
-      text.textContent = QUADRANTS.find(
-        (entry) => entry.id === quadrant,
-      )!.label;
-      svg.append(text);
-    });
-
     pointRefs.clear();
     const points = s("g");
     analysis.rows.forEach((row) => {
@@ -383,8 +351,7 @@ function init(root: HTMLElement) {
       pointRefs.set(row.id, g);
       points.append(g);
     });
-    label = s("text", { class: "sl-label" });
-    svg.append(points, label);
+    svg.append(points);
     plotBox.replaceChildren(svg);
     chart = svg;
     if (!rowById(selectedId)) selectedId = topId();
