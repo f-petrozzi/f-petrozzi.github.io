@@ -1,0 +1,327 @@
+---
+import {
+  observations,
+  predictorNames,
+  regress,
+  solveProduction,
+} from "../../data/demos/business-statistics";
+const fit = regress(observations, [0, 1, 2]);
+---
+
+<section
+  class="demo demo-business-statistics"
+  data-demo="business-statistics"
+  aria-label="Business Statistics interactive sample"
+>
+  <h2>Fit the data. Allocate resources.</h2>
+  <form>
+    <div class="columns">
+      <article class="card">
+        <h3>Medical charges · least squares</h3><p aria-live="polite">
+          R² <strong class="score" data-r2>{fit.r2.toFixed(3)}</strong>
+        </p><div data-residuals></div><div class="scroll">
+          <table>
+            <thead
+              ><tr
+                ><th scope="col">Coefficient</th><th scope="col"
+                  >Estimate ($)</th
+                ></tr
+              ></thead
+            ><tbody data-coefficients></tbody>
+          </table>
+        </div><fieldset>
+          <legend>Predictors</legend>{
+            predictorNames.map((name, i) => (
+              <label class="check">
+                <input type="checkbox" data-predictor value={i} checked />
+                {name}
+              </label>
+            ))
+          }
+        </fieldset><details>
+          <summary>18 observations</summary><div class="scroll">
+            <table>
+              <thead
+                ><tr
+                  >{
+                    ["Age", "BMI", "Smoker", "Charges ($)"].map((name) => (
+                      <th scope="col">{name}</th>
+                    ))
+                  }</tr
+                ></thead
+              ><tbody
+                >{
+                  observations.map((row) => (
+                    <tr>
+                      {[...row.predictors, row.charges].map((v) => (
+                        <td>{v}</td>
+                      ))}
+                    </tr>
+                  ))
+                }</tbody
+              >
+            </table>
+          </div>
+        </details>
+      </article>
+      <article class="card">
+        <h3>Production · linear programming</h3><p>
+          Maximum profit <strong class="score" data-profit
+            >${solveProduction(70, 80).profit.toFixed(2)}</strong
+          >
+        </p><div data-region></div><p data-optimum aria-live="polite"></p><p
+          class="muted"
+        >
+          Maximize $40A + $30B, with A, B ≥ 0.<br />Solid: 2A + B ≤ labor hours.<br
+          />Dashed: A + 2B ≤ material units.
+        </p><label
+          >Labor <output data-labor>70 hours</output><input
+            type="range"
+            name="labor"
+            min="20"
+            max="100"
+            value="70"
+          /></label
+        ><label
+          >Material <output data-material>80 units</output><input
+            type="range"
+            name="material"
+            min="20"
+            max="100"
+            value="80"
+          /></label
+        ><p class="muted">
+          Continuous quantities; optimum evaluated at feasible vertices.
+        </p>
+      </article>
+    </div>
+  </form>
+  <div class="toolbar"><button type="button" data-reset>Reset</button></div>
+  <p class="note">
+    Invented charges and production resources, mirroring the R regression and
+    Excel Solver exercises. Calculations run locally.
+  </p>
+</section>
+<script>
+  import "../../scripts/demos/business-statistics";
+</script>
+<style>
+  .demo-business-statistics {
+    margin: 28px 0;
+    padding: clamp(14px, 3vw, 28px);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.55;
+    min-width: 0;
+  }
+  .demo-business-statistics .columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+  .demo-business-statistics .card {
+    min-width: 0;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+  }
+  .demo-business-statistics h2 {
+    margin: 0 0 14px;
+    font-size: 22px;
+    letter-spacing: -0.025em;
+  }
+  .demo-business-statistics h3 {
+    margin: 0 0 10px;
+    font-size: 16px;
+  }
+  .demo-business-statistics p {
+    margin: 12px 0;
+  }
+  .demo-business-statistics .muted,
+  .demo-business-statistics .note {
+    color: var(--muted);
+  }
+  .demo-business-statistics .note {
+    font-size: 12px;
+    margin-bottom: 0;
+  }
+  .demo-business-statistics .score {
+    display: block;
+    color: var(--accent);
+    font-size: clamp(28px, 5vw, 42px);
+    line-height: 1.2;
+    margin: 10px 0;
+  }
+  .demo-business-statistics .toolbar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 18px 0;
+  }
+  .demo-business-statistics button,
+  .demo-business-statistics select {
+    font: inherit;
+    min-height: 44px;
+    padding: 8px 12px;
+    background: var(--bg);
+    color: var(--ink);
+    border: 1px solid var(--muted);
+    border-radius: 8px;
+    max-width: 100%;
+  }
+  .demo-business-statistics button {
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  .demo-business-statistics button[aria-pressed="true"] {
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 1px var(--accent);
+    color: var(--accent);
+  }
+  .demo-business-statistics button:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  .demo-business-statistics :is(button, input, select):focus-visible {
+    box-shadow:
+      0 0 0 3px var(--bg),
+      0 0 0 6px var(--accent);
+  }
+  .demo-business-statistics label {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+  }
+  .demo-business-statistics .inputs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin: 18px 0;
+  }
+  .demo-business-statistics input,
+  .demo-business-statistics select {
+    font-size: 16px;
+    accent-color: var(--accent);
+  }
+  .demo-business-statistics input[type="range"] {
+    width: 100%;
+    min-height: 44px;
+    margin: 0;
+  }
+  .demo-business-statistics input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    margin: 10px;
+  }
+  .demo-business-statistics .check {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .demo-business-statistics .scroll {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+  .demo-business-statistics :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .demo-business-statistics :global(th),
+  .demo-business-statistics :global(td) {
+    padding: 9px 6px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+  }
+  .demo-business-statistics :global(th) {
+    font-weight: 500;
+  }
+  .demo-business-statistics :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .demo-business-statistics :global(svg text) {
+    fill: var(--muted);
+    font:
+      12px system-ui,
+      sans-serif;
+  }
+  .demo-business-statistics :global(.axis) {
+    fill: none;
+    stroke: var(--muted);
+    stroke-width: 1;
+  }
+  .demo-business-statistics :global(.series) {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2.5;
+  }
+  .demo-business-statistics :global(.point) {
+    fill: var(--accent);
+  }
+  .demo-business-statistics :global(.secondary) {
+    fill: var(--muted);
+  }
+  .demo-business-statistics :global(.selected) {
+    stroke: var(--accent);
+    stroke-width: 2.5;
+    fill: none;
+  }
+  .demo-business-statistics :global(.branch) {
+    stroke: var(--muted);
+    stroke-width: 1;
+    fill: none;
+  }
+  .demo-business-statistics :global(g rect) {
+    fill: var(--bg);
+  }
+  .demo-business-statistics :global(g text) {
+    stroke: none;
+    text-anchor: middle;
+    font-size: 10px;
+  }
+  @media (max-width: 680px) {
+    .demo-business-statistics .columns {
+      grid-template-columns: 1fr;
+    }
+    .demo-business-statistics .inputs {
+      grid-template-columns: 1fr 1fr;
+    }
+    .demo-business-statistics .card {
+      padding: 12px;
+    }
+  }
+  @media (max-width: 380px) {
+    .demo-business-statistics .inputs {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+<style>
+  .demo-business-statistics fieldset {
+    margin: 16px 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  .demo-business-statistics summary {
+    min-height: 44px;
+    cursor: pointer;
+  }
+  .demo-business-statistics summary:focus-visible {
+    box-shadow: inset 0 0 0 2px var(--accent);
+  }
+  .demo-business-statistics :global(.region) {
+    fill: var(--accent);
+    fill-opacity: 0.16;
+    stroke: var(--accent);
+  }
+  .demo-business-statistics :global(.material) {
+    stroke-dasharray: 6 4;
+    stroke-width: 2;
+  }
+</style>

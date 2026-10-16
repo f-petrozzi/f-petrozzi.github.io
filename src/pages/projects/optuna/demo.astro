@@ -1,0 +1,39 @@
+---
+import Base from "../../../layouts/Base.astro";
+import OptunaDemo from "../../../components/demos/OptunaDemo.astro";
+---
+
+<Base
+  title="Optuna interactive sample | Fabrizio Petrozzi"
+  description="An interactive sample of Optuna with invented data."
+>
+  <main id="main" class="project-page wrap demo-page">
+    <a class="back-link" href="/projects/optuna/">Back to Optuna</a>
+    <header>
+      <p class="eyebrow">Interactive sample</p><h1>Try Optuna</h1><p>
+        Sample data. Nothing connects or saves.
+      </p>
+    </header>
+    <OptunaDemo />
+  </main>
+</Base>
+<style>
+  .demo-page {
+    padding-top: 40px;
+    padding-bottom: 72px;
+  }
+  header {
+    margin: 24px 0;
+  }
+  h1 {
+    font-size: clamp(30px, 5vw, 52px);
+    line-height: 1.15;
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    margin: 8px 0 16px;
+  }
+  header > p:last-child {
+    color: var(--muted);
+    font-size: 14px;
+  }
+</style>

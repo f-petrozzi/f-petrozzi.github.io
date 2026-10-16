@@ -1,0 +1,273 @@
+---
+import {
+  features,
+  keys,
+  labels,
+  scores,
+  naiveBayes,
+  decisionTree,
+  initial,
+} from "../../data/demos/titanic-survival-predictor";
+const pct = (n: number) => `${(100 * n).toFixed(1)}%`;
+---
+
+<section
+  class="demo demo-titanic-survival-predictor"
+  data-demo="titanic-survival-predictor"
+  aria-label="Titanic Survival Predictor interactive sample"
+>
+  <h2>Two models, one passenger</h2>
+  <div class="columns" aria-live="polite">
+    <article class="card">
+      <h3>Naive Bayes · survival</h3><strong class="score" data-bayes
+        >{pct(naiveBayes(initial).probability)}</strong
+      ><div class="scroll">
+        <table>
+          <thead
+            ><tr
+              ><th scope="col">Likelihood</th><th scope="col">Survived</th><th
+                scope="col">Died</th
+              ></tr
+            ></thead
+          ><tbody data-likelihoods></tbody>
+        </table>
+      </div><p class="muted">
+        Posterior ∝ prior × feature likelihoods; Laplace smoothing α = 1.
+      </p>
+    </article>
+    <article class="card">
+      <h3>Decision tree · survival</h3><strong class="score" data-tree-score
+        >{pct(decisionTree(initial).probability)}</strong
+      ><div class="scroll tree" data-tree></div><p data-path></p>
+    </article>
+  </div>
+  <p class="muted" data-accuracy>
+    Held-out accuracy · Naive Bayes {pct(scores.bayes)} · Tree {
+      pct(scores.tree)
+    }
+  </p>
+  <form class="inputs">
+    {
+      keys.map((key) => (
+        <label>
+          {labels[key]}
+          <select name={key}>
+            {features[key].map((value) => (
+              <option value={value}>{value}</option>
+            ))}
+          </select>
+        </label>
+      ))
+    }
+  </form>
+  <button type="button" data-reset>Reset</button>
+  <p class="note">
+    Both models train locally on 120 invented passengers with the same held-out
+    split; these are not historical estimates.
+  </p>
+</section>
+<script>
+  import "../../scripts/demos/titanic-survival-predictor";
+</script>
+<style>
+  .demo-titanic-survival-predictor {
+    margin: 28px 0;
+    padding: clamp(14px, 3vw, 28px);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.55;
+    min-width: 0;
+  }
+  .demo-titanic-survival-predictor .columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+  .demo-titanic-survival-predictor .card {
+    min-width: 0;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+  }
+  .demo-titanic-survival-predictor h2 {
+    margin: 0 0 14px;
+    font-size: 22px;
+    letter-spacing: -0.025em;
+  }
+  .demo-titanic-survival-predictor h3 {
+    margin: 0 0 10px;
+    font-size: 16px;
+  }
+  .demo-titanic-survival-predictor p {
+    margin: 12px 0;
+  }
+  .demo-titanic-survival-predictor .muted,
+  .demo-titanic-survival-predictor .note {
+    color: var(--muted);
+  }
+  .demo-titanic-survival-predictor .note {
+    font-size: 12px;
+    margin-bottom: 0;
+  }
+  .demo-titanic-survival-predictor .score {
+    display: block;
+    color: var(--accent);
+    font-size: clamp(28px, 5vw, 42px);
+    line-height: 1.2;
+    margin: 10px 0;
+  }
+  .demo-titanic-survival-predictor .toolbar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 18px 0;
+  }
+  .demo-titanic-survival-predictor button,
+  .demo-titanic-survival-predictor select {
+    font: inherit;
+    min-height: 44px;
+    padding: 8px 12px;
+    background: var(--bg);
+    color: var(--ink);
+    border: 1px solid var(--muted);
+    border-radius: 8px;
+    max-width: 100%;
+  }
+  .demo-titanic-survival-predictor button {
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  .demo-titanic-survival-predictor button[aria-pressed="true"] {
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 1px var(--accent);
+    color: var(--accent);
+  }
+  .demo-titanic-survival-predictor button:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  .demo-titanic-survival-predictor :is(button, input, select):focus-visible {
+    box-shadow:
+      0 0 0 3px var(--bg),
+      0 0 0 6px var(--accent);
+  }
+  .demo-titanic-survival-predictor label {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+  }
+  .demo-titanic-survival-predictor .inputs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin: 18px 0;
+  }
+  .demo-titanic-survival-predictor input,
+  .demo-titanic-survival-predictor select {
+    font-size: 16px;
+    accent-color: var(--accent);
+  }
+  .demo-titanic-survival-predictor input[type="range"] {
+    width: 100%;
+    min-height: 44px;
+    margin: 0;
+  }
+  .demo-titanic-survival-predictor input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    margin: 10px;
+  }
+  .demo-titanic-survival-predictor .check {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .demo-titanic-survival-predictor .scroll {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+  .demo-titanic-survival-predictor :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .demo-titanic-survival-predictor :global(th),
+  .demo-titanic-survival-predictor :global(td) {
+    padding: 9px 6px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+  }
+  .demo-titanic-survival-predictor :global(th) {
+    font-weight: 500;
+  }
+  .demo-titanic-survival-predictor :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .demo-titanic-survival-predictor :global(svg text) {
+    fill: var(--muted);
+    font:
+      12px system-ui,
+      sans-serif;
+  }
+  .demo-titanic-survival-predictor :global(.axis) {
+    fill: none;
+    stroke: var(--muted);
+    stroke-width: 1;
+  }
+  .demo-titanic-survival-predictor :global(.series) {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2.5;
+  }
+  .demo-titanic-survival-predictor :global(.point) {
+    fill: var(--accent);
+  }
+  .demo-titanic-survival-predictor :global(.secondary) {
+    fill: var(--muted);
+  }
+  .demo-titanic-survival-predictor :global(.selected) {
+    stroke: var(--accent);
+    stroke-width: 2.5;
+    fill: none;
+  }
+  .demo-titanic-survival-predictor :global(.branch) {
+    stroke: var(--muted);
+    stroke-width: 1;
+    fill: none;
+  }
+  .demo-titanic-survival-predictor :global(g rect) {
+    fill: var(--bg);
+  }
+  .demo-titanic-survival-predictor :global(g text) {
+    stroke: none;
+    text-anchor: middle;
+    font-size: 10px;
+  }
+  @media (max-width: 680px) {
+    .demo-titanic-survival-predictor .columns {
+      grid-template-columns: 1fr;
+    }
+    .demo-titanic-survival-predictor .inputs {
+      grid-template-columns: 1fr 1fr;
+    }
+    .demo-titanic-survival-predictor .card {
+      padding: 12px;
+    }
+  }
+  @media (max-width: 380px) {
+    .demo-titanic-survival-predictor .inputs {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+<style>
+  .demo-titanic-survival-predictor .tree :global(svg) {
+    min-width: 650px;
+  }
+</style>
