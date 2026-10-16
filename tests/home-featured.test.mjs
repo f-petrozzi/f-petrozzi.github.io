@@ -34,7 +34,10 @@ test("featured screenshots are real WebPs within budget, with accurate dimension
       /<article\b[^>]*data-project="([^"]+)"[^>]*>([\s\S]*?)<\/article>/g,
     ),
   ];
-  assert.equal(cards.length, 4);
+  assert.deepEqual(
+    cards.map(([, id]) => id),
+    ["orbit", "homelab", "nume", "proterra", "nest"],
+  );
   for (const [, id, card] of cards) {
     assert.ok(
       !card.includes("project-art"),
@@ -50,11 +53,86 @@ test("featured screenshots are real WebPs within budget, with accurate dimension
     assert.equal(width, metadata.width, `${id} width`);
     assert.equal(height, metadata.height, `${id} height`);
     assert.ok(width >= 1120, `${id} needs a 2x-ready image`);
-    assert.ok(statSync(file).size <= 120000, `${id} exceeds 120 KB`);
+    const budget = id === "orbit" ? 140000 : 120000;
+    assert.ok(statSync(file).size <= budget, `${id} exceeds ${budget} bytes`);
     assert.match(tag, /alt="[^"]+"/);
-    assert.ok(tag.includes(`loading="${id === "homelab" ? "eager" : "lazy"}"`));
+    assert.ok(tag.includes(`loading="${id === "orbit" ? "eager" : "lazy"}"`));
+    assert.ok(
+      tag.includes(`fetchpriority="${id === "orbit" ? "high" : "auto"}"`),
+    );
   }
   assert.equal(featured.find((item) => item.id === "nest").image.height, 630);
+});
+
+test("Orbit leads the grid with the existing card controls and an uncropped frame", () => {
+  const card = html.match(
+    /<article\b[^>]*data-project="orbit"[^>]*>([\s\S]*?)<\/article>/,
+  );
+  assert.match(card[0], /class="work-card work-card-lead"/);
+  assert.match(card[1], /id="work-orbit"/);
+  assert.equal((card[1].match(/<img\b/g) || []).length, 1);
+  assert.match(card[1], /aria-controls="info-orbit"/);
+  assert.match(card[1], /href="\/projects\/orbit\/"/);
+  assert.match(card[1], /Read project/);
+  assert.match(css(html), /\.work-card-lead\s*\{grid-column:1\/-1\}/);
+  assert.match(
+    css(html),
+    /\.work-card-lead \.work-stage\s*\{aspect-ratio:1120\/650;border-radius:0\}/,
+  );
+  assert.match(
+    readFileSync("src/content/projects/orbit.md", "utf8"),
+    /^featured: true$/m,
+  );
+  const row = [
+    ...html.matchAll(
+      /<article\b[^>]*class="project-row"[^>]*>([\s\S]*?)<\/article>/g,
+    ),
+  ].find(([, body]) => body.includes('href="/projects/orbit/"'));
+  assert.match(row[0], /data-facets="ai web"/);
+});
+
+test("featured crops remove the page background and the NüMe sidebar edge", async () => {
+  const { default: sharp } = await import("sharp");
+  const orbit = await sharp("public/assets/shots/orbit-featured.webp")
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const pixel = (x, y) => [
+    ...orbit.data.subarray(
+      (y * orbit.info.width + x) * 4,
+      (y * orbit.info.width + x) * 4 + 4,
+    ),
+  ];
+  for (const [x, y] of [
+    [0, 0],
+    [1119, 0],
+    [0, 649],
+    [1119, 649],
+  ])
+    assert.equal(
+      pixel(x, y)[3],
+      0,
+      `Orbit corner ${x},${y} retains page background`,
+    );
+  assert.equal(pixel(560, 325)[3], 255);
+  for (let y = 0; y < 650; y++)
+    for (let x = 0; x < 1120; x++) {
+      if (x > 1 && x < 1118 && y > 1 && y < 648) continue;
+      const [r, g, b, alpha] = pixel(x, y);
+      assert.ok(
+        alpha === 0 || r + g + b > 500,
+        `Orbit retains dark page pixel ${x},${y}`,
+      );
+    }
+  const edge = await sharp("public/assets/shots/nume-featured.webp")
+    .extract({ left: 0, top: 0, width: 3, height: 630 })
+    .removeAlpha()
+    .raw()
+    .toBuffer();
+  assert.ok(
+    [...edge].every((value) => value > 235),
+    "NüMe retains a sidebar or seam on its left edge",
+  );
 });
 
 test("gallery keeps its inline fixed palette out of pages that do not render it", () => {
@@ -77,6 +155,7 @@ test("gallery keeps its inline fixed palette out of pages that do not render it"
 
 test("featured demo CSS stays on each project's own project and demo pages", () => {
   for (const [id, selector] of [
+    ["orbit", ".demo-orbit {"],
     ["nume", ".nume-sample {"],
     ["homelab", ".demo-homelab {"],
     ["proterra", ".demo-proterra {"],
@@ -98,7 +177,7 @@ test("featured demo CSS stays on each project's own project and demo pages", () 
 });
 
 test("info animation keeps card dimensions fixed and removes cursor proximity", () => {
-  assert.equal((html.match(/<circle cx="22" cy="22" r="20"/g) || []).length, 4);
+  assert.equal((html.match(/<circle cx="22" cy="22" r="20"/g) || []).length, 5);
   assert.ok(!html.includes("info-arm"));
   const home = readFileSync("src/scripts/home.ts", "utf8");
   const panel = home.slice(home.indexOf("// The information surface"));

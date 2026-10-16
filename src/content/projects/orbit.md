@@ -17,7 +17,7 @@ tools:
     "Tailscale",
   ]
 order: 0
-featured: false
+featured: true
 status: "Private application"
 visual: "code"
 ---

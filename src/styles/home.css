@@ -248,7 +248,7 @@ section {
   color: var(--ink);
 }
 
-/* Selected work: one image edge and a shared crop ratio. */
+/* Selected work: a full-width lead above the paired cards. */
 .work {
   padding-bottom: 112px;
 }
@@ -263,6 +263,13 @@ section {
   display: flex;
   flex-direction: column;
   min-width: 0;
+}
+.work-card-lead {
+  grid-column: 1 / -1;
+}
+.work-card-lead .work-stage {
+  aspect-ratio: 1120 / 650;
+  border-radius: 0;
 }
 .work-card:has(.work-more.is-expanded) {
   z-index: 3;
@@ -386,6 +393,7 @@ section {
 }
 .work-more:not(.info-enhanced)[open] {
   width: 100%;
+  max-width: 560px;
 }
 .info-enhanced {
   overflow: visible;
