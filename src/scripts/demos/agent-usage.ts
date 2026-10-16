@@ -75,14 +75,15 @@ function init(root: HTMLElement) {
   let dragging: { id: number; start: number; from: number } | null = null;
   let restAt = { x: -99, y: -99 };
   let pendingAccount: AccountId | null = null;
-  const opening = channel(0);
-  const detail = channel(0);
+  // Match the revealed server render before any animation frame or pointer input.
+  const opening = channel(1);
+  const detail = channel(1);
   const bell = channel(0);
   const arms = all<HTMLButtonElement>("[data-arm]").map((element) => ({
     element,
     hover: channel(0),
   }));
-  let armsOut = 0;
+  let armsOut = 1;
   let armTween: {
     from: number;
     target: number;
@@ -511,7 +512,7 @@ function init(root: HTMLElement) {
       held ? motion.heldAway : motion.peekGrace,
     );
   }
-  // Listen on the visible frame pieces, not the empty reserved stage below them.
+  // Treat the notch and attached panel as one hover surface.
   for (const surface of [q(".notch"), attached, q("[data-alert]")]) {
     surface.addEventListener("pointerenter", () => {
       pointerInside = true;
@@ -771,8 +772,8 @@ function init(root: HTMLElement) {
       accent(
         q("[data-alert]"),
         [
-          { opacity: 0, transform: "translate(-50%, -12px) scaleY(.7)" },
-          { opacity: 1, transform: "translate(-50%, 0) scaleY(1)" },
+          { opacity: 0, transform: "translateY(-12px) scaleY(.7)" },
+          { opacity: 1, transform: "translateY(0) scaleY(1)" },
         ],
         420,
       );
@@ -854,7 +855,7 @@ function init(root: HTMLElement) {
   paintSessions();
   paintNotices();
   paint();
-  setVisible(true);
+  paintMotion();
 }
 
 document

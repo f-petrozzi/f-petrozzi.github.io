@@ -1,5 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { stripTypeScriptTypes } from "node:module";
+import vm from "node:vm";
+import * as usage from "../src/data/demos/agent-usage.ts";
 import {
   snapshot,
   countdown,
@@ -207,4 +211,234 @@ test("usage colors flag consumed allowance rather than remaining allowance", () 
   assert.equal(usageColor(80), "#f2ff00");
   assert.equal(usageColor(95), "#ff6b47");
   assert.equal(usageColor(100), "#ff6b47");
+});
+
+// Exercise the real DOM wiring with a small event/animation host, without a browser.
+function interactionFixture(reducedMotion = false) {
+  class Element {
+    style = {};
+    dataset = {};
+    attributes = new Map();
+    children = new Map();
+    listeners = new Map();
+    hidden = false;
+    value = "";
+    textContent = "";
+    querySelector(selector) {
+      if (selector === ":focus-visible") return null;
+      if (!this.children.has(selector))
+        this.children.set(selector, new Element());
+      return this.children.get(selector);
+    }
+    setAttribute(name, value) {
+      this.attributes.set(name, String(value));
+    }
+    getAttribute(name) {
+      return this.attributes.get(name) ?? null;
+    }
+    addEventListener(name, callback) {
+      if (!this.listeners.has(name)) this.listeners.set(name, []);
+      this.listeners.get(name).push(callback);
+    }
+    emit(name, event = {}) {
+      for (const callback of this.listeners.get(name) ?? [])
+        callback({
+          target: this,
+          relatedTarget: null,
+          pointerType: "mouse",
+          clientX: 0,
+          clientY: 0,
+          preventDefault() {},
+          ...event,
+        });
+    }
+    contains(element) {
+      return element === this;
+    }
+    animate() {
+      return { cancel() {} };
+    }
+  }
+  const root = new Element();
+  const groups = new Map();
+  for (const [selector, key, values] of [
+    ["[data-account]", "account", ["lumen", "orbit", "fern"]],
+    ["[data-arm]", "arm", ["pin", "move"]],
+    ["[data-panel]", "panel", ["usage", "sessions", "notifications"]],
+    ["[data-window-choice]", "windowChoice", ["fiveHour", "weekly"]],
+    ["[data-notice-filter]", "noticeFilter", ["Usage", "Waiting", "Finished"]],
+    ["[data-close]", "close", ["usage", "sessions", "notifications"]],
+  ]) {
+    groups.set(
+      selector,
+      values.map((value) => {
+        const element = new Element();
+        element.dataset[key] = value;
+        const attribute = selector.slice(1, -1);
+        root.children.set(`[${attribute}="${value}"]`, element);
+        root.children.set(`[${attribute}=${value}]`, element);
+        return element;
+      }),
+    );
+  }
+  groups.set(".ring-reading", []);
+  root.querySelectorAll = (selector) => {
+    assert.ok(groups.has(selector), `known group: ${selector}`);
+    return groups.get(selector);
+  };
+  let now = 0;
+  let nextId = 0;
+  const timers = new Map();
+  const frames = new Map();
+  const source = readFileSync(
+    new URL("../src/scripts/demos/agent-usage.ts", import.meta.url),
+    "utf8",
+  ).replace(/^import \{[\s\S]*?\} from "[^"]+";/, "");
+  vm.runInNewContext(stripTypeScriptTypes(source), {
+    ...usage,
+    Element,
+    Node: Element,
+    document: {
+      hidden: false,
+      querySelectorAll(selector) {
+        assert.equal(selector, '[data-demo="agent-usage"]');
+        return [root];
+      },
+      addEventListener() {},
+    },
+    window: { addEventListener() {} },
+    matchMedia: () => ({ matches: reducedMotion, addEventListener() {} }),
+    performance: { now: () => now },
+    setTimeout(callback, delay) {
+      const id = ++nextId;
+      timers.set(id, { callback, at: now + delay });
+      return id;
+    },
+    clearTimeout: (id) => timers.delete(id),
+    requestAnimationFrame(callback) {
+      const id = ++nextId;
+      frames.set(id, callback);
+      return id;
+    },
+    cancelAnimationFrame: (id) => frames.delete(id),
+    ResizeObserver: class {
+      observe() {}
+    },
+    IntersectionObserver: class {
+      observe() {}
+    },
+  });
+  return {
+    q: (selector) => root.querySelector(selector),
+    el: (key, value) => root.querySelector(`[data-${key}="${value}"]`),
+    advance(milliseconds) {
+      const end = now + milliseconds;
+      while (now < end) {
+        now = Math.min(end, now + 16);
+        for (const [id, timer] of timers) {
+          if (timer.at <= now) {
+            timers.delete(id);
+            timer.callback();
+          }
+        }
+        const pending = [...frames.values()];
+        frames.clear();
+        pending.forEach((callback) => callback(now));
+      }
+    },
+    idle: () => frames.size === 0 && timers.size === 0,
+  };
+}
+
+for (const reduced of [false, true]) {
+  test(`initial notch is revealed before a frame or hover (reduced motion: ${reduced})`, () => {
+    const f = interactionFixture(reduced);
+    assert.equal(f.q("[data-frame]").style.transform, "translateY(0px)");
+    assert.equal(f.q("[data-frame]").style.opacity, "1");
+    assert.equal(f.q("[data-panel-content]").style.opacity, "1");
+    assert.equal(f.q("[data-attached]").inert, false);
+    assert.equal(f.q("[data-reveal]").textContent, "Hide notch");
+    for (const [id, used] of [
+      ["lumen", 72],
+      ["orbit", 31],
+      ["fern", 54],
+    ])
+      assert.equal(
+        f.el("account", id).querySelector("[data-gauge-value]").textContent,
+        `${used}%`,
+      );
+    for (const side of ["pin", "move"])
+      assert.equal(f.el("arm", side).style.opacity, "1");
+    f.advance(1000);
+    assert.equal(f.q("[data-frame]").style.opacity, "1");
+    assert.ok(f.idle(), "no idle animation loop or initial auto-close timer");
+  });
+}
+
+test("peek switches from rest, click holds, and leaving dismisses after the right delay", () => {
+  const f = interactionFixture();
+  f.el("account", "orbit").emit("pointerenter");
+  f.advance(motion.peekSwitch - 1);
+  assert.equal(f.q("[data-account-title]").textContent, "Codex Lumen");
+  f.advance(1);
+  assert.equal(f.q("[data-account-title]").textContent, "Codex Orbit");
+  assert.equal(f.q("[data-hold-status]").textContent, "Peek");
+  f.el("account", "orbit").emit("click");
+  assert.equal(f.q("[data-hold-status]").textContent, "Held open");
+  assert.equal(f.el("account", "orbit").getAttribute("aria-pressed"), "true");
+  f.el("account", "fern").emit("pointerenter");
+  f.advance(500);
+  assert.equal(f.q("[data-account-title]").textContent, "Codex Orbit");
+  f.q(".notch").emit("pointerleave", { relatedTarget: f.q("[data-attached]") });
+  f.advance(2000);
+  assert.equal(
+    f.q("[data-attached]").inert,
+    false,
+    "panel crossing stays open",
+  );
+  f.q("[data-attached]").emit("pointerleave");
+  f.advance(motion.heldAway - 1);
+  assert.equal(f.q("[data-attached]").inert, false);
+  f.advance(1);
+  assert.equal(f.q("[data-attached]").inert, true);
+  f.advance(1000);
+  f.el("account", "fern").emit("pointerenter");
+  f.advance(motion.peekOpen);
+  assert.equal(f.q("[data-account-title]").textContent, "Claude Fern");
+  f.q(".notch").emit("pointerleave");
+  f.advance(motion.peekGrace);
+  assert.equal(f.q("[data-attached]").inert, true);
+  f.advance(1000);
+  assert.ok(f.idle());
+});
+
+test("hover icons, hide/reveal and reset work directly from the revealed state", () => {
+  const f = interactionFixture();
+  const arm = f.el("arm", "pin");
+  arm.emit("pointerenter");
+  f.q("[data-bell]").emit("pointerenter");
+  f.advance(2000);
+  assert.equal(arm.querySelector("[data-arm-glyph]").style.opacity, "1");
+  assert.equal(f.q("[data-bell-glyph]").style.opacity, "1");
+  arm.emit("pointerleave");
+  f.q("[data-bell]").emit("pointerleave");
+  f.advance(2000);
+  assert.equal(arm.querySelector("[data-arm-glyph]").style.opacity, "0");
+  assert.equal(f.q("[data-bell-glyph]").style.opacity, "0");
+  f.q("[data-reveal]").emit("click");
+  f.advance(2000);
+  assert.equal(f.q("[data-overlay]").hidden, true);
+  assert.equal(f.q("[data-reveal]").textContent, "Reveal notch");
+  f.q("[data-reveal]").emit("click");
+  f.advance(2000);
+  assert.equal(f.q("[data-overlay]").hidden, false);
+  assert.equal(f.q("[data-frame]").style.opacity, "1");
+  assert.equal(arm.style.opacity, "1");
+  f.q("[data-reset-demo]").emit("click");
+  f.advance(2000);
+  assert.equal(f.q("[data-attached]").inert, false);
+  assert.equal(f.q("[data-panel-content]").style.opacity, "1");
+  assert.equal(f.q("[data-account-title]").textContent, "Codex Lumen");
+  assert.equal(f.q("[data-clock]").textContent, "09:00");
+  assert.ok(f.idle());
 });
