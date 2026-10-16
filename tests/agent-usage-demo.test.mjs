@@ -22,7 +22,7 @@ const windowOf = (minute, account = "lumen", id = "fiveHour") =>
     .accounts.find((row) => row.id === account)
     .windows.find((window) => window.id === id);
 
-test("notch arms face their flares and use the notch's fixed black ink locally", () => {
+test("notch material has outside flare arms, a local goo filter and one fixed palette", () => {
   const component = readFileSync(
     new URL("../src/components/demos/AgentUsageDemo.astro", import.meta.url),
     "utf8",
@@ -31,23 +31,30 @@ test("notch arms face their flares and use the notch's fixed black ink locally",
     new URL("../src/scripts/demos/agent-usage.ts", import.meta.url),
     "utf8",
   );
-  assert.match(component, /<style is:inline>\s*\.demo-agent-usage\s*\{/);
-  assert.match(component, /--au-black:\s*#000;/);
-  assert.match(component, /\.notch\s*\{[^}]*background: var\(--au-black\);/);
-  assert.match(component, /\.arm-rest\s*\{[^}]*stroke: var\(--au-black\);/);
-  // SVG circles start at the right and sweep clockwise: these quarters face
-  // up/right on the left shoulder and up/left on the right, as in shape.js.
-  assert.match(
-    component,
-    /\.arm-leading \.arm-rest\s*\{\s*transform: rotate\(270deg\);/,
+  const css = component.split("<style is:inline>")[1];
+  assert.ok(css.trimStart().startsWith(".demo-agent-usage {"));
+  assert.equal((component.match(/<style/g) ?? []).length, 1);
+  assert.match(css, /--au-black:\s*#000;/);
+  assert.match(css, /\.notch-material\s*\{[^}]*fill: var\(--au-black\);/);
+  assert.match(css, /\.arm-rest\s*\{[^}]*stroke: var\(--au-black\);/);
+  assert.doesNotMatch(
+    css,
+    /:global|var\(--(?:bg|ink|muted|line)\)|backdrop-filter/,
   );
-  assert.match(
-    component,
-    /\.arm-trailing \.arm-rest\s*\{\s*transform: rotate\(180deg\);/,
+  // shape.js handleMetrics uses sqrt(90/70): F=43.88 and radius=32.43.
+  // Both pockets sit outside the 0..228 body; the far contour is mirrored.
+  assert.ok(component.includes("i ? 271.88 : -43.88"));
+  assert.ok(component.includes('i ? "scale(-1 1)" : undefined'));
+  assert.ok(
+    component.includes("M-10.2 -32.43H0A32.43 32.43 0 0 1 32.43 0V10.2"),
   );
-  assert.equal(
-    (component.match(/stroke-dasharray="44\.77 179\.07"/g) ?? []).length,
-    2,
+  assert.ok(component.includes('transform="translate(114 80)"'));
+  assert.doesNotMatch(css, /inset: -80px/);
+  assert.ok(component.includes('stdDeviation="4"'));
+  assert.ok(component.includes("0 0 0 10.4 -4.7"));
+  assert.ok(
+    component.includes("crypto.randomUUID()"),
+    "filter ids are per instance",
   );
   assert.doesNotMatch(component + script, /(?:import|from)[^;\n]*fluid/);
 });
@@ -266,6 +273,12 @@ function interactionFixture(reducedMotion = false) {
     getAttribute(name) {
       return this.attributes.get(name) ?? null;
     }
+    removeAttribute(name) {
+      this.attributes.delete(name);
+    }
+    focus() {
+      this.emit("focus");
+    }
     addEventListener(name, callback) {
       if (!this.listeners.has(name)) this.listeners.set(name, []);
       this.listeners.get(name).push(callback);
@@ -290,6 +303,27 @@ function interactionFixture(reducedMotion = false) {
     }
   }
   const root = new Element();
+  root.querySelector("[data-goo]").id = "fixture-goo";
+  const visibilityListeners = new Map();
+  const documentHost = {
+    hidden: false,
+    querySelectorAll(selector) {
+      assert.equal(selector, '[data-demo="agent-usage"]');
+      return [root];
+    },
+    addEventListener(name, callback) {
+      visibilityListeners.set(name, callback);
+    },
+  };
+  let viewportChanged;
+  let motionChanged;
+  let resize;
+  const media = {
+    matches: reducedMotion,
+    addEventListener(name, callback) {
+      motionChanged = callback;
+    },
+  };
   const groups = new Map();
   for (const [selector, key, values] of [
     ["[data-account]", "account", ["lumen", "orbit", "fern"]],
@@ -328,16 +362,9 @@ function interactionFixture(reducedMotion = false) {
     ...usage,
     Element,
     Node: Element,
-    document: {
-      hidden: false,
-      querySelectorAll(selector) {
-        assert.equal(selector, '[data-demo="agent-usage"]');
-        return [root];
-      },
-      addEventListener() {},
-    },
+    document: documentHost,
     window: { addEventListener() {} },
-    matchMedia: () => ({ matches: reducedMotion, addEventListener() {} }),
+    matchMedia: () => media,
     performance: { now: () => now },
     setTimeout(callback, delay) {
       const id = ++nextId;
@@ -352,9 +379,15 @@ function interactionFixture(reducedMotion = false) {
     },
     cancelAnimationFrame: (id) => frames.delete(id),
     ResizeObserver: class {
+      constructor(callback) {
+        resize = callback;
+      }
       observe() {}
     },
     IntersectionObserver: class {
+      constructor(callback) {
+        viewportChanged = callback;
+      }
       observe() {}
     },
   });
@@ -377,12 +410,30 @@ function interactionFixture(reducedMotion = false) {
       }
     },
     idle: () => frames.size === 0 && timers.size === 0,
+    setInViewport(value) {
+      viewportChanged([{ isIntersecting: value }]);
+    },
+    setHidden(value) {
+      documentHost.hidden = value;
+      visibilityListeners.get("visibilitychange")();
+    },
+    setReducedMotion(value) {
+      media.matches = value;
+      motionChanged();
+    },
+    resize(width, panelWidth, panelHeight) {
+      root.querySelector(".notch").clientWidth = width;
+      root.querySelector("[data-attached]").offsetWidth = panelWidth;
+      root.querySelector("[data-attached]").offsetHeight = panelHeight;
+      resize();
+    },
   };
 }
 
 for (const reduced of [false, true]) {
   test(`initial notch is revealed before a frame or hover (reduced motion: ${reduced})`, () => {
     const f = interactionFixture(reduced);
+    assertNoGoo(f);
     assert.equal(f.q("[data-frame]").style.transform, "translateY(0px)");
     assert.equal(f.q("[data-frame]").style.opacity, "1");
     assert.equal(f.q("[data-panel-content]").style.opacity, "1");
@@ -471,4 +522,130 @@ test("hover icons, hide/reveal and reset work directly from the revealed state",
   assert.equal(f.q("[data-account-title]").textContent, "Codex Lumen");
   assert.equal(f.q("[data-clock]").textContent, "09:00");
   assert.ok(f.idle());
+});
+
+function assertNoGoo(f) {
+  assert.equal(f.q("[data-liquid]").getAttribute("filter"), null);
+}
+function assertGoo(f) {
+  assert.equal(
+    f.q("[data-liquid]").getAttribute("filter"),
+    "url(#fixture-goo)",
+  );
+}
+
+test("arm, bell, peek and reveal springs enable goo only until they settle", () => {
+  const f = interactionFixture();
+  f.advance(1000);
+  assertNoGoo(f);
+  for (const selector of [
+    '[data-arm="pin"]',
+    '[data-arm="move"]',
+    "[data-bell]",
+  ]) {
+    f.q(selector).emit("pointerenter");
+    f.advance(16);
+    assertGoo(f);
+    f.advance(2000);
+    assertNoGoo(f);
+    f.q(selector).emit("pointerleave");
+    f.advance(16);
+    assertGoo(f);
+    f.advance(2000);
+    assertNoGoo(f);
+    assert.ok(f.idle());
+  }
+  f.el("account", "lumen").emit("pointerenter");
+  f.advance(motion.peekOpen + 1500);
+  f.q(".notch").emit("pointerleave");
+  f.advance(motion.peekGrace + 16);
+  assertGoo(f);
+  f.advance(1500);
+  assertNoGoo(f);
+  f.el("account", "fern").emit("pointerenter");
+  f.advance(motion.peekOpen + 16);
+  assertGoo(f);
+  f.advance(1500);
+  assertNoGoo(f);
+  f.q("[data-reveal]").emit("click");
+  f.advance(16);
+  assertGoo(f);
+  f.advance(2000);
+  assertNoGoo(f);
+  f.q("[data-reveal]").emit("click");
+  f.advance(16);
+  assertGoo(f);
+  f.advance(2000);
+  assertNoGoo(f);
+  assert.ok(f.idle());
+});
+
+test("bell sprouts on the real corner bisector with a four pixel gap", () => {
+  const f = interactionFixture();
+  f.q("[data-bell]").emit("pointerenter");
+  f.advance(2000);
+  const transform = f.q("[data-bell-disc]").style.transform;
+  const [, x, y] = transform.match(/translate\(([-\d.]+)px, ([-\d.]+)px\)/);
+  assert.ok(Number(x) < 0, "bell clears the leading flank");
+  assert.ok(Number(y) > 90, "bell clears the front edge");
+  assert.ok(
+    Math.abs(Math.hypot(Number(x) - 20, Number(y) - 70) - 20 - 21.77 - 4) <
+      0.01,
+  );
+  assert.equal(f.q("[data-bell-disc]").style.opacity, "1");
+  assert.equal(f.q("[data-attached]").hidden, true, "card gives the bell room");
+  f.q("[data-bell]").emit("click");
+  assert.equal(f.q("[data-bell]").getAttribute("aria-expanded"), "true");
+});
+
+for (const suspend of ["setInViewport", "setHidden", "setReducedMotion"]) {
+  test(`goo and frame work stop on ${suspend}`, () => {
+    const f = interactionFixture();
+    f.el("arm", "pin").emit("pointerenter");
+    f.advance(32);
+    assertGoo(f);
+    f[suspend](suspend !== "setInViewport");
+    assertNoGoo(f);
+    assert.ok(f.idle());
+  });
+}
+
+test("reduced motion and touch hover keep ink sharp and leave no frame loop", () => {
+  for (const reduced of [false, true]) {
+    const f = interactionFixture(reduced);
+    f.advance(1000);
+    for (const selector of ['[data-arm="pin"]', "[data-bell]"])
+      f.q(selector).emit("pointerenter", { pointerType: "touch" });
+    f.advance(32);
+    assert.equal(
+      f.el("arm", "pin").querySelector("[data-arm-glyph]").style.opacity,
+      "0",
+    );
+    assert.equal(f.q("[data-bell-glyph]").style.opacity, "0");
+    assertNoGoo(f);
+    assert.ok(f.idle());
+    if (reduced) {
+      f.el("arm", "pin").emit("focus");
+      f.q("[data-bell]").emit("focus");
+      f.advance(16);
+      assert.equal(f.q("[data-bell-glyph]").style.opacity, "1");
+      assertNoGoo(f);
+      assert.ok(f.idle());
+    }
+  }
+});
+
+test("resizing updates card geometry once while motion leaves it unchanged", () => {
+  const f = interactionFixture();
+  f.advance(1000);
+  f.resize(180, 280, 320);
+  const ink = f.q("[data-panel-ink]");
+  assert.equal(Number(ink.getAttribute("width")), (280 * 228) / 180);
+  assert.equal(Number(ink.getAttribute("x")), (-140 * 228) / 180);
+  assert.equal(ink.getAttribute("height"), "320");
+  const geometry = [...ink.attributes];
+  f.el("arm", "pin").emit("pointerenter");
+  f.advance(2000);
+  assert.deepEqual([...ink.attributes], geometry);
+  assertNoGoo(f);
 });
