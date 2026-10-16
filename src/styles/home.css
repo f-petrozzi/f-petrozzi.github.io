@@ -248,130 +248,75 @@ section {
   color: var(--ink);
 }
 
-/* Selected work: adjoining, equal-height screenshot cards. */
+/* Selected work: one image edge and a shared crop ratio. */
 .work {
   padding-bottom: 112px;
 }
 .bento {
-  align-items: stretch;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0;
-  border: 1px solid var(--glass-rim);
-  border-radius: var(--radius-lg);
+  gap: 36px 28px;
+  align-items: stretch;
 }
-.work-card.glass {
+.work-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   min-width: 0;
-  padding: 20px;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-}
-.work-card:nth-child(odd) {
-  border-right: 1px solid var(--glass-rim);
-}
-.work-card:nth-child(n + 3) {
-  border-top: 1px solid var(--glass-rim);
-}
-.work-card:first-child {
-  border-top-left-radius: calc(var(--radius-lg) - 1px);
-}
-.work-card:nth-child(2) {
-  border-top-right-radius: calc(var(--radius-lg) - 1px);
-}
-.work-card:nth-last-child(2) {
-  border-bottom-left-radius: calc(var(--radius-lg) - 1px);
-}
-.work-card:last-child {
-  border-bottom-right-radius: calc(var(--radius-lg) - 1px);
 }
 .work-card:has(.work-more.is-expanded) {
   z-index: 3;
 }
 .work-media {
-  display: grid;
-  place-items: center;
-  min-height: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
   overflow: hidden;
-  border-radius: 12px;
 }
 .work-media img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-.work-card[data-project="homelab"] .work-media {
-  background: #0d1522;
-}
-.work-card[data-project="proterra"] .work-media {
-  background: #f4f3eb;
-}
-.work-card[data-project="nest"] .work-media {
-  background: #10160e;
-}
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .work-media:hover img {
-    transform: translateY(-2px) scale(1.025);
-  }
+  object-fit: cover;
 }
 .work-body {
   display: flex;
   flex-direction: column;
-  padding: 10px 10px 8px;
+  padding: 12px 0 0;
 }
 .work-heading {
-  padding: 8px 10px 16px;
-}
-.work-kind {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px 14px;
-  font-size: 13px;
-  color: var(--faint);
+  padding: 0 0 16px;
+  min-height: 84px;
 }
 .work-card h3 {
-  margin-top: 4px;
   font-size: 24px;
   letter-spacing: -0.025em;
   line-height: 1.2;
 }
 .work-card h3 a {
-  transition: color 140ms ease;
-}
-.work-card h3 a:hover {
-  color: var(--accent);
+  border-radius: 4px;
 }
 .work-summary {
   margin-top: 8px;
   color: var(--muted);
-  font-size: 16px;
+  font-size: clamp(13px, 1.18vw, 15px);
   line-height: 1.55;
-  max-width: 52ch;
+  max-width: 100%;
 }
 .work-stage {
   position: relative;
   isolation: isolate;
-  /* Cards in a row share a height; the stage absorbs the difference. */
-  flex: 1 0 320px;
-  display: flex;
-  flex-direction: column;
-  min-height: 320px;
-}
-.work-stage > * {
-  flex: 1 1 auto;
-  min-height: 0;
-}
-.work-stage > .work-media {
-  height: 320px;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 12px;
 }
 .work-more {
   position: relative;
   z-index: 2;
   align-self: start;
-  margin-bottom: 12px;
+  margin-bottom: 0;
   border-radius: 22px;
   --info-fill: color-mix(in srgb, var(--bg) 94%, var(--ink));
 }
@@ -384,6 +329,10 @@ section {
   cursor: pointer;
   color: var(--muted);
   border-radius: 50%;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  transition: transform 140ms var(--ease);
   position: relative;
   z-index: 3;
 }
@@ -394,8 +343,8 @@ section {
   width: 20px;
   height: 20px;
 }
-.work-more summary:hover {
-  color: var(--accent);
+.work-more summary:active {
+  transform: scale(0.96);
 }
 .more-open {
   display: none;
@@ -412,7 +361,7 @@ section {
   display: none;
 }
 .work-more-body {
-  padding: 18px 18px 62px;
+  padding: 20px 20px 62px;
   margin-left: 0;
   font-size: 14px;
   line-height: 1.55;
@@ -453,7 +402,7 @@ section {
   overscroll-behavior: contain;
   scrollbar-width: thin;
   scrollbar-color: var(--faint) transparent;
-  border-radius: 22px;
+  border-radius: 18px;
   transform-origin: 22px calc(100% - 22px);
   margin: 0;
   opacity: 0;
@@ -470,7 +419,27 @@ section {
   background: transparent;
 }
 .work-more summary:focus-visible {
-  outline: 2px solid var(--accent);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 20%, var(--bg));
+}
+.work-card a:focus-visible {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.work-card button:focus-visible img {
+  opacity: 0.8;
+}
+@media (hover: hover) and (pointer: fine) {
+  .work-more summary:hover,
+  .work-card h3 a:hover {
+    color: var(--accent);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .work-more summary {
+    transition: none;
+  }
 }
 .info-enhanced.is-expanded .work-more-body {
   pointer-events: auto;
@@ -497,25 +466,11 @@ button.work-media {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
   gap: 8px;
   min-height: 44px;
-  margin-top: -56px;
+  margin-top: -44px;
   padding-left: 56px;
-}
-.work-tools {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  color: var(--muted);
-}
-.work-tools li {
-  display: grid;
-  place-items: center;
-  min-height: 28px;
+  justify-content: flex-end;
 }
 .work-read {
   display: inline-flex;
@@ -1148,34 +1103,13 @@ button.work-media {
   }
   .bento {
     grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
   }
-  .work-card.glass {
-    padding: 14px;
+  .work-heading {
+    min-height: 0;
   }
-  .work-card:nth-child(odd) {
-    border-right: 0;
-  }
-  .work-card:nth-child(2) {
-    border-top-right-radius: 0;
-  }
-  .work-card:nth-last-child(2) {
-    border-bottom-left-radius: 0;
-  }
-  .work-card:first-child {
-    border-top-right-radius: calc(var(--radius-lg) - 1px);
-  }
-  .work-card:last-child {
-    border-bottom-left-radius: calc(var(--radius-lg) - 1px);
-  }
-  .work-card + .work-card {
-    border-top: 1px solid var(--glass-rim);
-  }
-  .work-stage {
-    flex-basis: 240px;
-    min-height: 240px;
-  }
-  .work-stage > .work-media {
-    height: 240px;
+  .work-summary {
+    font-size: 14px;
   }
   .hero-grid {
     gap: 16px;
@@ -1192,7 +1126,7 @@ button.work-media {
     margin-top: 16px;
   }
   .work-body {
-    padding: 16px 6px 4px;
+    padding: 10px 0 0;
   }
   .work,
   .background,

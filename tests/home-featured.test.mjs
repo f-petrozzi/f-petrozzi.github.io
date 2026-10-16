@@ -54,10 +54,10 @@ test("featured screenshots are real WebPs within budget, with accurate dimension
     assert.match(tag, /alt="[^"]+"/);
     assert.ok(tag.includes(`loading="${id === "homelab" ? "eager" : "lazy"}"`));
   }
-  assert.equal(featured.find((item) => item.id === "nest").image.height, 636);
+  assert.equal(featured.find((item) => item.id === "nest").image.height, 630);
 });
 
-test("gallery has one inline, root-nested fixed palette, isolated to the homepage", () => {
+test("gallery keeps its inline fixed palette out of pages that do not render it", () => {
   const source = readFileSync("src/components/NumeGallery.astro", "utf8");
   const styles = [...source.matchAll(/<style\b([^>]*)>([\s\S]*?)<\/style>/g)];
   assert.equal(styles.length, 1);
@@ -66,7 +66,7 @@ test("gallery has one inline, root-nested fixed palette, isolated to the homepag
   assert.ok(
     !/:global|var\(--(?:bg|ink|muted|faint|accent|line)\b/.test(styles[0][2]),
   );
-  assert.ok(css(html).includes("--gallery-bg"));
+  assert.ok(!css(html).includes("--gallery-bg"));
   for (const path of pages("dist/projects")) {
     assert.ok(
       !css(readFileSync(path, "utf8")).includes("--gallery-bg"),
@@ -75,21 +75,29 @@ test("gallery has one inline, root-nested fixed palette, isolated to the homepag
   }
 });
 
-test("NüMe demo CSS remains confined to its project and standalone demo pages", () => {
-  const own = [
-    "dist/projects/nume/index.html",
-    "dist/projects/nume/demo/index.html",
-  ];
-  for (const path of pages("dist/projects")) {
-    assert.equal(
-      css(readFileSync(path, "utf8")).includes(".nume-sample {"),
-      own.includes(path),
-      path,
-    );
+test("featured demo CSS stays on each project's own project and demo pages", () => {
+  for (const [id, selector] of [
+    ["nume", ".nume-sample {"],
+    ["homelab", ".demo-homelab {"],
+    ["proterra", ".demo-proterra {"],
+    ["nest", ".demo-nest {"],
+  ]) {
+    const own = [
+      `dist/projects/${id}/index.html`,
+      `dist/projects/${id}/demo/index.html`,
+    ];
+    assert.ok(!css(html).includes(selector), `${id} demo CSS reaches homepage`);
+    for (const path of pages("dist/projects")) {
+      assert.equal(
+        css(readFileSync(path, "utf8")).includes(selector),
+        own.includes(path),
+        `${id}: ${path}`,
+      );
+    }
   }
 });
 
-test("info animation never changes card dimensions, and uses a circular default without arms", () => {
+test("info animation keeps card dimensions fixed and removes cursor proximity", () => {
   assert.equal((html.match(/<circle cx="22" cy="22" r="20"/g) || []).length, 4);
   assert.ok(!html.includes("info-arm"));
   const home = readFileSync("src/scripts/home.ts", "utf8");
@@ -103,5 +111,14 @@ test("info animation never changes card dimensions, and uses a circular default 
       tick,
     ),
   );
-  assert.ok(!/armGeometry|ARM_RETURN/.test(home));
+  assert.ok(
+    !/trackProximity|dropletTransform|applyGooFilter|pointerenter/.test(panel),
+  );
+  for (const [, , card] of html.matchAll(
+    /<article\b[^>]*data-project="([^"]+)"[^>]*>([\s\S]*?)<\/article>/g,
+  )) {
+    assert.ok(!/work-kind|work-tools|figcaption|gallery-controls/.test(card));
+    assert.match(card, /work-summary/);
+    assert.match(card, /Read project/);
+  }
 });

@@ -1,15 +1,7 @@
 import { scheduleScroll } from "./scroll-control";
 import { gsap } from "gsap";
 import { Flip } from "gsap/Flip";
-import {
-  applyGooFilter,
-  dropletTransform,
-  RETURN,
-  PANEL_OPEN,
-  springStep,
-  svgAttribute,
-  trackProximity,
-} from "./fluid";
+import { RETURN, PANEL_OPEN, springStep, svgAttribute } from "./fluid";
 gsap.registerPlugin(Flip);
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
 const duration = (seconds: number) => (reducedMotion.matches ? 0 : seconds);
@@ -631,9 +623,6 @@ document
     const ink = details.querySelector<SVGSVGElement>(".info-ink")!;
     const rect = ink.querySelector("rect")!;
     const orb = details.querySelector<SVGSVGElement>(".info-orb")!;
-    const glyph = summary.querySelector<HTMLElement>(".more-closed")!;
-    const panelGoo = applyGooFilter(ink, ink.querySelector("g")!);
-    const orbGoo = applyGooFilter(orb, orb.querySelector("g")!);
     details.classList.add("info-enhanced");
     let expanded = false,
       frame = 0,
@@ -642,39 +631,15 @@ document
       velocity = 0;
     let openWidth = 44,
       openHeight = 44;
-    let approach = { x: 0, y: 0, strength: 0 };
-    function paint(moving = false) {
+    function paint() {
       const p = Math.max(0, Math.min(1, progress));
       const remainder = 1 - p;
-      ink.style.transform = `translate(${approach.x * remainder}px, ${approach.y * remainder}px) scale(${44 / openWidth + (1 - 44 / openWidth) * progress}, ${44 / openHeight + (1 - 44 / openHeight) * progress})`;
+      ink.style.transform = `scale(${44 / openWidth + (1 - 44 / openWidth) * p}, ${44 / openHeight + (1 - 44 / openHeight) * p})`;
       ink.style.opacity = String(Math.min(1, p * 5));
-      orb.style.transform = dropletTransform(approach);
       orb.style.opacity = String(Math.max(0, 1 - p * 4));
-      glyph.style.transform = `translate(${approach.x}px, ${approach.y}px)`;
       body.style.opacity = String(Math.max(0, (p - 0.35) / 0.65));
       body.style.transform = `translateY(${remainder * 6}px) scale(${0.98 + p * 0.02})`;
-      panelGoo.update(1.8 * Math.sin(Math.PI * p), moving, {
-        x: -12,
-        y: -12,
-        width: openWidth + 24,
-        height: openHeight + 24,
-      });
     }
-    const proximity = trackProximity(
-      details.closest<HTMLElement>(".work-card")!,
-      summary,
-      (value, moving) => {
-        approach = value;
-        orbGoo.update(0.7 + value.strength * 0.5, moving, {
-          x: -8,
-          y: -8,
-          width: 60,
-          height: 60,
-        });
-        paint(Boolean(frame));
-      },
-      { reduced: reducedMotion, enabled: () => !expanded && !frame },
-    );
     function availableWidth() {
       const parent = details.parentElement!,
         style = getComputedStyle(parent);
@@ -710,22 +675,19 @@ document
       if (settled) {
         progress = target;
         velocity = 0;
-        if (expanded) approach = { x: 0, y: 0, strength: 0 };
       }
-      paint(!settled);
+      paint();
       if (!settled) frame = requestAnimationFrame(tick);
       else {
         frame = 0;
         if (!expanded) {
           details.open = false;
-          proximity.reset();
         }
       }
     }
     function setExpanded(value: boolean, immediate = false) {
       if (value === expanded && !immediate) return;
       expanded = value;
-      proximity.stop();
       details.classList.toggle("is-expanded", value);
       summary.setAttribute("aria-expanded", String(value));
       body.inert = !value;
@@ -741,32 +703,14 @@ document
         velocity = 0;
         paint();
         details.open = value;
-        if (!value) proximity.reset();
       } else if (!frame) {
         last = performance.now();
         frame = requestAnimationFrame(tick);
       }
     }
-    let leaveTimer: ReturnType<typeof setTimeout> | undefined;
-    details.addEventListener("pointerenter", (event) => {
-      if (
-        event.pointerType !== "mouse" ||
-        !matchMedia("(hover: hover)").matches
-      )
-        return;
-      clearTimeout(leaveTimer);
-      setExpanded(true);
-    });
-    details.addEventListener("pointerleave", (event) => {
-      if (event.pointerType !== "mouse") return;
-      clearTimeout(leaveTimer);
-      leaveTimer = setTimeout(() => {
-        if (
-          !details.contains(document.activeElement) ||
-          !document.activeElement?.matches(":focus-visible")
-        )
-          setExpanded(false);
-      }, 160);
+    document.addEventListener("pointerdown", (event) => {
+      if (expanded && !details.contains(event.target as Node))
+        setExpanded(false);
     });
     details.addEventListener("focusout", (event) => {
       if (!details.contains(event.relatedTarget as Node | null))
@@ -777,7 +721,6 @@ document
     paint();
     summary.addEventListener("click", (event) => {
       event.preventDefault();
-      clearTimeout(leaveTimer);
       setExpanded(!expanded, (event as MouseEvent).detail === 0);
     });
     details.addEventListener("keydown", (event) => {
@@ -789,25 +732,23 @@ document
     new ResizeObserver(() => {
       if (expanded && Math.abs(availableWidth() - openWidth) > 0.5) {
         measure();
-        paint(Boolean(frame));
+        paint();
       }
     }).observe(details.parentElement!);
     document.fonts.ready.then(() => {
       if (expanded) {
         measure();
-        paint(Boolean(frame));
+        paint();
       }
     });
     new IntersectionObserver(([entry]) => {
       if (!entry.isIntersecting) {
-        clearTimeout(leaveTimer);
         setExpanded(false, true);
       }
     }).observe(details);
     reducedMotion.addEventListener("change", () => setExpanded(expanded, true));
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) {
-        clearTimeout(leaveTimer);
         setExpanded(false, true);
       }
     });

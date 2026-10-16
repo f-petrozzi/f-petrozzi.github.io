@@ -28,74 +28,28 @@ test("critical spring is exact across frame rates and does not overshoot", () =>
   );
 });
 
-test("liquid springs preserve velocity on reversal at different frame rates", () => {
-  assert.deepEqual(fluid.APPROACH, { response: 0.34, damping: 0.82 });
-  assert.deepEqual(fluid.RETURN, { response: 0.38, damping: 0.86 });
-  assert.deepEqual(fluid.PANEL_OPEN, { response: 0.42, damping: 0.84 });
-  for (const preset of [
-    fluid.APPROACH,
-    fluid.RETURN,
-    fluid.PANEL_OPEN,
-    { response: 0.7, damping: 1.4 },
-  ]) {
+test("disclosure springs preserve velocity on reversal and settle without overshoot", () => {
+  for (const preset of [fluid.RETURN, fluid.PANEL_OPEN]) {
+    for (const hz of [30, 60, 120]) {
+      let x = 0,
+        v = 0;
+      for (let i = 0; i < hz; i++) {
+        [x, v] = fluid.springStep(x, v, 1, 1 / hz, preset);
+        assert.ok(x >= 0 && x <= 1);
+      }
+      near(x, 1, 0.00001);
+      near(v, 0, 0.00001);
+    }
     const once = fluid.springStep(0.3, 1.5, 1, 0.04, preset);
     const half = fluid.springStep(0.3, 1.5, 1, 0.02, preset);
     const twice = fluid.springStep(...half, 1, 0.02, preset);
-    once.forEach((v, i) => near(v, twice[i]));
+    once.forEach((value, i) => near(value, twice[i]));
   }
-  let x = 0,
-    v = 0,
-    peak = 0;
-  for (let i = 0; i < 240; i++) {
-    [x, v] = fluid.springStep(x, v, 1, 1 / 120, fluid.PANEL_OPEN);
-    peak = Math.max(peak, x);
-  }
-  assert.ok(peak > 1.005 && peak < 1.01);
-  const approaching = fluid.springStep(0, 0, 1, 0.1, fluid.APPROACH);
+  const approaching = fluid.springStep(0, 0, 1, 0.05, fluid.PANEL_OPEN);
   const reversing = fluid.springStep(...approaching, 0, 0.001, fluid.RETURN);
   assert.ok(reversing[0] > approaching[0]);
-});
-
-test("proximity uses circular falloff with bounded directional displacement", () => {
-  const rect = { left: 100, top: 100, width: 44, height: 44 };
-  assert.deepEqual(fluid.proximityAt(122, 122, rect), {
-    x: 0,
-    y: 0,
-    strength: 1,
-  });
-  assert.deepEqual(fluid.proximityAt(222, 122, rect), {
-    x: 0,
-    y: 0,
-    strength: 0,
-  });
-  const right = fluid.proximityAt(160, 122, rect);
-  const above = fluid.proximityAt(122, 84, rect);
-  near(right.strength, above.strength);
-  near(right.x, -above.y);
-  assert.ok(right.x > 0 && right.x < 3);
-  assert.equal(right.y, 0);
-  const diagonal = fluid.proximityAt(160, 160, rect);
-  assert.ok(diagonal.strength < right.strength);
-  assert.ok(diagonal.x > 0 && diagonal.y > 0);
-  assert.equal(fluid.proximityAt(214, 214, rect).strength, 0);
-});
-
-test("the round surface stays intact at rest and swells gently toward the pointer", () => {
-  assert.equal(
-    fluid.dropletTransform({ x: 0, y: 0, strength: 0 }),
-    "translate(0px, 0px) rotate(0deg) scale(1, 1) rotate(0deg)",
-  );
-  const right = fluid.dropletTransform({ x: 2.6, y: 0, strength: 1 });
-  assert.match(right, /scale\(1.13, 0.95\)/);
-  for (let angle = -Math.PI; angle < Math.PI; angle += 0.1) {
-    const transform = fluid.dropletTransform({
-      x: 3 * Math.cos(angle),
-      y: 3 * Math.sin(angle),
-      strength: 1.01,
-    });
-    assert.ok(!/NaN|Infinity/.test(transform));
-  }
-  assert.equal(fluid.armGeometry, undefined);
+  assert.equal(fluid.trackProximity, undefined);
+  assert.equal(fluid.applyGooFilter, undefined);
 });
 
 class Node extends EventTarget {
@@ -155,100 +109,6 @@ function fixture() {
   }
   return { options, frames, reduced, drain, step };
 }
-function pointer(target, x, y, type = "mouse") {
-  const event = new Event("pointermove");
-  Object.assign(event, { pointerType: type, clientX: x, clientY: y });
-  target.dispatchEvent(event);
-}
-
-test("tracker is idle far away, coalesces events, settles near and returns home", (t) => {
-  const original = globalThis.window;
-  globalThis.window = new Node();
-  t.after(() => {
-    globalThis.window = original;
-  });
-  const card = new Node(),
-    f = fixture(),
-    paints = [];
-  let reads = 0;
-  const anchor = {
-    getBoundingClientRect() {
-      reads++;
-      return { left: 0, top: 0, width: 44, height: 44 };
-    },
-  };
-  const tracker = fluid.trackProximity(
-    card,
-    anchor,
-    (...args) => paints.push(args),
-    f.options,
-  );
-  assert.equal(f.frames.size, 0);
-  pointer(card, 500, 500);
-  pointer(card, 22, 22, "touch");
-  assert.equal(f.frames.size, 0);
-  for (let i = 0; i < 30; i++) pointer(card, 30, 30);
-  assert.equal(f.frames.size, 1);
-  assert.ok(f.drain() < 200);
-  assert.deepEqual(paints.at(-1), [
-    fluid.proximityAt(30, 30, anchor.getBoundingClientRect()),
-    false,
-  ]);
-  assert.equal(reads, 2, "pointer events share one cached geometry read");
-  pointer(card, 30, 30);
-  assert.equal(
-    f.frames.size,
-    0,
-    "stationary near pointer must not restart a loop",
-  );
-  card.dispatchEvent(new Event("pointerleave"));
-  f.drain();
-  assert.deepEqual(paints.at(-1), [{ x: 0, y: 0, strength: 0 }, false]);
-  pointer(card, 60, 22);
-  globalThis.window.dispatchEvent(new Event("scroll"));
-  assert.equal(f.frames.size, 0);
-  f.reduced.matches = true;
-  f.reduced.dispatchEvent(new Event("change"));
-  pointer(card, 22, 22);
-  assert.equal(f.frames.size, 0);
-  tracker.destroy();
-  f.reduced.matches = false;
-  pointer(card, 22, 22);
-  assert.equal(f.frames.size, 0);
-});
-
-test("goo uses a bounded half-alpha cut-back and detaches at rest/reduced motion", (t) => {
-  const saved = {
-    document: globalThis.document,
-    matchMedia: globalThis.matchMedia,
-  };
-  const reduced = new Node();
-  reduced.matches = false;
-  globalThis.matchMedia = () => reduced;
-  globalThis.document = { createElementNS: () => new Node() };
-  t.after(() => Object.assign(globalThis, saved));
-  const svg = new Node(),
-    group = new Node();
-  const goo = fluid.applyGooFilter(svg, group);
-  const filter = svg.children[0].children[0],
-    [blur, matrix] = filter.children;
-  assert.equal(filter.getAttribute("filterUnits"), "userSpaceOnUse");
-  assert.equal(group.getAttribute("filter"), null);
-  goo.update(3, true);
-  assert.equal(blur.getAttribute("stdDeviation"), "3");
-  assert.ok(matrix.getAttribute("values").endsWith("7.8 -3.4"));
-  assert.equal(group.getAttribute("filter"), `url(#${filter.id})`);
-  goo.update(3, false);
-  assert.equal(blur.getAttribute("stdDeviation"), "0");
-  assert.equal(group.getAttribute("filter"), null);
-  goo.update(3, true);
-  reduced.matches = true;
-  reduced.dispatchEvent(new Event("change"));
-  assert.equal(group.getAttribute("filter"), null);
-  goo.destroy();
-  assert.equal(svg.children[0].removed, true);
-});
-
 function panelFixture() {
   const home = readFileSync(
     new URL("../src/scripts/home.ts", import.meta.url),
@@ -320,8 +180,6 @@ function panelFixture() {
       }
       observe() {}
     },
-    trackProximity: () => ({ stop() {}, reset() {} }),
-    applyGooFilter: () => ({ update() {} }),
   });
   vm.runInContext(source, context);
   const click = (detail = 1) => {
@@ -397,5 +255,35 @@ test("rapid panel reversals settle, keyboard/reduced motion are instant, hidden 
   p.doc.hidden = true;
   p.doc.dispatchEvent(new Event("visibilitychange"));
   assert.equal(p.f.frames.size, 0);
+  assert.equal(p.details.open, false);
+});
+
+test("information requires activation and dismisses on outside press, blur and Escape", () => {
+  const p = panelFixture();
+  p.details.dispatchEvent(new Event("pointerenter"));
+  p.details.dispatchEvent(new Event("pointermove"));
+  assert.equal(p.f.frames.size, 0);
+  assert.equal(p.summary.getAttribute("aria-expanded"), "false");
+  p.click();
+  p.f.drain();
+  p.doc.dispatchEvent(new Event("pointerdown"));
+  assert.equal(p.body.inert, true);
+  p.f.drain();
+  assert.equal(p.details.open, false);
+  p.click(0);
+  p.summary.focus = () => {
+    p.summary.focused = true;
+  };
+  const escape = new Event("keydown", { cancelable: true });
+  Object.assign(escape, { key: "Escape" });
+  p.details.dispatchEvent(escape);
+  assert.equal(p.details.open, false);
+  assert.equal(p.summary.focused, true);
+  assert.equal(p.f.frames.size, 0);
+  p.click();
+  const blur = new Event("focusout");
+  Object.assign(blur, { relatedTarget: null });
+  p.details.dispatchEvent(blur);
+  p.f.drain();
   assert.equal(p.details.open, false);
 });

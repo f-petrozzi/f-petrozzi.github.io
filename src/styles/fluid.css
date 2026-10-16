@@ -1,14 +1,7 @@
-/* Opt in per surface. No site palette or always-on filters. */
-.fluid-surface {
-  transform-origin: center;
-}
-.fluid-ink {
-  overflow: visible;
-  pointer-events: none;
-}
-@media (prefers-reduced-motion: reduce) {
-  .fluid-surface {
-    animation: none !important;
-    transition: none !important;
+/* Only disclosure surfaces opt into this behavior. No pointer response. */
+.work-more {
+  .fluid-ink {
+    overflow: visible;
+    pointer-events: none;
   }
 }
