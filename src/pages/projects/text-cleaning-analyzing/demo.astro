@@ -1,0 +1,47 @@
+---
+import Base from "../../../layouts/Base.astro";
+import TextCleaningDemo from "../../../components/demos/TextCleaningDemo.astro";
+---
+
+<Base
+  title="Text Cleaning & Analyzing interactive sample | Fabrizio Petrozzi"
+  description="A disconnected interactive sample of a regex text-cleaning pipeline and word analysis on an excerpt of The Wonderful Wizard of Oz."
+>
+  <main id="main" class="project-page wrap demo-page">
+    <a class="back-link" href="/projects/text-cleaning-analyzing/"
+      >Back to Text Cleaning & Analyzing</a
+    >
+    <header class="demo-intro">
+      <div>
+        <p class="eyebrow">Interactive sample</p><h1>
+          Try Text Cleaning &amp; Analyzing
+        </h1>
+      </div><p>Sample data. Nothing connects or saves.</p>
+    </header>
+    <TextCleaningDemo />
+  </main>
+</Base>
+
+<style>
+  .demo-page {
+    padding-top: 40px;
+    padding-bottom: 72px;
+  }
+  .demo-intro {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 24px;
+    margin: 24px 0;
+  }
+  .demo-intro h1 {
+    margin: 6px 0 0;
+    font-size: clamp(32px, 5vw, 52px);
+    letter-spacing: -0.04em;
+    font-weight: 500;
+  }
+  .demo-intro > p {
+    color: var(--muted);
+    font-size: 14px;
+  }
+</style>

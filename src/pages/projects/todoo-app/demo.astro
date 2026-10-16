@@ -1,0 +1,43 @@
+---
+import Base from "../../../layouts/Base.astro";
+import TodooDemo from "../../../components/demos/TodooDemo.astro";
+---
+
+<Base
+  title="Todoo App interactive sample | Fabrizio Petrozzi"
+  description="A disconnected interactive sample of Todoo: notes with subtasks, generated note content, alarms with stop and snooze, and a Siri shortcut."
+>
+  <main id="main" class="project-page wrap demo-page">
+    <a class="back-link" href="/projects/todoo-app/">Back to Todoo App</a>
+    <header class="demo-intro">
+      <div>
+        <p class="eyebrow">Interactive sample</p><h1>Try Todoo App</h1>
+      </div><p>Sample data. Nothing connects or saves.</p>
+    </header>
+    <TodooDemo />
+  </main>
+</Base>
+
+<style>
+  .demo-page {
+    padding-top: 40px;
+    padding-bottom: 72px;
+  }
+  .demo-intro {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 24px;
+    margin: 24px 0;
+  }
+  .demo-intro h1 {
+    margin: 6px 0 0;
+    font-size: clamp(32px, 5vw, 52px);
+    letter-spacing: -0.04em;
+    font-weight: 500;
+  }
+  .demo-intro > p {
+    color: var(--muted);
+    font-size: 14px;
+  }
+</style>
