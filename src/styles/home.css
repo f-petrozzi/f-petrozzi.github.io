@@ -173,22 +173,61 @@ section {
 .hero-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 26px;
-  margin: 26px 0 0;
+  gap: 8px;
+  margin: 26px 0 0 -12px;
   padding: 0;
   list-style: none;
-  font-size: 15px;
 }
 .hero-links a {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
   color: var(--muted);
-  transition: color 140ms ease;
 }
-.hero-links a:hover {
+.hero-links .ui-icon {
+  width: 20px;
+  height: 20px;
+}
+.hero-links a:active {
+  transform: scale(0.97);
+}
+.hero-links a:focus-visible {
   color: var(--ink);
+}
+.hero-link-label {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% + 6px);
+  left: 50%;
+  padding: 4px 9px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -4px);
+  transition:
+    opacity 160ms var(--ease),
+    transform 160ms var(--ease);
+}
+.hero-links a:focus-visible .hero-link-label {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+@media (hover: hover) and (pointer: fine) {
+  .hero-links a:hover {
+    color: var(--ink);
+  }
+  .hero-links a:hover .hero-link-label {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
 }
 .hero-facts {
   display: grid;
@@ -619,8 +658,8 @@ button.work-media {
   align-self: center;
 }
 .org-icon img {
-  width: 100%;
-  height: 100%;
+  width: 48px;
+  height: 48px;
   object-fit: cover;
 }
 .org-icon .ui-icon {
@@ -1074,11 +1113,6 @@ button.work-media {
   .hero h1 {
     font-size: clamp(48px, 15vw, 72px);
   }
-  .hero-links {
-    display: grid;
-    grid-template-columns: repeat(2, max-content);
-    gap: 0 28px;
-  }
   .bento {
     grid-template-columns: minmax(0, 1fr);
     gap: 32px;
@@ -1285,10 +1319,6 @@ button.work-media {
     height: 48px;
     border-radius: 8px;
   }
-  .org-icon img {
-    width: 100%;
-    height: 100%;
-  }
   .career-role,
   .career-period {
     grid-column: 1 / -1;
@@ -1441,17 +1471,8 @@ button.work-media {
 .org-icon:has(img[src$="handshake.svg"]) {
   background: #d5fb52;
 }
-.org-icon:has(img[src$="slice.webp"]) {
+.org-icon:has(img[src$="slice.svg"]) {
   background: #fff;
-}
-.org-icon img[src$="slice.webp"] {
-  position: absolute;
-  left: 57%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 145%;
-  height: 145%;
-  max-width: none;
 }
 
 .info-ink {

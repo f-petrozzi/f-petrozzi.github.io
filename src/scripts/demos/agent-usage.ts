@@ -36,6 +36,7 @@ function init(root: HTMLElement) {
   const filter = q<HTMLSelectElement>("[data-session-account]");
   const overlay = q("[data-overlay]");
   const frame = q("[data-frame]");
+  const scaleBox = q("[data-scale]");
   const attached = q("[data-attached]");
   const ink = q<SVGElement>("[data-panel-ink]");
   const liquid = q<SVGElement>("[data-liquid]");
@@ -169,19 +170,17 @@ function init(root: HTMLElement) {
   // shape.js partPath joins filled flares (F=43.88) directly to the body.
   // Resting arms follow the flare at a 5 * scale gap; hover reveals drops.
   // Only resize changes SVG geometry. Motion writes transforms and opacity.
-  let inkScaleX = 1;
   let materialMoving = false;
   function attr(element: Element, name: string, value: string) {
     if (element.getAttribute(name) !== value) element.setAttribute(name, value);
   }
   function sizeMaterial() {
-    const width = q(".notch").clientWidth || 350;
-    const panelWidth = attached.offsetWidth || 350;
-    const panelHeight = attached.offsetHeight || 270;
-    inkScaleX = width / 350;
-    attr(ink, "x", String(-panelWidth / inkScaleX / 2));
-    attr(ink, "width", String(panelWidth / inkScaleX));
-    attr(ink, "height", String(panelHeight));
+    // CSS scales the entire 500px canvas; SVG and HTML stay at design size.
+    attr(ink, "height", String(attached.offsetHeight || 270));
+    scaleBox.style.setProperty(
+      "--au-frame-height",
+      `${frame.offsetHeight || 450}px`,
+    );
     paintMotion(materialMoving);
   }
   function paintMotion(moving = false) {
@@ -225,7 +224,7 @@ function init(root: HTMLElement) {
       );
       neck.style.transformOrigin = "40px -39px";
       neck.style.transform = `scale(${0.3 + 0.7 * lift})`;
-      icon.style.transform = `translate(${x * inkScaleX}px, ${y}px) scale(${0.5 + 0.5 * lift}) rotate(${side * (1 - lift) * -25}deg)`;
+      icon.style.transform = `translate(${x}px, ${y}px) scale(${0.5 + 0.5 * lift}) rotate(${side * (1 - lift) * -25}deg)`;
       icon.style.opacity = String(smooth((lift - 0.45) / 0.4) * out);
     }
     // shape.js drawSprout: the bell leaves C=(20,70) on the corner's
@@ -246,13 +245,13 @@ function init(root: HTMLElement) {
     // onto the bell shoulder. The HTML target centres on the revealed drop.
     const homeX = 20 - Math.SQRT1_2 * 45.77;
     const homeY = 70 + Math.SQRT1_2 * 45.77;
-    const dx = (bx - homeX) * inkScaleX;
+    const dx = bx - homeX;
     const dy = by - homeY;
     q("[data-bell-glyph]").style.transform =
       `translate(${dx}px, ${dy}px) scale(${0.28 + 0.72 * smooth(b)}) rotate(${(1 - b) * -20}deg)`;
     q("[data-bell-glyph]").style.opacity = String(smooth((b - 0.45) / 0.4));
     q("[data-unread]").style.transform =
-      `translate(${(20 - Math.SQRT1_2 * 10 - homeX) * inkScaleX * (1 - smooth(b)) + 7.45 * smooth(b)}px, ${(70 + Math.SQRT1_2 * 10 - homeY) * (1 - smooth(b)) - 8.54 * smooth(b)}px)`;
+      `translate(${(20 - Math.SQRT1_2 * 10 - homeX) * (1 - smooth(b)) + 7.45 * smooth(b)}px, ${(70 + Math.SQRT1_2 * 10 - homeY) * (1 - smooth(b)) - 8.54 * smooth(b)}px)`;
   }
   // Invert the renderer's stow cubic-bezier(.55,0,.8,.3).
   function stowEase(t: number) {
@@ -776,12 +775,10 @@ function init(root: HTMLElement) {
   });
   const move = q<HTMLButtonElement>("[data-arm=move]");
   function place(value: number) {
-    const limit = Math.max(
-      0,
-      (q("[data-stage]").clientWidth - Math.max(attached.offsetWidth, 310)) /
-        2 -
-        12,
-    );
+    const available = overlay.clientWidth || 500;
+    const scale = Math.min(1, available / 500);
+    // Include both extended arm discs when constraining screen-space movement.
+    const limit = Math.max(0, (available - 500 * scale) / 2);
     movedX = Math.max(-limit, Math.min(limit, value));
     overlay.style.transform = `translateX(${movedX}px)`;
   }
@@ -934,7 +931,7 @@ function init(root: HTMLElement) {
     if (reduce.matches) settle();
   });
   const materialObserver = new ResizeObserver(sizeMaterial);
-  materialObserver.observe(q(".notch"));
+  materialObserver.observe(frame);
   materialObserver.observe(attached);
   paintSessions();
   paintNotices();

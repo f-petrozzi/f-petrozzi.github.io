@@ -303,7 +303,11 @@ test("usage colors flag consumed allowance rather than remaining allowance", () 
 // Exercise the real DOM wiring with a small event/animation host, without a browser.
 function interactionFixture(reducedMotion = false) {
   class Element {
-    style = {};
+    style = {
+      setProperty(name, value) {
+        this[name] = value;
+      },
+    };
     dataset = {};
     attributes = new Map();
     children = new Map();
@@ -354,6 +358,10 @@ function interactionFixture(reducedMotion = false) {
   }
   const root = new Element();
   root.querySelector("[data-goo]").id = "fixture-goo";
+  const initialInk = root.querySelector("[data-panel-ink]");
+  initialInk.setAttribute("x", "-175");
+  initialInk.setAttribute("width", "350");
+  initialInk.setAttribute("height", "270");
   const visibilityListeners = new Map();
   const documentHost = {
     hidden: false,
@@ -367,7 +375,7 @@ function interactionFixture(reducedMotion = false) {
   };
   let viewportChanged;
   let motionChanged;
-  let resize;
+  const resizeCallbacks = [];
   const media = {
     matches: reducedMotion,
     addEventListener(name, callback) {
@@ -430,7 +438,7 @@ function interactionFixture(reducedMotion = false) {
     cancelAnimationFrame: (id) => frames.delete(id),
     ResizeObserver: class {
       constructor(callback) {
-        resize = callback;
+        resizeCallbacks.push(callback);
       }
       observe() {}
     },
@@ -471,11 +479,11 @@ function interactionFixture(reducedMotion = false) {
       media.matches = value;
       motionChanged();
     },
-    resize(width, panelWidth, panelHeight) {
-      root.querySelector(".notch").clientWidth = width;
-      root.querySelector("[data-attached]").offsetWidth = panelWidth;
+    resize(available, panelHeight, frameHeight = panelHeight + 80) {
+      root.querySelector("[data-overlay]").clientWidth = available;
       root.querySelector("[data-attached]").offsetHeight = panelHeight;
-      resize();
+      root.querySelector("[data-frame]").offsetHeight = frameHeight;
+      resizeCallbacks.forEach((callback) => callback());
     },
   };
 }
@@ -751,7 +759,7 @@ test("reduced motion and touch hover keep ink sharp and leave no frame loop", ()
 test("resizing updates card geometry once while motion leaves it unchanged", () => {
   const f = interactionFixture();
   f.advance(1000);
-  f.resize(180, 180, 320);
+  f.resize(180, 320);
   const ink = f.q("[data-panel-ink]");
   assert.ok(Math.abs(Number(ink.getAttribute("width")) - 350) < 1e-9);
   assert.ok(Math.abs(Number(ink.getAttribute("x")) + 175) < 1e-9);
@@ -761,4 +769,51 @@ test("resizing updates card geometry once while motion leaves it unchanged", () 
   f.advance(2000);
   assert.deepEqual([...ink.attributes], geometry);
   assertNoGoo(f);
+});
+
+test("phone resizing preserves notch coordinates and clamps movement with extended arms inside the stage", () => {
+  const f = interactionFixture();
+  f.advance(1000);
+  const key = (key) => f.el("arm", "move").emit("keydown", { key });
+  // Full arm footprint: notch + two flares + the revealed disc radii.
+  const designWidth = 500;
+  const footprint = 350 + 2 * (43.88 + 27.21);
+  assert.ok(footprint < designWidth);
+  for (let viewport = 320; viewport <= 430; viewport++) {
+    // Include project-page gutters, component borders and stage padding.
+    const available = viewport - 56 - 24 - 2 - 24;
+    const scale = available / designWidth;
+    f.resize(available, 440, 520);
+    for (const direction of ["ArrowLeft", "ArrowRight"]) {
+      key(direction);
+      assert.equal(f.q("[data-overlay]").style.transform, "translateX(0px)");
+    }
+    const ink = f.q("[data-panel-ink]");
+    assert.equal(ink.getAttribute("width"), "350");
+    assert.equal(ink.getAttribute("x"), "-175");
+    assert.equal(ink.getAttribute("height"), "440");
+    assert.equal(f.q("[data-scale]").style["--au-frame-height"], "520px");
+    assert.ok(footprint * scale <= available);
+    for (const size of [11, 12, 13, 14, 15])
+      assert.ok(Math.max(size, 11 / scale) * scale >= 11 - 1e-9);
+    f.el("arm", "pin").emit("focus");
+    f.advance(2000);
+    const glyphTransform = f.el("arm", "pin").querySelector("[data-arm-glyph]")
+      .style.transform;
+    const [, x, y] = glyphTransform.match(
+      /translate\(([-\d.e+]+)px, ([-\d.e+]+)px\)/,
+    );
+    assert.ok(Math.abs(Number(x)) < 1e-9 && Math.abs(Number(y)) < 1e-9);
+    assert.ok(glyphTransform.endsWith("scale(1) rotate(0deg)"));
+    f.el("arm", "pin").emit("blur");
+    f.advance(2000);
+  }
+  f.resize(700, 440);
+  for (let i = 0; i < 20; i++) key("ArrowRight");
+  assert.equal(f.q("[data-overlay]").style.transform, "translateX(100px)");
+  f.resize(250, 440);
+  assert.equal(f.q("[data-overlay]").style.transform, "translateX(0px)");
+  key("Home");
+  assert.equal(f.q("[data-overlay]").style.transform, "translateX(0px)");
+  assert.ok(f.idle());
 });

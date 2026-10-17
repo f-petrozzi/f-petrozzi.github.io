@@ -120,7 +120,7 @@ const experience = [
     org: "Slice of the Burg",
     role: "Freelance Data and Technology Consultant",
     icon: "pizza",
-    logo: "/assets/org/slice.webp",
+    logo: "/assets/org/slice.svg",
     description:
       "I planned technology improvements with the owners and analyzed Toast menu performance.",
   },
@@ -227,19 +227,39 @@ const education = [
             </p>
             <ul class="hero-links" aria-label="Profiles and résumé">
               <li>
-                <a href="/files/resume.pdf"><Icon name="file-text" />Résumé</a>
-              </li>
-              <li>
-                <a href="https://github.com/f-petrozzi"
-                  ><Icon name="github" />GitHub</a
+                <a href="/files/resume.pdf" aria-label="Résumé"
+                  ><Icon name="file-text" /><span
+                    class="hero-link-label"
+                    aria-hidden="true">Résumé</span
+                  ></a
                 >
               </li>
               <li>
-                <a href="https://www.linkedin.com/in/fabriziopetrozzi/"
-                  ><Icon name="linkedin" />LinkedIn</a
+                <a href="https://github.com/f-petrozzi" aria-label="GitHub"
+                  ><Icon name="github" /><span
+                    class="hero-link-label"
+                    aria-hidden="true">GitHub</span
+                  ></a
                 >
               </li>
-              <li><a href="#contact"><Icon name="mail" />Email</a></li>
+              <li>
+                <a
+                  href="https://www.linkedin.com/in/fabriziopetrozzi/"
+                  aria-label="LinkedIn"
+                  ><Icon name="linkedin" /><span
+                    class="hero-link-label"
+                    aria-hidden="true">LinkedIn</span
+                  ></a
+                >
+              </li>
+              <li>
+                <a href="#contact" aria-label="Email"
+                  ><Icon name="mail" /><span
+                    class="hero-link-label"
+                    aria-hidden="true">Email</span
+                  ></a
+                >
+              </li>
             </ul>
           </div>
           <dl class="hero-facts">
@@ -452,16 +472,15 @@ const education = [
                                   "org-icon",
                                   {
                                     "org-wordmark":
-                                      item.logo?.includes("rj.svg") ||
-                                      item.logo?.includes("slice.webp"),
+                                      item.logo?.includes("rj.svg"),
                                   },
                                 ]}
                               >
                                 {item.logo ? (
                                   <img
                                     src={item.logo}
-                                    width="32"
-                                    height="32"
+                                    width="48"
+                                    height="48"
                                     alt=""
                                     loading="eager"
                                   />
