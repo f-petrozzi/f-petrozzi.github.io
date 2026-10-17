@@ -155,7 +155,7 @@ section {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
   gap: 48px;
-  align-items: end;
+  align-items: start;
   margin-top: 28px;
 }
 .hero-lead {
@@ -232,7 +232,7 @@ section {
 .hero-facts {
   display: grid;
   gap: 14px;
-  align-self: center;
+  align-self: start;
 }
 .hero-facts > div {
   display: grid;

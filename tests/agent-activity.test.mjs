@@ -4,6 +4,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { stripTypeScriptTypes } from "node:module";
+import { runInNewContext } from "node:vm";
 import { transform } from "@astrojs/compiler-rs";
 import { experimental_AstroContainer } from "astro/container";
 import { parseFragment } from "parse5";
@@ -68,6 +69,8 @@ test("visible totals and quantiles exclude old or future days and fill quiet day
   );
   assert.equal(grid.total, 8);
   assert.equal(grid.activeDays, 2);
+  assert.equal(grid.yearTotal, 6);
+  assert.equal(grid.yearActiveDays, 1);
   assert.deepEqual(grid.thresholds, [2, 2, 6]);
   assert.equal(grid.weeks[0][0].count, 2);
   assert.equal(grid.weeks[0][1].count, 0);
@@ -177,7 +180,7 @@ test("server-rendered grid offers every value without hundreds of tab stops", as
     1,
   );
   assert.equal(
-    cells.filter((node) => attr(node, "title") === "Oct 12, 2026, 38 prompts")
+    cells.filter((node) => attr(node, "data-tooltip") === "Oct 12, 38 prompts")
       .length,
     1,
   );
@@ -188,16 +191,25 @@ test("server-rendered grid offers every value without hundreds of tab stops", as
   );
   assert.match(
     text(summary).replace(/\s+/g, " "),
-    /38 prompts across 1 day in the last 53 weeks/,
+    /38 prompts across 1 day this year/,
   );
   assert.equal(
     find(
       page,
-      (node) =>
-        node.tagName === "summary" && text(node).trim() === "Daily counts",
+      (node) => node.tagName === "summary" || node.tagName === "details",
     ).length,
-    1,
+    0,
   );
+  const [values] = find(
+    page,
+    (node) => attr(node, "class") === "activity-values",
+  );
+  assert.equal(find(values, (node) => node.tagName === "table").length, 1);
+  assert.equal(
+    find(page, (node) => attr(node, "tabindex") !== undefined).length,
+    0,
+  );
+  assert.doesNotMatch(text(summary), /[:;—–]|daysin/);
   assert.equal(
     find(page, (node) => node.tagName === "tbody")[0].childNodes.filter(
       (node) => node.tagName === "tr",
@@ -236,16 +248,209 @@ test("the empty placeholder hides activity and its CSS never reaches project or 
   } else {
     assert.match(home, /<section[^>]*\sdata-activity(?:\s|>)/);
   }
-  assert.match(home, /--activity-bg/);
+  assert.match(home, /--activity-0/);
   for (const path of htmlFiles("dist/projects")) {
     const html = readFileSync(path, "utf8");
-    assert.doesNotMatch(html, /--activity-bg/, path);
+    assert.doesNotMatch(html, /--activity-0/, path);
     for (const [, href] of html.matchAll(/href="(\/_astro\/[^\"]+\.css)"/g)) {
       assert.doesNotMatch(
         readFileSync(join("dist", href), "utf8"),
-        /--activity-bg/,
+        /--activity-0/,
         path,
       );
     }
   }
+});
+
+test("the card-free grid fits 320 to 1440px and crops old weeks on phones", () => {
+  const source = readFileSync("src/components/ActivityGrid.astro", "utf8");
+  const [, css] = source.match(/<style is:inline>([\s\S]*?)<\/style>/);
+  const parsed = postcss.parse(css);
+  const rules = [];
+  parsed.walkRules((rule) => rules.push(rule));
+  const declarations = (selector) =>
+    rules
+      .filter((rule) => rule.selector === selector)
+      .flatMap((rule) => rule.nodes.filter((node) => node.type === "decl"));
+  const base = (selector, prop) =>
+    declarations(selector).find((d) => d.prop === prop)?.value;
+  assert.equal(
+    base(".activity-chart", "grid-template-columns"),
+    "repeat(var(--activity-weeks), minmax(0, 11px))",
+  );
+  assert.equal(base(".activity-chart", "gap"), "3px");
+  assert.equal(base(".activity-band", "container-type"), "inline-size");
+  assert.equal(base(".activity-band", "width"), "100%");
+  assert.equal(base(".activity-band", "max-width"), "739px");
+  assert.equal(base(".activity-grid", "--activity-weeks"), "53");
+  assert.doesNotMatch(css, /overflow-x|min-width: (?!0)|scrollbar/);
+  assert.equal(base(".activity-cell", "aspect-ratio"), "1");
+  assert.equal(base(".activity-values", "clip-path"), "inset(50%)");
+  const phone = rules.find(
+    (rule) => rule.selector === ".activity-week:nth-child(-n + 27)",
+  );
+  assert.equal(phone.parent.params, "(max-width: 767px)");
+  const narrow = rules.find(
+    (rule) => rule.selector === ".activity-week:nth-child(-n + 35)",
+  );
+  assert.equal(narrow.parent.name, "container");
+  assert.equal(narrow.parent.params, "(max-width: 334px)");
+  for (const selector of [
+    ".activity-grid",
+    ".activity-band",
+    ".activity-chart",
+  ]) {
+    assert.ok(
+      !declarations(selector).some((d) =>
+        /^(background|border|padding)/.test(d.prop),
+      ),
+      `${selector} has card chrome`,
+    );
+  }
+  // Check the track constraints at every CSS pixel. This is a geometry check,
+  // not a substitute for the owner's rendered visual review.
+  for (let viewport = 320; viewport <= 1440; viewport++) {
+    const phone = viewport <= 767;
+    const content =
+      Math.min(1240, viewport) -
+      (viewport <= 850 ? 56 : 60) -
+      (phone ? 22 : 60);
+    const width = Math.min(content, phone ? 361 : 739);
+    const weeks = width <= 334 ? 18 : phone ? 26 : 53;
+    const cell = Math.min(11, (width - (weeks - 1) * 3) / weeks);
+    assert.ok(cell >= 9 && cell <= 11, `${viewport}px has ${cell}px cells`);
+    assert.ok(weeks * cell + (weeks - 1) * 3 <= content + 0.001);
+    assert.ok(15 + 7 * cell + 7 * 3 <= 113);
+  }
+});
+
+function activityHarness({ reduced = false } = {}) {
+  class Element {
+    listeners = new Map();
+    style = {};
+    dataset = {};
+    attrs = new Set();
+    addEventListener(type, fn) {
+      this.listeners.set(type, fn);
+    }
+    removeEventListener(type) {
+      this.listeners.delete(type);
+    }
+    setAttribute(name) {
+      this.attrs.add(name);
+    }
+    removeAttribute(name) {
+      this.attrs.delete(name);
+    }
+    closest(selector) {
+      return selector.includes("data-tooltip") ? this : null;
+    }
+  }
+  const band = new Element();
+  band.getBoundingClientRect = () => ({ left: 56, top: 100, width: 242 });
+  band.contains = (target) => [cell, tip].includes(target);
+  const cell = new Element();
+  cell.dataset.tooltip = "Oct 12, 38 prompts";
+  cell.getBoundingClientRect = () => ({ left: 286, top: 140, width: 11 });
+  const tip = new Element();
+  const label = {};
+  tip.querySelector = () => label;
+  const motion = new Element();
+  motion.matches = reduced;
+  const hover = new Element();
+  hover.matches = true;
+  const document = new Element();
+  const window = new Element();
+  const animations = [];
+  const columns = [true, false, true].map((visible) => ({
+    getClientRects: () => (visible ? [{}] : []),
+    animate: (frames, options) => {
+      const animation = {
+        frames,
+        options,
+        cancelled: false,
+        finished: new Promise(() => {}),
+        cancel() {
+          this.cancelled = true;
+        },
+      };
+      animations.push(animation);
+      return animation;
+    },
+  }));
+  const root = {
+    querySelector: (selector) => (selector === ".activity-band" ? band : tip),
+    querySelectorAll: () => columns,
+  };
+  document.querySelectorAll = () => [root];
+  let observer;
+  class IntersectionObserver {
+    constructor(callback) {
+      this.callback = callback;
+      observer = this;
+    }
+    observe() {}
+    disconnect() {
+      this.disconnected = true;
+    }
+  }
+  window.IntersectionObserver = IntersectionObserver;
+  runInNewContext(
+    stripTypeScriptTypes(readFileSync("src/scripts/agent-activity.ts", "utf8")),
+    {
+      document,
+      window,
+      Element,
+      IntersectionObserver,
+      matchMedia: (query) =>
+        query.includes("reduced-motion") ? motion : hover,
+    },
+  );
+  return { band, cell, tip, label, document, motion, animations, observer };
+}
+
+test("hover tooltips stay within the chart and support hover persistence and Escape", () => {
+  const h = activityHarness();
+  h.band.listeners.get("pointerover")({ target: h.cell });
+  assert.equal(h.label.textContent, "Oct 12, 38 prompts");
+  assert.equal(h.tip.style.left, "62px");
+  assert.equal(h.tip.style.top, "41px");
+  assert.ok(h.tip.attrs.has("data-open"));
+  h.band.listeners.get("pointerout")({ relatedTarget: h.tip });
+  assert.ok(h.tip.attrs.has("data-open"));
+  h.document.listeners.get("keydown")({ key: "Escape" });
+  assert.ok(!h.tip.attrs.has("data-open"));
+  h.band.listeners.get("pointerover")({ target: h.cell });
+  h.band.listeners.get("pointerout")({ relatedTarget: null });
+  assert.ok(!h.tip.attrs.has("data-open"));
+});
+
+test("entrance animates visible columns once and cancels when scrolled away", () => {
+  const h = activityHarness();
+  h.observer.callback([{ isIntersecting: true }]);
+  assert.equal(h.animations.length, 2);
+  assert.deepEqual(
+    h.animations.map((a) => a.options.delay),
+    [0, 3],
+  );
+  for (const animation of h.animations) {
+    for (const frame of animation.frames)
+      assert.deepEqual(Object.keys(frame), ["opacity", "transform"]);
+    assert.ok(animation.options.duration <= 200);
+  }
+  h.observer.callback([{ isIntersecting: true }]);
+  assert.equal(h.animations.length, 2);
+  h.observer.callback([{ isIntersecting: false }]);
+  assert.ok(h.animations.every((a) => a.cancelled));
+  assert.ok(h.observer.disconnected);
+});
+
+test("reduced motion skips entrance or cancels an entrance already in progress", () => {
+  assert.equal(activityHarness({ reduced: true }).observer, undefined);
+  const h = activityHarness();
+  h.observer.callback([{ isIntersecting: true }]);
+  h.motion.matches = true;
+  h.motion.listeners.get("change")();
+  assert.ok(h.animations.every((a) => a.cancelled));
+  assert.ok(h.observer.disconnected);
 });

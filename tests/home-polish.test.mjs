@@ -99,6 +99,22 @@ test("hero targets, alignment and tooltip transitions work for touch and keyboar
   assert.match(read("src/styles/home.css"), /prefers-reduced-motion: reduce/);
 });
 
+test("hero facts align with the lead and activity belongs to the intro flow", () => {
+  assert.equal(declarations(".hero-grid")["align-items"], "start");
+  assert.equal(declarations(".hero-facts")["align-self"], "start");
+  const [hero] = find(home, (node) => hasClass(node, "hero"));
+  const activity = find(
+    hero,
+    (node) => attr(node, "data-activity") !== undefined,
+  );
+  // The real export is optional. If present, activity shares the hero's gutters.
+  for (const section of activity) assert.ok(!hasClass(section, "wrap"));
+  assert.equal(
+    activity.length,
+    find(home, (node) => attr(node, "data-activity") !== undefined).length,
+  );
+});
+
 test("every timeline logo is real vector artwork at an untransformed integer size", () => {
   const tiles = find(home, (node) => hasClass(node, "org-icon"));
   assert.equal(tiles.length, 8);

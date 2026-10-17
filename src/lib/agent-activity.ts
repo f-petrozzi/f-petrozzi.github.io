@@ -46,7 +46,12 @@ export function activityGrid(days: ActivityDay[], endDate: string) {
     }),
   );
   const visible = weeks.flat().filter((day) => !day.future);
+  const thisYear = visible.filter(
+    (day) => day.date.slice(0, 4) === endDate.slice(0, 4),
+  );
   return {
+    yearTotal: thisYear.reduce((sum, day) => sum + day.count, 0),
+    yearActiveDays: thisYear.filter((day) => day.count > 0).length,
     weeks,
     thresholds,
     total: visible.reduce((sum, day) => sum + day.count, 0),
