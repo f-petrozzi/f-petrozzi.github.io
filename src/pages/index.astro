@@ -1,5 +1,6 @@
 ---
 import ImageViewer from "../components/ImageViewer.astro";
+import ActivityGrid from "../components/ActivityGrid.astro";
 import QuickPreview from "../components/QuickPreview.astro";
 import ScrollControl from "../components/ScrollControl.astro";
 import { getCollection } from "astro:content";
@@ -284,6 +285,8 @@ const education = [
           </dl>
         </div>
       </section>
+
+      <ActivityGrid />
 
       <section class="work wrap" id="work" aria-labelledby="work-title">
         <div class="section-heading">

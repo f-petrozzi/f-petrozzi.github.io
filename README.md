@@ -26,6 +26,42 @@ npm run preview
 
 In a restricted environment, prefix Astro commands with `ASTRO_TELEMETRY_DISABLED=1`.
 
+## Agent activity
+
+The homepage activity band appears after a real export. The checked-in file is an
+empty placeholder. From this repository, export counts and rebuild with
+
+```sh
+python3 scripts/export-agent-activity.py && npm run build
+```
+
+For a daily refresh at 6 am in the cron host's timezone, replace the repository
+path below with this checkout's absolute path
+
+```cron
+0 6 * * * cd /absolute/path/to/portfolio && PATH="$HOME/.nvm/versions/node/v24.19.0/bin:$PATH" && export PATH && python3 scripts/export-agent-activity.py && npm run build
+```
+
+`--dry-run` prints prompt and active-day totals without writing. The exporter
+mirrors `accounts_root`, automatic `codex_profiles`, and `claude_config_dir` from
+`Agent-Usage/scripts/agent-usage` as of October 16, 2026. Codex profiles under
+`CODEX_ACCOUNTS_DIR/profiles` take precedence, falling back to
+`$XDG_DATA_HOME/codex-accounts/profiles` (or `~/.local/share/codex-accounts/profiles`)
+when that override is unset. With no profiles, it uses `CODEX_HOME` or `~/.codex`.
+Claude uses `CLAUDE_CONFIG_DIR` or `~/.claude`.
+
+It streams only each discovered `history.jsonl`, retaining only Codex `ts` Unix
+seconds or Claude `timestamp` Unix milliseconds during JSON parsing. It never
+inspects prompt text, session identifiers, project names, project paths,
+credentials, databases, session files or logs. Non-timestamp fields are discarded
+during parsing and never retained or exported. The only public output is the
+schema version, generation time, timezone and daily counts. Dates use
+`America/New_York` across 53 Sunday-start calendar weeks including the current
+partial week. Future cells are blank. Invalid timestamps are skipped. The export
+is replaced atomically and missing histories fail without replacing it. Fixture
+tests do not access real provider homes. No real export has been run for this
+feature's implementation.
+
 ## Add a project
 
 Copy `templates/project.md` into `src/content/projects/your-project.md`. Fill in the metadata and write the project story below it. The filename becomes the URL. Lower `order` values appear first. `featured: true` adds the project to Selected work, alongside the Homelab feature. Tool suggestions come from the content automatically. Links are optional: omit them for private work.

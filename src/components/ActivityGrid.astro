@@ -1,0 +1,307 @@
+---
+import {
+  activityGrid,
+  localDate,
+  type ActivityExport,
+} from "../lib/agent-activity";
+
+// A missing export and the checked-in empty placeholder both render nothing.
+const exports = import.meta.glob<ActivityExport>(
+  "../data/agent-activity.json",
+  {
+    eager: true,
+    import: "default",
+  },
+);
+const source = Object.values(exports)[0];
+const grid =
+  source?.schemaVersion === 1 && source.days?.length
+    ? activityGrid(source.days, localDate(source.generatedAt, source.timezone))
+    : null;
+const numbers = new Intl.NumberFormat("en-US");
+const month = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  timeZone: "UTC",
+});
+const date = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+  timeZone: "UTC",
+});
+const asDate = (key: string) => new Date(`${key}T00:00:00Z`);
+const prompts = (count: number) =>
+  `${numbers.format(count)} ${count === 1 ? "prompt" : "prompts"}`;
+const label = (day: { date: string; count: number }) =>
+  `${date.format(asDate(day.date))}, ${prompts(day.count)}`;
+---
+
+{
+  grid && (
+    <section
+      class="activity-grid wrap"
+      aria-labelledby="activity-title"
+      data-activity
+    >
+      <div class="activity-band">
+        <header>
+          <h2 id="activity-title">Building with agents</h2>
+          <p id="activity-summary">
+            {prompts(grid.total)} across {numbers.format(grid.activeDays)}{" "}
+            {grid.activeDays === 1 ? "day" : "days"}
+            in the last 53 weeks
+          </p>
+        </header>
+        <div
+          class="activity-scroll"
+          tabindex="0"
+          role="region"
+          aria-label="Daily agent activity"
+          aria-describedby="activity-summary"
+        >
+          <div class="activity-chart" aria-hidden="true">
+            {grid.weeks.map((week, column) => {
+              const monthDay = week.find(
+                (day) => !day.future && day.date.endsWith("-01"),
+              );
+              const monthLabel = monthDay ?? (column === 0 ? week[0] : null);
+              return (
+                <div class="activity-week" data-activity-column>
+                  <span class="activity-month">
+                    {monthLabel ? month.format(asDate(monthLabel.date)) : ""}
+                  </span>
+                  {week.map((day) => (
+                    <span
+                      class="activity-cell"
+                      data-level={day.level}
+                      data-future={day.future || undefined}
+                      title={day.future ? undefined : label(day)}
+                    />
+                  ))}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <footer>
+          <span>Codex and Claude Code</span>
+          <div class="activity-legend" aria-hidden="true">
+            <span>Less</span>
+            {[0, 1, 2, 3, 4].map((level) => (
+              <i class="activity-cell" data-level={level} />
+            ))}
+            <span>More</span>
+          </div>
+        </footer>
+        <details>
+          <summary>Daily counts</summary>
+          <div
+            class="activity-values"
+            tabindex="0"
+            role="region"
+            aria-label="Daily prompt counts"
+          >
+            <table>
+              <caption>
+                Through {date.format(asDate(grid.days.at(-1)!.date))} in New
+                York
+              </caption>
+              <thead>
+                <tr>
+                  <>
+                    <th scope="col">Day</th>
+                    <th scope="col">Prompts</th>
+                  </>
+                </tr>
+              </thead>
+              <tbody>
+                {grid.days.toReversed().map((day) => (
+                  <tr>
+                    <th scope="row">
+                      <time datetime={day.date}>
+                        {date.format(asDate(day.date))}
+                      </time>
+                    </th>
+                    <td>{numbers.format(day.count)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </section>
+  )
+}
+<style is:inline>
+  .activity-grid {
+    --activity-bg: #101a26;
+    --activity-ink: #eef3f8;
+    --activity-muted: #a9b6c7;
+    --activity-line: #344959;
+    --activity-0: hsl(196 35% 16%);
+    --activity-1: hsl(196 40% 28%);
+    --activity-2: hsl(196 45% 42%);
+    --activity-3: hsl(196 60% 59%);
+    --activity-4: hsl(196 79% 75%);
+    color-scheme: dark;
+    min-width: 0;
+    margin-bottom: 64px;
+    color: var(--activity-ink);
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+
+    .activity-band {
+      padding: 24px;
+      border: 1px solid var(--activity-line);
+      border-radius: 22px;
+      background: var(--activity-bg);
+    }
+    & header {
+      margin-bottom: 16px;
+    }
+    & h2 {
+      font-size: 18px;
+      font-weight: 500;
+    }
+    & p,
+    & footer,
+    & caption {
+      color: var(--activity-muted);
+    }
+    .activity-scroll {
+      overflow-x: auto;
+      padding: 3px 3px 10px;
+    }
+    .activity-chart {
+      display: grid;
+      grid-template-columns: repeat(53, minmax(10px, 1fr));
+      gap: 4px;
+      min-width: 738px;
+    }
+    .activity-week {
+      display: grid;
+      grid-template-rows: 20px repeat(7, 1fr);
+      gap: 4px;
+    }
+    .activity-month {
+      font-size: 11px;
+      color: var(--activity-muted);
+      white-space: nowrap;
+    }
+    .activity-cell {
+      display: block;
+      aspect-ratio: 1;
+      border-radius: 3px;
+      background: var(--activity-0);
+    }
+    [data-level="1"] {
+      background: var(--activity-1);
+    }
+    [data-level="2"] {
+      background: var(--activity-2);
+    }
+    [data-level="3"] {
+      background: var(--activity-3);
+    }
+    [data-level="4"] {
+      background: var(--activity-4);
+    }
+    [data-future] {
+      visibility: hidden;
+    }
+    & footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px 16px;
+      font-size: 12px;
+    }
+    .activity-legend {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .activity-legend .activity-cell {
+      width: 10px;
+    }
+    .activity-legend span {
+      margin-inline: 4px;
+    }
+    & summary {
+      width: fit-content;
+      min-height: 44px;
+      display: list-item;
+      align-content: center;
+      cursor: pointer;
+      touch-action: manipulation;
+      color: var(--activity-4);
+    }
+    & summary:hover {
+      text-decoration: underline;
+    }
+    & :focus-visible {
+      outline: 2px solid var(--activity-4);
+      outline-offset: 2px;
+    }
+    .activity-values {
+      max-height: 240px;
+      overflow: auto;
+    }
+    & table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    & caption {
+      text-align: left;
+      margin-bottom: 8px;
+    }
+    & th,
+    & td {
+      padding: 6px 4px;
+      border-bottom: 1px solid var(--activity-line);
+      font-weight: 400;
+    }
+    & td,
+    & th:last-child {
+      text-align: right;
+    }
+    .activity-scroll,
+    .activity-values {
+      scrollbar-width: thin;
+      scrollbar-color: var(--activity-line) transparent;
+    }
+    .activity-scroll::-webkit-scrollbar,
+    .activity-values::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .activity-scroll::-webkit-scrollbar-thumb,
+    .activity-values::-webkit-scrollbar-thumb {
+      background: var(--activity-line);
+      border-radius: 6px;
+    }
+    .activity-scroll::-webkit-scrollbar-track,
+    .activity-values::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    @media (max-width: 600px) {
+      .activity-band {
+        padding: 16px;
+      }
+    }
+    @media (forced-colors: active) {
+      .activity-cell {
+        border: 1px solid CanvasText;
+      }
+      [data-level="0"] {
+        opacity: 0.25;
+      }
+    }
+  }
+</style>
+<script>
+  import "../scripts/agent-activity";
+</script>
