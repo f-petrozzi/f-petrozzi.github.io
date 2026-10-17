@@ -30,29 +30,47 @@ import {
 
 const note = (s, id) => s.notes.find((n) => n.id === id);
 
-test("phone display reaches the bottom with scrolling below a fixed home indicator", () => {
+test("phone keeps its proportions and separates chrome from scrolling content", () => {
   const component = readFileSync(
     new URL("../src/components/demos/TodooDemo.astro", import.meta.url),
     "utf8",
   );
-  const screen = component.match(/\.td-screen\s*\{([^}]+)\}/)?.[1];
-  const content = component.match(/\.td-content\s*\{([^}]+)\}/)?.[1];
-  assert.ok(screen);
-  assert.ok(content);
-  // The old 440px cap left a gap in both phone sizes. The display must
-  // consume the remaining height and constrain long notes to its own viewport.
-  assert.match(screen, /flex:\s*1 1 0\s*;/);
-  assert.match(screen, /min-height:\s*0\s*;/);
-  assert.match(screen, /overflow:\s*hidden\s*;/);
-  assert.doesNotMatch(screen + content, /(?:max-)?height:\s*[1-9]/);
-  assert.match(content, /position:\s*absolute\s*;/);
-  assert.match(content, /inset:\s*0\s*;/);
-  assert.match(content, /overflow-y:\s*auto\s*;/);
-  assert.match(content, /overscroll-behavior:\s*contain\s*;/);
-  // The indicator belongs to the display, outside the content replaced on render.
+  const rule = (selector) => {
+    const body = component.match(
+      new RegExp(`\\.${selector}\\s*\\{([^}]+)\\}`),
+    )?.[1];
+    assert.ok(body, `Missing ${selector} rule`);
+    return body;
+  };
+  const phone = rule("td-phone");
+  assert.match(phone, /width:\s*340px\s*;/);
+  assert.match(phone, /max-width:\s*100%\s*;/);
+  assert.match(phone, /min-width:\s*min\(300px, 100%\)\s*;/);
+  assert.match(phone, /aspect-ratio:\s*9 \/ 19\.5\s*;/);
+  assert.doesNotMatch(component, /(?:max-)?height:\s*(?:700|660|440)px/);
   assert.match(
     component,
-    /<div class="td-screen">\s*<div class="td-content" data-screen><\/div>\s*<span class="td-home" aria-hidden="true"><\/span>\s*<\/div>/,
+    /grid-template-columns:\s*340px minmax\(200px, 260px\)/,
+  );
+  const display = rule("td-screen");
+  assert.match(display, /position:\s*absolute/);
+  assert.match(display, /inset:\s*0\s*;/);
+  assert.match(display, /grid-template-rows:\s*48px minmax\(0, 1fr\)/);
+  assert.match(display, /padding-bottom:\s*24px/);
+  assert.match(display, /overflow:\s*hidden/);
+  // The 9px bezel leaves an inner radius of 52 - 9 = 43px.
+  assert.match(phone, /border:\s*9px solid/);
+  assert.match(phone, /border-radius:\s*52px/);
+  assert.match(display, /border-radius:\s*43px/);
+  const content = rule("td-content");
+  assert.match(content, /min-height:\s*0/);
+  assert.match(content, /overflow-y:\s*auto/);
+  assert.match(content, /overscroll-behavior:\s*contain/);
+  assert.match(rule("td-home"), /bottom:\s*8px/);
+  // Persistent chrome sits inside the display, outside the replaced content.
+  assert.match(
+    component,
+    /<div class="td-screen">\s*<div class="td-island"[\s\S]*?data-status[\s\S]*?>9:41<\/span>[\s\S]*?<div class="td-content" data-screen><\/div>\s*<span class="td-home" aria-hidden="true"><\/span>/,
   );
 });
 
