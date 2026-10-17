@@ -5,6 +5,7 @@ import {
   clockLabel,
   accounts,
   providerPaths,
+  providerPath,
   usageColor,
 } from "../../data/demos/agent-usage";
 const initial = snapshot(0);
@@ -23,7 +24,7 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
         <svg
           class="notch-material"
           data-material
-          viewBox="0 0 228 90"
+          viewBox="0 0 350 90"
           preserveAspectRatio="none"
           aria-hidden="true"
         >
@@ -45,28 +46,33 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
             </filter>
           </defs>
           <g data-liquid>
-            <g transform="translate(114 80)">
+            <g transform="translate(175 80)">
               <rect
                 class="panel-ink"
                 data-panel-ink
-                x="-170"
-                width="340"
+                x="-175"
+                width="350"
                 height="270"
                 rx="24"></rect>
             </g>
             <!-- shape.js partPath (109-114): filled inverse-radius flares are
-                 part of the body, tangent to y=0 and the x=0 / x=228 sides. -->
+                 part of the body, tangent to y=0 and the x=0 / x=350 sides. -->
             <path
               data-notch-ink
               fill="var(--au-black)"
               stroke="none"
-              d="M-43.88 -40V0A43.88 43.88 0 0 1 0 43.88V70A20 20 0 0 0 20 90H208A20 20 0 0 0 228 70V43.88A43.88 43.88 0 0 1 271.88 0V-40Z"
+              d="M-43.88 -40V0A43.88 43.88 0 0 1 0 43.88V70A20 20 0 0 0 20 90H330A20 20 0 0 0 350 70V43.88A43.88 43.88 0 0 1 393.88 0V-40Z"
             ></path>
             {
               ["pin", "move"].map((arm, i) => (
-                <g transform={`translate(${i ? 271.88 : -43.88} 43.88)`}>
+                <g transform={`translate(${i ? 393.88 : -43.88} 43.88)`}>
                   <g data-arm-material={arm}>
                     <g transform={i ? "scale(-1 1)" : undefined}>
+                      <path
+                        class="arm-stroke"
+                        data-arm-stroke={arm}
+                        d="M-10.21 -32.43H0A32.43 32.43 0 0 1 32.43 0V10.21"
+                      />
                       <path
                         class="arm-neck"
                         data-arm-neck={arm}
@@ -127,13 +133,7 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
                       viewBox="0 0 24 24"
                       aria-hidden="true"
                     >
-                      <path
-                        d={
-                          providerPaths[
-                            account.provider === "Codex" ? "codex" : "claude"
-                          ]
-                        }
-                      />
+                      <path d={providerPath(account.provider)} />
                     </svg>
                   </span>
                   <strong data-gauge-value>{account.windows[0].used}%</strong>
@@ -435,7 +435,8 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
 
 <style is:inline>
   .demo-agent-usage {
-    --au-stage: #161618;
+    --au-stage: #51667c;
+    --au-notch-width: min(350px, 76%);
     --au-black: #000;
     --au-card: #080808;
     --au-surface: #181818;
@@ -544,7 +545,7 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
     }
     .overlay {
       position: relative;
-      width: 384px;
+      width: 460px;
       max-width: 100%;
       margin: 0 auto;
     }
@@ -558,7 +559,7 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
     .notch {
       position: relative;
       z-index: 2;
-      width: min(228px, 65.5%);
+      width: var(--au-notch-width);
       height: 90px;
       margin: 0 auto;
       border-radius: 0 0 20px 20px;
@@ -567,7 +568,7 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
       position: absolute;
       top: 0;
       left: 50%;
-      width: min(228px, 65.5%);
+      width: var(--au-notch-width);
       height: 90px;
       transform: translateX(-50%);
       overflow: visible;
@@ -578,17 +579,17 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
     }
     .account-gauges {
       display: flex;
-      justify-content: center;
-      gap: 14px;
-      padding: 10px 18px;
+      justify-content: space-between;
+      gap: 0;
+      padding: 10px 30px;
     }
     .account-gauge {
       display: grid;
       justify-items: center;
       align-content: start;
       gap: 4px;
-      padding: 0 3px;
-      min-width: 50px;
+      padding: 0;
+      min-width: 44px;
       border-radius: 16px;
     }
     .account-gauge .ring {
@@ -604,7 +605,7 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
       opacity: 0.6;
     }
     .account-gauge strong {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 600;
       line-height: 20px;
       font-variant-numeric: tabular-nums;
@@ -651,15 +652,23 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
       overflow: visible;
     }
     .arm-leading {
-      right: calc(119.2456% - 22px);
+      right: calc(112.5371% - 22px);
     }
     .arm-trailing {
-      left: calc(119.2456% - 22px);
+      left: calc(112.5371% - 22px);
       touch-action: none;
       cursor: grab;
     }
     .arm-trailing:active {
       cursor: grabbing;
+    }
+    .arm-stroke {
+      fill: none;
+      stroke: var(--au-black);
+      stroke-width: 11.57;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transform-origin: 22.93px -22.93px;
     }
     .arm-disc,
     .arm-neck,
@@ -667,7 +676,8 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
       opacity: 0;
     }
     .bell-disc {
-      transform: translate(-12.36px, 102.36px);
+      transform: translate(10.88px, 79.12px) scale(0.28);
+      opacity: 0;
     }
     .arm-glyph {
       position: absolute;
@@ -681,7 +691,7 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
     .bell {
       /* C=(20,70), reach=20+4+21.77 along the leading 45-degree bisector. */
       top: 75.59px;
-      left: calc(-5.4211% - 26.77px);
+      left: calc(-3.5314% - 26.77px);
       width: 53.54px;
       height: 53.54px;
       z-index: 3;
@@ -695,6 +705,7 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
       height: 21.91px;
       stroke-width: 1.6;
       transform-origin: 50% 16%;
+      opacity: 0;
     }
     .unread {
       position: absolute;
@@ -705,14 +716,13 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
       border-radius: 50%;
       background: #f2ff00;
       box-shadow: 0 0 0 2px var(--au-black);
-      transform: translate(7.45px, -8.54px);
+      transform: translate(25.29px, -25.29px);
       pointer-events: none;
     }
     .attached-panel {
       position: relative;
       z-index: 1;
-      width: 100%;
-      max-width: 340px;
+      width: var(--au-notch-width);
       margin: -10px auto 0;
       padding: 24px 16px 16px;
       transform-origin: 50% 0;
@@ -736,6 +746,7 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
     }
     .panel-heading {
       justify-content: space-between;
+      flex-wrap: wrap;
       min-height: 44px;
     }
     .account-heading {
@@ -1021,6 +1032,7 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
     }
     .notice-filters {
       display: flex;
+      flex-wrap: wrap;
       gap: 4px;
       margin: 4px 0 8px;
     }
@@ -1074,7 +1086,7 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
       z-index: 4;
       display: block;
       margin: -10px auto 0;
-      width: 228px;
+      width: var(--au-notch-width);
       min-height: 76px;
       background: var(--au-black);
       border-radius: 0 0 20px 20px;
@@ -1163,9 +1175,8 @@ const gooId = `au-goo-${crypto.randomUUID()}`;
         padding-left: 6px;
       }
       .account-gauges {
-        gap: 6px;
-        padding-right: 6px;
-        padding-left: 6px;
+        padding-right: 2px;
+        padding-left: 2px;
       }
       .account-gauge {
         min-width: 44px;

@@ -22,7 +22,7 @@ const windowOf = (minute, account = "lumen", id = "fiveHour") =>
     .accounts.find((row) => row.id === account)
     .windows.find((window) => window.id === id);
 
-test("notch has joined filled concave fillets, a local goo filter and one fixed palette", () => {
+test("notch preserves body fillets and detached mirrored round arms in one fixed palette", () => {
   const component = readFileSync(
     new URL("../src/components/demos/AgentUsageDemo.astro", import.meta.url),
     "utf8",
@@ -37,27 +37,39 @@ test("notch has joined filled concave fillets, a local goo filter and one fixed 
   assert.match(css, /--au-black:\s*#000;/);
   assert.match(css, /\.notch-material\s*\{[^}]*fill: var\(--au-black\);/);
   assert.doesNotMatch(component + script, /arm-rest/);
-  assert.doesNotMatch(css, /stroke: var\(--au-black\)/);
+  assert.match(
+    css,
+    /\.arm-stroke\s*\{[^}]*fill: none;[^}]*stroke: var\(--au-black\);[^}]*stroke-width: 11.57;[^}]*stroke-linecap: round;/,
+  );
   assert.doesNotMatch(
     css,
     /:global|var\(--(?:bg|ink|muted|line)\)|backdrop-filter/,
   );
-  // Reference shape.js partPath, lines 109-114, at width=228 and depth=90.
+  // Reference shape.js partPath, lines 109-114, at width=350 and depth=90.
   // One closed contour keeps both fillets flush with the top and body sides.
-  // The first arc is centred at (-F,F), the last at (228+F,F): both concave.
+  // The first arc is centred at (-F,F), the last at (350+F,F): both concave.
   const filletRadius = Number((38.7 * Math.sqrt(90 / 70)).toFixed(2));
   assert.equal(filletRadius, 43.88);
   const notch = component.match(/<path\s+data-notch-ink\s+([^>]+)>/)[1];
   assert.match(notch, /fill="var\(--au-black\)"\s+stroke="none"/);
   assert.ok(
     notch.includes(
-      `d="M-${filletRadius} -40V0A${filletRadius} ${filletRadius} 0 0 1 0 ${filletRadius}V70A20 20 0 0 0 20 90H208A20 20 0 0 0 228 70V${filletRadius}A${filletRadius} ${filletRadius} 0 0 1 ${228 + filletRadius} 0V-40Z"`,
+      `d="M-${filletRadius} -40V0A${filletRadius} ${filletRadius} 0 0 1 0 ${filletRadius}V70A20 20 0 0 0 20 90H330A20 20 0 0 0 350 70V${filletRadius}A${filletRadius} ${filletRadius} 0 0 1 ${350 + filletRadius} 0V-40Z"`,
     ),
   );
-  // Only hovered control drops occupy these pockets; no stroked rest hooks.
-  assert.ok(component.includes("i ? 271.88 : -43.88"));
+  // shape.js drawArm uses a concentric quarter arc, with straight legs.
+  const scale = Math.sqrt(90 / 70);
+  const stroke = 10.2 * scale;
+  const radius = 38.7 * scale - stroke / 2 - 5 * scale;
+  assert.equal(Number(radius.toFixed(2)), 32.43);
+  assert.equal(Number((9 * scale).toFixed(2)), 10.21);
+  assert.equal(Number(stroke.toFixed(2)), 11.57);
+  assert.ok(
+    component.includes('d="M-10.21 -32.43H0A32.43 32.43 0 0 1 32.43 0V10.21"'),
+  );
+  assert.ok(component.includes("i ? 393.88 : -43.88"));
   assert.ok(component.includes('i ? "scale(-1 1)" : undefined'));
-  assert.ok(component.includes('transform="translate(114 80)"'));
+  assert.ok(component.includes('transform="translate(175 80)"'));
   assert.doesNotMatch(css, /inset: -80px/);
   assert.ok(component.includes('stdDeviation="4"'));
   assert.ok(component.includes("0 0 0 10.4 -4.7"));
@@ -73,8 +85,19 @@ test("notch has joined filled concave fillets, a local goo filter and one fixed 
     "use the real notch.html bell outline",
   );
   assert.ok(component.includes('<path d="M10 21h4">'));
-  assert.doesNotMatch(css.match(/\.bell-glyph\s*\{([^}]+)\}/)[1], /opacity: 0/);
-  assert.doesNotMatch(css.match(/\.bell-disc\s*\{([^}]+)\}/)[1], /opacity: 0/);
+  assert.match(css.match(/\.bell-glyph\s*\{([^}]+)\}/)[1], /opacity: 0/);
+  assert.match(css.match(/\.bell-disc\s*\{([^}]+)\}/)[1], /opacity: 0/);
+  for (const selector of [
+    "notch",
+    "notch-material",
+    "attached-panel",
+    "alert-sliver",
+  ])
+    assert.match(
+      css,
+      new RegExp(`\\.${selector}\\s*\\{[^}]*width: var\\(--au-notch-width\\);`),
+    );
+  assert.match(script, /ink.style.transform = `scale\(1, \$\{d\}\)`/);
   assert.match(css, /\.notch-frame\s*\{[^}]*min-height: 125px;/);
 });
 
@@ -88,6 +111,14 @@ test("clock advances usage continuously and keeps windows independent", () => {
     first.accounts.filter((account) => account.provider === "Claude").length,
     1,
   );
+  assert.deepEqual(
+    first.accounts.map((account) => account.provider),
+    ["Codex", "Claude", "AGY", "Codex"],
+  );
+  assert.equal(windowOf(0, "nova").used, 37);
+  assert.ok(windowOf(15, "nova").used > windowOf(0, "nova").used);
+  assert.equal(usage.providerPath("AGY"), usage.providerPaths.agy);
+  assert.notEqual(usage.providerPath("AGY"), usage.providerPaths.claude);
   assert.equal(windowOf(10).used, 76);
   assert.equal(windowOf(10.5).used, 76.2);
   assert.equal(windowOf(10).resetsIn, 35);
@@ -345,7 +376,7 @@ function interactionFixture(reducedMotion = false) {
   };
   const groups = new Map();
   for (const [selector, key, values] of [
-    ["[data-account]", "account", ["lumen", "orbit", "fern"]],
+    ["[data-account]", "account", ["lumen", "fern", "nova", "orbit"]],
     ["[data-arm]", "arm", ["pin", "move"]],
     ["[data-panel]", "panel", ["usage", "sessions", "notifications"]],
     ["[data-window-choice]", "windowChoice", ["fiveHour", "weekly"]],
@@ -456,8 +487,8 @@ for (const reduced of [false, true]) {
     assert.equal(f.q("[data-frame]").style.transform, "translateY(0px)");
     assert.equal(f.q("[data-frame]").style.opacity, "1");
     assert.equal(f.q("[data-panel-content]").style.opacity, "1");
-    assert.equal(f.q("[data-bell-glyph]").style.opacity, "1");
-    assert.equal(f.q("[data-bell-disc]").style.opacity, "1");
+    assert.equal(f.q("[data-bell-glyph]").style.opacity, "0");
+    assert.equal(f.q("[data-bell-disc]").style.opacity, "0");
     assert.equal(f.q("[data-unread]").hidden, false);
     assert.equal(f.q("[data-attached]").inert, false);
     assert.equal(f.q("[data-reveal]").textContent, "Hide notch");
@@ -465,18 +496,47 @@ for (const reduced of [false, true]) {
       ["lumen", 72],
       ["orbit", 31],
       ["fern", 54],
+      ["nova", 37],
     ])
       assert.equal(
         f.el("account", id).querySelector("[data-gauge-value]").textContent,
         `${used}%`,
       );
-    for (const side of ["pin", "move"])
+    for (const side of ["pin", "move"]) {
       assert.equal(f.el("arm", side).style.opacity, "1");
+      assert.equal(f.q(`[data-arm-stroke="${side}"]`).style.opacity, "1");
+    }
     f.advance(1000);
     assert.equal(f.q("[data-frame]").style.opacity, "1");
     assert.ok(f.idle(), "no idle animation loop or initial auto-close timer");
   });
 }
+
+test("AGY opens its own usage with a sparkle and independent readings", () => {
+  const f = interactionFixture();
+  f.el("account", "nova").emit("click");
+  assert.equal(f.q("[data-account-title]").textContent, "AGY Nova");
+  assert.equal(
+    f.q("[data-title-mark]").getAttribute("d"),
+    usage.providerPaths.agy,
+  );
+  assert.equal(f.el("account", "nova").getAttribute("aria-expanded"), "true");
+  assert.equal(
+    f.q('[data-usage-window="fiveHour"]').querySelector("[data-used]")
+      .textContent,
+    "37% used",
+  );
+  assert.equal(
+    f.q('[data-usage-window="weekly"]').querySelector("[data-used]")
+      .textContent,
+    "23% used",
+  );
+  f.q("[data-advance]").emit("click");
+  assert.equal(
+    f.el("account", "nova").querySelector("[data-gauge-value]").textContent,
+    "40%",
+  );
+});
 
 test("peek switches from rest, click holds, and leaving dismisses after the right delay", () => {
   const f = interactionFixture();
@@ -522,12 +582,14 @@ test("hover icons, hide/reveal and reset work directly from the revealed state",
   f.q("[data-bell]").emit("pointerenter");
   f.advance(2000);
   assert.equal(arm.querySelector("[data-arm-glyph]").style.opacity, "1");
+  assert.equal(f.q('[data-arm-stroke="pin"]').style.opacity, "0");
   assert.equal(f.q("[data-bell-glyph]").style.opacity, "1");
   arm.emit("pointerleave");
   f.q("[data-bell]").emit("pointerleave");
   f.advance(2000);
   assert.equal(arm.querySelector("[data-arm-glyph]").style.opacity, "0");
-  assert.equal(f.q("[data-bell-glyph]").style.opacity, "1");
+  assert.equal(f.q('[data-arm-stroke="pin"]').style.opacity, "1");
+  assert.equal(f.q("[data-bell-glyph]").style.opacity, "0");
   f.q("[data-reveal]").emit("click");
   f.advance(2000);
   assert.equal(f.q("[data-overlay]").hidden, true);
@@ -543,7 +605,7 @@ test("hover icons, hide/reveal and reset work directly from the revealed state",
   assert.equal(f.q("[data-panel-content]").style.opacity, "1");
   assert.equal(f.q("[data-account-title]").textContent, "Codex Lumen");
   assert.equal(f.q("[data-clock]").textContent, "09:00");
-  assert.equal(f.q("[data-bell-glyph]").style.opacity, "1");
+  assert.equal(f.q("[data-bell-glyph]").style.opacity, "0");
   assert.equal(f.q("[data-unread]").hidden, false);
   assert.ok(f.idle());
 });
@@ -600,8 +662,18 @@ test("arm, peek and reveal springs enable goo only until they settle", () => {
   assert.ok(f.idle());
 });
 
-test("bell is visible on the real corner bisector with a four pixel gap, even at rest", () => {
+test("unread dot rests inside the bottom-left corner and rides the bell on hover", () => {
   const f = interactionFixture();
+  assert.equal(f.q("[data-bell-disc]").style.opacity, "0");
+  assert.equal(f.q("[data-bell-glyph]").style.opacity, "0");
+  const rest = f.q("[data-unread]").style.transform;
+  const [, dotX, dotY] = rest.match(/translate\(([-\d.]+)px, ([-\d.]+)px\)/);
+  const homeX = 20 - Math.SQRT1_2 * 45.77;
+  const homeY = 70 + Math.SQRT1_2 * 45.77;
+  assert.ok(Math.abs(Number(dotX) + homeX - (20 - Math.SQRT1_2 * 10)) < 0.01);
+  assert.ok(Math.abs(Number(dotY) + homeY - (70 + Math.SQRT1_2 * 10)) < 0.01);
+  f.q("[data-bell]").emit("pointerenter");
+  f.advance(2000);
   const transform = f.q("[data-bell-disc]").style.transform;
   const [, x, y] = transform.match(/translate\(([-\d.]+)px, ([-\d.]+)px\)/);
   assert.ok(Number(x) < 0, "bell clears the leading flank");
@@ -622,8 +694,6 @@ test("bell is visible on the real corner bisector with a four pixel gap, even at
     "translate(7.45px, -8.54px)",
     "badge sits on the shoulder (.34,-.39 glyph sizes in notify.js)",
   );
-  f.q("[data-bell]").emit("pointerenter");
-  f.advance(2000);
   assert.equal(f.q("[data-attached]").hidden, true, "card gives the bell room");
   f.q("[data-bell]").emit("click");
   assert.equal(f.q("[data-bell]").getAttribute("aria-expanded"), "true");
@@ -635,7 +705,8 @@ test("bell is visible on the real corner bisector with a four pixel gap, even at
   f.q("[data-bell]").emit("pointerleave");
   f.q("[data-bell]").emit("blur");
   f.advance(2000);
-  assert.equal(f.q("[data-bell-glyph]").style.opacity, "1");
+  assert.equal(f.q("[data-bell-glyph]").style.opacity, "0");
+  assert.equal(f.q("[data-unread]").style.transform, rest);
   assertNoGoo(f);
   assert.ok(f.idle());
 });
@@ -663,7 +734,7 @@ test("reduced motion and touch hover keep ink sharp and leave no frame loop", ()
       f.el("arm", "pin").querySelector("[data-arm-glyph]").style.opacity,
       "0",
     );
-    assert.equal(f.q("[data-bell-glyph]").style.opacity, "1");
+    assert.equal(f.q("[data-bell-glyph]").style.opacity, "0");
     assertNoGoo(f);
     assert.ok(f.idle());
     if (reduced) {
@@ -680,10 +751,10 @@ test("reduced motion and touch hover keep ink sharp and leave no frame loop", ()
 test("resizing updates card geometry once while motion leaves it unchanged", () => {
   const f = interactionFixture();
   f.advance(1000);
-  f.resize(180, 280, 320);
+  f.resize(180, 180, 320);
   const ink = f.q("[data-panel-ink]");
-  assert.equal(Number(ink.getAttribute("width")), (280 * 228) / 180);
-  assert.equal(Number(ink.getAttribute("x")), (-140 * 228) / 180);
+  assert.ok(Math.abs(Number(ink.getAttribute("width")) - 350) < 1e-9);
+  assert.ok(Math.abs(Number(ink.getAttribute("x")) + 175) < 1e-9);
   assert.equal(ink.getAttribute("height"), "320");
   const geometry = [...ink.attributes];
   f.el("arm", "pin").emit("pointerenter");
