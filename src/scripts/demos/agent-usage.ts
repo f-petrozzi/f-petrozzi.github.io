@@ -10,7 +10,7 @@ import {
   motion,
   spring,
   usageColor,
-  providerPaths,
+  providerPath,
   starPath,
   type AccountId,
   type WindowId,
@@ -58,7 +58,7 @@ function init(root: HTMLElement) {
         })[character]!,
     );
   const glyph = (provider: string, className: string) =>
-    `<svg class="${className}" viewBox="0 0 24 24" aria-hidden="true"><path d="${providerPaths[provider === "Codex" ? "codex" : "claude"]}"/></svg>`;
+    `<svg class="${className}" viewBox="0 0 24 24" aria-hidden="true"><path d="${providerPath(provider)}"/></svg>`;
   let state = snapshot(0);
   let active: AccountId = "lumen";
   let windowId: WindowId = "fiveHour";
@@ -83,12 +83,13 @@ function init(root: HTMLElement) {
   // Match the revealed server render before any animation frame or pointer input.
   const opening = channel(1);
   const detail = channel(1);
-  // Keep the reference's revealed bell visible, including without hover/touch.
-  const bell = channel(1);
+  // At rest only the unread dot occupies the leading bottom corner.
+  const bell = channel(0);
   const arms = all<HTMLButtonElement>("[data-arm]").map((element) => ({
     element,
     hover: channel(0),
     material: q<SVGElement>(`[data-arm-material="${element.dataset.arm}"]`),
+    stroke: q<SVGElement>(`[data-arm-stroke="${element.dataset.arm}"]`),
     disc: q<SVGElement>(`[data-arm-disc="${element.dataset.arm}"]`),
     neck: q<SVGElement>(`[data-arm-neck="${element.dataset.arm}"]`),
     icon: element.querySelector<SVGElement>("[data-arm-glyph]")!,
@@ -166,7 +167,7 @@ function init(root: HTMLElement) {
   };
   // notch.js handleMetrics for a 90px top notch: sqrt(90 / 70).
   // shape.js partPath joins filled flares (F=43.88) directly to the body.
-  // Hover-only handle drops have radius=27.21; no detached resting strokes.
+  // Resting arms follow the flare at a 5 * scale gap; hover reveals drops.
   // Only resize changes SVG geometry. Motion writes transforms and opacity.
   let inkScaleX = 1;
   let materialMoving = false;
@@ -174,10 +175,10 @@ function init(root: HTMLElement) {
     if (element.getAttribute(name) !== value) element.setAttribute(name, value);
   }
   function sizeMaterial() {
-    const width = q(".notch").clientWidth || 228;
-    const panelWidth = attached.offsetWidth || 340;
+    const width = q(".notch").clientWidth || 350;
+    const panelWidth = attached.offsetWidth || 350;
     const panelHeight = attached.offsetHeight || 270;
-    inkScaleX = width / 228;
+    inkScaleX = width / 350;
     attr(ink, "x", String(-panelWidth / inkScaleX / 2));
     attr(ink, "width", String(panelWidth / inkScaleX));
     attr(ink, "height", String(panelHeight));
@@ -194,17 +195,17 @@ function init(root: HTMLElement) {
     frame.style.transform = `translateY(${visible ? 0 : (opening.value - 1) * 96}px)`;
     frame.style.opacity = String(clamp(opening.value * 3));
     const o = Math.max(0, opening.value);
-    notchInk.style.transformOrigin = "114px 0";
+    notchInk.style.transformOrigin = "175px 0";
     notchInk.style.transform = `scale(${0.75 + 0.25 * o}, ${visible ? o : 1})`;
     q(".account-gauges").style.transform =
       `translateY(${(opening.value - 1) * 35}px)`;
     const d = Math.max(0, detail.value);
-    ink.style.transform = `scale(${0.67 + 0.33 * d}, ${d})`;
+    ink.style.transform = `scale(1, ${d})`;
     content.style.transform = `translateY(${(1 - d) * -12}px)`;
     content.style.opacity = String(clamp((d - 0.25) / 0.65));
     if (!panel && detail.value === 0) attached.hidden = true;
     if (!visible && opening.value === 0) overlay.hidden = true;
-    for (const { element, hover, material, disc, neck, icon } of arms) {
+    for (const { element, hover, material, stroke, disc, neck, icon } of arms) {
       const h = clamp(hover.value);
       const side = element.dataset.arm === "pin" ? -1 : 1;
       const lift = smooth((h - 0.28) / 0.72);
@@ -215,6 +216,8 @@ function init(root: HTMLElement) {
       material.style.opacity = String(clamp(o * 3));
       element.style.opacity = String(out);
       element.inert = !visible || out < 0.1;
+      stroke.style.opacity = String((1 - smooth(h / 0.42)) * out);
+      stroke.style.transform = `scale(${1 - 0.55 * smooth(h / 0.42)})`;
       disc.style.transform = `translate(${x}px, ${y}px) scale(${0.22 + 0.78 * lift})`;
       disc.style.opacity = String(smooth(h / 0.2));
       neck.style.opacity = String(
@@ -239,7 +242,8 @@ function init(root: HTMLElement) {
     );
     bellNeck.style.transformOrigin = "12.93px 77.07px";
     bellNeck.style.transform = `scale(${0.3 + 0.7 * clamp(b)})`;
-    // HTML targets are centred on the revealed drop, as in notify.js.
+    // The dot rests at C + (-1,1) * (r - 10) / sqrt(2), then rides
+    // onto the bell shoulder. The HTML target centres on the revealed drop.
     const homeX = 20 - Math.SQRT1_2 * 45.77;
     const homeY = 70 + Math.SQRT1_2 * 45.77;
     const dx = (bx - homeX) * inkScaleX;
@@ -248,7 +252,7 @@ function init(root: HTMLElement) {
       `translate(${dx}px, ${dy}px) scale(${0.28 + 0.72 * smooth(b)}) rotate(${(1 - b) * -20}deg)`;
     q("[data-bell-glyph]").style.opacity = String(smooth((b - 0.45) / 0.4));
     q("[data-unread]").style.transform =
-      `translate(${dx + 7.45 * smooth(b)}px, ${dy - 8.54 * smooth(b)}px)`;
+      `translate(${(20 - Math.SQRT1_2 * 10 - homeX) * inkScaleX * (1 - smooth(b)) + 7.45 * smooth(b)}px, ${(70 + Math.SQRT1_2 * 10 - homeY) * (1 - smooth(b)) - 8.54 * smooth(b)}px)`;
   }
   // Invert the renderer's stow cubic-bezier(.55,0,.8,.3).
   function stowEase(t: number) {
@@ -344,7 +348,7 @@ function init(root: HTMLElement) {
     if (visible) {
       stow = null;
       opening.target = 1;
-      bell.target = 1;
+      bell.target = 0;
       if (reduce.matches) {
         opening.value = 1;
         moveArms(1);
@@ -372,10 +376,7 @@ function init(root: HTMLElement) {
     const account = state.accounts.find((item) => item.id === active)!;
     q("[data-account-title]").textContent =
       `${account.provider} ${account.alias}`;
-    q("[data-title-mark]").setAttribute(
-      "d",
-      providerPaths[account.provider === "Codex" ? "codex" : "claude"],
-    );
+    q("[data-title-mark]").setAttribute("d", providerPath(account.provider));
     q("[data-account-sessions]").setAttribute(
       "aria-label",
       `Recent sessions for ${account.provider} ${account.alias}`,
@@ -666,7 +667,7 @@ function init(root: HTMLElement) {
     wake();
   });
   q("[data-bell]").addEventListener("pointerleave", () => {
-    bell.target = visible ? 1 : 0;
+    bell.target = 0;
     wake();
   });
   q("[data-bell]").addEventListener("focus", () => {
@@ -675,7 +676,7 @@ function init(root: HTMLElement) {
     wake();
   });
   q("[data-bell]").addEventListener("blur", () => {
-    bell.target = visible ? 1 : 0;
+    bell.target = 0;
     wake();
   });
   q("[data-bell]").addEventListener("click", () => {
