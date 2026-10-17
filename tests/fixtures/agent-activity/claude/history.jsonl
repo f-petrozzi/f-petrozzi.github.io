@@ -1,11 +1,19 @@
-{"timestamp":1791820800000,"display":"PRIVATE_FIXTURE_PROMPT Claude invented text","project":"FIXTURE_PROJECT","sessionId":"FIXTURE_SESSION"}
-{"timestamp":1791863999000}
-{"timestamp":1792162800000}
-{"timestamp":1760241599000}
-{"timestamp":"invalid"}
-{"timestamp":false}
-{"display":{"timestamp":1791820800000}}
-{"timestamp":{"timestamp":1791820800000}}
+{"timestamp": 1704124800000, "text": "PRIVATE_FIXTURE_PROMPT history", "project": "FIXTURE_PROJECT", "session_id": "FIXTURE_SESSION"}
+{"timestamp": 1791820800000, "text": "PRIVATE_FIXTURE_PROMPT history", "project": "FIXTURE_PROJECT", "session_id": "FIXTURE_SESSION"}
+{"timestamp": 1791907200000, "text": "PRIVATE_FIXTURE_PROMPT history", "project": "FIXTURE_PROJECT", "session_id": "FIXTURE_SESSION"}
+{"timestamp": 1791907200000, "text": "PRIVATE_FIXTURE_PROMPT history", "project": "FIXTURE_PROJECT", "session_id": "FIXTURE_SESSION"}
+{"timestamp": 1791907200000, "text": "PRIVATE_FIXTURE_PROMPT history", "project": "FIXTURE_PROJECT", "session_id": "FIXTURE_SESSION"}
+{"timestamp": 1792166400000, "text": "PRIVATE_FIXTURE_PROMPT history", "project": "FIXTURE_PROJECT", "session_id": "FIXTURE_SESSION"}
+{"timestamp": true}
+{"timestamp": "PRIVATE_FIXTURE_BAD_TIME"}
+{"timestamp": {"timestamp": 1791820800000}}
+{"unrelated": {"timestamp": 1791820800000}}
+{"timestamp": 1e+300}
+{"timestamp": -9e+18}
+{"timestamp": 1792252800000}
+not json
+null
+[]
+42
 {"timestamp":NaN}
-{"timestamp":1e400}
-{"timestamp":-9e18}
+{"timestamp":Infinity}

@@ -1,0 +1,18 @@
+{"type": "session_meta", "payload": {"id": "FIXTURE_SESSION", "cwd": "/FIXTURE_PROJECT_PATH", "source": "exec"}}
+{"timestamp": "2024-01-01T16:00:00Z", "type": "event_msg", "payload": {"type": "user_message", "message": "PRIVATE_FIXTURE_PROMPT invented conversation"}}
+{"timestamp": "2026-03-08T06:59:00Z", "type": "event_msg", "payload": {"type": "user_message", "message": "PRIVATE_FIXTURE_PROMPT invented conversation"}}
+{"timestamp": "2026-03-08T07:01:00Z", "type": "event_msg", "payload": {"type": "user_message", "message": "PRIVATE_FIXTURE_PROMPT invented conversation"}}
+{"timestamp": "2026-10-12T16:00:00Z", "type": "event_msg", "payload": {"type": "user_message", "message": "PRIVATE_FIXTURE_PROMPT invented conversation"}}
+{"timestamp": "2026-10-12T16:00:00Z", "type": "response_item", "payload": {"type": "message", "role": "user", "content": [{"type": "input_text", "text": "PRIVATE_FIXTURE_PROMPT mirrored user turn"}]}}
+{"timestamp": "2026-10-12T16:00:00Z", "type": "event_msg", "payload": {"type": "agent_message", "message": "PRIVATE_FIXTURE_PROMPT invented conversation"}}
+{"timestamp": "2026-10-13T03:59:00Z", "type": "event_msg", "payload": {"type": "user_message", "message": "PRIVATE_FIXTURE_PROMPT invented conversation"}}
+{"timestamp": "2026-10-13T04:00:00Z", "type": "event_msg", "payload": {"type": "user_message", "message": "PRIVATE_FIXTURE_PROMPT invented conversation"}}
+{"timestamp": "2026-10-17T16:00:00Z", "type": "event_msg", "payload": {"type": "user_message", "message": "PRIVATE_FIXTURE_PROMPT invented conversation"}}
+{"timestamp": "2026-10-12T16:00:00Z", "type": "event_msg", "payload": {"type": "task_started", "message": "PRIVATE_FIXTURE_PROMPT invented conversation"}}
+{"timestamp": "PRIVATE_FIXTURE_BAD_TIME", "type": "event_msg", "payload": {"type": "user_message"}}
+{"type": "event_msg", "payload": []}
+not valid json
+null
+[]
+42
+{"type":

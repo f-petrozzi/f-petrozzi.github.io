@@ -1,0 +1,4 @@
+{"type": "session_meta", "payload": {"id": "FIXTURE_SESSION", "cwd": "/FIXTURE_PROJECT_PATH", "source": "cli"}}
+{"timestamp": "2026-10-14T16:00:00Z", "type": "response_item", "payload": {"type": "message", "role": "user", "content": [{"type": "input_text", "text": "PRIVATE_FIXTURE_PROMPT mirrored user turn"}]}}
+{"timestamp": "2026-10-14T16:00:00Z", "type": "response_item", "payload": {"type": "message", "role": "user", "content": [{"type": "input_text", "text": "PRIVATE_FIXTURE_PROMPT mirrored user turn"}]}}
+{"timestamp": "2026-10-14T17:00:00Z", "type": "response_item", "payload": {"type": "message", "role": "assistant", "content": "PRIVATE_FIXTURE_PROMPT"}}

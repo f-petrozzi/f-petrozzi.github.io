@@ -28,39 +28,76 @@ In a restricted environment, prefix Astro commands with `ASTRO_TELEMETRY_DISABLE
 
 ## Agent activity
 
-The homepage activity band appears after a real export. The checked-in file is an
-empty placeholder. From this repository, export counts and rebuild with
+The homepage activity band uses a local, aggregate-only export. From this
+repository, export counts and rebuild with
 
 ```sh
-python3 scripts/export-agent-activity.py && npm run build
+PATH="$HOME/.nvm/versions/node/v24.19.0/bin:$PATH" python3 scripts/export-agent-activity.py && PATH="$HOME/.nvm/versions/node/v24.19.0/bin:$PATH" npm run build
 ```
 
-For a daily refresh at 6 am in the cron host's timezone, replace the repository
-path below with this checkout's absolute path
+For a daily refresh at 6 am in the cron host's timezone, run `crontab -e` and add
+this line, replacing the repository path with this checkout's absolute path:
 
 ```cron
 0 6 * * * cd /absolute/path/to/portfolio && PATH="$HOME/.nvm/versions/node/v24.19.0/bin:$PATH" && export PATH && python3 scripts/export-agent-activity.py && npm run build
 ```
 
-`--dry-run` prints prompt and active-day totals without writing. The exporter
-mirrors `accounts_root`, automatic `codex_profiles`, and `claude_config_dir` from
-`Agent-Usage/scripts/agent-usage` as of October 16, 2026. Codex profiles under
-`CODEX_ACCOUNTS_DIR/profiles` take precedence, falling back to
-`$XDG_DATA_HOME/codex-accounts/profiles` (or `~/.local/share/codex-accounts/profiles`)
-when that override is unset. With no profiles, it uses `CODEX_HOME` or `~/.codex`.
-Claude uses `CLAUDE_CONFIG_DIR` or `~/.claude`.
+The exporter reads Codex `sessions/**/rollout-*.jsonl` and Claude
+`projects/**/*.jsonl` transcripts, including saved Codex app-server, `codex exec`,
+Claude Agent SDK and `claude -p` conversations. Codex profile discovery follows
+`accounts_root` and automatic `codex_profiles` in
+`Agent-Usage/scripts/agent-usage` as of October 17, 2026:
+`CODEX_ACCOUNTS_DIR/profiles`, or `$XDG_DATA_HOME/codex-accounts/profiles`
+(default `~/.local/share/codex-accounts/profiles`). It also includes `CODEX_HOME`
+or `~/.codex` even when profiles exist. Realpath and device/inode deduplication
+prevent aliased homes, symlinks and hardlinks from counting a file twice. Claude
+uses `CLAUDE_CONFIG_DIR` or `~/.claude`.
 
-It streams only each discovered `history.jsonl`, retaining only Codex `ts` Unix
-seconds or Claude `timestamp` Unix milliseconds during JSON parsing. It never
-inspects prompt text, session identifiers, project names, project paths,
-credentials, databases, session files or logs. Non-timestamp fields are discarded
-during parsing and never retained or exported. The only public output is the
-schema version, generation time, timezone and daily counts. Dates use
-`America/New_York` across 53 Sunday-start calendar weeks including the current
-partial week. Future cells are blank. Invalid timestamps are skipped. The export
-is replaced atomically and missing histories fail without replacing it. Fixture
-tests do not access real provider homes. No real export has been run for this
-feature's implementation.
+Codex counts user-message events, falling back to user response items only for
+rollouts without those events. It excludes sub-agent, guardian and spawned-helper
+rollouts using the collector's metadata signals. Claude counts user messages
+excluding sidechains, meta messages, tool-result-only content, injected command
+lines and system-reminder-only content. `codex exec --ephemeral` worker runs are
+not recorded anywhere and so are not counted.
+
+By default it also reads each provider's `history.jsonl` for older interactive TUI
+activity. For each provider and local day it takes **max(transcripts, history)**,
+never their sum. `--no-history` disables this backfill for later use; it does not
+erase previously retained counts. Dates use `America/New_York`, including daylight
+saving transitions. Invalid records and future timestamps are skipped.
+
+The durable `data/agent-activity-ledger.json` stores only schema version, timezone
+and per-provider date/count maps for **all days ever seen**. Each run merges daily
+maxima into it, preserving counts when Claude prunes transcripts after roughly 30
+days. This is a monotonic lower bound: counts can rise but cannot decrease, and a
+partially pruned day's unseen turns cannot be reconstructed. Run the exporter
+daily to retain coverage. The ledger starts empty, lives outside `src/` and
+`public/`, and is never shipped. It is not gitignored; whether to commit populated
+aggregate counts is the owner's choice. `--ledger` can select another private
+ledger path. Both the ledger and public export are replaced atomically, with the
+ledger saved first. An invalid ledger fails safely without replacing either file.
+
+The public `src/data/agent-activity.json` keeps its existing shape: schema version,
+generation time, timezone and daily counts summed across providers for 53
+Sunday-start calendar weeks including the current partial week. Future cells
+are blank. `--output` can select another public output path.
+
+`--dry-run` prints totals, active days and earliest dates for each provider's
+transcripts, history and merged ledger without writing either file:
+
+```sh
+python3 scripts/export-agent-activity.py --dry-run
+python3 scripts/export-agent-activity.py --no-history
+```
+
+Parsing retains only timestamps and classification flags. Claude message content
+is inspected transiently to identify excluded harness/tool records; message text,
+paths, session identifiers and project names are never retained or emitted. The
+exporter never reads credentials, configuration contents, session indexes,
+databases, uploads, backups, environment files or logs, and never calls a provider
+or runs the collector. Only transcript/history files and the aggregate ledger are
+opened. Filesystem errors never print private paths. Fixture tests use isolated,
+invented provider homes. No real export was run for this implementation.
 
 ## Add a project
 

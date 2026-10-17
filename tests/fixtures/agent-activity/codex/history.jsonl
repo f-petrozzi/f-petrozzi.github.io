@@ -1,16 +1,21 @@
-{"ts":1791820800,"text":"PRIVATE_FIXTURE_PROMPT do not publish this invented text","session_id":"FIXTURE_SESSION","cwd":"FIXTURE_PROJECT_PATH"}
-{"ts":1791863999}
-{"ts":1791864000}
-{"ts":1760241600}
-{"ts":1760241599}
-{"ts":1772953140}
-{"ts":1772953200}
-{"ts":1792180800}
-{"timestamp":1791820800000}
-{"ts":true}
-{"ts":"invalid"}
-{"ts":{"ts":1791820800}}
-not valid json
+{"ts": 1704124800, "text": "PRIVATE_FIXTURE_PROMPT history", "project": "FIXTURE_PROJECT", "session_id": "FIXTURE_SESSION"}
+{"ts": 1704124800, "text": "PRIVATE_FIXTURE_PROMPT history", "project": "FIXTURE_PROJECT", "session_id": "FIXTURE_SESSION"}
+{"ts": 1791820800, "text": "PRIVATE_FIXTURE_PROMPT history", "project": "FIXTURE_PROJECT", "session_id": "FIXTURE_SESSION"}
+{"ts": 1791820800, "text": "PRIVATE_FIXTURE_PROMPT history", "project": "FIXTURE_PROJECT", "session_id": "FIXTURE_SESSION"}
+{"ts": 1791820800, "text": "PRIVATE_FIXTURE_PROMPT history", "project": "FIXTURE_PROJECT", "session_id": "FIXTURE_SESSION"}
+{"ts": 1791907200, "text": "PRIVATE_FIXTURE_PROMPT history", "project": "FIXTURE_PROJECT", "session_id": "FIXTURE_SESSION"}
+{"ts": 1792080000, "text": "PRIVATE_FIXTURE_PROMPT history", "project": "FIXTURE_PROJECT", "session_id": "FIXTURE_SESSION"}
+{"ts": 1792080000, "text": "PRIVATE_FIXTURE_PROMPT history", "project": "FIXTURE_PROJECT", "session_id": "FIXTURE_SESSION"}
+{"ts": true}
+{"ts": "PRIVATE_FIXTURE_BAD_TIME"}
+{"ts": {"ts": 1791820800}}
+{"unrelated": {"ts": 1791820800}}
+{"ts": 1e+300}
+{"ts": -9e+18}
+{"ts": 1792252800}
+not json
 null
 []
 42
+{"ts":NaN}
+{"ts":Infinity}

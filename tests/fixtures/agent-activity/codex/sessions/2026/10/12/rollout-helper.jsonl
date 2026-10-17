@@ -1,0 +1,3 @@
+{"type": "session_meta", "payload": {"id": "FIXTURE_SESSION", "cwd": "/FIXTURE_PROJECT_PATH", "source": {"subagent": {"spawn": {"parent_thread_id": "FIXTURE_PARENT"}}}}}
+{"timestamp": "2026-10-12T16:00:00Z", "type": "event_msg", "payload": {"type": "user_message", "message": "PRIVATE_FIXTURE_PROMPT invented conversation"}}
+{"timestamp": "2026-10-12T16:00:00Z", "type": "response_item", "payload": {"type": "message", "role": "user", "content": [{"type": "input_text", "text": "PRIVATE_FIXTURE_PROMPT mirrored user turn"}]}}

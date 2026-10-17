@@ -1,0 +1,2 @@
+{"type": "session_meta", "payload": {"id": "FIXTURE_SESSION", "cwd": "/FIXTURE_PROJECT_PATH", "source": "app-server"}}
+{"timestamp": "2026-10-15T16:00:00Z", "type": "event_msg", "payload": {"type": "user_message", "message": "PRIVATE_FIXTURE_PROMPT invented conversation"}}
