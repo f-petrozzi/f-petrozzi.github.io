@@ -5,6 +5,7 @@ import {
   createChatState,
   changeChat,
   jobStatus,
+  orchestratorEvents,
   previewReply,
 } from "./chat-state.js";
 
@@ -19,6 +20,7 @@ export function initChat(
     phone,
     closeSheet,
     syncPreview,
+    jobsChanged,
   },
 ) {
   const $ = (s) => root.querySelector(s);
@@ -43,6 +45,15 @@ export function initChat(
     const scroll = mainTranscript.closest(".cx-scroll");
     scroll.scrollTop = scroll.scrollHeight;
   }
+  function workerReply(index) {
+    const job = delegatedJobs[index];
+    const status = jobStatus(state.phase, index);
+    if (status === "Completed") return `${job.result}. Returned to Orbit.`;
+    if (status === "Queued") return "Waiting for Orbit to dispatch this task.";
+    return index === 0
+      ? "Building search, availability and reservations."
+      : "Checking search, filtering and reservations with a keyboard.";
+  }
 
   function paintJobs() {
     $$("[data-job-status]").forEach((el) => {
@@ -50,7 +61,7 @@ export function initChat(
       el.dataset.status = el.textContent.toLowerCase();
     });
     $$("[data-replay]").forEach((button) => {
-      button.textContent = replaying ? "Finish replay" : "Replay delegation";
+      button.textContent = replaying ? "Finish run" : "Run delegation";
     });
     $$("[data-replay-summary]").forEach((el) => {
       el.textContent =
@@ -58,13 +69,15 @@ export function initChat(
           ? "2 sessions completed"
           : replaying
             ? "Delegating work"
-            : "2 sessions ready";
+            : state.phase
+              ? "Work in progress"
+              : "2 workers queued";
     });
     const job = delegatedJobs[selectedJob];
     const detail = $("[data-job-detail]");
     detail.replaceChildren();
     const title = document.createElement("h3");
-    title.textContent = job.title;
+    title.textContent = `${job.name} worker`;
     const status = document.createElement("p");
     status.className = "replica-job-state";
     status.textContent = `${chatAccounts[job.account].label}: ${jobStatus(state.phase, selectedJob)}`;
@@ -72,25 +85,56 @@ export function initChat(
     speaker.className = "cx-who";
     speaker.textContent = "Orbit";
     const result = document.createElement("p");
-    result.textContent =
-      jobStatus(state.phase, selectedJob) === "Completed"
-        ? job.result + ". The result is ready for the parent conversation."
-        : state.phase
-          ? "Checking the collection in an independent session."
-          : "Waiting for the parent conversation to dispatch this work.";
+    result.textContent = workerReply(selectedJob);
     const activity = document.createElement("details");
     const summary = document.createElement("summary");
     summary.textContent = "Activity";
     const file = document.createElement("p");
     file.textContent = job.file;
     activity.append(summary, file);
-    detail.append(title, status, speaker, result, activity);
+    const open = document.createElement("button");
+    open.type = "button";
+    open.className = "secondary";
+    open.dataset.workerSession = String(job.session);
+    open.textContent = "Open worker session";
+    detail.append(title, status, speaker, result, activity, open);
     $$(".replica-job-list [data-job]").forEach((b) =>
       b.setAttribute(
         "aria-pressed",
         String(Number(b.dataset.job) === selectedJob),
       ),
     );
+    const thread = $("[data-orchestrator-transcript]");
+    const events = orchestratorEvents(state.phase);
+    // Retain existing messages and only append/remove changed phase events.
+    const ids = new Set(events.map((event) => event.id));
+    [...thread.children].forEach((node) => {
+      if (!ids.has(node.dataset.event)) node.remove();
+    });
+    for (const event of events) {
+      if (thread.querySelector(`[data-event="${event.id}"]`)) continue;
+      const article = document.createElement("article");
+      article.className = `cx-msg ${event.speaker === "You" ? "user" : "assistant"}`;
+      article.dataset.event = event.id;
+      const who = document.createElement("div");
+      who.className = "cx-who";
+      who.textContent = event.speaker;
+      const bubble = document.createElement("div");
+      bubble.className = "cx-bubble";
+      const text = document.createElement("p");
+      text.textContent = event.text;
+      bubble.append(text);
+      article.append(who, bubble);
+      thread.append(article);
+    }
+    thread.parentElement.scrollTop = thread.parentElement.scrollHeight;
+    const currentWorker = delegatedJobs.findIndex(
+      (job) => job.session === state.session,
+    );
+    const workerMessage = $("[data-worker-reply] .cx-bubble p");
+    if (currentWorker >= 0 && workerMessage)
+      workerMessage.textContent = workerReply(currentWorker);
+    jobsChanged(state.phase);
   }
   function paintLayout() {
     workspace.dataset.layout = state.layout;
@@ -129,8 +173,13 @@ export function initChat(
         String(b.dataset.account === state.browse),
       ),
     );
-    $("[data-browse-label]").textContent =
-      `${chatAccounts[state.browse].label} connected`;
+    const account = chatAccounts[state.browse];
+    $("[data-browse-label]").textContent = account.label;
+    $("[data-usage-ring]").style.setProperty("--usage", `${account.fiveHour}%`);
+    $("[data-account-picker]").setAttribute(
+      "aria-label",
+      `${account.label}, ${account.fiveHour}% of 5 hour usage. Choose account`,
+    );
     const search = $("[data-session-search]").value.toLowerCase();
     const scopeAll =
       $('[data-scope="all"]').getAttribute("aria-pressed") === "true";
@@ -162,7 +211,6 @@ export function initChat(
     paintLayout();
   }
   function openSession(id) {
-    stop();
     drafts.set(state.session, mainInput.value);
     images.set(state.session, state.attached);
     snapshots.set(state.session, mainTranscript.innerHTML);
@@ -175,7 +223,7 @@ export function initChat(
       appendMessage(
         mainTranscript,
         id === 1
-          ? "Review the collection and its small screen layout."
+          ? "Build search, availability and reservations for the collection."
           : id === 2
             ? "Check the collection with only a keyboard."
             : "Explain native CSS nesting for a small app.",
@@ -184,12 +232,14 @@ export function initChat(
       appendMessage(
         mainTranscript,
         id === 1
-          ? "The collection keeps title, author and Reserve together. The review is ready beside the main build."
+          ? workerReply(0)
           : id === 2
-            ? "The search field, availability filter and Reserve actions have clear labels and visible focus states."
+            ? workerReply(1)
             : "Nest component rules beneath their root so each view keeps its own styles.",
         false,
       );
+      if (id === 1 || id === 2)
+        mainTranscript.lastElementChild.dataset.workerReply = "";
     }
     mainInput.value = drafts.get(id) || "";
     $("[data-conversation-title]").textContent = session.title;
@@ -216,13 +266,14 @@ export function initChat(
     timers = [];
     if (replaying) {
       replaying = false;
-      dispatch({ type: "phase", phase: 3 });
       paintJobs();
     }
   }
   function replay() {
     if (replaying) {
       stop();
+      dispatch({ type: "phase", phase: 3 });
+      paintJobs();
       announce("Delegation complete");
       return;
     }
@@ -242,8 +293,19 @@ export function initChat(
       step(3);
       return;
     }
-    timers = [setTimeout(() => step(2), 650), setTimeout(() => step(3), 1500)];
-    announce("Dispatched to Codex B and Claude Code");
+    timers = [setTimeout(() => step(2), 1600), setTimeout(() => step(3), 3200)];
+    announce("Orbit dispatched Collection to Codex B");
+  }
+  function accountPicker() {
+    sheet(
+      "Chat accounts",
+      `<div class="replica-account-picker">${Object.entries(chatAccounts)
+        .map(
+          ([id, account]) =>
+            `<button type="button" data-account="${id}" aria-pressed="${state.browse === id}"><strong>${account.label}</strong><span>5 hour usage <b>${account.fiveHour}%</b></span><span>Weekly usage <b>${account.week}%</b></span></button>`,
+        )
+        .join("")}</div>`,
+    );
   }
   function settings() {
     sheet(
@@ -254,7 +316,7 @@ export function initChat(
   function menu() {
     sheet(
       "Conversation",
-      `<div class="replica-menu-actions"><button type="button" data-workspace-layout="tabs">Show as tabs</button><button type="button" data-workspace-layout="split">Split view</button><button type="button" data-workspace-layout="below">Split below</button><button type="button" data-open-orchestrator>Orchestrator</button><button type="button" data-chat-focus>Focus mode</button><button type="button" data-phone-open>Continue on phone</button><button type="button" data-preview-menu>Preview</button></div>`,
+      `<div class="replica-menu-actions"><button type="button" data-workspace-layout="tabs">Show as tabs</button><button type="button" data-workspace-layout="split">Split view</button><button type="button" data-workspace-layout="below">Split below</button><button type="button" data-open-orchestrator>Orchestrator</button><button type="button" data-account-picker>Accounts and usage</button><button type="button" data-chat-focus>Focus mode</button><button type="button" data-phone-open>Continue on phone</button><button type="button" data-preview-menu>Preview</button></div>`,
     );
   }
   function phoneSheet() {
@@ -315,9 +377,14 @@ export function initChat(
     announce("Scripted reply added");
   }
   function click(button) {
+    if (button.hasAttribute("data-account-picker")) {
+      accountPicker();
+      return true;
+    }
     if (button.dataset.account) {
       dispatch({ type: "browse", account: button.dataset.account });
       paintBrowse();
+      closeSheet();
       announce(`${chatAccounts[state.browse].label} conversations`);
       return true;
     }
@@ -330,6 +397,10 @@ export function initChat(
     }
     if (button.dataset.session !== undefined) {
       openSession(Number(button.dataset.session));
+      return true;
+    }
+    if (button.dataset.workerSession !== undefined) {
+      openSession(Number(button.dataset.workerSession));
       return true;
     }
     if (button.dataset.reader) {
@@ -360,9 +431,11 @@ export function initChat(
       selectedJob = Number(button.dataset.job);
       openReader("orchestrator");
       paintJobs();
+      $(".replica-worker-inspector").open = true;
       return true;
     }
     if (button.hasAttribute("data-replay")) {
+      openReader("orchestrator");
       replay();
       return true;
     }
@@ -503,6 +576,12 @@ export function initChat(
     submit,
     stop,
     setFocus,
+    openReader,
+    openJob(index) {
+      selectedJob = index;
+      openReader("orchestrator");
+      paintJobs();
+    },
     input: paintBrowse,
     coding(value) {
       dispatch({ type: "coding", value });
