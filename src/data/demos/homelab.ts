@@ -10,7 +10,7 @@ export const nodes = [
     y: 20,
     w: 180,
     h: 64,
-    copy: "Personal devices reach development sessions through private access.",
+    copy: "My devices use private access for development.",
   },
   {
     id: "ssh",
@@ -20,7 +20,7 @@ export const nodes = [
     y: 20,
     w: 200,
     h: 64,
-    copy: "Tailscale provides private connectivity; SSH opens a session on the host.",
+    copy: "Tailscale connects privately. SSH opens host sessions.",
   },
   {
     id: "web",
@@ -40,7 +40,7 @@ export const nodes = [
     y: 124,
     w: 360,
     h: 48,
-    copy: "One machine runs development tools, hosted applications, home services and monitoring. The groups describe purpose, not shared networks.",
+    copy: "One host runs development, apps, home services and monitoring. Groups show purpose rather than shared networks.",
   },
   {
     id: "terminal",
@@ -50,7 +50,7 @@ export const nodes = [
     y: 224,
     w: 200,
     h: 60,
-    copy: "Remote sessions give access to development tools and working files on the host.",
+    copy: "Remote access to development tools and host files.",
   },
   {
     id: "agents",
@@ -60,7 +60,7 @@ export const nodes = [
     y: 306,
     w: 200,
     h: 60,
-    copy: "Coding agents run on the host alongside development sessions and repositories.",
+    copy: "Coding agents share the host with development sessions and repositories.",
   },
   {
     id: "repositories",
@@ -70,7 +70,7 @@ export const nodes = [
     y: 388,
     w: 200,
     h: 60,
-    copy: "Project source and working files live on the host. Development connections represent work on files, not automatic deployment.",
+    copy: "Source and working files live on the host. Development links show file access without automatic deployment.",
   },
   {
     id: "nest",
@@ -80,7 +80,7 @@ export const nodes = [
     y: 224,
     w: 202,
     h: 60,
-    copy: "Nest is a hosted household planning project on the same physical machine.",
+    copy: "Nest runs household planning on this host.",
   },
   {
     id: "portfolio",
@@ -90,7 +90,7 @@ export const nodes = [
     y: 306,
     w: 202,
     h: 60,
-    copy: "A local preview of the portfolio runs alongside the other projects.",
+    copy: "A local portfolio preview shares the host.",
   },
   {
     id: "usage",
@@ -100,7 +100,7 @@ export const nodes = [
     y: 388,
     w: 202,
     h: 60,
-    copy: "The Agent Usage collector runs on the host to support the usage dashboard.",
+    copy: "The collector supplies the Agent Usage dashboard.",
   },
   {
     id: "tunnel",
@@ -110,7 +110,7 @@ export const nodes = [
     y: 224,
     w: 230,
     h: 60,
-    copy: "The tunnel routes selected public web traffic to NüMe. It can reach NüMe's network while the application stays off the core network.",
+    copy: "The tunnel routes public traffic to NüMe’s network. NüMe stays off the core network.",
   },
   {
     id: "nume",
@@ -120,7 +120,7 @@ export const nodes = [
     y: 352,
     w: 230,
     h: 76,
-    copy: "NüMe's API and database share an isolated Docker network on this host. Public application traffic enters through the tunnel.",
+    copy: "NüMe’s API and database share an isolated Docker network. Public traffic enters through the tunnel.",
   },
   {
     id: "home",
@@ -130,7 +130,7 @@ export const nodes = [
     y: 224,
     w: 216,
     h: 50,
-    copy: "Home Assistant handles home automation as one of the home services.",
+    copy: "Home Assistant runs home automation.",
   },
   {
     id: "dns",
@@ -140,7 +140,7 @@ export const nodes = [
     y: 284,
     w: 216,
     h: 50,
-    copy: "AdGuard Home filters DNS queries, with separate access rules for trusted and IoT devices.",
+    copy: "AdGuard Home filters DNS. Trusted and IoT devices have separate rules.",
   },
   {
     id: "storage",
@@ -150,7 +150,7 @@ export const nodes = [
     y: 344,
     w: 216,
     h: 50,
-    copy: "Samba provides shared storage as a home service.",
+    copy: "Samba provides shared storage.",
   },
   {
     id: "game",
@@ -160,7 +160,7 @@ export const nodes = [
     y: 404,
     w: 216,
     h: 50,
-    copy: "A game server runs alongside the other home services.",
+    copy: "A game server shares the host.",
   },
   {
     id: "exporters",
@@ -170,7 +170,7 @@ export const nodes = [
     y: 524,
     w: 202,
     h: 60,
-    copy: "Exporters expose host and container resource metrics, alongside service probes, for collection.",
+    copy: "Exporters expose host and container metrics and service probes.",
   },
   {
     id: "prometheus",
@@ -180,7 +180,7 @@ export const nodes = [
     y: 524,
     w: 230,
     h: 60,
-    copy: "Prometheus collects the exported measurements so they can be queried over time.",
+    copy: "Prometheus collects metrics for historical queries.",
   },
   {
     id: "grafana",
@@ -190,7 +190,7 @@ export const nodes = [
     y: 524,
     w: 216,
     h: 60,
-    copy: "Grafana brings resource usage and service checks together in dashboards and alerts.",
+    copy: "Grafana charts resource usage and service health with alerts.",
   },
 ] as const;
 
@@ -279,7 +279,7 @@ export function filterQuery(query: (typeof queries)[number], rules: DnsRules) {
   if (rules.blockTrackers && query.category === "tracker")
     return { allowed: false, reason: "Tracker rule" };
   if (rules.restrictIot && query.group === "IoT" && query.category !== "update")
-    return { allowed: false, reason: "IoT: updates only" };
+    return { allowed: false, reason: "IoT updates only" };
   return {
     allowed: true,
     reason:

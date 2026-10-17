@@ -1,6 +1,6 @@
 ---
 title: "NüMe"
-summary: "A wellness app with meal and activity suggestions based on wearable data and check-ins."
+summary: "A wellness app suggesting meals and activities from wearable data and check-ins."
 category: "AI & applications"
 tools:
   [
@@ -21,22 +21,16 @@ demo: "https://nume-demo.com"
 repo: "https://github.com/f-petrozzi/NuMe"
 ---
 
-I developed NüMe’s frontend and backend to bring sleep, activity, and check-in data into a wellness plan. The dashboard shows suggested meals, activities, and wellness actions alongside the information used to choose them.
+I built NüMe’s frontend and backend to turn sleep, activity and check-ins into a wellness plan. The dashboard pairs suggested meals, activities and wellness actions with their selection context.
 
-## Choosing recommendations
+Garmin data and manual check-ins form a profile. Scoring rules rank recipe, activity and wellness options. Users can accept or skip suggestions. The app records responses without learning from outcomes.
 
-The backend combines Garmin data and manual check-ins into a profile for each run. Scoring rules use that profile to rank options from recipe, activity, and wellness catalogs.
+Google ADK coordinates agents and specialist services. Each recommendation stores its reasons, alternatives and profile. A trace shows how the plan was produced.
 
-Users can accept or skip a recommendation. The original app records those responses but does not use them to learn from outcomes.
-
-## Following the reasoning
-
-Google ADK coordinates the agents and specialist services. Each recommendation is stored with its selection reasons, alternatives, and the profile used for that run. A trace view lets me follow the steps that produced the plan.
-
-The frontend uses React and TypeScript, with FastAPI and PostgreSQL behind it.
+Built with React, TypeScript, FastAPI and PostgreSQL.
 
 ## Where it started
 
-NüMe grew out of CareMesh, our HackUSF 2026 team prototype for wellness support using wearable data and AI agents. I built its FastAPI backend, database models and migrations, Garmin integration, and recipe parsing. Other team members built the frontend, agent orchestration, and specialist services.
+NüMe grew from CareMesh, our HackUSF 2026 team prototype for wellness support with wearable data and AI agents. I built its FastAPI backend, database models and migrations, Garmin integration and recipe parsing. Other team members built the frontend, agent orchestration and specialist services.
 
-The [CareMesh repository](https://github.com/f-petrozzi/HackUSF26) preserves the hackathon prototype.
+The [CareMesh repository](https://github.com/f-petrozzi/HackUSF26) preserves the prototype.

@@ -24,21 +24,21 @@ export const sources = [
     id: "brief",
     title: "Reading room brief.md",
     kind: "Markdown",
-    text: "The reading room opens on Saturday from 10 am to 2 pm. The first release needs a book catalog and a reservation button.",
+    text: "Open Saturday, 10 am to 2 pm. The first release needs a book catalog and reservations.",
     fact: "Open Saturday, 10 am to 2 pm.",
   },
   {
     id: "research",
     title: "Reader interviews.txt",
     kind: "Text",
-    text: "Readers want to see availability before reserving. They prefer a short list with readable titles and a clear reservation action.",
+    text: "Readers want availability before reserving, readable titles and a clear reservation button in a short list.",
     fact: "Show availability before the reservation action.",
   },
   {
     id: "access",
     title: "Access review.md",
     kind: "Markdown",
-    text: "Keep the catalog usable with a keyboard. Reservation controls need visible focus and a text confirmation. On phones, show one column.",
+    text: "Support keyboards, visible focus and text confirmations. Use one column on phones.",
     fact: "Use one column on phones, visible focus, and text confirmations.",
   },
 ] as const;
@@ -216,19 +216,16 @@ export function guidePreview(state: State, message: string) {
   if (/\b(compact|tighter|denser)\b/i.test(message))
     return {
       state: { ...state, density: "compact" as const },
-      reply:
-        "The catalog now uses compact cards. Availability and the reservation action stay visible.",
+      reply: "Compact cards keep availability and reservations visible.",
     };
   if (/\b(roomier|comfortable|spacious)\b/i.test(message))
     return {
       state: { ...state, density: "comfortable" as const },
-      reply:
-        "The catalog now has more space around each book. The phone layout still uses one column.",
+      reply: "More space around books. Phones keep one column.",
     };
   return {
     state,
-    reply:
-      "This preview supports compact or comfortable card spacing. The catalog and its reservation controls are ready to try.",
+    reply: "Try compact or comfortable card spacing and book reservations.",
   };
 }
 export const money = (cents: number) =>

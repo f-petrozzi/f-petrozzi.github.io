@@ -1,6 +1,6 @@
 ---
 title: "Text Cleaning & Analyzing"
-summary: "Cleaning and analyzing The Wonderful Wizard of Oz with Python."
+summary: "Cleaning and analyzing The Wonderful Wizard of Oz in Python."
 category: "Earlier work"
 tools: ["Python", "Text Analytics"]
 order: 28
@@ -10,6 +10,6 @@ visual: "code"
 repo: "https://github.com/f-petrozzi/Regex_Text_Analytics"
 ---
 
-I used the Project Gutenberg text of The Wonderful Wizard of Oz for this text analytics assignment. Regular expressions remove the header and footer, normalize punctuation, identify chapters, and split the text into sentences and words.
+I analyzed the Project Gutenberg text of The Wonderful Wizard of Oz. Regular expressions strip headers and footers, normalize punctuation, find chapters and split sentences and words.
 
-After removing common stopwords, I calculated word frequencies, plotted sentence lengths, and compared sections using bag-of-words similarity.
+After removing stopwords, I counted word frequencies, plotted sentence lengths and compared sections with bag-of-words similarity.

@@ -20,27 +20,24 @@ import Icon from "./Icon.astro";
       >
     </nav>
     <div class="sample-person">
-      <strong>Alex Rivera</strong><span>Synthetic member</span>
+      <strong>Alex Rivera</strong><span>Member</span>
     </div>
   </aside>
   <div class="sample-content">
     <div class="sample-toolbar">
-      <span>Interactive sample / no data saved</span><button
-        type="button"
-        class="sample-reset">Reset sample</button
+      <span>Today</span><button type="button" class="sample-reset"
+        >Reset sample</button
       >
     </div>
     <section data-panel="dashboard" aria-labelledby="sample-dashboard-title">
       <h2 id="sample-dashboard-title">Good morning, Alex</h2><p
         class="sample-muted"
       >
-        A small plan for the day, with its context in view.
+        Your plan and its context.
       </p>
       <div class="sample-scenario">
         <div>
-          <strong>Explore a different day</strong><p>
-            Adjust the sample inputs to see an illustrative response.
-          </p>
+          <strong>Daily inputs</strong>
         </div><div class="sample-preset">
           <button type="button" data-preset="low">Low sleep</button><button
             type="button"
@@ -84,9 +81,7 @@ import Icon from "./Icon.astro";
       </div>
       <section class="sample-agent" aria-labelledby="sample-agent-title">
         <div class="sample-agent-heading">
-          <h3 id="sample-agent-title">Ask NüMe</h3><span
-            >Simple local rules</span
-          >
+          <h3 id="sample-agent-title">Ask NüMe</h3>
         </div>
         <div class="sample-prompts" role="group" aria-label="Example questions">
           <button type="button" data-prompt="What should I eat?"
@@ -115,9 +110,7 @@ import Icon from "./Icon.astro";
             /><button type="submit">Send</button>
           </div>
         </form>
-        <button type="button" class="sample-view-trace"
-          >See how the answer was made</button
-        >
+        <button type="button" class="sample-view-trace">View trace</button>
       </section>
       <div class="sample-plan">
         <article>
@@ -127,7 +120,7 @@ import Icon from "./Icon.astro";
             A simple meal with leafy greens, nuts and whole grains.
           </p><span class="sample-chip">10 min / low effort</span><details>
             <summary>Why this suggestion?</summary><p data-reason>
-              Fits a low-preparation day and adds protein with little effort.
+              Adds protein with little preparation.
             </p>
           </details><button
             type="button"
@@ -141,7 +134,7 @@ import Icon from "./Icon.astro";
             class="sample-chip">Low intensity / outdoors</span
           ><details>
             <summary>Why this suggestion?</summary><p>
-              A manageable movement break for the current sample inputs.
+              A short break suited to today’s inputs.
             </p>
           </details><button
             type="button"
@@ -151,13 +144,13 @@ import Icon from "./Icon.astro";
         </article>
       </div>
       <p class="sample-note">
-        Illustrative responses for exploring the interface. This sample does not
-        run NüMe's recommendation engine.
+        Local rules simulate replies and recommendations. No NüMe engine or
+        external service runs.
       </p>
     </section>
     <section data-panel="health" hidden aria-labelledby="sample-health-title">
       <h2 id="sample-health-title">Health</h2><p class="sample-muted">
-        Wearable metrics and a sample week of sleep.
+        Wearable metrics and weekly sleep.
       </p><div class="sample-metrics">
         <div>
           <span>Sleep</span><strong data-metric="sleep">5.2h</strong>
@@ -206,14 +199,11 @@ import Icon from "./Icon.astro";
           ))
         }
       </div><p class="sample-note">
-        Sleep and stress follow your dashboard inputs. History is a fixed
-        sample.
+        Sleep and stress reflect dashboard inputs. History stays fixed.
       </p>
     </section>
     <section data-panel="recipes" hidden aria-labelledby="sample-recipes-title">
-      <h2 id="sample-recipes-title">Recipes</h2><p class="sample-muted">
-        Find something that fits the day.
-      </p><div
+      <h2 id="sample-recipes-title">Recipes</h2><div
         class="sample-recipe-filters"
         role="group"
         aria-label="Sample recipe filters"
@@ -229,18 +219,17 @@ import Icon from "./Icon.astro";
             {
               name: "Spinach & Walnut Power Salad",
               time: 10,
-              description: "Leafy greens, walnuts and a little extra protein.",
+              description: "Leafy greens, walnuts and extra protein.",
             },
             {
               name: "Calming Chamomile Oat Bowl",
               time: 12,
-              description: "Warm oats with chamomile and a handful of fruit.",
+              description: "Warm oats, chamomile and fruit.",
             },
             {
               name: "Roasted Salmon with Vegetables",
               time: 30,
-              description:
-                "A more substantial meal when you have time to cook.",
+              description: "A filling meal for a longer cooking break.",
             },
           ].map((recipe) => (
             <details data-recipe-minutes={recipe.time}>
@@ -274,7 +263,7 @@ import Icon from "./Icon.astro";
       <div class="sample-trace-heading">
         <div>
           <h2 id="sample-agents-title">Agent trace</h2><p class="sample-muted">
-            Follow the actual local steps behind the last sample answer.
+            Steps behind the last answer.
           </p>
         </div><button type="button" class="sample-play"
           >Play sample trace</button
@@ -325,20 +314,17 @@ import Icon from "./Icon.astro";
         }
       </div><article class="sample-stage-detail" aria-live="polite">
         <span class="sample-kicker">Coordinator</span><h3>
-          Read the context and route the work
+          Route the request
         </h3><p>
-          The example starts from sleep, stress, activity and check-in signals.
-          The coordinator dispatches the analysis stages.
+          The coordinator routes sleep, stress, activity and check-in signals
+          for analysis.
         </p>
         <dl class="sample-trace-data">
           <div><dt>Input</dt><dd data-trace-input></dd></div><div>
             <dt>Output</dt><dd data-trace-output></dd>
           </div>
         </dl>
-      </article><p class="sample-note">
-        A deterministic local flow using your question and slider inputs. No
-        model or external service is called.
-      </p>
+      </article>
     </section>
   </div>
 </section>

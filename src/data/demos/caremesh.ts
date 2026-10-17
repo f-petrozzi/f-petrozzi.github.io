@@ -229,15 +229,15 @@ export function ingestDay(day: GarminDay) {
       { stage: "ADK coordinator", result: `Route → ${specialist}` },
       {
         stage: specialist,
-        result: `Received WearableDay for ${model.date}; context review complete.`,
+        result: `WearableDay ${model.date} reviewed.`,
       },
       {
         stage: "Result validation",
-        result: "Specialist response matches the run schema.",
+        result: "Response matches the run schema.",
       },
       {
         stage: "Run record",
-        result: `6 stages recorded / completed / route: ${specialist}`,
+        result: `6 stages complete / ${specialist}`,
       },
     ],
   };

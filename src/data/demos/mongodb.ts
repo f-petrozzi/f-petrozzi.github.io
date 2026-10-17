@@ -587,7 +587,7 @@ export function saveAppointment(db: Db, input: AppointmentInput): WriteResult {
   }
 
   const doc = db.appointments.find((a) => a._id === input.id);
-  if (!doc) return fail("That appointment no longer exists.");
+  if (!doc) return fail("Appointment no longer exists.");
   const next: Doc = {
     patientId: input.patientId,
     doctorId: input.doctorId,

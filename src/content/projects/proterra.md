@@ -1,6 +1,6 @@
 ---
 title: "Proterra Intelligence"
-summary: "A system for researching, reviewing, and publishing weekly agricultural briefs."
+summary: "Research, review and publication for weekly agricultural briefs."
 category: "Data & systems"
 tools:
   [
@@ -19,18 +19,12 @@ visual: "proterra"
 repo: "https://github.com/f-petrozzi/proterra-intelligence"
 ---
 
-I built Proterra to produce a weekly brief on dairy, meat, and bovine genetics. It brings source collection, drafting, review, and publication into one workflow.
+I built Proterra for weekly dairy, meat and bovine genetics briefs. It connects source collection, drafting, review and publication.
 
-## Preparing a brief
+A scheduled job collects approved publications. I run Codex to draft from those sources. Claims link to source material. Each draft has a review preview.
 
-A scheduled job collects material from approved publications. I then run Codex to draft the brief from those sources. Claims link back to the source material, and each draft gets a preview for review.
+Reviewers comment on passages and request changes. Approval covers the exact version reviewed. After validation and approval, the brief publishes to the website and email.
 
-## Reviewing and publishing
+A separate service stores comments and approvals so previews cannot change their own approval state.
 
-Reviewers can comment on individual parts of the draft and request changes. Approval applies to the exact version they read. Once it passes validation and is approved, the website updates and the brief goes out by email.
-
-I keep review comments and approvals in a separate service, so draft previews cannot change their own approval state.
-
-## Tracking market data
-
-A separate dashboard charts historical data from FAO and USDA releases. Scheduled updates create a pull request so the new data can be checked before it appears on the site.
+A dashboard charts historical FAO and USDA data. Scheduled updates open pull requests for review before publication.

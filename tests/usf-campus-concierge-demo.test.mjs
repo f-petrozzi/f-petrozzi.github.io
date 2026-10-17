@@ -89,7 +89,7 @@ test("calendar availability and booked slots use the same dates and times", () =
   assert.equal(proposal.arguments.duration_minutes, 30);
   assert.equal(proposal.arguments.start, "2026-04-16T09:30:00-04:00");
   assert.equal(proposal.result.status, "confirmed");
-  assert.match(proposal.result.message, /invitation sent/);
+  assert.match(proposal.result.message, /Invitation sent/);
   assert.deepEqual(proposal.arguments.attendees, ["student@example.com"]);
   assert.equal(
     meetingCall(reply, { date: "2026-04-18", time: "04:00" }).result.status,

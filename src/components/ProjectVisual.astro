@@ -3,9 +3,9 @@
 // `compact` renders the same diagram as card art on the homepage.
 const { kind, title, compact = false } = Astro.props;
 const notes = {
-  nume: "How the agents connect",
-  proterra: "The editorial workflow",
-  nest: "How the features connect",
+  nume: "Agent flow",
+  proterra: "Editorial workflow",
+  nest: "Connected features",
 };
 ---
 
@@ -37,10 +37,10 @@ const notes = {
           <b>01</b>Collect sources
         </li>
         <li>
-          <b>02</b>Draft the brief
+          <b>02</b>Draft brief
         </li>
         <li>
-          <b>03</b>Review the evidence
+          <b>03</b>Review evidence
         </li>
         <li class="flow-key">
           <b>04</b>Approve publication

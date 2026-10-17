@@ -137,23 +137,21 @@ export function validateDraft(draft: Draft): {
 } {
   const errors: Errors = {};
   const student = draft.student.trim();
-  if (!student) errors.student = "The Student field is required.";
+  if (!student) errors.student = "Enter a student.";
   else if (student.length > 60)
-    errors.student = "The Student field must be 60 characters or fewer.";
+    errors.student = "Keep the student name within 60 characters.";
   if (!PROGRAMS.some((p) => p.name === draft.program))
-    errors.program = "The Program field is required.";
-  if (!TERMS.includes(draft.term)) errors.term = "The Term field is required.";
+    errors.program = "Choose a program.";
+  if (!TERMS.includes(draft.term)) errors.term = "Choose a term.";
   const gpaText = draft.gpa.trim();
   const gpa = Number(gpaText);
-  if (!gpaText) errors.gpa = "The GPA field is required.";
+  if (!gpaText) errors.gpa = "Enter a GPA.";
   else if (!/^\d+(\.\d{1,2})?$/.test(gpaText))
-    errors.gpa = "The GPA field must be a number with up to two decimals.";
-  else if (gpa < 0 || gpa > 4)
-    errors.gpa = "The GPA field must be between 0 and 4.";
-  if (!draft.enrolled)
-    errors.enrolled = "The Enrollment date field is required.";
+    errors.gpa = "Use a GPA with up to two decimals.";
+  else if (gpa < 0 || gpa > 4) errors.gpa = "GPA must be between 0 and 4.";
+  if (!draft.enrolled) errors.enrolled = "Enter an enrollment date.";
   else if (!realDate(draft.enrolled))
-    errors.enrolled = "The Enrollment date field must be a valid date.";
+    errors.enrolled = "Enter a valid enrollment date.";
   if (Object.keys(errors).length) return { ok: false, errors };
   return {
     ok: true,

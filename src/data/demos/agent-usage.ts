@@ -175,7 +175,7 @@ export function snapshot(value: number) {
               minute: crossed,
               kind: "Usage",
               title: `${account.provider} / ${account.alias} ${threshold === 100 ? "limit reached" : "usage warning"}`,
-              body: `${current.label}: ${threshold}% used / ${100 - threshold}% remaining`,
+              body: `${current.label} / ${threshold}% used / ${100 - threshold}% left`,
             });
           }
         }
@@ -187,7 +187,7 @@ export function snapshot(value: number) {
           minute: seed.reset + (current.cycle - 1) * seed.duration,
           kind: "Usage",
           title: "Allowance renewed",
-          body: `${account.provider} ${account.alias}: 5-hour window reset`,
+          body: `${account.provider} ${account.alias} / 5-hour window reset`,
         });
       }
       return current;

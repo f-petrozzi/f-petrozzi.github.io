@@ -108,7 +108,7 @@ const initial = createState();
               <p class="nest-eyebrow">Cat care</p><h3>Juniper &amp; Miso</h3><p
                 class="nest-muted"
               >
-                Both fed at 07:30. Fresh water is ready.
+                Both fed at 07:30. Water refreshed.
               </p><button
                 type="button"
                 class="nest-text-button"
@@ -217,11 +217,10 @@ const initial = createState();
             aria-labelledby={`${id}-kitchen-tab-nesty`}
             hidden
           >
-            <p class="nest-eyebrow">Nesty</p><h3>
-              Dinner, with what we have
-            </h3><p class="nest-muted">
-              Chickpeas and spinach are on hand. The skillet fits tonight's
-              plan.
+            <p class="nest-eyebrow">Nesty</p><h3>Dinner from the pantry</h3><p
+              class="nest-muted"
+            >
+              Chickpeas and spinach are ready for tonight’s skillet.
             </p><button
               type="button"
               class="nest-text-button"
@@ -280,7 +279,7 @@ const initial = createState();
                   class="nest-receipt"
                   viewBox="0 0 190 210"
                   role="img"
-                  aria-label="Maple Market receipt: chickpeas $2.40, spinach $3.20, lemons $1.60, total $7.20"
+                  aria-label="Maple Market receipt with chickpeas $2.40, spinach $3.20, lemons $1.60, total $7.20"
                 >
                   <path
                     d="M15 7h160v192l-10-6-10 6-10-6-10 6-10-6-10 6-10-6-10 6-10-6-10 6-10-6-10 6-10-6-10 6-10-6-10 6Z"
@@ -521,7 +520,7 @@ const initial = createState();
                   <p class="nest-muted">{card.copy}</p>
                   {section.id === "finance" && index === 1 && (
                     <p class="nest-muted" data-finance-purchase>
-                      No receipt purchase logged today.
+                      No receipt purchase today.
                     </p>
                   )}
                 </article>
@@ -570,8 +569,8 @@ const initial = createState();
     Home is up to date.
   </p>
   <p class="nest-note">
-    This sample simulates AI receipt reading, stock suggestions and device
-    updates locally.
+    AI receipt reading, stock suggestions and device updates are simulated
+    locally.
   </p>
   <dialog class="nest-sheet" aria-label="Update pantry?" data-consume>
     <form method="dialog" data-stock-form>

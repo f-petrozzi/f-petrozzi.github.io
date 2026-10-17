@@ -75,7 +75,7 @@ export const sectionPreviews = [
       {
         title: "Weight check",
         value: "4.2 kg",
-        copy: "Juniper's latest entry. Next check: Saturday 17 October.",
+        copy: "Juniper’s latest entry. Next check Saturday 17 October.",
       },
       {
         title: "Cat cupboard",
@@ -85,7 +85,7 @@ export const sectionPreviews = [
       {
         title: "By the kitchen window",
         value: "Wednesday",
-        copy: "Juniper and Miso found the warmest spot in the house.",
+        copy: "Juniper and Miso found the warmest spot.",
       },
     ],
   },
@@ -108,12 +108,12 @@ export const sectionPreviews = [
       {
         title: "Home internet",
         value: "$42.00 / month",
-        copy: "Next payment: 20 October. Shared equally.",
+        copy: "Due 20 October. Shared equally.",
       },
       {
         title: "September settled",
         value: "$0.00 balance",
-        copy: "Sam and Riley are all square for last month.",
+        copy: "Sam and Riley settled last month.",
       },
     ],
   },
@@ -131,7 +131,7 @@ export const sectionPreviews = [
       {
         title: "Morning walk",
         value: "25 minutes",
-        copy: "An easy 1.8 km around the neighborhood.",
+        copy: "An easy 1.8 km neighborhood walk.",
       },
       {
         title: "Last night",

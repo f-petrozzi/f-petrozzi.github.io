@@ -2,62 +2,62 @@ export const passages = [
   {
     id: 1,
     title: "First-year application",
-    text: "First-year applicants submit an application, a high school transcript and a short statement of interest. The admissions team reviews the application when all three items arrive.",
+    text: "A first-year application needs a high school transcript and short statement of interest. Admissions reviews the application when all three arrive.",
   },
   {
     id: 2,
     title: "Application timeline",
-    text: "The autumn application review opens in February. Applicants can check missing documents and review progress in the applicant portal. A decision notice appears in the same portal.",
+    text: "Autumn application review opens in February. The applicant portal shows missing documents, review progress and decisions.",
   },
   {
     id: 3,
     title: "Orientation registration",
-    text: "Admitted students register for orientation in the welcome portal after confirming their place. Choose an orientation session and add any accompanying guests before submitting the registration.",
+    text: "Confirm admission, then register for orientation in the welcome portal. Choose a session and add guests before submitting.",
   },
   {
     id: 4,
     title: "Orientation day",
-    text: "Orientation check-in begins at 9 a.m. in the welcome center. The day includes a campus tour, an introduction to student services and a course planning session. Bring a photo ID and your registration confirmation.",
+    text: "Orientation starts at 9 a.m. in the welcome center with a campus tour, student services and course planning. Bring photo ID and registration confirmation.",
   },
   {
     id: 5,
     title: "Meet an academic advisor",
-    text: "New students can request a 30-minute meeting with an academic advisor before choosing courses. Include your intended major and two questions in the meeting request. Remote and campus appointments are available.",
+    text: "Request 30-minute academic advising before choosing courses. Include your intended major and two questions. Remote and campus appointments are available.",
   },
   {
     id: 6,
     title: "Financial aid checklist",
-    text: "Students seeking financial aid complete an aid application and check the financial aid portal for requested documents. The aid team can explain scholarship review and the status of an award.",
+    text: "Apply for financial aid and check the aid portal for requested documents. The aid team explains scholarship reviews and award status.",
   },
   {
     id: 7,
     title: "Tuition and payment",
-    text: "The student billing portal lists tuition charges and payment dates after course registration. Students may request a payment plan from the billing team before the first payment date.",
+    text: "After course registration, the billing portal lists tuition and payment dates. Request a payment plan before the first payment.",
   },
   {
     id: 8,
     title: "Campus housing",
-    text: "Students interested in campus housing submit a housing interest form after admission. Room preferences and roommate requests go in that form. The housing team confirms availability separately.",
+    text: "After admission, submit housing interest, room preferences and roommate requests in the housing form. The housing team confirms availability separately.",
   },
   {
     id: 9,
     title: "Getting to campus",
-    text: "Orientation visitors can use the east visitor parking area or the campus shuttle from the transit stop. The welcome center provides a campus map and walking directions at check-in.",
+    text: "Use east visitor parking or the campus shuttle from the transit stop. Get maps and directions at welcome center check-in.",
   },
   {
     id: 10,
     title: "International applicants",
-    text: "International applicants provide translated academic transcripts and the language documents listed in their applicant checklist. An international admissions advisor can review document questions in a remote meeting.",
+    text: "International applicants submit translated transcripts and language documents from their checklist. International admissions advisors answer document questions remotely.",
   },
   {
     id: 11,
     title: "Access and accommodations",
-    text: "Students can request orientation accommodations through the access team. Include the session date and the access support needed. Accessible campus tours and captioned remote sessions can be arranged.",
+    text: "Request orientation accommodations from the access team with your session date and support needs. Accessible tours and captioned remote sessions are available.",
   },
   {
     id: 12,
     title: "Student ID card",
-    text: "After confirming admission, students upload a photo in the student card portal. Bring a photo ID to collect the student card at the welcome center during orientation.",
+    text: "After confirming admission, upload a photo to the student card portal. Bring photo ID to collect your card at orientation’s welcome center.",
   },
 ];
 
@@ -178,8 +178,8 @@ export function draftEmail(reply: Reply): EmailDraft {
   const topic = reply.citations[0]?.title ?? "Admissions question";
   return {
     to: "student@example.com",
-    subject: `Your next steps: ${topic.toLowerCase()}`,
-    body: `Hello,\n\nFollowing up on your question, here are the next steps:\n\n${reply.answer.map((part) => `${part.text} [${part.number}]`).join("\n\n")}\n\nUniversity references:\n${reply.citations.map((passage, index) => `[${index + 1}] ${passage.title}`).join("\n")}\n\nPlease reply if you would like help arranging an advising meeting.\n\nUSF Student Support`,
+    subject: `Next steps for ${topic.toLowerCase()}`,
+    body: `Hello,\n\nYour next steps\n\n${reply.answer.map((part) => `${part.text} [${part.number}]`).join("\n\n")}\n\nUniversity references\n${reply.citations.map((passage, index) => `[${index + 1}] ${passage.title}`).join("\n")}\n\nReply for help booking advising.\n\nUSF Student Support`,
   };
 }
 export function emailCall(
@@ -222,7 +222,7 @@ export function meetingCall(
         result: {
           status: "confirmed",
           start: `${slot.date} ${slot.time}`,
-          message: "Meeting scheduled; invitation sent to student@example.com.",
+          message: "Meeting booked. Invitation sent to student@example.com.",
         },
       }
     : {

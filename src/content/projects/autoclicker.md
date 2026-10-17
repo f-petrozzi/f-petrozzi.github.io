@@ -1,6 +1,6 @@
 ---
 title: "Personal Autoclicker"
-summary: "A Windows utility for repeating mouse clicks or key presses."
+summary: "A Windows utility for repeating clicks or key presses."
 category: "Tools & experiments"
 tools: ["Python", "CustomTkinter", "pynput", "PyInstaller", "pytest"]
 order: 6
@@ -9,6 +9,6 @@ status: "Desktop utility"
 visual: "code"
 ---
 
-I built this in Python with an adjustable interval and a hotkey to start or stop it. It can repeat a left, right, or middle mouse click, or a selected keyboard key.
+I built this Python utility with an adjustable interval and a start-stop hotkey. It repeats left, right or middle clicks, or a selected key.
 
-The interface uses CustomTkinter, and pynput handles input. I package the Windows version with PyInstaller so it runs without a separate Python installation.
+CustomTkinter provides the interface. pynput handles input. PyInstaller packages it for Windows without a separate Python installation.

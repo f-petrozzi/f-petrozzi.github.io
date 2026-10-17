@@ -485,7 +485,7 @@ export function updateReview(
   input: ReviewInput,
 ): Write {
   const review = state.reviews.find((r) => r.review_id === id);
-  if (!review) return fail("UPDATE", "That review no longer exists.");
+  if (!review) return fail("UPDATE", "Review no longer exists.");
   const clean = {
     ...input,
     reviewer: input.reviewer.trim(),
@@ -518,7 +518,7 @@ export function updateReview(
 
 export function deleteReview(state: State, id: number): Write {
   const index = state.reviews.findIndex((r) => r.review_id === id);
-  if (index < 0) return fail("DELETE", "That review no longer exists.");
+  if (index < 0) return fail("DELETE", "Review no longer exists.");
   state.reviews.splice(index, 1);
   return {
     ok: true,

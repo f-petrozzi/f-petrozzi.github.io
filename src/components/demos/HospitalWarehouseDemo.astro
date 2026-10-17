@@ -106,7 +106,7 @@ const lines = EDGES.map(([factName, dimName], index) => {
         <svg
           viewBox={`0 0 ${Math.max(...DIAGRAM.map((n) => n.x + n.w)) + 24} ${Math.max(...DIAGRAM.map((n) => n.y + n.h)) + 14}`}
           role="img"
-          aria-label="Star schema: two fact tables joined to dimension tables"
+          aria-label="Star schema with two fact tables and dimension tables"
         >
           {
             lines.map((l) => (
@@ -146,9 +146,7 @@ const lines = EDGES.map(([factName, dimName], index) => {
     <pre class="hw-sql" tabindex="0"><code /></pre>
   </div>
 
-  <p class="hw-note">
-    Queries run against in-memory sample tables. No database is connected.
-  </p>
+  <p class="hw-note">Queries use local sample tables without a database.</p>
 </section>
 
 <script>

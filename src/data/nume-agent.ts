@@ -20,16 +20,15 @@ export function runSampleAgent(
     : "Calming Chamomile Oat Bowl";
   const activity = low ? "a gentle 15-minute walk" : "a 30-minute walk";
   const reason = low
-    ? "The sample sleep is below 6 hours or stress is above 60, so I picked low-effort options."
-    : "The sample sleep and stress allow a longer movement break.";
+    ? "Sleep is below 6 hours or stress is above 60. I picked low-effort options."
+    : "Sleep and stress allow a longer walk.";
   const answers = {
-    meal: `Try the ${meal}. It is a quick, low-prep option.`,
-    sleep: `You entered ${profile.sleep.toFixed(1)} hours of sleep. ${low ? "Keep this sample day simple: a quick meal and a short walk." : "The sample plan has room for a longer walk."}`,
+    meal: `Try the ${meal} for a quick meal.`,
+    sleep: `You entered ${profile.sleep.toFixed(1)} hours of sleep. ${low ? "Try a quick meal and short walk." : "The plan allows a longer walk."}`,
     activity: `Try ${activity}. ${low ? "Keep the pace comfortable." : "Choose a time that suits the day."}`,
     reasoning: reason,
-    plan: `For this sample day: ${meal} and ${activity}.`,
-    unknown:
-      "I can explain the sample meal, activity or plan. Try “What should I eat?” or “Why this plan?”",
+    plan: `Today’s plan is ${meal} and ${activity}.`,
+    unknown: "Ask about the sample meal, activity or plan.",
   };
   const answer = answers[intent];
   const context = `sleep=${profile.sleep.toFixed(1)}h, stress=${profile.stress}/100`;
@@ -46,28 +45,28 @@ export function runSampleAgent(
       {
         kicker: "Coordinator",
         title: "Route the question",
-        copy: `Matched the ${intent} route using a fixed keyword table.`,
+        copy: `Routed the ${intent} request.`,
         input: question,
         output: `intent=${intent}`,
       },
       {
         kicker: "Signal analysis",
-        title: "Read the current sample inputs",
-        copy: "Read the sliders currently shown in the dashboard.",
+        title: "Read daily inputs",
+        copy: "Read dashboard sleep and stress.",
         input: context,
         output: rule,
       },
       {
         kicker: "Catalog selection",
-        title: "Choose from fixed sample options",
-        copy: "Applied the local rule to choose a meal and an activity.",
+        title: "Choose meal and activity",
+        copy: "Selected a meal and activity for the daily profile.",
         input: rule,
-        output: `meal=${meal}; activity=${activity}`,
+        output: `meal=${meal} / activity=${activity}`,
       },
       {
         kicker: "Validation",
-        title: "Keep the answer within this demo",
-        copy: "Only supported topics use a predefined answer; unknown questions receive a fallback.",
+        title: "Validate the answer",
+        copy: "Answer supported topics. Use a fallback for unknown questions.",
         input: `intent=${intent}`,
         output:
           intent === "unknown"
@@ -77,7 +76,7 @@ export function runSampleAgent(
       {
         kicker: "Reply",
         title: "Return the answer",
-        copy: "This is the same response shown in the dashboard conversation.",
+        copy: "Return the dashboard reply.",
         input: `${intent} + ${context}`,
         output: answer,
       },

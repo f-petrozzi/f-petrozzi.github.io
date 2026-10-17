@@ -1,6 +1,6 @@
 ---
 title: "USF Campus Concierge"
-summary: "An AI assistant for admissions questions, email drafts, and meeting scheduling."
+summary: "An AI assistant for admissions, email drafts and meetings."
 category: "Earlier work"
 tools: ["Python", "Streamlit", "Supabase", "pgvector", "MCP", "Splunk"]
 order: 20
@@ -10,14 +10,10 @@ visual: "code"
 repo: "https://github.com/f-petrozzi/USFConcierge"
 ---
 
-Our text analytics group built USF Campus Concierge for admissions and orientation questions. The assistant retrieves relevant university information and cites the passages used in its answers.
+Our text analytics group built USF Campus Concierge for admissions and orientation questions. It retrieves university information and cites supporting passages.
 
-## My contribution
+I worked on retrieval, Azure model integration, email and meeting assistants, Google APIs and data ingestion. I added structured logging and Splunk dashboards to measure request timing.
 
-I worked on the retrieval pipeline, Azure model integration, email and meeting assistants, Google API integrations, and data ingestion. I also added structured logging and Splunk dashboards to measure where requests spent time.
+Streamlit provides the interface. Supabase stores documents. pgvector searches them. MCP tools connect Gmail drafts and Google Calendar meetings.
 
-## From questions to actions
-
-The interface uses Streamlit, with documents stored in Supabase and searched through pgvector. MCP tools connect the assistant to Gmail and Google Calendar for email drafts and meetings.
-
-We presented the system to USF faculty and revised it based on their feedback.
+We presented it to USF faculty and revised it from their feedback.

@@ -20,7 +20,7 @@ export type ParseResult =
 /* Same shape as the site's menus.json (note + sections of items), with
    adapted items and prices. */
 export const SAMPLE_MENU = {
-  note: "Vegetarian and gluten free options are marked in item descriptions where available.",
+  note: "Descriptions mark vegetarian and gluten-free options.",
   sections: [
     {
       title: "Starters",
@@ -124,13 +124,13 @@ function priceText(value: unknown, path: string): string {
    good menu. */
 export function parseMenu(text: string): ParseResult {
   if (text.length > MAX_TEXT)
-    return { ok: false, error: "Menu is too long for this sample" };
+    return { ok: false, error: "Menu exceeds the sample limit" };
   let data: unknown;
   try {
     data = JSON.parse(text);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Invalid JSON";
-    return { ok: false, error: `Invalid JSON: ${message}` };
+    return { ok: false, error: `Invalid JSON / ${message}` };
   }
   try {
     if (!isRecord(data)) throw new Error("Menu must be an object");

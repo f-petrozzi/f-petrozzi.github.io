@@ -22,7 +22,7 @@ const best = bestTrial(trials)!;
     <article class="card">
       <h3>Optimization history</h3><div data-history></div><div class="legend">
         <span>● Completed</span><span>× Pruned</span><span
-          >Line: best completed loss</span
+          >Line / best completed loss</span
         >
       </div>
     </article>
@@ -44,8 +44,8 @@ const best = bestTrial(trials)!;
     <p data-status>30 / 30 trials</p><p class="muted" data-latest></p>
   </div>
   <p class="note">
-    A seeded local replay, not an Optuna or PyTorch run. Importance uses
-    relative grouped loss variance, not Optuna's fANOVA estimator.
+    Local replay without Optuna or PyTorch. Importance uses grouped loss
+    variance instead of Optuna’s fANOVA.
   </p>
 </section>
 <script>

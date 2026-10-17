@@ -82,7 +82,7 @@ const instance = `proterra-${crypto.randomUUID()}`;
                   <figcaption
                     title={`${image.alt}. ${image.author}. ${image.license}. ${image.source}. Resized and cropped.`}
                   >
-                    Photo: {image.author} / {image.license}
+                    Photo / {image.author} / {image.license}
                   </figcaption>
                 </figure>
                 <div class="story-copy">
@@ -109,7 +109,7 @@ const instance = `proterra-${crypto.randomUUID()}`;
       </div>
       <details class="collection-audit">
         <summary>Collection record / 7 discovered, 3 kept, 4 filtered</summary>
-        <p class="muted">Coverage: 5 to 11 October 2026</p>
+        <p class="muted">Coverage / 5 to 11 October 2026</p>
         <div class="allow-list">
           <p class="kicker">Approved publications</p>
           {
@@ -134,7 +134,7 @@ const instance = `proterra-${crypto.randomUUID()}`;
                   <>
                     <strong>{item.title}</strong>
                     <span>{item.publication}</span>
-                    <p>{reason.replace(/^(Kept|Filtered): /, "")}</p>
+                    <p>{reason}</p>
                   </>
                 </div>
               </li>
@@ -329,12 +329,10 @@ const instance = `proterra-${crypto.randomUUID()}`;
       </div>
     </section>
     <p class="status" role="status" aria-live="polite" data-status>
-      This week’s collection is ready: 3 stories from approved publications.
+      3 stories collected from approved publications.
     </p>
-    <p class="simulation">
-      Codex drafts the real brief; drafting is simulated here.
-    </p>
-    <noscript><p>JavaScript is needed for this pipeline.</p></noscript>
+    <p class="simulation">Local rules simulate Codex drafting.</p>
+    <noscript><p>Enable JavaScript to use the pipeline.</p></noscript>
   </div>
 </section>
 

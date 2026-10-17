@@ -4,7 +4,7 @@ const all = [
   {
     id: "health",
     label: "Health",
-    description: "Health overview with wearable metrics.",
+    description: "Wearable metrics.",
   },
   {
     id: "sleep",
@@ -14,19 +14,17 @@ const all = [
   {
     id: "orchestration",
     label: "Agents",
-    description:
-      "Admin trace with parallel agents, a remote specialist and validation loop.",
+    description: "Parallel agents, remote specialist and validation trace.",
   },
   {
     id: "dashboard",
     label: "Dashboard",
-    description:
-      "Member dashboard with a support plan and the signals behind it.",
+    description: "Support plan and its input signals.",
   },
   {
     id: "recipes",
     label: "Recipes",
-    description: "Recipe import and meal recommendation context.",
+    description: "Recipe import and selection context.",
   },
 ];
 const shots = compact ? [all[0], all[2], all[1]] : all;
@@ -93,7 +91,7 @@ const first = shots[0];
   {
     !compact && (
       <a class="nume-demo-link" href="/projects/nume/demo/">
-        Try the interactive demo
+        Try demo
       </a>
     )
   }

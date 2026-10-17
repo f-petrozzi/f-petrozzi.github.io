@@ -133,7 +133,7 @@ test("80 percent warning appears at the crossing, once per window", () => {
     snapshot(minute).notices.filter((notice) => notice.kind === "Usage");
   assert.equal(usage(19).length, 0);
   assert.equal(usage(20).length, 1);
-  assert.match(usage(20)[0].body, /5-hour: 80% used/);
+  assert.match(usage(20)[0].body, /5-hour \/ 80% used/);
   assert.equal(usage(30).length, 1);
   assert.equal(usage(44).length, 1);
   assert.equal(

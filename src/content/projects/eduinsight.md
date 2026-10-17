@@ -1,6 +1,6 @@
 ---
 title: "EduInsight"
-summary: "An enrollment management app built with ASP.NET MVC and deployed to Azure."
+summary: "Enrollment management with ASP.NET MVC on Azure."
 category: "Earlier work"
 tools: ["C#", "ASP.NET MVC", "Razor", "Azure App Service", "JSON"]
 order: 22
@@ -10,6 +10,6 @@ visual: "code"
 repo: "https://github.com/f-petrozzi/AppDevFinal"
 ---
 
-For this course project, I worked with ASP.NET MVC to manage enrollment records. Each record contains the student, program, term, GPA, and enrollment date. The app includes forms for adding and updating records, an enrollment list, and charts that summarize the data.
+I used ASP.NET MVC for this course project. Forms, lists and charts manage enrollment records with student, program, term, GPA and enrollment date.
 
-Records are stored in JSON and initially loaded from a CSV file. The project also involved configuring persistent storage on Azure and using College Scorecard data for benchmarks.
+Records use JSON storage, initially loaded from CSV. The project includes persistent Azure storage and College Scorecard benchmarks.

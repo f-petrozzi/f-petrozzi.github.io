@@ -1,6 +1,6 @@
 ---
 title: "Hospital Data Warehouse"
-summary: "A data warehouse for analyzing hospital visits and prescriptions using synthetic data."
+summary: "A warehouse for hospital visits and prescriptions with synthetic data."
 category: "Earlier work"
 tools: ["SQL", "Data Visualization"]
 order: 26
@@ -10,6 +10,6 @@ visual: "code"
 repo: "https://github.com/f-petrozzi/Healthcare_Data_Warehouse"
 ---
 
-For this course project, we modeled hospital visits and prescriptions using fact and dimension tables. Synthetic data let us populate the warehouse and write queries against it.
+For this group course project, we modeled hospital visits and prescriptions with fact and dimension tables, populated them with synthetic data and wrote queries.
 
-The queries and visualizations look at prescriptions by specialty, procedure charges and length of stay, and revenue by state. The report also considers how to preserve historical records when details such as a doctor’s specialty change.
+Queries and charts cover prescriptions by specialty, procedure charges, length of stay and revenue by state. The report examines preserving history when details such as a doctor’s specialty change.

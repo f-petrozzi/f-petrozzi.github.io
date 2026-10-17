@@ -1,6 +1,6 @@
 ---
 title: "Image Classifier"
-summary: "A comparison of neural networks for classifying conditions in chest X-rays."
+summary: "Comparing neural networks for chest X-ray classification."
 category: "Earlier work"
 tools: ["Python", "PyTorch", "Torchvision", "scikit-learn"]
 order: 25
@@ -10,6 +10,6 @@ visual: "code"
 repo: "https://github.com/f-petrozzi/Image_Classification_DL"
 ---
 
-Our group compared a CNN built from scratch with a fine-tuned ResNet-50 in PyTorch, using a subset of the NIH chest X-ray dataset. Each image could have more than one condition label.
+Our group compared a CNN built from scratch with a fine-tuned ResNet-50 in PyTorch. We used a subset of NIH chest X-rays with multiple condition labels per image.
 
-We tracked training and validation results, then evaluated predictions with ROC and precision-recall curves. We also compared results for individual conditions alongside the overall scores.
+We tracked training and validation, then compared overall and per-condition results with ROC and precision-recall curves.

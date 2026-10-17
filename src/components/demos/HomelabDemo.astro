@@ -52,9 +52,7 @@ const flows = [
   <section class="panel" data-panel="architecture" aria-label="Architecture">
     <div class="panel-heading">
       <div>
-        <p class="kicker">One machine, several roles</p><h2>
-          Inside the homelab
-        </h2>
+        <p class="kicker">One host</p><h2>Homelab</h2>
       </div>
       <div class="flow-controls" role="group" aria-label="Architecture paths">
         {
@@ -142,7 +140,7 @@ const flows = [
       </div>
     </div>
     <p class="flow-status" data-flow-status aria-live="polite">
-      Private access: My devices → Tailscale + SSH → VS Code / terminal.
+      Private access / My devices → Tailscale + SSH → VS Code / terminal.
     </p>
     <article class="node-detail" aria-live="polite" aria-atomic="true">
       <div>
@@ -269,7 +267,7 @@ const flows = [
           aria-hidden="true"></b></button
       >
       <button type="button" data-rule="restrictIot" aria-pressed="true"
-        ><span>IoT: updates only</span><small
+        ><span>IoT updates only</span><small
           >Trusted devices keep web access</small
         ><b class="rule-state" aria-hidden="true"></b></button
       >

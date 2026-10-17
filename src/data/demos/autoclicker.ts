@@ -55,7 +55,7 @@ export function parseInterval(raw: string): IntervalResult {
 export function intervalMessage(note: IntervalNote): string {
   if (note === "min") return `Minimum interval is ${MIN_INTERVAL_MS} ms`;
   if (note === "max") return `Maximum interval is ${MAX_INTERVAL_MS} ms`;
-  if (note === "invalid") return "Enter a number of milliseconds";
+  if (note === "invalid") return "Enter milliseconds";
   if (note === "empty") return "Enter an interval";
   return "";
 }

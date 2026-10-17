@@ -48,7 +48,7 @@ export function initialState(): State {
       {
         id: "n1",
         title: "Send Q3 summary",
-        body: "Numbers are final. Keep it to one page and lead with the headline result.",
+        body: "Numbers are final. Lead with the result in one page.",
         subtasks: [
           { id: "s1", text: "Pull the final figures", done: true },
           { id: "s2", text: "Write the one-page summary", done: false },
@@ -59,7 +59,7 @@ export function initialState(): State {
       {
         id: "n2",
         title: "Pack for Saturday hike",
-        body: "Early start. Trail is exposed, so plan for sun and plenty of water.",
+        body: "Early start on an exposed trail. Pack sun protection and water.",
         subtasks: [
           { id: "s4", text: "Fill two water bottles", done: true },
           { id: "s5", text: "Sunscreen and hat", done: false },
@@ -131,8 +131,8 @@ const TEMPLATES: Template[] = [
   {
     test: /trip|travel|flight|vacation|hike|camp|road/i,
     bodies: [
-      "Plan the route and the timing first, then pack around the weather.",
-      "Lock in the logistics early so the day itself stays easy.",
+      "Plan the route and timing. Pack for the weather.",
+      "Confirm logistics early.",
     ],
     tasks: [
       "Check the weather forecast",
@@ -145,8 +145,8 @@ const TEMPLATES: Template[] = [
   {
     test: /party|birthday|dinner|celebrat|wedding|gather|brunch/i,
     bodies: [
-      "Pick the date, set the guest list and decide on the menu before anything else.",
-      "Keep it simple: a clear time, a short menu and one thing that makes it feel special.",
+      "Choose the date, guests and menu first.",
+      "Set a clear time, short menu and one special detail.",
     ],
     tasks: [
       "Choose a date and time",
@@ -159,8 +159,8 @@ const TEMPLATES: Template[] = [
   {
     test: /workout|gym|run|train|yoga|marathon|exercise/i,
     bodies: [
-      "Small, repeatable sessions beat one heroic effort. Set the schedule and protect it.",
-      "Start easy, track what you did and add a little each week.",
+      "Schedule short, regular sessions.",
+      "Start easy. Track progress and add a little weekly.",
     ],
     tasks: [
       "Pick three days this week",
@@ -173,8 +173,8 @@ const TEMPLATES: Template[] = [
   {
     test: /grocer|shop|meal|cook|recipe|bake|buy/i,
     bodies: [
-      "Check what is already in the kitchen, then list only what is missing.",
-      "Plan around two or three meals and buy for those.",
+      "Check the kitchen. List what’s missing.",
+      "Buy for two or three planned meals.",
     ],
     tasks: [
       "Check the pantry and fridge",
@@ -187,8 +187,8 @@ const TEMPLATES: Template[] = [
   {
     test: /study|exam|class|homework|essay|read|course|lecture/i,
     bodies: [
-      "Break the material into short sessions and finish with a self-test.",
-      "Start with the hardest topic while attention is fresh.",
+      "Study in short sessions. Finish with a self-test.",
+      "Start with the hardest topic.",
     ],
     tasks: [
       "List the topics to cover",
@@ -201,8 +201,8 @@ const TEMPLATES: Template[] = [
   {
     test: /report|meeting|launch|presentation|project|deadline|review|email|summary|invoice/i,
     bodies: [
-      "Agree on what done looks like, then work backwards from the deadline.",
-      "Lead with the outcome, keep the supporting detail short and ship a draft early.",
+      "Agree on the outcome. Plan back from the deadline.",
+      "Lead with the outcome. Share a concise draft early.",
     ],
     tasks: [
       "Define what done looks like",
@@ -215,8 +215,8 @@ const TEMPLATES: Template[] = [
   {
     test: /clean|move|fix|repair|organi[sz]e|laundry|garden|declutter/i,
     bodies: [
-      "Work one area at a time and finish each before starting the next.",
-      "Set a timer, clear the worst spot first and keep going from there.",
+      "Finish one area at a time.",
+      "Set a timer. Clear the worst spot first.",
     ],
     tasks: [
       "Gather supplies",
@@ -231,8 +231,8 @@ const TEMPLATES: Template[] = [
 const FALLBACK: Template = {
   test: /./,
   bodies: [
-    "Decide what done looks like, then take the first small step today.",
-    "Break it into small pieces and schedule the first one.",
+    "Define the outcome. Take a small step today.",
+    "Split the work. Schedule the first step.",
   ],
   tasks: [
     "Define what done looks like",

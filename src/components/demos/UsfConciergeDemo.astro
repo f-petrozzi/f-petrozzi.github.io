@@ -16,7 +16,7 @@ const reply = ask(prompts[1]);
     <div>
       <span class="kicker">USF Campus Concierge</span><h2>
         Student support chat
-      </h2><p>Custom USF chat for university employees helping students.</p>
+      </h2><p>USF chat for employees helping students.</p>
     </div>
     <button type="button" data-reset>Reset</button>
   </header>
@@ -99,9 +99,10 @@ const reply = ask(prompts[1]);
       aria-label="Advising appointment"
       hidden
     >
-      <span class="kicker">MCP Calendar</span><h3>
-        Book a 30-minute advising meeting
-      </h3><p>April 2026 / Eastern time</p>
+      <span class="kicker">MCP Calendar</span><h3>Book 30-minute advising</h3><p
+      >
+        April 2026 / Eastern time
+      </p>
       <div class="calendar">
         {
           meetingSlots.map((day) => (
@@ -123,9 +124,7 @@ const reply = ask(prompts[1]);
           ))
         }
       </div>
-      <p data-slot-status role="status">
-        Choose an available appointment for the student.
-      </p>
+      <p data-slot-status role="status"></p>
     </section>
   </div>
   <form data-question-form class="composer">
@@ -193,8 +192,8 @@ const reply = ask(prompts[1]);
     </div>
   </details>
   <p class="note">
-    Invented university passages and student. Answers, retrieval, MCP Gmail
-    sends, Calendar bookings and timings are simulated locally.
+    Invented passages and student. Local rules simulate answers, retrieval,
+    Gmail, Calendar and timings.
   </p>
 </section>
 <script>

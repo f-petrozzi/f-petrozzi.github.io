@@ -1,6 +1,6 @@
 ---
 title: "MongoDB"
-summary: "A MongoDB database for hospital appointments, patients, doctors, and billing."
+summary: "A MongoDB database for hospital scheduling and billing."
 category: "Earlier work"
 tools: ["MongoDB", "JavaScript", "Python"]
 order: 32
@@ -10,6 +10,6 @@ visual: "code"
 repo: "https://github.com/f-petrozzi/MongoDB"
 ---
 
-I modeled appointments, patients, doctors, and billing as separate MongoDB collections, linked through identifiers. The project uses synthetic records to demonstrate how a hospital could organize scheduling and payment data.
+I modeled appointments, patients, doctors and billing as linked MongoDB collections with synthetic records.
 
-The query examples cover adding and editing records, grouping revenue by doctor, counting appointment statuses, and finding outstanding invoices.
+Queries add and edit records, group revenue by doctor, count appointment statuses and find outstanding invoices.

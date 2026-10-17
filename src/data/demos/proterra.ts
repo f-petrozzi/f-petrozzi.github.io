@@ -60,7 +60,7 @@ export const items: Item[] = [
     sector: "Dairy",
     title: "Regional creameries report higher milk intake",
     excerpt:
-      "The surveyed creameries received 12.4 million litres in September, compared with 12.1 million litres in August. The survey covers six creameries; it is not a national production estimate.",
+      "Six surveyed creameries received 12.4 million litres in September, up from 12.1 million in August. This is not a national estimate.",
     claim:
       "Milk intake at six surveyed creameries rose from 12.1 to 12.4 million litres between August and September.",
   },
@@ -72,7 +72,7 @@ export const items: Item[] = [
     sector: "Beef",
     title: "Auction offerings ease for a second week",
     excerpt:
-      "The three reporting auctions offered 4,800 head in the week ending 7 October, down from 5,100 head a week earlier. These counts describe offerings, not completed sales or national cattle supply.",
+      "Three auctions offered 4,800 head in the week ending 7 October, down from 5,100 a week earlier. These are offerings rather than completed sales or national supply.",
     claim:
       "Offerings at three reporting auctions fell from 5,100 to 4,800 head week over week.",
   },
@@ -84,9 +84,9 @@ export const items: Item[] = [
     sector: "Bovine genetics",
     title: "Fertility evaluation pilot opens enrolment",
     excerpt:
-      "A pilot will compare a revised fertility evaluation with the current method across 20 participating herds. Enrolment opened on 7 October. No comparison results have been released.",
+      "A 20-herd pilot will compare revised and current fertility evaluations. Enrolment opened 7 October. No results yet.",
     claim:
-      "A fertility evaluation pilot opened enrolment for 20 herds; results are not yet available.",
+      "A fertility evaluation pilot opened enrolment for 20 herds. No results yet.",
   },
   {
     id: "old",
@@ -125,7 +125,7 @@ export const items: Item[] = [
     date: "2026-10-09",
     sector: "Dairy",
     title: "Regional creameries report higher milk intake",
-    excerpt: "The same release discovered through a second feed link.",
+    excerpt: "The same release from another feed.",
     claim: "",
   },
 ];
@@ -157,30 +157,30 @@ export function collectItems(input: Item[] = items) {
   const seen = new Set<string>();
   return input.map((item) => {
     const url = canonicalUrl(item.url);
-    let reason = "Kept: approved publication, in window, in scope";
+    let reason = "Approved publication, in window, in scope";
     let accepted = true;
     if (
       !url ||
       url.protocol !== "https:" ||
       !publications.some((publisher) => publisher.host === url.hostname)
     ) {
-      reason = "Filtered: host is not on the allow-list";
+      reason = "host outside allow-list";
       accepted = false;
     } else if (
       !/^\d{4}-\d{2}-\d{2}$/.test(item.date) ||
       !Number.isFinite(Date.parse(item.date)) ||
       new Date(item.date).toISOString().slice(0, 10) !== item.date
     ) {
-      reason = "Filtered: unparsable publication date";
+      reason = "unparsable publication date";
       accepted = false;
     } else if (item.date < issue.start || item.date > issue.end) {
-      reason = "Filtered: outside 5 to 11 October";
+      reason = "outside 5 to 11 October";
       accepted = false;
     } else if (item.sector === "Other") {
-      reason = "Filtered: outside dairy, beef and bovine genetics";
+      reason = "outside dairy, beef and bovine genetics";
       accepted = false;
     } else if (seen.has(url.href)) {
-      reason = "Filtered: duplicate canonical URL";
+      reason = "duplicate canonical URL";
       accepted = false;
     }
     if (accepted && url) seen.add(url.href);

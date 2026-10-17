@@ -13,7 +13,7 @@ const fit = regress(observations, [0, 1, 2]);
   data-demo="business-statistics"
   aria-label="Business Statistics interactive sample"
 >
-  <h2>Fit the data. Allocate resources.</h2>
+  <h2>Regression and optimization</h2>
   <form>
     <div class="columns">
       <article class="card">
@@ -74,8 +74,8 @@ const fit = regress(observations, [0, 1, 2]);
         </p><div data-region></div><p data-optimum aria-live="polite"></p><p
           class="muted"
         >
-          Maximize $40A + $30B, with A, B ≥ 0.<br />Solid: 2A + B ≤ labor hours.<br
-          />Dashed: A + 2B ≤ material units.
+          Maximize $40A + $30B, with A, B ≥ 0.<br />Solid line / 2A + B ≤ labor
+          hours.<br />Dashed line / A + 2B ≤ material units.
         </p><label
           >Labor <output data-labor>70 hours</output><input
             type="range"
@@ -93,15 +93,14 @@ const fit = regress(observations, [0, 1, 2]);
             value="80"
           /></label
         ><p class="muted">
-          Continuous quantities; optimum evaluated at feasible vertices.
+          Continuous quantities. Optimum at feasible vertices.
         </p>
       </article>
     </div>
   </form>
   <div class="toolbar"><button type="button" data-reset>Reset</button></div>
   <p class="note">
-    Invented charges and production resources, mirroring the R regression and
-    Excel Solver exercises. Calculations run locally.
+    Local regression and optimization with invented charges and resources.
   </p>
 </section>
 <script>

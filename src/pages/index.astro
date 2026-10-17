@@ -82,7 +82,7 @@ const experience = [
     icon: "briefcase",
     logo: "/assets/org/rj.svg",
     description:
-      "I reviewed daily transactions across client accounts and built an Excel workflow to flag accounts needing reconciliation.",
+      "I reviewed daily client transactions and built an Excel workflow to flag accounts for reconciliation.",
   },
   {
     year: "2024",
@@ -92,7 +92,7 @@ const experience = [
     icon: "graduation-cap",
     logo: "/assets/org/usf.svg",
     description:
-      "I helped students in Computers in Business use Excel, Word, and Teams, working through assignments and questions with them.",
+      "I helped Computers in Business students with Excel, Word, Teams and assignments.",
   },
   {
     year: "2026",
@@ -102,7 +102,7 @@ const experience = [
     icon: "audio",
     logo: "/assets/org/usf.svg",
     description:
-      "I troubleshot classroom technology, documented issues, and worked with faculty and IT to resolve them.",
+      "I troubleshot classroom technology, documented issues and resolved them with faculty and IT.",
   },
   {
     year: "2026",
@@ -112,7 +112,7 @@ const experience = [
     icon: "brain-circuit",
     logo: "/assets/org/handshake.svg",
     description:
-      "I wrote scenarios for evaluating AI, then reviewed other contributors’ prompts for realism and quality.",
+      "I wrote AI evaluation scenarios and reviewed contributors’ prompts for realism and quality.",
   },
   {
     year: "2026",
@@ -122,7 +122,7 @@ const experience = [
     icon: "pizza",
     logo: "/assets/org/slice.webp",
     description:
-      "I worked with the owners to plan technology improvements and analyze menu performance using Toast data.",
+      "I planned technology improvements with the owners and analyzed Toast menu performance.",
   },
   {
     year: "2026",
@@ -145,7 +145,7 @@ const education = [
     icon: "graduation-cap",
     logo: "/assets/org/usf.svg",
     description:
-      "I was part of the Honors College and made the Dean’s List. I received the Golden Bull Award and was named a MUMA 25 under 25 honoree.",
+      "I joined the Honors College, made the Dean’s List and received the Golden Bull Award and MUMA 25 under 25 honor.",
     mark: "3.98 GPA",
   },
   {
@@ -156,7 +156,7 @@ const education = [
     icon: "graduation-cap",
     logo: "/assets/org/usf.svg",
     description:
-      "I studied machine learning, text analytics, data warehousing, and systems design, applying them in projects throughout the program.",
+      "I applied machine learning, text analytics, data warehousing and systems design in course projects.",
     mark: "4.0 GPA",
   },
 ];
@@ -170,13 +170,13 @@ const education = [
     <title>Fabrizio Petrozzi</title>
     <meta
       name="description"
-      content="Fabrizio Petrozzi builds apps and tools and is interested in how AI works. Projects, background and contact."
+      content="Fabrizio Petrozzi’s apps, tools and work with AI. Projects, background and contact."
     />
     <link rel="canonical" href={new URL("/", Astro.site)} />
     <meta property="og:title" content="Fabrizio Petrozzi" />
     <meta
       property="og:description"
-      content="I build apps and tools. I’m interested in how AI works and what I can build with it."
+      content="I build apps and tools. I explore how AI works and what I can build with it."
     />
     <meta property="og:type" content="website" />
     <meta name="theme-color" content="#0a0f18" />
@@ -223,7 +223,7 @@ const education = [
           <div class="hero-copy">
             <p class="hero-lead">I build apps and tools.</p>
             <p class="hero-sub">
-              I’m interested in how AI works and what I can build with it.
+              I explore how AI works and what I can build with it.
             </p>
             <ul class="hero-links" aria-label="Profiles and résumé">
               <li>
@@ -317,7 +317,7 @@ const education = [
                           <>
                             <Icon name="close" />
                             <span class="sr-only">
-                              Close information about {project.data.title}
+                              Close details for {project.data.title}
                             </span>
                           </>
                         </span>
@@ -513,7 +513,7 @@ const education = [
             <div class="search-row">
               <label class="search-label glass"
                 ><Icon name="search" /><span class="sr-only"
-                  >Search all projects and tools</span
+                  >Search projects and tools</span
                 >
                 <input
                   id="project-search"
@@ -585,7 +585,7 @@ const education = [
                 {groupIndex === 1 && (
                   <h3 class="list-divider" id="earlier-work" data-list-divider>
                     Earlier work
-                    <span>Coursework and earlier personal projects</span>
+                    <span>Coursework and early personal projects</span>
                   </h3>
                 )}
                 {group.map((p) => (
@@ -638,8 +638,8 @@ const education = [
       >
         <div class="contact-card glass">
           <div class="contact-copy">
-            <h2 id="contact-title">Get in touch</h2>
-            <p>Email is the best way to reach me.</p>
+            <h2 id="contact-title">Contact</h2>
+            <p>Reach me by email.</p>
           </div>
           <div class="contact-actions">
             <a class="btn btn-primary" href="mailto:petrozzi@usf.edu"
@@ -682,9 +682,7 @@ const education = [
       </section>
       <footer class="footer wrap">
         <span>Fabrizio Petrozzi</span>
-        <a href="/classic/" data-era-link class="era-switch"
-          >Original portfolio (2023)</a
-        >
+        <a href="/classic/" data-era-link class="era-switch">2023 portfolio</a>
         <span>© {new Date().getFullYear()}</span>
       </footer>
     </main>

@@ -1,6 +1,6 @@
 ---
 title: "Titanic Survival Predictor"
-summary: "Comparing Naive Bayes and a decision tree on Titanic passenger data."
+summary: "Comparing Naive Bayes and decision trees on Titanic data."
 category: "Earlier work"
 tools: ["Python", "Machine Learning"]
 order: 30
@@ -10,6 +10,6 @@ visual: "code"
 repo: "https://github.com/f-petrozzi/Titanic_Survival_Prediction_ML"
 ---
 
-I trained Naive Bayes and decision tree models for this machine learning assignment. Before training, I filled missing age and embarkation values and converted categorical features into numeric inputs.
+I trained Naive Bayes and decision tree models for this assignment. I filled missing ages and embarkation values, then converted categorical features to numeric inputs.
 
-Both models use the same training and test split. I compared their accuracy, confusion matrices, and classification reports.
+Both models share a training and test split. I compared accuracy, confusion matrices and classification reports.

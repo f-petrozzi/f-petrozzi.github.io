@@ -1,6 +1,6 @@
 ---
 title: "Tixly App Design"
-summary: "Interface designs and system architecture for a mobile ticketing app."
+summary: "Mobile ticketing interfaces and system architecture."
 category: "Earlier work"
 tools: ["Figma", "UML", "Systems Architecture", "UX / UI"]
 order: 31
@@ -10,6 +10,6 @@ visual: "code"
 repo: "https://github.com/f-petrozzi/Tixly_App_Design"
 ---
 
-Our group designed Tixly for finding events, buying tickets, and storing them on a phone. The project covered requirements, interface prototypes, and a proposed system architecture.
+Our group designed Tixly to find events, buy tickets and store them on a phone.
 
-We created Figma designs from low to high fidelity, mapped the purchase process, and defined the services and storage behind it. Ticket validation through QR codes was part of the design.
+We defined requirements, created low- and high-fidelity Figma prototypes and mapped purchases. The proposed architecture covers services, storage and QR ticket validation.

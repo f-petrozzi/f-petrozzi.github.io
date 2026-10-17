@@ -122,7 +122,7 @@ test("DNS rules distinguish trusted browsing, IoT updates and trackers", () => {
   assert.equal(filterQuery(queries[3], defaultRules).reason, "Tracker rule");
   assert.equal(
     filterQuery(queries[3], { blockTrackers: false, restrictIot: true }).reason,
-    "IoT: updates only",
+    "IoT updates only",
   );
   assert.equal(
     filterQuery(queries[4], defaultRules).reason,

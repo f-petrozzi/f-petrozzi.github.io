@@ -32,7 +32,7 @@ const pct = (n: number) => `${(100 * n).toFixed(1)}%`;
           ><tbody data-likelihoods></tbody>
         </table>
       </div><p class="muted">
-        Posterior ∝ prior × feature likelihoods; Laplace smoothing α = 1.
+        Posterior ∝ prior × feature likelihoods. Laplace smoothing α = 1.
       </p>
     </article>
     <article class="card">
@@ -69,8 +69,8 @@ const pct = (n: number) => `${(100 * n).toFixed(1)}%`;
   </form>
   <button type="button" data-reset>Reset</button>
   <p class="note">
-    Both models train locally on 1,000 invented passengers with the same
-    held-out split; these are not historical estimates.
+    Both models train locally on 1,000 invented passengers with one held-out
+    split. Results are not historical estimates.
   </p>
 </section>
 <script>
