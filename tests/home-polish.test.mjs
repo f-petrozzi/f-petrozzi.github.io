@@ -115,6 +115,15 @@ test("hero facts align with the lead and activity belongs to the intro flow", ()
   );
 });
 
+test("hero subline balances its original copy across lines", () => {
+  const [subline] = find(home, (node) => hasClass(node, "hero-sub"));
+  assert.equal(
+    text(subline).trim().replace(/\s+/g, " "),
+    "I explore how AI works and what I can build with it.",
+  );
+  assert.equal(declarations(".hero-sub")["text-wrap"], "balance");
+});
+
 test("every timeline logo is real vector artwork at an untransformed integer size", () => {
   const tiles = find(home, (node) => hasClass(node, "org-icon"));
   assert.equal(tiles.length, 8);

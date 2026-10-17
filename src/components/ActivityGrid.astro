@@ -159,15 +159,16 @@ const label = (day: { date: string; count: number }) =>
     }
     .activity-chart {
       display: grid;
-      grid-template-columns: repeat(var(--activity-weeks), minmax(0, 11px));
+      grid-template-columns: repeat(var(--activity-weeks), 11px);
       gap: 3px;
     }
     .activity-week {
       display: grid;
-      grid-template-rows: 15px repeat(7, auto);
+      /* Month labels may overflow, but must never widen the cell column. */
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: 15px repeat(7, 11px);
       gap: 3px;
       min-width: 0;
-      transform-origin: center bottom;
     }
     .activity-month {
       color: inherit;
@@ -235,20 +236,31 @@ const label = (day: { date: string; count: number }) =>
       white-space: nowrap;
     }
     @media (max-width: 767px) {
-      --activity-weeks: 26;
-
       .activity-band {
         max-width: 361px;
+      }
+    }
+    @container (width < 739px) {
+      .activity-chart {
+        --activity-weeks: 26;
       }
       .activity-week:nth-child(-n + 27) {
         display: none;
       }
     }
-    @container (max-width: 334px) {
+    @container (width < 361px) {
       .activity-chart {
         --activity-weeks: 18;
       }
       .activity-week:nth-child(-n + 35) {
+        display: none;
+      }
+    }
+    @container (width < 249px) {
+      .activity-chart {
+        --activity-weeks: 17;
+      }
+      .activity-week:nth-child(-n + 36) {
         display: none;
       }
     }

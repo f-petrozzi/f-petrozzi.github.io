@@ -76,8 +76,8 @@ document.querySelectorAll<HTMLElement>("[data-activity]").forEach((root) => {
       animations = columns.map((column, index) =>
         column.animate(
           [
-            { opacity: 0, transform: "translateY(3px) scale(0.96)" },
-            { opacity: 1, transform: "translateY(0) scale(1)" },
+            { opacity: 0, transform: "translateY(3px)" },
+            { opacity: 1, transform: "translateY(0)" },
           ],
           {
             duration: 180,
