@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
+import postcss from "postcss";
 import { featured } from "../src/data/featured.ts";
 
 const html = readFileSync("dist/index.html", "utf8");
@@ -36,7 +37,11 @@ test("featured screenshots are real WebPs within budget, with accurate dimension
   ];
   assert.deepEqual(
     cards.map(([, id]) => id),
-    ["orbit", "homelab", "nume", "proterra", "nest"],
+    ["orbit", "homelab", "proterra", "nest"],
+  );
+  assert.deepEqual(
+    featured.map(({ id }) => id),
+    cards.map(([, id]) => id),
   );
   for (const [, id, card] of cards) {
     assert.ok(
@@ -52,8 +57,9 @@ test("featured screenshots are real WebPs within budget, with accurate dimension
     assert.equal(metadata.format, "webp");
     assert.equal(width, metadata.width, `${id} width`);
     assert.equal(height, metadata.height, `${id} height`);
-    assert.ok(width >= 1120, `${id} needs a 2x-ready image`);
-    const budget = id === "orbit" ? 140000 : 120000;
+    assert.equal(width, 1120, `${id} needs a 2x-ready image`);
+    assert.equal(height, 630, `${id} needs the shared 16:9 frame`);
+    const budget = 120000;
     assert.ok(statSync(file).size <= budget, `${id} exceeds ${budget} bytes`);
     assert.match(tag, /alt="[^"]+"/);
     assert.ok(tag.includes(`loading="${id === "orbit" ? "eager" : "lazy"}"`));
@@ -61,37 +67,51 @@ test("featured screenshots are real WebPs within budget, with accurate dimension
       tag.includes(`fetchpriority="${id === "orbit" ? "high" : "auto"}"`),
     );
   }
-  assert.equal(featured.find((item) => item.id === "nest").image.height, 630);
 });
 
-test("Orbit leads a compact two-column card with existing controls and an uncropped frame", () => {
+test("four equal featured cards share a responsive two-column grid without a lead card", () => {
+  const styles = css(html);
+  assert.doesNotMatch(html + styles, /work-card-lead/);
+  const rules = [];
+  postcss.parse(styles).walkRules((rule) => rules.push(rule));
+  const value = (rule, property) =>
+    rule.nodes.find(({ prop }) => prop === property)?.value;
+  const base = (selector) =>
+    rules.find(
+      (rule) => rule.selector === selector && rule.parent.type === "root",
+    );
+  assert.equal(value(base(".bento"), "display"), "grid");
+  assert.equal(
+    value(base(".bento"), "grid-template-columns"),
+    "repeat(2,minmax(0,1fr))",
+  );
+  const mobile = rules.find(
+    (rule) =>
+      rule.selector === ".bento" &&
+      rule.parent.name === "media" &&
+      /\((?:width<=767px|max-width:767px)\)/.test(rule.parent.params),
+  );
+  assert.ok(mobile, "single-column mobile layout is missing");
+  assert.equal(value(mobile, "grid-template-columns"), "minmax(0,1fr)");
+  assert.equal(value(base(".work-card"), "display"), "flex");
+  assert.equal(value(base(".work-card"), "flex-direction"), "column");
+  assert.equal(value(base(".work-stage"), "aspect-ratio"), "16/9");
+  for (const [card] of html.matchAll(
+    /<article\b[^>]*data-project="[^"]+"[^>]*>/g,
+  ))
+    assert.match(card, /class="work-card"/);
+});
+
+test("Orbit stays first with existing controls and NüMe remains in the project list only", () => {
   const card = html.match(
     /<article\b[^>]*data-project="orbit"[^>]*>([\s\S]*?)<\/article>/,
   );
-  assert.match(card[0], /class="work-card work-card-lead"/);
+  assert.match(card[0], /class="work-card"/);
   assert.match(card[1], /id="work-orbit"/);
   assert.equal((card[1].match(/<img\b/g) || []).length, 1);
   assert.match(card[1], /aria-controls="info-orbit"/);
   assert.match(card[1], /href="\/projects\/orbit\/"/);
   assert.match(card[1], /Read project/);
-  assert.match(css(html), /\.work-card-lead\s*\{grid-column:1\/-1\}/);
-  const stage = css(html).match(
-    /\.work-card-lead \.work-stage\s*\{([^}]+)\}/,
-  )[1];
-  for (const declaration of [
-    "aspect-ratio:1120/650",
-    "max-height:340px",
-    "border-radius:0",
-  ])
-    assert.ok(stage.includes(declaration), declaration);
-  assert.match(
-    css(html),
-    /grid-template-columns:minmax\(0,\.8fr\) minmax\(0,1\.2fr\)/,
-  );
-  assert.match(
-    css(html),
-    /\.work-card-lead \.work-media img\{object-fit:contain\}/,
-  );
   const orbit = featured.find((item) => item.id === "orbit");
   assert.ok(orbit.summary.length < 45);
   const info = [orbit.contribution, orbit.hook, ...orbit.how].join(" ");
@@ -101,15 +121,26 @@ test("Orbit leads a compact two-column card with existing controls and an uncrop
     readFileSync("src/content/projects/orbit.md", "utf8"),
     /^featured: true$/m,
   );
-  const row = [
+  assert.match(
+    readFileSync("src/content/projects/nume.md", "utf8"),
+    /^featured: false$/m,
+  );
+  const rows = [
     ...html.matchAll(
       /<article\b[^>]*class="project-row"[^>]*>([\s\S]*?)<\/article>/g,
     ),
-  ].find(([, body]) => body.includes('href="/projects/orbit/"'));
-  assert.match(row[0], /data-facets="ai web"/);
+  ];
+  for (const id of ["orbit", "nume"]) {
+    const row = rows.find(([, body]) =>
+      body.includes(`href="/projects/${id}/"`),
+    );
+    assert.ok(row, `${id} remains in the project list`);
+    assert.match(row[0], /data-facets="ai web"/);
+  }
+  assert.ok(!html.includes('id="work-nume"'));
 });
 
-test("featured crops remove the page background and the NüMe sidebar edge", async () => {
+test("Orbit's Overview crop has transparent corners and no dark page edge", async () => {
   const { default: sharp } = await import("sharp");
   const orbit = await sharp("public/assets/shots/orbit-featured.webp")
     .ensureAlpha()
@@ -124,33 +155,24 @@ test("featured crops remove the page background and the NüMe sidebar edge", asy
   for (const [x, y] of [
     [0, 0],
     [1119, 0],
-    [0, 649],
-    [1119, 649],
+    [0, 629],
+    [1119, 629],
   ])
     assert.equal(
       pixel(x, y)[3],
       0,
       `Orbit corner ${x},${y} retains page background`,
     );
-  assert.equal(pixel(560, 325)[3], 255);
-  for (let y = 0; y < 650; y++)
+  assert.equal(pixel(560, 315)[3], 255);
+  for (let y = 0; y < 630; y++)
     for (let x = 0; x < 1120; x++) {
-      if (x > 1 && x < 1118 && y > 1 && y < 648) continue;
+      if (x > 1 && x < 1118 && y > 1 && y < 628) continue;
       const [r, g, b, alpha] = pixel(x, y);
       assert.ok(
         alpha === 0 || r + g + b > 500,
         `Orbit retains dark page pixel ${x},${y}`,
       );
     }
-  const edge = await sharp("public/assets/shots/nume-featured.webp")
-    .extract({ left: 0, top: 0, width: 3, height: 630 })
-    .removeAlpha()
-    .raw()
-    .toBuffer();
-  assert.ok(
-    [...edge].every((value) => value > 235),
-    "NüMe retains a sidebar or seam on its left edge",
-  );
 });
 
 test("gallery keeps its inline fixed palette out of pages that do not render it", () => {
@@ -195,7 +217,7 @@ test("featured demo CSS stays on each project's own project and demo pages", () 
 });
 
 test("info animation keeps card dimensions fixed and removes cursor proximity", () => {
-  assert.equal((html.match(/<circle cx="22" cy="22" r="20"/g) || []).length, 5);
+  assert.equal((html.match(/<circle cx="22" cy="22" r="20"/g) || []).length, 4);
   assert.ok(!html.includes("info-arm"));
   const home = readFileSync("src/scripts/home.ts", "utf8");
   const panel = home.slice(home.indexOf("// The information surface"));

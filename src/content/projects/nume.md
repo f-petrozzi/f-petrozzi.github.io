@@ -14,7 +14,7 @@ tools:
     "Cloudflare",
   ]
 order: 0
-featured: true
+featured: false
 status: "Product demo"
 visual: "nume"
 demo: "https://nume-demo.com"

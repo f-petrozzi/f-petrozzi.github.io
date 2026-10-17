@@ -5,8 +5,8 @@ export const featured = [
     image: {
       src: "/assets/shots/orbit-featured.webp",
       width: 1120,
-      height: 650,
-      alt: "Orbit chat workspace with three connected agent accounts, delegated sessions and a running app preview, using invented data.",
+      height: 630,
+      alt: "Orbit Overview with today's tasks, agent activity, a research notebook and monthly finances, using invented data.",
     },
     contribution: "Built with Python and SQLite.",
     hook: "Hosted on my homelab. Available across devices.",
@@ -31,23 +31,6 @@ export const featured = [
       "Development tools and repositories run alongside containerized applications.",
       "AdGuard Home handles DNS filtering; trusted and IoT devices have separate access rules.",
       "Prometheus collects host and container metrics; Grafana brings them together in dashboards and alerts.",
-    ],
-  },
-  {
-    id: "nume",
-    summary: "Wellness recommendations from wearable data and check-ins.",
-    image: {
-      src: "/assets/shots/nume-featured.webp",
-      width: 1120,
-      height: 630,
-      alt: "NüMe dashboard showing a daily support plan, recovery signals and risk drivers with sample data.",
-    },
-    contribution: "I developed the frontend and backend.",
-    hook: "Each recommendation is stored with its reasons, alternatives, and the profile used.",
-    how: [
-      "Garmin data and manual check-ins form a profile for each run.",
-      "Scoring rules rank recipe, activity, and wellness options from that profile.",
-      "The original app records accept/skip responses but does not use them to learn from outcomes.",
     ],
   },
   {

@@ -274,10 +274,7 @@ const education = [
             featured.map(
               ({ id, project, summary, hook, how, contribution, image }) => (
                 <article
-                  class:list={[
-                    "work-card",
-                    { "work-card-lead": id === "orbit" },
-                  ]}
+                  class="work-card"
                   aria-labelledby={`work-${id}`}
                   data-project={id}
                 >
