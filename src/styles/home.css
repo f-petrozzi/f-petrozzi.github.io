@@ -165,7 +165,7 @@ section {
 }
 .hero-sub {
   margin-top: 10px;
-  max-width: 34ch;
+  max-width: 52ch;
   text-wrap: balance;
   font-size: clamp(18px, 1.6vw, 20px);
   line-height: 1.5;

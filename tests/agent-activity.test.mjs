@@ -256,7 +256,7 @@ test("activity CSS stays on the homepage and never reaches project or demo pages
   }
 });
 
-test("the card-free grid keeps 11px squares and 3px gaps from 320 to 1440px", () => {
+test("the card-free grid fills its row with square cells and 3px gaps from 320 to 1440px", () => {
   const source = readFileSync("src/components/ActivityGrid.astro", "utf8");
   const [, css] = source.match(/<style is:inline>([\s\S]*?)<\/style>/);
   const parsed = postcss.parse(css);
@@ -268,26 +268,28 @@ test("the card-free grid keeps 11px squares and 3px gaps from 320 to 1440px", ()
       .flatMap((rule) => rule.nodes.filter((node) => node.type === "decl"));
   const base = (selector, prop) =>
     declarations(selector).find((d) => d.prop === prop)?.value;
+  // Columns share the band width, so cells grow with the layout instead of
+  // leaving the chart condensed at one side.
   assert.equal(
     base(".activity-chart", "grid-template-columns"),
-    "repeat(var(--activity-weeks), 11px)",
+    "repeat(var(--activity-weeks), minmax(0, 1fr))",
   );
   assert.equal(base(".activity-chart", "gap"), "3px");
   // An implicit auto column takes its minimum width from the nowrap month
-  // label. Its cells then overflow the 11px outer track and cover the gaps.
+  // label. Its cells then overflow the outer track and cover the gaps.
   assert.equal(
     base(".activity-week", "grid-template-columns"),
     "minmax(0, 1fr)",
   );
   assert.equal(
     base(".activity-week", "grid-template-rows"),
-    "15px repeat(7, 11px)",
+    "16px repeat(7, auto)",
   );
   assert.equal(base(".activity-week", "gap"), "3px");
   assert.equal(base(".activity-week", "transform-origin"), undefined);
   assert.equal(base(".activity-band", "container-type"), "inline-size");
   assert.equal(base(".activity-band", "width"), "100%");
-  assert.equal(base(".activity-band", "max-width"), "739px");
+  assert.equal(base(".activity-band", "max-width"), undefined);
   assert.equal(base(".activity-grid", "--activity-weeks"), "53");
   assert.doesNotMatch(css, /overflow-x|min-width: (?!0)|scrollbar/);
   assert.equal(base(".activity-cell", "width"), "100%");
@@ -299,23 +301,24 @@ test("the card-free grid keeps 11px squares and 3px gaps from 320 to 1440px", ()
         rule.selector === ".activity-chart" && rule.parent.name === "container",
     )
     .map((rule) => ({
-      requiredWidth: Number(rule.parent.params.match(/width < (\d+)px/)[1]),
+      params: rule.parent.params,
       weeks: Number(
         rule.nodes.find((d) => d.prop === "--activity-weeks").value,
       ),
     }));
-  assert.equal(crops.length, 3);
-  let previousWeeks = 53;
-  for (const { requiredWidth, weeks } of crops) {
-    assert.equal(requiredWidth, previousWeeks * 14 - 3);
+  assert.deepEqual(crops, [
+    { params: "(width < 720px)", weeks: 36 },
+    { params: "(width < 480px)", weeks: 26 },
+    { params: "(width < 340px)", weeks: 18 },
+  ]);
+  for (const { params, weeks } of crops) {
     const hidden = rules.find(
       (rule) =>
         rule.selector === `.activity-week:nth-child(-n + ${53 - weeks})`,
     );
     assert.equal(hidden.parent.name, "container");
-    assert.equal(hidden.parent.params, `(width < ${requiredWidth}px)`);
+    assert.equal(hidden.parent.params, params);
     assert.equal(hidden.nodes.find((d) => d.prop === "display").value, "none");
-    previousWeeks = weeks;
   }
   for (const selector of [
     ".activity-grid",
@@ -329,21 +332,29 @@ test("the card-free grid keeps 11px squares and 3px gaps from 320 to 1440px", ()
       `${selector} has card chrome`,
     );
   }
-  // Check the track constraints at every CSS pixel. This is a geometry check,
-  // not a substitute for the owner's rendered visual review.
+  // Cells share the band width, so check they stay readable at every CSS
+  // pixel. This is a geometry check, not a substitute for a rendered review.
+  const limits = crops.map(({ params, weeks }) => ({
+    below: Number(params.match(/width < (\d+)px/)[1]),
+    weeks,
+  }));
   for (let viewport = 320; viewport <= 1440; viewport++) {
     const phone = viewport <= 767;
     const content =
       Math.min(1240, viewport) -
       (viewport <= 850 ? 56 : 60) -
       (phone ? 22 : 60);
-    const width = Math.min(content, phone ? 361 : 739);
-    const weeks = crops.reduce(
-      (count, crop) => (width < crop.requiredWidth ? crop.weeks : count),
+    // Desktop places the summary in a 150-200px column with a 40px gap.
+    const band = phone
+      ? content
+      : content - Math.min(200, Math.max(150, content * 0.2)) - 40;
+    const weeks = limits.reduce(
+      (count, limit) => (band < limit.below ? limit.weeks : count),
       53,
     );
-    assert.ok(weeks * 11 + (weeks - 1) * 3 <= width, `${viewport}px overflows`);
-    assert.equal(15 + 7 * 11 + 7 * 3, 113);
+    const cell = (band - (weeks - 1) * 3) / weeks;
+    assert.ok(cell >= 8, `${viewport}px cells shrink below 8px`);
+    assert.ok(cell <= 24, `${viewport}px cells grow beyond 24px`);
   }
 });
 

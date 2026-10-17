@@ -51,7 +51,10 @@ const label = (day: { date: string; count: number }) =>
       <header>
         <h2 id="activity-title">Building with agents</h2>
         <p id="activity-summary">
-          {`${prompts(grid.yearTotal)} across ${numbers.format(grid.yearActiveDays)} ${grid.yearActiveDays === 1 ? "day" : "days"} this year`}
+          <strong>{numbers.format(grid.yearTotal)}</strong>
+          <span>
+            {`${grid.yearTotal === 1 ? "prompt" : "prompts"} across ${numbers.format(grid.yearActiveDays)} ${grid.yearActiveDays === 1 ? "day" : "days"} this year`}
+          </span>
         </p>
       </header>
       <div class="activity-band">
@@ -127,13 +130,17 @@ const label = (day: { date: string; count: number }) =>
     --activity-tip-bg: #172333;
     --activity-tip-ink: #eef3f8;
     --activity-weeks: 53;
+    display: grid;
+    grid-template-columns: minmax(150px, 200px) minmax(0, 1fr);
+    column-gap: 40px;
+    align-items: end;
     min-width: 0;
-    margin-top: 32px;
+    margin-top: 56px;
     font-size: 13px;
     font-variant-numeric: tabular-nums;
 
     & header {
-      margin-bottom: 12px;
+      padding-bottom: 2px;
     }
     & h2 {
       margin: 0 0 2px;
@@ -146,27 +153,38 @@ const label = (day: { date: string; count: number }) =>
     & p {
       margin: 0;
       color: inherit;
-      opacity: 0.7;
       font-size: 13px;
       line-height: 1.5;
       text-wrap: pretty;
     }
+    & p strong {
+      display: block;
+      margin: 6px 0 2px;
+      font-size: clamp(28px, 2.6vw, 36px);
+      font-weight: 500;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: inherit;
+    }
+    & p span {
+      opacity: 0.7;
+    }
     .activity-band {
       position: relative;
       width: 100%;
-      max-width: 739px;
+      min-width: 0;
       container-type: inline-size;
     }
     .activity-chart {
       display: grid;
-      grid-template-columns: repeat(var(--activity-weeks), 11px);
+      grid-template-columns: repeat(var(--activity-weeks), minmax(0, 1fr));
       gap: 3px;
     }
     .activity-week {
       display: grid;
       /* Month labels may overflow, but must never widen the cell column. */
       grid-template-columns: minmax(0, 1fr);
-      grid-template-rows: 15px repeat(7, 11px);
+      grid-template-rows: 16px repeat(7, auto);
       gap: 3px;
       min-width: 0;
     }
@@ -181,7 +199,7 @@ const label = (day: { date: string; count: number }) =>
       display: block;
       width: 100%;
       aspect-ratio: 1;
-      border-radius: 2px;
+      border-radius: 3px;
       background: var(--activity-0);
     }
     [data-level="1"] {
@@ -236,11 +254,19 @@ const label = (day: { date: string; count: number }) =>
       white-space: nowrap;
     }
     @media (max-width: 767px) {
-      .activity-band {
-        max-width: 361px;
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: 14px;
+      margin-top: 40px;
+    }
+    @container (width < 720px) {
+      .activity-chart {
+        --activity-weeks: 36;
+      }
+      .activity-week:nth-child(-n + 17) {
+        display: none;
       }
     }
-    @container (width < 739px) {
+    @container (width < 480px) {
       .activity-chart {
         --activity-weeks: 26;
       }
@@ -248,19 +274,11 @@ const label = (day: { date: string; count: number }) =>
         display: none;
       }
     }
-    @container (width < 361px) {
+    @container (width < 340px) {
       .activity-chart {
         --activity-weeks: 18;
       }
       .activity-week:nth-child(-n + 35) {
-        display: none;
-      }
-    }
-    @container (width < 249px) {
-      .activity-chart {
-        --activity-weeks: 17;
-      }
-      .activity-week:nth-child(-n + 36) {
         display: none;
       }
     }
