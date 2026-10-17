@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { parse } from "parse5";
+import postcss from "postcss";
 import {
   chatAccounts,
   chatSessions,
@@ -10,6 +11,8 @@ import {
   changeChat,
   jobStatus,
   previewReply,
+  overviewTasks,
+  orchestratorEvents,
 } from "../public/projects-orbit-app/chat-state.js";
 import {
   accounts,
@@ -280,7 +283,7 @@ test("phone continuation and desktop feedback update the same preview state and 
   );
 });
 
-test("static replica has a valid document, connected account controls and retained reader panels", async () => {
+test("static replica opens Overview and keeps the retained readers and connection marker", async () => {
   const html = await readFile(
     new URL("../public/projects-orbit-app/index.html", import.meta.url),
     "utf8",
@@ -305,13 +308,35 @@ test("static replica has a valid document, connected account controls and retain
     assert.ok(ids.includes(attr(reader, "aria-labelledby")));
   assert.deepEqual(
     nodes.map((node) => attr(node, "data-account")).filter(Boolean),
-    ["A", "B", "C"],
+    [],
+  );
+  const mainNav = nodes.find((node) => attr(node, "class") === "main-nav");
+  assert.equal(
+    mainNav.childNodes
+      .find((node) => node.tagName === "button")
+      .attrs.find((a) => a.name === "data-view").value,
+    "overview",
+  );
+  assert.equal(
+    nodes.filter((node) => attr(node, "data-account-picker") !== undefined)
+      .length,
+    1,
+  );
+  assert.ok(
+    nodes.some((node) => attr(node, "data-session-connection") !== undefined),
+  );
+  assert.ok(
+    nodes.some(
+      (node) =>
+        attr(node, "data-panel") === "overview" &&
+        attr(node, "hidden") === undefined,
+    ),
   );
   assert.ok(
     nodes.some(
       (node) =>
         attr(node, "data-panel") === "chat" &&
-        attr(node, "hidden") === undefined,
+        attr(node, "hidden") !== undefined,
     ),
   );
   assert.ok(
@@ -330,6 +355,168 @@ test("static replica has a valid document, connected account controls and retain
     .map((node) => node.value)
     .join("");
   assert.doesNotMatch(visibleCopy, /Style guide|[·—–]/);
+});
+
+test("Overview selects at most three unfinished tasks without changing the plan", () => {
+  const tasks = [
+    { id: 1, day: "tomorrow", done: false },
+    { id: 2, day: "today", done: true },
+    { id: 3, day: "today", done: false },
+    { id: 4, day: "earlier", done: false },
+    { id: 5, day: "unscheduled", done: false },
+    { id: 6, day: "today", done: false },
+    { id: 7, day: "today", done: false },
+  ];
+  const before = structuredClone(tasks);
+  assert.deepEqual(
+    overviewTasks(tasks).map((task) => task.id),
+    [4, 3, 6],
+  );
+  assert.deepEqual(
+    overviewTasks(
+      tasks.map((task) => ({ ...task, done: task.id === 4 || task.done })),
+    ).map((task) => task.id),
+    [3, 6, 7],
+  );
+  assert.deepEqual(
+    overviewTasks(tasks.map((task) => ({ ...task, done: true }))),
+    [],
+  );
+  assert.deepEqual(overviewTasks([]), []);
+  assert.deepEqual(tasks, before);
+});
+
+test("worker results return to the orchestrator only after that worker completes", () => {
+  for (const phase of [0, 1, 2, 3]) {
+    const events = orchestratorEvents(phase);
+    assert.equal(events[0].speaker, "You");
+    assert.match(events[1].text, /coordinate two workers/);
+    for (const [index, job] of delegatedJobs.entries()) {
+      const returned = events.find((event) => event.speaker === job.name);
+      assert.equal(Boolean(returned), jobStatus(phase, index) === "Completed");
+      if (returned) {
+        assert.match(returned.text, /Returning.*Orbit/);
+        assert.equal(chatSessions[job.session].account, job.account);
+        assert.equal(chatSessions[job.session].title, job.name);
+        const dispatch = events.findIndex(
+          (event) => event.id === `dispatch-${job.name.toLowerCase()}`,
+        );
+        assert.ok(dispatch > 1 && dispatch < events.indexOf(returned));
+      }
+    }
+    assert.equal(
+      events.some((event) => event.id === "complete"),
+      phase === 3,
+    );
+  }
+});
+
+test("Overview opens the existing tools and orchestration stays in an announced, bounded conversation", async () => {
+  const html = await readFile(
+    new URL("../public/projects-orbit-app/index.html", import.meta.url),
+    "utf8",
+  );
+  const nodes = [];
+  function walk(node) {
+    nodes.push(node);
+    for (const child of node.childNodes || []) walk(child);
+  }
+  walk(parse(html));
+  const attr = (node, name) => node.attrs?.find((a) => a.name === name)?.value;
+  const overview = nodes.find((node) => attr(node, "id") === "view-overview");
+  const controls = [];
+  function buttons(node) {
+    if (node.tagName === "button") controls.push(node);
+    for (const child of node.childNodes || []) buttons(child);
+  }
+  buttons(overview);
+  assert.ok(controls.some((node) => attr(node, "data-view") === "chat"));
+  assert.ok(
+    controls.some((node) => attr(node, "data-quick-add") !== undefined),
+  );
+  assert.ok(
+    controls.some((node) => attr(node, "data-overview-notebook") !== undefined),
+  );
+  assert.deepEqual(
+    controls.map((node) => attr(node, "data-overview-worker")).filter(Boolean),
+    ["0", "1"],
+  );
+  assert.deepEqual(
+    controls.map((node) => attr(node, "data-overview-finance")).filter(Boolean),
+    ["spending", "wishlist"],
+  );
+  const thread = nodes.find(
+    (node) => attr(node, "data-orchestrator-transcript") !== undefined,
+  );
+  assert.equal(attr(thread, "role"), "log");
+  assert.equal(attr(thread, "aria-live"), "polite");
+  assert.match(attr(thread.parentNode, "class"), /replica-orchestrator-scroll/);
+  const overviewSpent = controls.find(
+    (node) => attr(node, "class") === "ov-spent",
+  );
+  const financeSpent = nodes.find(
+    (node) => attr(node, "class") === "replica-spent",
+  );
+  const text = (node) =>
+    node.nodeName === "#text"
+      ? node.value
+      : (node.childNodes || []).map(text).join("");
+  assert.ok(text(overviewSpent).includes(text(financeSpent).trim()));
+  assert.equal(
+    nodes.some((node) => /\bcx-account\b/.test(attr(node, "class") || "")),
+    false,
+  );
+});
+
+test("all replica CSS stays inside one root with keyboard-only button and link focus", async () => {
+  const css = await readFile(
+    new URL("../public/projects-orbit-app/orbit.css", import.meta.url),
+    "utf8",
+  );
+  const ast = postcss.parse(css);
+  assert.deepEqual(
+    ast.nodes
+      .filter((node) => node.type !== "comment")
+      .map((node) => node.selector),
+    [".demo-orbit-app"],
+  );
+  const root = ast.nodes.find((node) => node.type === "rule");
+  const focus = root.nodes.find((node) => node.selector === ":focus");
+  assert.ok(
+    focus.nodes.some(
+      (node) =>
+        node.prop === "outline" && node.value === "none" && node.important,
+    ),
+  );
+  const keyboard = root.nodes.find(
+    (node) => node.selector === ":is(button, a):focus-visible",
+  );
+  assert.ok(
+    keyboard.nodes.some(
+      (node) =>
+        node.prop === "outline" && node.important && node.value !== "none",
+    ),
+  );
+  assert.doesNotMatch(css, /:focus-within|:has\([^)]*:focus-visible/);
+  for (const selector of [".ov-scroll", ".replica-orchestrator-scroll"]) {
+    const region = root.nodes.find((node) => node.selector === selector);
+    assert.ok(
+      region.nodes.some(
+        (node) => node.prop === "overflow" && node.value === "auto",
+      ),
+    );
+  }
+});
+
+test("Orbit summary and body use concise plain sentences without colons or semicolons", async () => {
+  const content = await readFile(
+    new URL("../src/content/projects/orbit.md", import.meta.url),
+    "utf8",
+  );
+  const [, frontmatter, body] = content.split("---");
+  const summary = frontmatter.match(/^summary: "([^"]*)"/m)[1];
+  assert.doesNotMatch(summary + body, /[:;]/);
+  assert.ok(body.trim().split(/\s+/).length < 90);
 });
 
 test("replica stylesheet stays inline, fixed and mirrored without network, storage or idle work", async () => {

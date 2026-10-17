@@ -600,11 +600,6 @@
     outline: none;
     box-shadow: none;
   }
-  dialog input:focus,
-  dialog textarea:focus {
-    border-color: #8498a1;
-    background: #fff;
-  }
   @media (max-width: 760px) {
     nav button {
       min-height: 57px;
@@ -2480,8 +2475,7 @@
     background: var(--glass);
     box-shadow: var(--shadow);
   }
-  .lib-card:hover,
-  .lib-card:focus-within {
+  .lib-card:hover {
     background: #ffffff8a;
   }
   .lib-card-top {
@@ -2529,10 +2523,6 @@
   }
   .lib-card-open:focus-visible {
     outline: none;
-  }
-  .lib-card:has(.lib-card-open:focus-visible) {
-    outline: 2px solid var(--blue);
-    outline-offset: 2px;
   }
   .lib-snippet {
     display: -webkit-box;
@@ -3681,12 +3671,6 @@
       0 14px 34px -12px #344b5952,
       inset 0 1px 0 #fff;
   }
-  .tk-capture-line:focus-within {
-    box-shadow:
-      0 14px 34px -12px #344b5966,
-      0 0 0 3px #57799418,
-      inset 0 1px 0 #fff;
-  }
   .tk-capture textarea {
     flex: 1;
     min-width: 0;
@@ -3918,10 +3902,6 @@
   }
   .tk .tk-filters button:focus-visible,
   .tk .tk-week-day:focus-visible {
-    outline-offset: -2px;
-  }
-  .tk-week-pick:has(input:focus-visible) {
-    outline: 2px solid #577994;
     outline-offset: -2px;
   }
   /* Adapted directly from Orbit preview/project-preview.css; unused selectors and live filters/motion removed. */
@@ -4755,7 +4735,7 @@
     border-bottom: 1px solid #3b4a4015;
   }
   .reading-app > header strong {
-    font-family: Georgia, serif;
+    font-family: "Bricolage Grotesque", "Instrument Sans", sans-serif;
     font-size: 16px;
     font-weight: 500;
   }
@@ -4772,7 +4752,7 @@
     color: #7c857c;
   }
   .reading-app h2 {
-    font-family: Georgia, serif;
+    font-family: "Bricolage Grotesque", "Instrument Sans", sans-serif;
     font-size: clamp(26px, 2.8vw, 36px);
     line-height: 1.12;
     font-weight: 400;
@@ -4852,7 +4832,7 @@
     letter-spacing: 0.9px;
   }
   .book-cover strong {
-    font-family: Georgia, serif;
+    font-family: "Bricolage Grotesque", "Instrument Sans", sans-serif;
     font-size: 18px;
     font-weight: 400;
     line-height: 1.1;
@@ -6017,54 +5997,6 @@
       margin-top: 6px;
     }
   }
-  /* Static versions of Orbit's two arc gauges per account; no polling or idle motion. */
-  .replica-accounts .cx-account {
-    width: 212px;
-    min-width: 212px;
-  }
-  .replica-accounts .cx-lim-value,
-  .replica-accounts .cx-lim-label {
-    position: absolute;
-    transform: translate(-50%, -50%);
-  }
-  .replica-accounts .cx-lim-value {
-    font-size: 12px;
-  }
-  .replica-accounts .cx-lim-label {
-    font-size: 9px;
-  }
-  @media (max-width: 1000px) and (min-width: 761px) {
-    .replica-accounts .cx-account:last-child {
-      display: none;
-    }
-  }
-  @media (max-width: 760px) {
-    .replica-accounts {
-      width: 100%;
-      gap: 6px;
-    }
-    .replica-accounts .cx-account {
-      flex: 1;
-      width: auto;
-      min-width: 0;
-      height: 60px;
-      padding: 0 9px;
-      border-radius: 14px;
-    }
-    .replica-accounts .cx-account-id {
-      height: 58px;
-    }
-    .replica-accounts .cx-account-id b {
-      font-size: 12px;
-    }
-    .replica-accounts .cx-account-id > span {
-      font-size: 10px;
-    }
-    .replica-accounts .cx-tile-art,
-    .replica-accounts .cx-tile-space {
-      display: none;
-    }
-  }
   @media (max-width: 760px) {
     .cx-pick select {
       font-size: 16px;
@@ -6745,5 +6677,396 @@
   }
   &.chat-focus #view-chat .cx-frame {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Overview reuses Orbit's Cloud surfaces, inset rows and quiet entry points. */
+  .ov-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: 2px 3px 24px;
+  }
+  .ov-head {
+    align-items: center;
+    margin-bottom: 32px;
+  }
+  .ov-head h1 {
+    margin-bottom: 4px;
+  }
+  .ov-head time,
+  .ov-status {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .ov-head > button {
+    min-height: 44px;
+    flex: none;
+  }
+  .ov-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: 32px 24px;
+    max-width: 1040px;
+  }
+  .ov-grid > section {
+    min-width: 0;
+  }
+  .ov-today,
+  .ov-work {
+    padding: 20px 24px 16px;
+    border-radius: 20px;
+  }
+  .ov-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .ov-section-head h2 {
+    font-size: 17px;
+    font-weight: 550;
+    letter-spacing: -0.35px;
+    margin: 0;
+  }
+  .ov-action {
+    min-height: 44px;
+    padding: 8px 0;
+    background: none;
+    color: var(--blue);
+    font-size: 12px;
+    border-radius: 8px;
+  }
+  .ov-tasks {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0 0;
+    display: grid;
+    gap: 8px;
+  }
+  .ov-tasks button {
+    width: 100%;
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    text-align: left;
+    border-radius: 24px;
+    background: #ffffff7a;
+    border: 1px solid #ffffffc8;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  .ov-tasks button > span:last-child {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .ov-tasks .is-earlier button {
+    background: #f5eee57a;
+  }
+  .ov-check {
+    display: block;
+    flex: none;
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--list-hue);
+    border-radius: 50%;
+  }
+  .ov-all {
+    margin: 4px 12px 0;
+  }
+  .ov-empty {
+    margin: 32px 0;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .ov-work {
+    display: flex;
+    flex-direction: column;
+  }
+  .ov-work .ov-section-head {
+    min-height: 44px;
+    flex-wrap: wrap;
+  }
+  .ov-project {
+    font-size: 13px;
+    margin: 8px 0 12px;
+    color: var(--muted);
+  }
+  .ov-worker {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 68px;
+    width: 100%;
+    background: none;
+    padding: 12px 0;
+    border-radius: 8px;
+    text-align: left;
+  }
+  .ov-worker + .ov-worker {
+    border-top: 1px solid var(--line);
+    border-radius: 0;
+  }
+  .ov-worker > span:nth-child(2) {
+    flex: 1;
+    min-width: 0;
+  }
+  .ov-worker strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 550;
+  }
+  .ov-worker small {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .ov-worker [data-job-status] {
+    font-size: 11px;
+  }
+  .ov-library,
+  .ov-money {
+    padding: 0 24px;
+  }
+  .ov-notebook {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 24px 0 8px;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border-radius: 12px;
+  }
+  .ov-notebook .lib-orb {
+    width: 56px;
+    height: 64px;
+    border-radius: 12px 20px 20px 12px;
+    flex: none;
+  }
+  .ov-notebook > span:last-child {
+    min-width: 0;
+  }
+  .ov-notebook strong {
+    display: block;
+    font-size: 18px;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+  }
+  .ov-notebook small,
+  .ov-notebook time {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .ov-spent {
+    display: grid;
+    padding: 16px 0 8px;
+    background: none;
+    text-align: left;
+    border-radius: 8px;
+  }
+  .ov-spent > span {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .ov-spent strong {
+    font-size: 30px;
+    font-weight: 500;
+    letter-spacing: -1px;
+    font-variant-numeric: tabular-nums;
+  }
+  .ov-money-pair {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    margin: 0 0 16px;
+  }
+  .ov-money-pair dt {
+    color: var(--muted);
+    font-size: 11px;
+  }
+  .ov-money-pair dd {
+    margin: 2px 0 0;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+  .ov-wish {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    min-height: 52px;
+    padding: 12px 0;
+    border-top: 1px solid var(--line);
+    width: 100%;
+    background: none;
+    text-align: left;
+    font-size: 13px;
+  }
+  .ov-wish small {
+    display: block;
+    color: var(--muted);
+    font-size: 11px;
+  }
+  .ov-wish strong {
+    display: block;
+    font-weight: 500;
+  }
+  .ov-wish > span:last-child {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .replica-usage {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    background: #ffffff70;
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+  }
+  .replica-usage-ring {
+    display: block;
+    position: relative;
+    width: 18px;
+    height: 18px;
+    flex: none;
+    border-radius: 50%;
+    background: conic-gradient(var(--accent) var(--usage), #cbd5d8 0);
+  }
+  .replica-usage-ring::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    background: var(--surface);
+    border-radius: 50%;
+  }
+  .replica-account-picker {
+    display: grid;
+    gap: 4px;
+  }
+  .replica-account-picker button {
+    display: grid;
+    gap: 6px;
+    padding: 16px;
+    text-align: left;
+    border-radius: 12px;
+    background: transparent;
+  }
+  .replica-account-picker button[aria-pressed="true"] {
+    background: #ffffffb3;
+  }
+  .replica-account-picker strong {
+    font-size: 14px;
+    font-weight: 550;
+  }
+  .replica-account-picker span {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .replica-account-picker b {
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .replica-orchestrator-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: 0 16px 16px;
+  }
+  .replica-orchestrator-scroll .cx-transcript {
+    padding: 16px 0;
+  }
+  .replica-orchestrator-scroll .replica-job-detail {
+    padding: 8px;
+    overflow: visible;
+  }
+  .replica-orchestrator-scroll .replica-job-detail .cx-who {
+    margin-top: 16px;
+  }
+  .replica-job-detail .secondary {
+    min-height: 44px;
+    font-size: 12px;
+    margin-top: 8px;
+  }
+  /* Pointer focus and text fields stay quiet. Only keyboard buttons/links have a ring. */
+  :focus {
+    outline: none !important;
+  }
+  :is(button, a):focus-visible {
+    outline: 2px solid #57799480 !important;
+    outline-offset: 2px;
+  }
+  :is(input, textarea, select):focus {
+    box-shadow: none !important;
+  }
+  @media (max-width: 1000px) {
+    .ov-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 24px;
+    }
+    .ov-today,
+    .ov-work {
+      padding: 16px 20px;
+    }
+    .ov-library,
+    .ov-money {
+      padding: 0 20px;
+    }
+  }
+  @media (max-width: 760px) {
+    .ov-head {
+      margin-bottom: 16px;
+    }
+    .ov-head h1 {
+      margin-top: 0;
+    }
+    .ov-head time {
+      font-size: 12px;
+    }
+    .ov-head > button {
+      font-size: 12px;
+      padding-inline: 12px;
+    }
+    .ov-tasks button {
+      font-size: 15px;
+    }
+    .ov-status {
+      font-size: 11px;
+    }
+    .main-nav button {
+      min-width: 0;
+      padding-inline: 4px;
+    }
+    .replica-usage {
+      margin-left: auto;
+    }
+    .replica-job-footer .cx-act {
+      min-height: 44px;
+    }
+  }
+  .replica-worker-inspector {
+    border-top: 1px solid var(--line);
+  }
+  .replica-worker-inspector > summary {
+    min-height: 44px;
+    padding: 12px 16px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .replica-worker-inspector .replica-job-detail {
+    max-height: 180px;
+    overflow: auto;
+    padding: 0 16px 16px;
   }
 }

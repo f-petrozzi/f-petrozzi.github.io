@@ -18,7 +18,7 @@
     <title>Orbit | Interactive sample</title>
     <link rel="stylesheet" href="/assets/fonts/fonts.css" />
     <!-- orbit.css is the canonical stylesheet, mirrored inline here so demo styles render only with this document. -->
-    <style>
+    <style is:inline>
       /* Orbit static portfolio replica. UI CSS adapted from Orbit preview sources.
  * Lucide v0.469.0 paths: see LUCIDE-LICENSE.txt. All displayed records are invented.
  * Canonical source, mirrored inline in index.html; no shared portfolio CSS bundle. */
@@ -622,11 +622,6 @@
         textarea:focus {
           outline: none;
           box-shadow: none;
-        }
-        dialog input:focus,
-        dialog textarea:focus {
-          border-color: #8498a1;
-          background: #fff;
         }
         @media (max-width: 760px) {
           nav button {
@@ -2507,8 +2502,7 @@
           background: var(--glass);
           box-shadow: var(--shadow);
         }
-        .lib-card:hover,
-        .lib-card:focus-within {
+        .lib-card:hover {
           background: #ffffff8a;
         }
         .lib-card-top {
@@ -2556,10 +2550,6 @@
         }
         .lib-card-open:focus-visible {
           outline: none;
-        }
-        .lib-card:has(.lib-card-open:focus-visible) {
-          outline: 2px solid var(--blue);
-          outline-offset: 2px;
         }
         .lib-snippet {
           display: -webkit-box;
@@ -3711,12 +3701,6 @@
             0 14px 34px -12px #344b5952,
             inset 0 1px 0 #fff;
         }
-        .tk-capture-line:focus-within {
-          box-shadow:
-            0 14px 34px -12px #344b5966,
-            0 0 0 3px #57799418,
-            inset 0 1px 0 #fff;
-        }
         .tk-capture textarea {
           flex: 1;
           min-width: 0;
@@ -3952,10 +3936,6 @@
         }
         .tk .tk-filters button:focus-visible,
         .tk .tk-week-day:focus-visible {
-          outline-offset: -2px;
-        }
-        .tk-week-pick:has(input:focus-visible) {
-          outline: 2px solid #577994;
           outline-offset: -2px;
         }
         /* Adapted directly from Orbit preview/project-preview.css; unused selectors and live filters/motion removed. */
@@ -4790,7 +4770,7 @@
           border-bottom: 1px solid #3b4a4015;
         }
         .reading-app > header strong {
-          font-family: Georgia, serif;
+          font-family: "Bricolage Grotesque", "Instrument Sans", sans-serif;
           font-size: 16px;
           font-weight: 500;
         }
@@ -4807,7 +4787,7 @@
           color: #7c857c;
         }
         .reading-app h2 {
-          font-family: Georgia, serif;
+          font-family: "Bricolage Grotesque", "Instrument Sans", sans-serif;
           font-size: clamp(26px, 2.8vw, 36px);
           line-height: 1.12;
           font-weight: 400;
@@ -4887,7 +4867,7 @@
           letter-spacing: 0.9px;
         }
         .book-cover strong {
-          font-family: Georgia, serif;
+          font-family: "Bricolage Grotesque", "Instrument Sans", sans-serif;
           font-size: 18px;
           font-weight: 400;
           line-height: 1.1;
@@ -6052,54 +6032,6 @@
             margin-top: 6px;
           }
         }
-        /* Static versions of Orbit's two arc gauges per account; no polling or idle motion. */
-        .replica-accounts .cx-account {
-          width: 212px;
-          min-width: 212px;
-        }
-        .replica-accounts .cx-lim-value,
-        .replica-accounts .cx-lim-label {
-          position: absolute;
-          transform: translate(-50%, -50%);
-        }
-        .replica-accounts .cx-lim-value {
-          font-size: 12px;
-        }
-        .replica-accounts .cx-lim-label {
-          font-size: 9px;
-        }
-        @media (max-width: 1000px) and (min-width: 761px) {
-          .replica-accounts .cx-account:last-child {
-            display: none;
-          }
-        }
-        @media (max-width: 760px) {
-          .replica-accounts {
-            width: 100%;
-            gap: 6px;
-          }
-          .replica-accounts .cx-account {
-            flex: 1;
-            width: auto;
-            min-width: 0;
-            height: 60px;
-            padding: 0 9px;
-            border-radius: 14px;
-          }
-          .replica-accounts .cx-account-id {
-            height: 58px;
-          }
-          .replica-accounts .cx-account-id b {
-            font-size: 12px;
-          }
-          .replica-accounts .cx-account-id > span {
-            font-size: 10px;
-          }
-          .replica-accounts .cx-tile-art,
-          .replica-accounts .cx-tile-space {
-            display: none;
-          }
-        }
         @media (max-width: 760px) {
           .cx-pick select {
             font-size: 16px;
@@ -6781,11 +6713,402 @@
         &.chat-focus #view-chat .cx-frame {
           grid-template-columns: minmax(0, 1fr);
         }
+
+        /* Overview reuses Orbit's Cloud surfaces, inset rows and quiet entry points. */
+        .ov-scroll {
+          flex: 1;
+          min-height: 0;
+          overflow: auto;
+          overscroll-behavior: contain;
+          padding: 2px 3px 24px;
+        }
+        .ov-head {
+          align-items: center;
+          margin-bottom: 32px;
+        }
+        .ov-head h1 {
+          margin-bottom: 4px;
+        }
+        .ov-head time,
+        .ov-status {
+          font-size: 12px;
+          color: var(--muted);
+        }
+        .ov-head > button {
+          min-height: 44px;
+          flex: none;
+        }
+        .ov-grid {
+          display: grid;
+          grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+          gap: 32px 24px;
+          max-width: 1040px;
+        }
+        .ov-grid > section {
+          min-width: 0;
+        }
+        .ov-today,
+        .ov-work {
+          padding: 20px 24px 16px;
+          border-radius: 20px;
+        }
+        .ov-section-head {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 8px;
+        }
+        .ov-section-head h2 {
+          font-size: 17px;
+          font-weight: 550;
+          letter-spacing: -0.35px;
+          margin: 0;
+        }
+        .ov-action {
+          min-height: 44px;
+          padding: 8px 0;
+          background: none;
+          color: var(--blue);
+          font-size: 12px;
+          border-radius: 8px;
+        }
+        .ov-tasks {
+          list-style: none;
+          padding: 0;
+          margin: 8px 0 0;
+          display: grid;
+          gap: 8px;
+        }
+        .ov-tasks button {
+          width: 100%;
+          min-height: 52px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 12px;
+          text-align: left;
+          border-radius: 24px;
+          background: #ffffff7a;
+          border: 1px solid #ffffffc8;
+          font-size: 14px;
+          line-height: 1.4;
+        }
+        .ov-tasks button > span:last-child {
+          min-width: 0;
+          overflow-wrap: anywhere;
+        }
+        .ov-tasks .is-earlier button {
+          background: #f5eee57a;
+        }
+        .ov-check {
+          display: block;
+          flex: none;
+          width: 18px;
+          height: 18px;
+          border: 1.5px solid var(--list-hue);
+          border-radius: 50%;
+        }
+        .ov-all {
+          margin: 4px 12px 0;
+        }
+        .ov-empty {
+          margin: 32px 0;
+          color: var(--muted);
+          font-size: 14px;
+        }
+        .ov-work {
+          display: flex;
+          flex-direction: column;
+        }
+        .ov-work .ov-section-head {
+          min-height: 44px;
+          flex-wrap: wrap;
+        }
+        .ov-project {
+          font-size: 13px;
+          margin: 8px 0 12px;
+          color: var(--muted);
+        }
+        .ov-worker {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          min-height: 68px;
+          width: 100%;
+          background: none;
+          padding: 12px 0;
+          border-radius: 8px;
+          text-align: left;
+        }
+        .ov-worker + .ov-worker {
+          border-top: 1px solid var(--line);
+          border-radius: 0;
+        }
+        .ov-worker > span:nth-child(2) {
+          flex: 1;
+          min-width: 0;
+        }
+        .ov-worker strong {
+          display: block;
+          font-size: 14px;
+          font-weight: 550;
+        }
+        .ov-worker small {
+          display: block;
+          font-size: 12px;
+          color: var(--muted);
+          margin-top: 2px;
+        }
+        .ov-worker [data-job-status] {
+          font-size: 11px;
+        }
+        .ov-library,
+        .ov-money {
+          padding: 0 24px;
+        }
+        .ov-notebook {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          padding: 24px 0 8px;
+          width: 100%;
+          text-align: left;
+          background: none;
+          border-radius: 12px;
+        }
+        .ov-notebook .lib-orb {
+          width: 56px;
+          height: 64px;
+          border-radius: 12px 20px 20px 12px;
+          flex: none;
+        }
+        .ov-notebook > span:last-child {
+          min-width: 0;
+        }
+        .ov-notebook strong {
+          display: block;
+          font-size: 18px;
+          font-weight: 500;
+          overflow-wrap: anywhere;
+        }
+        .ov-notebook small,
+        .ov-notebook time {
+          display: block;
+          font-size: 12px;
+          color: var(--muted);
+          margin-top: 4px;
+        }
+        .ov-spent {
+          display: grid;
+          padding: 16px 0 8px;
+          background: none;
+          text-align: left;
+          border-radius: 8px;
+        }
+        .ov-spent > span {
+          font-size: 12px;
+          color: var(--muted);
+        }
+        .ov-spent strong {
+          font-size: 30px;
+          font-weight: 500;
+          letter-spacing: -1px;
+          font-variant-numeric: tabular-nums;
+        }
+        .ov-money-pair {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px 24px;
+          margin: 0 0 16px;
+        }
+        .ov-money-pair dt {
+          color: var(--muted);
+          font-size: 11px;
+        }
+        .ov-money-pair dd {
+          margin: 2px 0 0;
+          font-size: 13px;
+          font-variant-numeric: tabular-nums;
+        }
+        .ov-wish {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 12px;
+          min-height: 52px;
+          padding: 12px 0;
+          border-top: 1px solid var(--line);
+          width: 100%;
+          background: none;
+          text-align: left;
+          font-size: 13px;
+        }
+        .ov-wish small {
+          display: block;
+          color: var(--muted);
+          font-size: 11px;
+        }
+        .ov-wish strong {
+          display: block;
+          font-weight: 500;
+        }
+        .ov-wish > span:last-child {
+          white-space: nowrap;
+          font-variant-numeric: tabular-nums;
+        }
+        .replica-usage {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          min-height: 44px;
+          background: #ffffff70;
+          padding: 8px 12px;
+          border-radius: 12px;
+          font-size: 12px;
+        }
+        .replica-usage-ring {
+          display: block;
+          position: relative;
+          width: 18px;
+          height: 18px;
+          flex: none;
+          border-radius: 50%;
+          background: conic-gradient(var(--accent) var(--usage), #cbd5d8 0);
+        }
+        .replica-usage-ring::after {
+          content: "";
+          position: absolute;
+          inset: 3px;
+          background: var(--surface);
+          border-radius: 50%;
+        }
+        .replica-account-picker {
+          display: grid;
+          gap: 4px;
+        }
+        .replica-account-picker button {
+          display: grid;
+          gap: 6px;
+          padding: 16px;
+          text-align: left;
+          border-radius: 12px;
+          background: transparent;
+        }
+        .replica-account-picker button[aria-pressed="true"] {
+          background: #ffffffb3;
+        }
+        .replica-account-picker strong {
+          font-size: 14px;
+          font-weight: 550;
+        }
+        .replica-account-picker span {
+          display: flex;
+          justify-content: space-between;
+          gap: 24px;
+          color: var(--muted);
+          font-size: 12px;
+        }
+        .replica-account-picker b {
+          font-weight: 500;
+          font-variant-numeric: tabular-nums;
+        }
+        .replica-orchestrator-scroll {
+          flex: 1;
+          min-height: 0;
+          overflow: auto;
+          overscroll-behavior: contain;
+          padding: 0 16px 16px;
+        }
+        .replica-orchestrator-scroll .cx-transcript {
+          padding: 16px 0;
+        }
+        .replica-orchestrator-scroll .replica-job-detail {
+          padding: 8px;
+          overflow: visible;
+        }
+        .replica-orchestrator-scroll .replica-job-detail .cx-who {
+          margin-top: 16px;
+        }
+        .replica-job-detail .secondary {
+          min-height: 44px;
+          font-size: 12px;
+          margin-top: 8px;
+        }
+        /* Pointer focus and text fields stay quiet. Only keyboard buttons/links have a ring. */
+        :focus {
+          outline: none !important;
+        }
+        :is(button, a):focus-visible {
+          outline: 2px solid #57799480 !important;
+          outline-offset: 2px;
+        }
+        :is(input, textarea, select):focus {
+          box-shadow: none !important;
+        }
+        @media (max-width: 1000px) {
+          .ov-grid {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 24px;
+          }
+          .ov-today,
+          .ov-work {
+            padding: 16px 20px;
+          }
+          .ov-library,
+          .ov-money {
+            padding: 0 20px;
+          }
+        }
+        @media (max-width: 760px) {
+          .ov-head {
+            margin-bottom: 16px;
+          }
+          .ov-head h1 {
+            margin-top: 0;
+          }
+          .ov-head time {
+            font-size: 12px;
+          }
+          .ov-head > button {
+            font-size: 12px;
+            padding-inline: 12px;
+          }
+          .ov-tasks button {
+            font-size: 15px;
+          }
+          .ov-status {
+            font-size: 11px;
+          }
+          .main-nav button {
+            min-width: 0;
+            padding-inline: 4px;
+          }
+          .replica-usage {
+            margin-left: auto;
+          }
+          .replica-job-footer .cx-act {
+            min-height: 44px;
+          }
+        }
+        .replica-worker-inspector {
+          border-top: 1px solid var(--line);
+        }
+        .replica-worker-inspector > summary {
+          min-height: 44px;
+          padding: 12px 16px;
+          font-size: 12px;
+          cursor: pointer;
+        }
+        .replica-worker-inspector .replica-job-detail {
+          max-height: 180px;
+          overflow: auto;
+          padding: 0 16px 16px;
+        }
       }
     </style>
     <script src="orbit.js" type="module"></script>
   </head>
-  <body class="demo-orbit-app is-chat">
+  <body class="demo-orbit-app">
     <a class="replica-skip" href="#workspace">Skip to workspace</a
     ><svg
       class="icon-defs"
@@ -6931,7 +7254,7 @@
     <div class="ambient" aria-hidden="true"></div>
     <div class="shell">
       <aside class="sidebar glass">
-        <a class="brand" href="#chat"
+        <a class="brand" href="#overview"
           ><span class="orb brand-orb" aria-hidden="true"></span
           ><span>Orbit</span></a
         >
@@ -6939,11 +7262,26 @@
           <span class="nav-highlight" aria-hidden="true"></span
           ><button
             type="button"
-            data-view="chat"
-            aria-controls="view-chat"
+            data-view="overview"
+            aria-controls="view-overview"
             class="active"
             aria-current="page"
           >
+            <svg
+              class="icon"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <use href="#i-home" /></svg
+            ><span class="glass-label">Overview</span></button
+          ><button type="button" data-view="chat" aria-controls="view-chat">
             <svg
               class="icon"
               width="20"
@@ -7041,6 +7379,149 @@
         <p class="sr-only">
           Sample data. Nothing connects or saves. Chat replies are scripted.
         </p>
+        <section
+          class="replica-view ov"
+          id="view-overview"
+          data-panel="overview"
+          aria-label="Overview"
+        >
+          <header class="page-head ov-head">
+            <div>
+              <h1>Overview</h1>
+              <time datetime="2026-10-16">Friday, October 16</time>
+            </div>
+            <button type="button" class="secondary" data-view="chat">
+              Open Chat
+            </button>
+          </header>
+          <div class="ov-scroll">
+            <div class="ov-grid">
+              <section class="panel ov-today" aria-labelledby="ov-today-title">
+                <header class="ov-section-head">
+                  <h2 id="ov-today-title">Today</h2>
+                  <button type="button" class="ov-action" data-quick-add>
+                    Add task
+                  </button>
+                </header>
+                <ul class="ov-tasks" data-overview-tasks></ul>
+                <p class="ov-empty" data-overview-empty hidden>
+                  Nothing needs attention
+                </p>
+                <button
+                  type="button"
+                  class="ov-action ov-all"
+                  data-view="tasks"
+                >
+                  All tasks
+                </button>
+              </section>
+              <section class="panel ov-work" aria-labelledby="ov-work-title">
+                <header class="ov-section-head">
+                  <h2 id="ov-work-title" data-overview-work>Agent activity</h2>
+                  <span class="ov-status">Orbit orchestrator</span>
+                </header>
+                <p class="ov-project">The Reading Room</p>
+                <button
+                  type="button"
+                  class="ov-worker"
+                  data-overview-worker="0"
+                >
+                  <span
+                    class="ov-worker-icon replica-agent"
+                    data-agent="B"
+                    aria-hidden="true"
+                    ><svg viewBox="0 0 24 24">
+                      <use href="#agent-codex" /></svg></span
+                  ><span
+                    ><strong>Collection</strong
+                    ><small>Search and reservations</small></span
+                  ><span data-job-status="0">Working</span>
+                </button>
+                <button
+                  type="button"
+                  class="ov-worker"
+                  data-overview-worker="1"
+                >
+                  <span
+                    class="ov-worker-icon replica-agent"
+                    data-agent="C"
+                    aria-hidden="true"
+                    ><svg viewBox="0 0 24 24">
+                      <use href="#agent-claude" /></svg></span
+                  ><span
+                    ><strong>Accessibility</strong
+                    ><small>Keyboard review</small></span
+                  ><span data-job-status="1">Queued</span>
+                </button>
+              </section>
+              <section class="ov-library" aria-labelledby="ov-library-title">
+                <header class="ov-section-head">
+                  <h2 id="ov-library-title">Latest notebook</h2>
+                  <span class="ov-status">Library</span>
+                </header>
+                <button
+                  type="button"
+                  class="ov-notebook"
+                  data-overview-notebook
+                >
+                  <span class="lib-orb" aria-hidden="true"
+                    ><svg
+                      class="icon"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.75"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <use href="#i-book" /></svg></span
+                  ><span
+                    ><strong>The Reading Room</strong><small>3 sources</small
+                    ><time datetime="2026-10-16">Updated today</time></span
+                  >
+                </button>
+              </section>
+              <section class="ov-money" aria-labelledby="ov-money-title">
+                <header class="ov-section-head">
+                  <h2 id="ov-money-title">Money</h2>
+                  <span class="ov-status">October</span>
+                </header>
+                <button
+                  type="button"
+                  class="ov-spent"
+                  data-overview-finance="spending"
+                >
+                  <span>Spent</span><strong>$1,380.60</strong>
+                </button>
+                <dl class="ov-money-pair">
+                  <div>
+                    <dt>Income</dt>
+                    <dd>$3,200.00</dd>
+                  </div>
+                  <div>
+                    <dt>Net income</dt>
+                    <dd>+$1,819.40</dd>
+                  </div>
+                </dl>
+                <button
+                  type="button"
+                  class="ov-wish"
+                  data-overview-finance="wishlist"
+                  data-overview-wish
+                >
+                  <span
+                    ><small>Wishlist</small
+                    ><strong data-overview-wish-name
+                      >Paper desk lamp</strong
+                    ></span
+                  ><span data-overview-wish-price>$74.00</span>
+                </button>
+              </section>
+            </div>
+          </div>
+        </section>
         <section
           class="tk replica-view"
           id="view-tasks"
@@ -8102,381 +8583,30 @@
           id="view-chat"
           data-panel="chat"
           aria-label="Chat"
+          hidden
         >
           <header class="page-head cx-head">
             <h1>Chat</h1>
-            <div class="cx-accounts replica-accounts">
-              <button
-                type="button"
-                class="cx-account"
-                data-usage="a"
-                aria-label="Account A usage: 5 hour 24 percent, weekly 41 percent"
-              >
-                <span class="cx-account-id"
-                  ><b
-                    ><span
-                      class="replica-agent"
-                      data-agent="A"
-                      aria-hidden="true"
-                      ><svg viewBox="0 0 24 24">
-                        <use href="#agent-codex" /></svg></span
-                    >Codex A</b
-                  ><span>Connected</span></span
-                ><span class="cx-tile-space"></span
-                ><span class="cx-tile-art" aria-hidden="true"
-                  ><svg class="cx-tile-svg" viewBox="0 0 212 72">
-                    <defs>
-                      <radialGradient
-                        id="usage-face-a"
-                        cx="34%"
-                        cy="26%"
-                        r="75%"
-                      >
-                        <stop offset="0" stop-color="#fff" stop-opacity=".92" />
-                        <stop
-                          offset=".55"
-                          stop-color="#fff"
-                          stop-opacity=".32"
-                        />
-                        <stop offset="1" stop-color="#fff" stop-opacity=".06" />
-                      </radialGradient>
-                    </defs>
-                    <g class="cx-limit">
-                      <circle
-                        class="cx-face"
-                        cx="130"
-                        cy="36"
-                        r="17"
-                        fill="url(#usage-face-a)"
-                      />
-                      <path
-                        class="cx-gauge-track"
-                        d="M115.28 44.5 A17 17 0 1 1 144.72 44.5"
-                        stroke-width="2.5"
-                        pathLength="100"
-                      />
-                      <path
-                        class="cx-gauge-red"
-                        d="M115.28 44.5 A17 17 0 1 1 144.72 44.5"
-                        stroke-width="2.5"
-                        pathLength="100"
-                        stroke-dasharray="10 100"
-                        stroke-dashoffset="-90"
-                      />
-                      <path
-                        class="cx-gauge-fill"
-                        d="M115.28 44.5 A17 17 0 1 1 144.72 44.5"
-                        stroke-width="2.5"
-                        pathLength="100"
-                        stroke-dasharray="24 100"
-                      />
-                    </g>
-                    <g class="cx-limit">
-                      <circle
-                        class="cx-face"
-                        cx="177"
-                        cy="36"
-                        r="17"
-                        fill="url(#usage-face-a)"
-                      />
-                      <path
-                        class="cx-gauge-track"
-                        d="M162.28 44.5 A17 17 0 1 1 191.72 44.5"
-                        stroke-width="2.5"
-                        pathLength="100"
-                      />
-                      <path
-                        class="cx-gauge-red"
-                        d="M162.28 44.5 A17 17 0 1 1 191.72 44.5"
-                        stroke-width="2.5"
-                        pathLength="100"
-                        stroke-dasharray="10 100"
-                        stroke-dashoffset="-90"
-                      />
-                      <path
-                        class="cx-gauge-fill"
-                        d="M162.28 44.5 A17 17 0 1 1 191.72 44.5"
-                        stroke-width="2.5"
-                        pathLength="100"
-                        stroke-dasharray="41 100"
-                      />
-                    </g></svg
-                  ><span class="cx-lim-value" style="left: 130px; top: 35px"
-                    >24<span class="cx-unit">%</span></span
-                  ><span class="cx-lim-label" style="left: 130px; top: 59px"
-                    >5h</span
-                  ><span class="cx-lim-value" style="left: 177px; top: 35px"
-                    >41<span class="cx-unit">%</span></span
-                  ><span class="cx-lim-label" style="left: 177px; top: 59px"
-                    >Week</span
-                  ></span
-                ></button
-              ><button
-                type="button"
-                class="cx-account"
-                data-usage="b"
-                aria-label="Account B usage: 5 hour 8 percent, weekly 16 percent"
-              >
-                <span class="cx-account-id"
-                  ><b
-                    ><span
-                      class="replica-agent"
-                      data-agent="B"
-                      aria-hidden="true"
-                      ><svg viewBox="0 0 24 24">
-                        <use href="#agent-codex" /></svg></span
-                    >Codex B</b
-                  ><span>Connected</span></span
-                ><span class="cx-tile-space"></span
-                ><span class="cx-tile-art" aria-hidden="true"
-                  ><svg class="cx-tile-svg" viewBox="0 0 212 72">
-                    <defs>
-                      <radialGradient
-                        id="usage-face-b"
-                        cx="34%"
-                        cy="26%"
-                        r="75%"
-                      >
-                        <stop offset="0" stop-color="#fff" stop-opacity=".92" />
-                        <stop
-                          offset=".55"
-                          stop-color="#fff"
-                          stop-opacity=".32"
-                        />
-                        <stop offset="1" stop-color="#fff" stop-opacity=".06" />
-                      </radialGradient>
-                    </defs>
-                    <g class="cx-limit">
-                      <circle
-                        class="cx-face"
-                        cx="130"
-                        cy="36"
-                        r="17"
-                        fill="url(#usage-face-b)"
-                      />
-                      <path
-                        class="cx-gauge-track"
-                        d="M115.28 44.5 A17 17 0 1 1 144.72 44.5"
-                        stroke-width="2.5"
-                        pathLength="100"
-                      />
-                      <path
-                        class="cx-gauge-red"
-                        d="M115.28 44.5 A17 17 0 1 1 144.72 44.5"
-                        stroke-width="2.5"
-                        pathLength="100"
-                        stroke-dasharray="10 100"
-                        stroke-dashoffset="-90"
-                      />
-                      <path
-                        class="cx-gauge-fill"
-                        d="M115.28 44.5 A17 17 0 1 1 144.72 44.5"
-                        stroke-width="2.5"
-                        pathLength="100"
-                        stroke-dasharray="8 100"
-                      />
-                    </g>
-                    <g class="cx-limit">
-                      <circle
-                        class="cx-face"
-                        cx="177"
-                        cy="36"
-                        r="17"
-                        fill="url(#usage-face-b)"
-                      />
-                      <path
-                        class="cx-gauge-track"
-                        d="M162.28 44.5 A17 17 0 1 1 191.72 44.5"
-                        stroke-width="2.5"
-                        pathLength="100"
-                      />
-                      <path
-                        class="cx-gauge-red"
-                        d="M162.28 44.5 A17 17 0 1 1 191.72 44.5"
-                        stroke-width="2.5"
-                        pathLength="100"
-                        stroke-dasharray="10 100"
-                        stroke-dashoffset="-90"
-                      />
-                      <path
-                        class="cx-gauge-fill"
-                        d="M162.28 44.5 A17 17 0 1 1 191.72 44.5"
-                        stroke-width="2.5"
-                        pathLength="100"
-                        stroke-dasharray="16 100"
-                      />
-                    </g></svg
-                  ><span class="cx-lim-value" style="left: 130px; top: 35px"
-                    >8<span class="cx-unit">%</span></span
-                  ><span class="cx-lim-label" style="left: 130px; top: 59px"
-                    >5h</span
-                  ><span class="cx-lim-value" style="left: 177px; top: 35px"
-                    >16<span class="cx-unit">%</span></span
-                  ><span class="cx-lim-label" style="left: 177px; top: 59px"
-                    >Week</span
-                  ></span
-                ></button
-              ><button
-                type="button"
-                class="cx-account"
-                data-usage="c"
-                aria-label="Claude usage: 5 hour 12 percent, weekly 28 percent"
-              >
-                <span class="cx-account-id"
-                  ><b
-                    ><span
-                      class="replica-agent"
-                      data-agent="C"
-                      aria-hidden="true"
-                      ><svg viewBox="0 0 24 24">
-                        <use href="#agent-claude" /></svg></span
-                    >Claude</b
-                  ><span>Connected</span></span
-                ><span class="cx-tile-space"></span
-                ><span class="cx-tile-art" aria-hidden="true"
-                  ><svg class="cx-tile-svg" viewBox="0 0 212 72">
-                    <defs>
-                      <radialGradient
-                        id="usage-face-c"
-                        cx="34%"
-                        cy="26%"
-                        r="75%"
-                      >
-                        <stop offset="0" stop-color="#fff" stop-opacity=".92" />
-                        <stop
-                          offset=".55"
-                          stop-color="#fff"
-                          stop-opacity=".32"
-                        />
-                        <stop offset="1" stop-color="#fff" stop-opacity=".06" />
-                      </radialGradient>
-                    </defs>
-                    <g class="cx-limit">
-                      <circle
-                        class="cx-face"
-                        cx="130"
-                        cy="36"
-                        r="17"
-                        fill="url(#usage-face-c)"
-                      />
-                      <path
-                        class="cx-gauge-track"
-                        d="M115.28 44.5 A17 17 0 1 1 144.72 44.5"
-                        stroke-width="2.5"
-                        pathLength="100"
-                      />
-                      <path
-                        class="cx-gauge-red"
-                        d="M115.28 44.5 A17 17 0 1 1 144.72 44.5"
-                        stroke-width="2.5"
-                        pathLength="100"
-                        stroke-dasharray="10 100"
-                        stroke-dashoffset="-90"
-                      />
-                      <path
-                        class="cx-gauge-fill"
-                        d="M115.28 44.5 A17 17 0 1 1 144.72 44.5"
-                        stroke-width="2.5"
-                        pathLength="100"
-                        stroke-dasharray="12 100"
-                      />
-                    </g>
-                    <g class="cx-limit">
-                      <circle
-                        class="cx-face"
-                        cx="177"
-                        cy="36"
-                        r="17"
-                        fill="url(#usage-face-c)"
-                      />
-                      <path
-                        class="cx-gauge-track"
-                        d="M162.28 44.5 A17 17 0 1 1 191.72 44.5"
-                        stroke-width="2.5"
-                        pathLength="100"
-                      />
-                      <path
-                        class="cx-gauge-red"
-                        d="M162.28 44.5 A17 17 0 1 1 191.72 44.5"
-                        stroke-width="2.5"
-                        pathLength="100"
-                        stroke-dasharray="10 100"
-                        stroke-dashoffset="-90"
-                      />
-                      <path
-                        class="cx-gauge-fill"
-                        d="M162.28 44.5 A17 17 0 1 1 191.72 44.5"
-                        stroke-width="2.5"
-                        pathLength="100"
-                        stroke-dasharray="28 100"
-                      />
-                    </g></svg
-                  ><span class="cx-lim-value" style="left: 130px; top: 35px"
-                    >12<span class="cx-unit">%</span></span
-                  ><span class="cx-lim-label" style="left: 130px; top: 59px"
-                    >5h</span
-                  ><span class="cx-lim-value" style="left: 177px; top: 35px"
-                    >28<span class="cx-unit">%</span></span
-                  ><span class="cx-lim-label" style="left: 177px; top: 59px"
-                    >Week</span
-                  ></span
-                >
-              </button>
-            </div>
+            <button
+              type="button"
+              class="replica-usage"
+              data-account-picker
+              aria-haspopup="dialog"
+              aria-label="Codex A, 24% of 5 hour usage. Choose account"
+            >
+              <span
+                class="replica-usage-ring"
+                data-usage-ring
+                style="--usage: 24%"
+                aria-hidden="true"
+              ></span
+              ><span data-browse-label>Codex A</span
+              ><span aria-hidden="true">⌄</span>
+            </button>
           </header>
           <div class="cx-frame">
             <aside class="panel cx-rail">
               <div class="cx-rail-in">
-                <div
-                  class="cx-switch"
-                  role="group"
-                  aria-label="Connected chat accounts"
-                >
-                  <button
-                    type="button"
-                    data-account="A"
-                    aria-pressed="true"
-                    aria-label="Browse Codex account A"
-                    title="Codex account A"
-                  >
-                    <span
-                      class="replica-agent"
-                      data-agent="A"
-                      aria-hidden="true"
-                      ><svg viewBox="0 0 24 24"><use href="#agent-codex" /></svg
-                    ></span></button
-                  ><button
-                    type="button"
-                    data-account="B"
-                    aria-pressed="false"
-                    aria-label="Browse Codex account B"
-                    title="Codex account B"
-                  >
-                    <span
-                      class="replica-agent"
-                      data-agent="B"
-                      aria-hidden="true"
-                      ><svg viewBox="0 0 24 24"><use href="#agent-codex" /></svg
-                    ></span></button
-                  ><button
-                    type="button"
-                    data-account="C"
-                    aria-pressed="false"
-                    aria-label="Browse Claude Code"
-                    title="Claude Code"
-                  >
-                    <span
-                      class="replica-agent"
-                      data-agent="C"
-                      aria-hidden="true"
-                      ><svg viewBox="0 0 24 24">
-                        <use href="#agent-claude" /></svg
-                    ></span>
-                  </button>
-                </div>
-                <p class="replica-browse" data-browse-label>
-                  Codex A connected
-                </p>
                 <button
                   type="button"
                   class="secondary cx-new"
@@ -8587,11 +8717,10 @@
                     aria-label="Delegated sessions"
                   >
                     <button type="button" data-job="0">
-                      <span>Build the collection</span><small>Codex B</small
+                      <span>Collection</span><small>Codex B</small
                       ><span data-job-status="0">Queued</span></button
                     ><button type="button" data-job="1">
-                      <span>Review keyboard access</span
-                      ><small>Claude Code</small
+                      <span>Accessibility</span><small>Claude Code</small
                       ><span data-job-status="1">Queued</span>
                     </button>
                   </div>
@@ -8601,8 +8730,7 @@
                     data-session="1"
                     data-session-account="B"
                   >
-                    <span class="cx-session-title"
-                      >A calmer collection page</span
+                    <span class="cx-session-title">Collection</span
                     ><time>Yesterday</time
                     ><span class="cx-session-meta"
                       ><svg
@@ -8627,7 +8755,7 @@
                     data-session="2"
                     data-session-account="C"
                   >
-                    <span class="cx-session-title">Review keyboard access</span
+                    <span class="cx-session-title">Accessibility</span
                     ><time>Wed</time
                     ><span class="cx-session-meta"
                       ><svg
@@ -8755,7 +8883,14 @@
                       <div class="cx-title">
                         <h2 data-conversation-title>Build the reading room</h2>
                         <div class="cx-meta">
-                          <span class="cx-chip">Account A</span
+                          <span class="cx-chip" data-session-connection
+                            ><span
+                              class="replica-agent"
+                              data-agent="A"
+                              aria-hidden="true"
+                              ><svg viewBox="0 0 24 24">
+                                <use href="#agent-codex" /></svg></span
+                            ><span>Codex A</span></span
                           ><span class="cx-where"
                             ><svg
                               class="icon"
@@ -8829,24 +8964,21 @@
                             </div>
                             <div class="cx-bubble">
                               <p>
-                                The running app is beside our chat. I’ve
-                                prepared two independent sessions for the next
-                                pass.
+                                I’m coordinating Collection and Accessibility in
+                                the orchestrator conversation. Their results
+                                return there.
                               </p>
                               <div
                                 class="replica-dispatch"
                                 aria-label="Delegated work"
                               >
                                 <button type="button" data-job="0">
-                                  <span
-                                    >Build the collection<small
-                                      >Codex B</small
-                                    ></span
+                                  <span>Collection<small>Codex B</small></span
                                   ><span data-job-status="0">Queued</span>
                                 </button>
                                 <button type="button" data-job="1">
                                   <span
-                                    >Review keyboard access<small
+                                    >Accessibility<small
                                       >Claude Code</small
                                     ></span
                                   ><span data-job-status="1">Queued</span>
@@ -8858,9 +8990,9 @@
                                   class="cx-act"
                                   data-replay
                                 >
-                                  Replay delegation</button
+                                  Run delegation</button
                                 ><span data-replay-summary
-                                  >2 sessions ready</span
+                                  >Work in progress</span
                                 >
                               </div>
                               <details
@@ -9178,6 +9310,27 @@ Make the cards more compact.</textarea>
                   hidden
                 >
                   <header class="cx-thread-head">
+                    <button
+                      type="button"
+                      class="icon-button cx-back"
+                      aria-label="All conversations"
+                      data-conversations-back
+                    >
+                      <svg
+                        class="icon"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.75"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <use href="#i-back" />
+                      </svg>
+                    </button>
                     <div class="cx-title">
                       <h2>Collection review</h2>
                       <div class="cx-meta">
@@ -9265,8 +9418,29 @@ Check the small screen layout too.</textarea>
                   hidden
                 >
                   <header class="cx-thread-head">
+                    <button
+                      type="button"
+                      class="icon-button cx-back"
+                      aria-label="All conversations"
+                      data-conversations-back
+                    >
+                      <svg
+                        class="icon"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.75"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <use href="#i-back" />
+                      </svg>
+                    </button>
                     <div class="cx-title">
-                      <h2>Orchestrator</h2>
+                      <h2>Orbit orchestrator</h2>
                       <div class="cx-meta">
                         <span>Build the reading room</span
                         ><span>2 workers</span>
@@ -9290,8 +9464,8 @@ Check the small screen layout too.</textarea>
                         aria-hidden="true"
                         ><svg viewBox="0 0 24 24">
                           <use href="#agent-codex" /></svg></span
-                      ><span>Build the collection<small>Codex B</small></span
-                      ><span data-job-status="0">Queued</span>
+                      ><span>Collection<small>Codex B</small></span
+                      ><span data-job-status="0">Working</span>
                     </button>
                     <button type="button" data-job="1" aria-pressed="false">
                       <span
@@ -9300,20 +9474,28 @@ Check the small screen layout too.</textarea>
                         aria-hidden="true"
                         ><svg viewBox="0 0 24 24">
                           <use href="#agent-claude" /></svg></span
-                      ><span
-                        >Review keyboard access<small>Claude Code</small></span
+                      ><span>Accessibility<small>Claude Code</small></span
                       ><span data-job-status="1">Queued</span>
                     </button>
                   </div>
-                  <div
-                    class="replica-job-detail"
-                    data-job-detail
-                    tabindex="0"
-                  ></div>
+                  <div class="replica-orchestrator-scroll">
+                    <div
+                      class="cx-transcript"
+                      data-orchestrator-transcript
+                      role="log"
+                      aria-label="Orchestrator conversation"
+                      aria-live="polite"
+                      aria-relevant="additions"
+                    ></div>
+                  </div>
+                  <details class="replica-worker-inspector">
+                    <summary>Worker details</summary>
+                    <div class="replica-job-detail" data-job-detail></div>
+                  </details>
                   <footer class="replica-job-footer">
-                    <span>Read-only worker session</span
+                    <span data-replay-summary>Work in progress</span
                     ><button type="button" class="cx-act" data-replay>
-                      Replay delegation
+                      Run delegation
                     </button>
                   </footer>
                 </section>

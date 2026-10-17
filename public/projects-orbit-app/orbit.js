@@ -1,4 +1,5 @@
 import { initChat } from "./chat.js";
+import { overviewTasks } from "./chat-state.js";
 /* Static portfolio replica. All state is local to this document and discarded on reload.
  * Orbit source patterns: preview/app.js navigation, tasks.js capture/checks,
  * library.js pane switching, codex.js conversation structure, project-preview.js. */
@@ -33,7 +34,7 @@ const accountDetails = {
   "Everyday card": ["Cedar Credit", "$246.80", "$4,000 credit limit"],
   "Learning loan": ["Juniper Lending", "$4,200.00", "$120 monthly payment"],
 };
-let activeView = "chat";
+let activeView = "overview";
 let taskView = "plan";
 let taskList = "all";
 let captureDay = "today";
@@ -83,7 +84,8 @@ function moveHighlight(pointer = false) {
     );
 }
 function view(id, pointer = false) {
-  if (!["tasks", "chat", "library", "finance"].includes(id)) return;
+  if (!["overview", "tasks", "chat", "library", "finance"].includes(id))
+    id = "overview";
   activeView = id;
   root.classList.toggle("is-chat", id === "chat");
   if (id !== "chat") {
@@ -99,6 +101,7 @@ function view(id, pointer = false) {
     panel.hidden = panel.dataset.panel !== id;
   });
   if (id === "library") syncLibrary();
+  if (id === "overview") paintOverview();
   syncPreview();
   moveHighlight(pointer);
   arrive($(`[data-panel="${id}"]`), pointer, !["chat", "library"].includes(id));
@@ -136,6 +139,61 @@ function paintTasks() {
       String(button.dataset.list === taskList),
     ),
   );
+  paintOverview();
+}
+function paintOverview() {
+  const tasks = $$("#view-tasks [data-task-row]").map((row) => ({
+    id: row.dataset.taskRow,
+    title: $(".tk-title", row).textContent.trim(),
+    done: row.classList.contains("tk-done"),
+    day: row.closest("[data-task-zone]")?.dataset.taskZone || "earlier",
+    row,
+  }));
+  const chosen = overviewTasks(tasks);
+  const list = $("[data-overview-tasks]");
+  const focused = list.contains(document.activeElement);
+  const keep = new Set(chosen.map((task) => task.id));
+  [...list.children].forEach((item) => {
+    if (!keep.has(item.dataset.overviewRow)) item.remove();
+  });
+  for (const task of chosen) {
+    let item = list.querySelector(`[data-overview-row="${task.id}"]`);
+    if (!item) {
+      item = document.createElement("li");
+      item.dataset.overviewRow = task.id;
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.overviewTask = task.id;
+      button.setAttribute("aria-label", `Complete ${task.title}`);
+      const ring = document.createElement("span");
+      ring.className = "ov-check";
+      ring.setAttribute("aria-hidden", "true");
+      const title = document.createElement("span");
+      title.textContent = task.title;
+      button.append(ring, title);
+      item.append(button);
+      list.append(item);
+    }
+    item.style.setProperty(
+      "--list-hue",
+      task.row.style.getPropertyValue("--list-hue"),
+    );
+    item.classList.toggle("is-earlier", task.day === "earlier");
+  }
+  $("[data-overview-empty]").hidden = chosen.length > 0;
+  if (focused && !list.contains(document.activeElement))
+    (
+      list.querySelector("button") || $("#view-overview [data-quick-add]")
+    ).focus();
+  const wish = $$("[data-wishes] .replica-wish").find(
+    (item) =>
+      $("[data-purchase]", item).getAttribute("aria-pressed") === "false",
+  );
+  $("[data-overview-wish]").hidden = !wish;
+  if (wish) {
+    $("[data-overview-wish-name]").textContent = $("h2", wish).textContent;
+    $("[data-overview-wish-price]").textContent = $("p", wish).textContent;
+  }
 }
 function aim(day) {
   captureDay = day;
@@ -194,15 +252,14 @@ function addTask(title) {
   $("[data-task-search]").value = "";
   paintTasks();
   row.scrollIntoView({ block: "nearest", behavior: "instant" });
-  arrive(row, true);
   announce("Task added");
   return true;
 }
 function sheet(title, html) {
-  returnFocus = document.activeElement;
+  if (!dialog.open) returnFocus = document.activeElement;
   $("#sheet-title").textContent = title;
   $(".replica-sheet-body").innerHTML = html;
-  dialog.showModal();
+  if (!dialog.open) dialog.showModal();
   // Opening a phone sheet leaves the keyboard closed until its input is chosen.
   $(".tk-close", dialog).focus();
 }
@@ -356,6 +413,10 @@ const chat = initChat(root, {
   reduced,
   phone,
   syncPreview,
+  jobsChanged(phase) {
+    $("[data-overview-work]").textContent =
+      phase === 3 ? "Work returned" : "Agent activity";
+  },
   closeSheet: () => dialog.close(),
 });
 root.addEventListener("click", (event) => {
@@ -363,6 +424,24 @@ root.addEventListener("click", (event) => {
   if (!button) return;
   if (chat.click(button, event)) return;
   const pointer = event.detail > 0;
+  if (button.dataset.overviewTask) {
+    checkTask(
+      $(`#view-tasks [data-task-row="${button.dataset.overviewTask}"]`),
+      pointer,
+    );
+  }
+  if (button.dataset.overviewWorker !== undefined) {
+    view("chat");
+    chat.openJob(Number(button.dataset.overviewWorker));
+  }
+  if (button.hasAttribute("data-overview-notebook")) {
+    view("library");
+    $("[data-notebook-open]").click();
+  }
+  if (button.dataset.overviewFinance) {
+    view("finance");
+    financeView(button.dataset.overviewFinance, pointer);
+  }
   if (button.hasAttribute("data-local-submit"))
     submitForm(button.closest("form"));
   if (button.hasAttribute("data-sheet-close")) dialog.close();
@@ -372,17 +451,6 @@ root.addEventListener("click", (event) => {
     aim("today");
   }
   if (button.dataset.openSheet) openSheet(button.dataset.openSheet);
-  if (button.dataset.usage) {
-    const usage = {
-      a: ["Account A", 24, 41],
-      b: ["Account B", 8, 16],
-      c: ["Claude", 12, 28],
-    }[button.dataset.usage];
-    sheet(
-      usage[0] + " usage",
-      `<div class="inset-list"><p>Connection <strong>Connected</strong></p><p>5 hour window <strong>${usage[1]}%</strong></p><p>Weekly window <strong>${usage[2]}%</strong></p></div>`,
-    );
-  }
 
   if (button.dataset.taskView) {
     taskView = button.dataset.taskView;
@@ -509,6 +577,7 @@ root.addEventListener("click", (event) => {
     button.setAttribute("aria-pressed", String(on));
     button.textContent = on ? "Restore to wishlist" : "Mark purchased";
     announce(on ? "Marked purchased" : "Restored to wishlist");
+    paintOverview();
   }
   if (button.dataset.sheetDay) {
     const day = button.dataset.sheetDay;
@@ -613,7 +682,10 @@ function submitForm(form) {
     announce("Added to wishlist");
   }
   if (form.matches("[data-new-notebook]")) {
-    $(".lib-nb-title h1").textContent = $('[name="title"]', form).value.trim();
+    const title = $('[name="title"]', form).value.trim();
+    $(".lib-nb-title h1").textContent = title;
+    $("[data-notebook-open]").textContent = title;
+    $("[data-overview-notebook] strong").textContent = title;
     dialog.close();
     $("[data-notebook-open]").click();
   }
@@ -730,6 +802,6 @@ $(".has-project-preview").classList.toggle(
   "preview-closed",
   compactPreview.matches,
 );
-view(location.hash.slice(1) || "chat");
+view(location.hash.slice(1) || "overview");
 syncLibrary();
 moveHighlight();
