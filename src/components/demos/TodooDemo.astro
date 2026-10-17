@@ -39,7 +39,10 @@
           >
         </span>
       </div>
-      <div class="td-screen" data-screen></div>
+      <div class="td-screen">
+        <div class="td-content" data-screen></div>
+        <span class="td-home" aria-hidden="true"></span>
+      </div>
       <div
         class="td-layer td-layer-alarm"
         data-alarm
@@ -59,7 +62,6 @@
       >
       </div>
       <p class="td-toast" role="status" aria-live="polite" data-toast></p>
-      <span class="td-home" aria-hidden="true"></span>
     </div>
 
     <div class="td-side">
@@ -219,14 +221,16 @@
     }
     .td-screen {
       position: relative;
-      flex: 1;
+      flex: 1 1 0;
       min-height: 0;
+      overflow: hidden;
+    }
+    .td-content {
+      position: absolute;
+      inset: 0;
       overflow-y: auto;
       overscroll-behavior: contain;
       padding: 0 16px 36px;
-      scrollbar-width: thin;
-      max-height: 440px;
-      overscroll-behavior: contain;
     }
     .td-home {
       position: absolute;

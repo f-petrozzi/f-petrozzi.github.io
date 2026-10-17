@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import {
   SNOOZE_MINUTES,
   SIRI_INTENT,
@@ -28,6 +29,32 @@ import {
 } from "../src/data/demos/todoo-app.ts";
 
 const note = (s, id) => s.notes.find((n) => n.id === id);
+
+test("phone display reaches the bottom with scrolling below a fixed home indicator", () => {
+  const component = readFileSync(
+    new URL("../src/components/demos/TodooDemo.astro", import.meta.url),
+    "utf8",
+  );
+  const screen = component.match(/\.td-screen\s*\{([^}]+)\}/)?.[1];
+  const content = component.match(/\.td-content\s*\{([^}]+)\}/)?.[1];
+  assert.ok(screen);
+  assert.ok(content);
+  // The old 440px cap left a gap in both phone sizes. The display must
+  // consume the remaining height and constrain long notes to its own viewport.
+  assert.match(screen, /flex:\s*1 1 0\s*;/);
+  assert.match(screen, /min-height:\s*0\s*;/);
+  assert.match(screen, /overflow:\s*hidden\s*;/);
+  assert.doesNotMatch(screen + content, /(?:max-)?height:\s*[1-9]/);
+  assert.match(content, /position:\s*absolute\s*;/);
+  assert.match(content, /inset:\s*0\s*;/);
+  assert.match(content, /overflow-y:\s*auto\s*;/);
+  assert.match(content, /overscroll-behavior:\s*contain\s*;/);
+  // The indicator belongs to the display, outside the content replaced on render.
+  assert.match(
+    component,
+    /<div class="td-screen">\s*<div class="td-content" data-screen><\/div>\s*<span class="td-home" aria-hidden="true"><\/span>\s*<\/div>/,
+  );
+});
 
 test("time helpers parse and format", () => {
   assert.equal(parseTime("10:15"), 615);
