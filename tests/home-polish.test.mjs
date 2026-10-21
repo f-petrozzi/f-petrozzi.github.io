@@ -99,7 +99,7 @@ test("hero targets, alignment and tooltip transitions work for touch and keyboar
   assert.match(read("src/styles/home.css"), /prefers-reduced-motion: reduce/);
 });
 
-test("hero facts align with the lead and activity belongs to the intro flow", () => {
+test("hero facts align beneath the name and activity belongs to the intro flow", () => {
   assert.equal(declarations(".hero-grid")["align-items"], "start");
   assert.equal(declarations(".hero-facts")["align-self"], "start");
   const [hero] = find(home, (node) => hasClass(node, "hero"));
@@ -115,13 +115,12 @@ test("hero facts align with the lead and activity belongs to the intro flow", ()
   );
 });
 
-test("hero subline balances its original copy across lines", () => {
-  const [subline] = find(home, (node) => hasClass(node, "hero-sub"));
-  assert.equal(
-    text(subline).trim().replace(/\s+/g, " "),
-    "I explore how AI works and what I can build with it.",
-  );
-  assert.equal(declarations(".hero-sub")["text-wrap"], "balance");
+test("hero keeps the identity and links without the removed introductory copy", () => {
+  const [hero] = find(home, (node) => hasClass(node, "hero"));
+  assert.match(text(hero), /Fabrizio Petrozzi/);
+  assert.match(text(hero), /St\. Petersburg, Florida/);
+  assert.equal(find(hero, (node) => hasClass(node, "hero-lead")).length, 0);
+  assert.equal(find(hero, (node) => hasClass(node, "hero-sub")).length, 0);
 });
 
 test("every timeline logo is real vector artwork at an untransformed integer size", () => {

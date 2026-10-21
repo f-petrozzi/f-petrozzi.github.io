@@ -140,7 +140,7 @@ section {
   padding-top: clamp(32px, 6vh, 72px);
   padding-bottom: 56px;
 }
-/* Optical alignment: the F's side bearing would sit the name ~8px right of the copy. */
+/* Align the F's visible edge with the details beneath the name. */
 .hero h1 {
   margin-left: -0.06em;
   font-size: clamp(56px, 9.6vw, 136px);
@@ -153,29 +153,16 @@ section {
 }
 .hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
-  gap: 48px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px 48px;
   align-items: start;
   margin-top: 28px;
-}
-.hero-lead {
-  font-size: clamp(24px, 2.4vw, 30px);
-  line-height: 1.25;
-  letter-spacing: -0.02em;
-}
-.hero-sub {
-  margin-top: 10px;
-  max-width: 52ch;
-  text-wrap: balance;
-  font-size: clamp(18px, 1.6vw, 20px);
-  line-height: 1.5;
-  color: var(--muted);
 }
 .hero-links {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 26px 0 0 -12px;
+  margin: -9px -12px 0 -12px;
   padding: 0;
   list-style: none;
 }
@@ -232,7 +219,7 @@ section {
 }
 .hero-facts {
   display: grid;
-  gap: 14px;
+  gap: 10px;
   align-self: start;
 }
 .hero-facts > div {
@@ -1083,10 +1070,11 @@ button.work-media {
 @media (max-width: 860px) {
   .hero-grid {
     grid-template-columns: 1fr;
-    gap: 32px;
+    gap: 20px;
   }
-  .hero-facts {
-    gap: 10px;
+  .hero-links {
+    justify-self: start;
+    margin: 0 0 0 -12px;
   }
   .project-row-link {
     grid-template-columns: 48px minmax(0, 1fr);
@@ -1134,9 +1122,6 @@ button.work-media {
   }
   .hero-facts dd {
     font-size: 14px;
-  }
-  .hero-links {
-    margin-top: 16px;
   }
   .work-body {
     padding: 10px 0 0;

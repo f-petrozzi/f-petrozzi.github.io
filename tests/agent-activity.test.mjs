@@ -207,7 +207,7 @@ test("server-rendered grid offers every value without hundreds of tab stops", as
   assert.equal(find(values, (node) => node.tagName === "table").length, 1);
   assert.equal(
     find(page, (node) => attr(node, "tabindex") !== undefined).length,
-    0,
+    1,
   );
   assert.doesNotMatch(text(summary), /[:;—–]|daysin/);
   assert.equal(
@@ -393,11 +393,41 @@ function activityHarness({ reduced = false } = {}) {
   }
   const band = new Element();
   band.getBoundingClientRect = () => ({ left: 56, top: 100, width: 242 });
-  band.contains = (target) => [cell, tip].includes(target);
+  band.setPointerCapture = (id) => {
+    band.capturedPointer = id;
+  };
+  band.contains = (target) =>
+    [band, cell, nearby, hidden, tip].includes(target);
   const cell = new Element();
   cell.dataset.tooltip = "Oct 12, 38 prompts";
-  cell.getBoundingClientRect = () => ({ left: 286, top: 140, width: 11 });
+  cell.getBoundingClientRect = () => ({
+    left: 286,
+    top: 140,
+    width: 11,
+    height: 11,
+  });
+  cell.getClientRects = () => [{}];
+  const nearby = new Element();
+  nearby.dataset.tooltip = "Oct 11, 12 prompts";
+  nearby.getBoundingClientRect = () => ({
+    left: 272,
+    top: 140,
+    width: 11,
+    height: 11,
+  });
+  nearby.getClientRects = () => [{}];
+  const hidden = new Element();
+  hidden.dataset.tooltip = "Jan 1, 99 prompts";
+  hidden.getBoundingClientRect = () => ({
+    left: 300,
+    top: 140,
+    width: 11,
+    height: 11,
+  });
+  hidden.getClientRects = () => [];
+  band.querySelectorAll = () => [nearby, cell, hidden];
   const tip = new Element();
+  const selection = new Element();
   const label = {};
   tip.querySelector = () => label;
   const motion = new Element();
@@ -435,7 +465,12 @@ function activityHarness({ reduced = false } = {}) {
   });
   const cells = columns.flatMap((column) => column.cells);
   const root = {
-    querySelector: (selector) => (selector === ".activity-band" ? band : tip),
+    querySelector: (selector) =>
+      selector === ".activity-band"
+        ? band
+        : selector === "[data-activity-selection]"
+          ? selection
+          : tip,
     querySelectorAll: (selector) =>
       selector.includes("activity-cell") ? cells : columns,
   };
@@ -466,10 +501,15 @@ function activityHarness({ reduced = false } = {}) {
   return {
     band,
     cell,
+    nearby,
+    hidden,
+    selection,
     tip,
     label,
     document,
+    window,
     motion,
+    hover,
     animations,
     observer,
     columns,
@@ -491,6 +531,92 @@ test("hover tooltips stay within the chart and support hover persistence and Esc
   assert.ok(!h.tip.attrs.has("data-open"));
   h.band.listeners.get("pointerover")({ target: h.cell });
   h.band.listeners.get("pointerout")({ relatedTarget: null });
+  assert.ok(!h.tip.attrs.has("data-open"));
+});
+
+function touch(h, type, x = 285, y = 145, overrides = {}) {
+  h.band.listeners.get(type)({
+    pointerType: "touch",
+    pointerId: 7,
+    isPrimary: true,
+    clientX: x,
+    clientY: y,
+    target: h.band,
+    ...overrides,
+  });
+}
+
+test("touch selects the nearest day from a gap and keeps its readout after release", () => {
+  const h = activityHarness();
+  h.hover.matches = false;
+  touch(h, "pointerdown");
+  assert.equal(h.band.capturedPointer, 7);
+  assert.equal(h.label.textContent, "Oct 12, 38 prompts");
+  assert.equal(h.tip.style.top, "0px");
+  assert.ok(h.cell.attrs.has("data-selected"));
+  touch(h, "pointerup");
+  h.band.listeners.get("pointerout")({ relatedTarget: null });
+  assert.ok(h.tip.attrs.has("data-open"));
+  assert.equal(h.selection.textContent, "Oct 12, 38 prompts");
+  h.document.listeners.get("pointerdown")({ target: new Object() });
+  assert.ok(!h.tip.attrs.has("data-open"));
+  assert.ok(!h.cell.attrs.has("data-selected"));
+});
+
+test("touch scrubbing changes days, ignores secondary pointers and excludes hidden weeks", () => {
+  const h = activityHarness();
+  touch(h, "pointerdown", 300);
+  assert.equal(h.label.textContent, "Oct 12, 38 prompts");
+  touch(h, "pointermove", 277, 145, { pointerId: 8 });
+  assert.equal(h.label.textContent, "Oct 12, 38 prompts");
+  touch(h, "pointermove", 277);
+  assert.equal(h.label.textContent, "Oct 11, 12 prompts");
+  assert.ok(!h.cell.attrs.has("data-selected"));
+  assert.ok(h.nearby.attrs.has("data-selected"));
+  touch(h, "pointercancel", 277);
+  assert.ok(!h.tip.attrs.has("data-open"));
+  touch(h, "pointermove");
+  assert.ok(!h.tip.attrs.has("data-open"));
+});
+
+test("touch works on hybrid devices and scrolling clears the selection", () => {
+  const h = activityHarness();
+  assert.equal(h.hover.matches, true);
+  touch(h, "pointerdown");
+  touch(h, "pointerup");
+  h.window.listeners.get("scroll")();
+  assert.ok(!h.tip.attrs.has("data-open"));
+  assert.equal(h.selection.textContent, "");
+});
+
+test("mouse and non-primary presses do not start touch selection", () => {
+  const h = activityHarness();
+  touch(h, "pointerdown", 285, 145, { pointerType: "mouse" });
+  assert.ok(!h.tip.attrs.has("data-open"));
+  touch(h, "pointerdown", 285, 145, { isPrimary: false });
+  assert.ok(!h.tip.attrs.has("data-open"));
+});
+
+test("one keyboard target exposes the latest count and supports day and endpoint navigation", () => {
+  const h = activityHarness();
+  h.band.listeners.get("focus")();
+  assert.equal(h.label.textContent, "Oct 12, 38 prompts");
+  let prevented = 0;
+  const press = (key) =>
+    h.band.listeners.get("keydown")({
+      key,
+      preventDefault: () => {
+        prevented++;
+      },
+    });
+  press("Home");
+  assert.equal(h.selection.textContent, "Oct 11, 12 prompts");
+  press("ArrowDown");
+  assert.equal(h.selection.textContent, "Oct 12, 38 prompts");
+  press("End");
+  assert.equal(h.selection.textContent, "Oct 12, 38 prompts");
+  assert.equal(prevented, 3);
+  h.band.listeners.get("blur")();
   assert.ok(!h.tip.attrs.has("data-open"));
 });
 

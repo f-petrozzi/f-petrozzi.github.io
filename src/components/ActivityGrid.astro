@@ -56,8 +56,20 @@ const label = (day: { date: string; count: number }) =>
             {`${grid.yearTotal === 1 ? "prompt" : "prompts"} across ${numbers.format(grid.yearActiveDays)} ${grid.yearActiveDays === 1 ? "day" : "days"} this year`}
           </span>
         </p>
+        <p class="activity-hint">Tap or slide to see daily counts.</p>
       </header>
-      <div class="activity-band">
+      <div
+        class="activity-band"
+        tabindex="0"
+        role="group"
+        aria-label="Daily agent prompts"
+        aria-describedby="activity-instructions"
+      >
+        <span id="activity-instructions" class="sr-only">
+          Use up and down arrows to move by day, left and right arrows to move
+          by week, and Home or End for the first or last visible day. Press
+          Escape to dismiss the count.
+        </span>
         <div class="activity-chart" aria-hidden="true">
           {grid.weeks.map((week, column) => {
             const monthDay = week.find(
@@ -88,6 +100,13 @@ const label = (day: { date: string; count: number }) =>
         <div class="activity-tooltip" data-activity-tooltip aria-hidden="true">
           <span />
         </div>
+        <span
+          class="sr-only"
+          data-activity-selection
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        />
       </div>
       <div class="activity-values">
         <table>
@@ -174,6 +193,22 @@ const label = (day: { date: string; count: number }) =>
       width: 100%;
       min-width: 0;
       container-type: inline-size;
+      /* Horizontal exploration leaves vertical page scrolling and zoom native. */
+      touch-action: pan-y pinch-zoom;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .activity-hint {
+      display: none;
+      margin-top: 8px;
+      font-size: 12px;
+      color: inherit;
+      opacity: 0.7;
+    }
+    @media (any-pointer: coarse) {
+      .activity-hint {
+        display: block;
+      }
     }
     .activity-chart {
       display: grid;
@@ -201,6 +236,9 @@ const label = (day: { date: string; count: number }) =>
       aspect-ratio: 1;
       border-radius: 3px;
       background: var(--activity-0);
+    }
+    .activity-cell[data-selected] {
+      border: 1.5px solid var(--activity-4);
     }
     [data-level="1"] {
       background: var(--activity-1);
