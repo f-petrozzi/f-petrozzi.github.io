@@ -261,9 +261,8 @@ const label = (day: { date: string; count: number }) =>
     .activity-tooltip {
       position: absolute;
       z-index: 5;
-      width: 180px;
+      width: max-content;
       max-width: 100%;
-      padding-bottom: 6px;
       opacity: 0;
       pointer-events: none;
       transform: translateY(calc(-100% + 3px));
@@ -273,17 +272,17 @@ const label = (day: { date: string; count: number }) =>
     }
     .activity-tooltip span {
       display: block;
-      padding: 5px 8px;
+      padding: 4px 7px;
       border-radius: 5px;
       background: var(--activity-tip-bg);
       color: var(--activity-tip-ink);
       font-size: 12px;
-      line-height: 1.5;
+      line-height: 1.35;
       text-align: center;
+      white-space: nowrap;
     }
     .activity-tooltip[data-open] {
       opacity: 1;
-      pointer-events: auto;
       transform: translateY(-100%);
     }
     .activity-values {

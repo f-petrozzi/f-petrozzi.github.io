@@ -91,8 +91,9 @@ are blank. `--output` can select another public output path.
 The chart supports desktop hover and touch exploration. Tapping anywhere in
 the chart selects the nearest visible day, including taps in cell gaps. A
 horizontal drag explores adjacent days, with a persistent readout above the
-chart and a marked selected cell. Release announces the count to assistive
-technology. Outside taps, Escape, scrolling, resize and pointer cancellation
+chart and a marked selected cell. The readout fits its text and ignores pointer
+input so hovering continues through to the cells underneath. Release announces
+the count to assistive technology. Outside taps, Escape, scrolling, resize and pointer cancellation
 clear the selection. One keyboard stop supports day/week arrow navigation and
 Home/End, with selected counts announced. Hidden weeks and future dates cannot
 be selected. A

@@ -427,6 +427,7 @@ function activityHarness({ reduced = false } = {}) {
   hidden.getClientRects = () => [];
   band.querySelectorAll = () => [nearby, cell, hidden];
   const tip = new Element();
+  tip.getBoundingClientRect = () => ({ width: 130 });
   const selection = new Element();
   const label = {};
   tip.querySelector = () => label;
@@ -522,8 +523,8 @@ test("hover tooltips stay within the chart and support hover persistence and Esc
   const h = activityHarness();
   h.band.listeners.get("pointerover")({ target: h.cell });
   assert.equal(h.label.textContent, "Oct 12, 38 prompts");
-  assert.equal(h.tip.style.left, "62px");
-  assert.equal(h.tip.style.top, "41px");
+  assert.equal(h.tip.style.left, "112px");
+  assert.equal(h.tip.style.top, "34px");
   assert.ok(h.tip.attrs.has("data-open"));
   h.band.listeners.get("pointerout")({ relatedTarget: h.tip });
   assert.ok(h.tip.attrs.has("data-open"));

@@ -26,10 +26,11 @@ document.querySelectorAll<HTMLElement>("[data-activity]").forEach((root) => {
         (cell) => cell.getClientRects().length > 0,
       );
     const showTooltip = (cell: HTMLElement, touch = false) => {
-      // Read both rectangles before writes. Position once per cell, never per frame.
+      // Size the readout to its label, then measure and position once per day.
+      tooltipText.textContent = cell.dataset.tooltip ?? "";
       const bounds = band.getBoundingClientRect();
       const anchor = cell.getBoundingClientRect();
-      const width = Math.min(180, bounds.width);
+      const width = Math.min(tooltip.getBoundingClientRect().width, bounds.width);
       const left = Math.max(
         0,
         Math.min(
@@ -37,10 +38,9 @@ document.querySelectorAll<HTMLElement>("[data-activity]").forEach((root) => {
           bounds.width - width,
         ),
       );
-      tooltipText.textContent = cell.dataset.tooltip ?? "";
       tooltip.style.left = `${left}px`;
       // Keep the touch readout above the chart, clear of the user's finger.
-      tooltip.style.top = touch ? "0px" : `${anchor.top - bounds.top + 1}px`;
+      tooltip.style.top = touch ? "0px" : `${anchor.top - bounds.top - 6}px`;
       selected?.removeAttribute("data-selected");
       selected = cell;
       cell.setAttribute("data-selected", "");
