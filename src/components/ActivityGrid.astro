@@ -210,6 +210,9 @@ const label = (day: { date: string; count: number }) =>
         display: block;
       }
     }
+    &:has(.activity-tooltip[data-open]) .activity-hint {
+      visibility: hidden;
+    }
     .activity-chart {
       display: grid;
       grid-template-columns: repeat(var(--activity-weeks), minmax(0, 1fr));
