@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 560" fill="none">
+  <title>Fabrizio Petrozzi FP monogram</title>
+  <defs>
+    <linearGradient id="glass" x1="42" y1="320" x2="464" y2="190" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#19ccff"/>
+      <stop offset=".33" stop-color="#2479dd"/>
+      <stop offset=".66" stop-color="#6160db"/>
+      <stop offset="1" stop-color="#c38bff"/>
+    </linearGradient>
+    <linearGradient id="rim" x1="45" y1="330" x2="470" y2="140" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9ff7ff"/>
+      <stop offset=".45" stop-color="#47cfff"/>
+      <stop offset=".8" stop-color="#d1aeff"/>
+      <stop offset="1" stop-color="#f0deff"/>
+    </linearGradient>
+    <linearGradient id="facet" x1="60" y1="40" x2="250" y2="310" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#b4faff" stop-opacity=".72"/>
+      <stop offset=".48" stop-color="#4ba1ff" stop-opacity=".08"/>
+      <stop offset="1" stop-color="#cfb3ff" stop-opacity=".62"/>
+    </linearGradient>
+    <path id="f" d="M80 28H412Q435 28 423 48L389 104Q380 120 359 120H162Q143 120 143 140V150Q143 170 164 170H367Q391 170 391 194V225Q391 249 367 249H164Q143 249 143 270V414Q143 438 119 438H78Q54 438 54 414V60Q54 28 80 28Z"/>
+    <path id="p" d="M164 170H367C434 170 474 213 474 277C474 342 432 389 367 389H315V506Q315 530 291 530H249Q225 530 225 506V338Q225 314 250 314H356Q392 314 392 279Q392 249 356 249H164Q143 249 143 227V193Q143 170 164 170Z"/>
+    <clipPath id="silhouette"><use href="#f"/><use href="#p"/></clipPath>
+  </defs>
+  <use href="#f" fill="url(#glass)" stroke="url(#rim)" stroke-width="9" stroke-linejoin="round"/>
+  <use href="#p" fill="url(#glass)" stroke="url(#rim)" stroke-width="9" stroke-linejoin="round"/>
+  <g clip-path="url(#silhouette)">
+    <path d="M61 41L145 124L145 232L63 425Z" fill="url(#facet)"/>
+    <path d="M72 40L149 117L398 40M65 424L144 243L226 205L414 189M232 520L237 341L301 374L305 519" stroke="url(#rim)" stroke-width="5" stroke-linecap="round" stroke-opacity=".58"/>
+    <path d="M147 241C223 215 288 246 354 204M256 325C328 352 407 333 443 289" stroke="#c2baff" stroke-width="9" stroke-linecap="round" stroke-opacity=".25"/>
+  </g>
+</svg>

@@ -3,6 +3,7 @@ import "../styles/tokens.css";
 import "../styles/global.css";
 import ScrollControl from "../components/ScrollControl.astro";
 import SiteHeader from "../components/SiteHeader.astro";
+import SocialMeta from "../components/SocialMeta.astro";
 const {
   title = "Fabrizio Petrozzi | Projects",
   description = "Software, AI, and data projects by Fabrizio Petrozzi in St. Petersburg, Florida.",
@@ -17,11 +18,9 @@ const {
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <SocialMeta title={title} description={description} />
     <meta name="theme-color" content="#0a0f18" />
-    <link rel="icon" href="/images/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/brand/fp-mark.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="/assets/fonts/fonts.css" />
     <link
       rel="preload"

@@ -9,6 +9,7 @@ import "../styles/home.css";
 import "../styles/fluid.css";
 import Icon from "../components/Icon.astro";
 import SiteHeader from "../components/SiteHeader.astro";
+import SocialMeta from "../components/SocialMeta.astro";
 import { featured as featuredCopy } from "../data/featured";
 import ToolIcon from "../components/ToolIcon.astro";
 import ToolIconSprite from "../components/ToolIconSprite.astro";
@@ -174,12 +175,10 @@ const education = [
       content="Fabrizio Petrozzi’s apps, tools and work with AI. Projects, background and contact."
     />
     <link rel="canonical" href={new URL("/", Astro.site)} />
-    <meta property="og:title" content="Fabrizio Petrozzi" />
-    <meta
-      property="og:description"
-      content="I build apps and tools. I explore how AI works and what I can build with it."
+    <SocialMeta
+      title="Fabrizio Petrozzi"
+      description="I build apps and tools. I explore how AI works and what I can build with it."
     />
-    <meta property="og:type" content="website" />
     <meta name="theme-color" content="#0a0f18" />
     <script is:inline>
       document.documentElement.classList.add("timeline-js");
@@ -200,7 +199,7 @@ const education = [
       type="font/woff2"
       crossorigin
     />
-    <link rel="icon" href="/images/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/brand/fp-mark.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="/era.css" />
     <link rel="expect" href="#era-ready" blocking="render" />
     <script src="/era.js" is:inline></script>
